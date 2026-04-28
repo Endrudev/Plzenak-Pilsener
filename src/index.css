@@ -1,0 +1,30 @@
+html, body, #root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  background: #f5f7fb;
+  color: #111827;
+  line-height: 1.5;
+}
+
+main {
+  max-width: 48rem;
+  margin: 4rem auto;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+}
+
+h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 3vw, 3rem);
+}
+
+p {
+  margin: 0;
+  font-size: 1.05rem;
+}
