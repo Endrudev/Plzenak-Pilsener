@@ -1,0 +1,24 @@
+#site-footer {
+    background-color: #1c1c1c;
+    color: #fff;
+    text-align: center;
+    padding: 26px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-family: 'KronaOne', sans-serif;
+    font-size: 13px;
+}
+
+#site-footer p {
+    margin: 0;
+}
+
+#site-footer a {
+    color: #fff;
+    text-decoration: none;
+}
+
+#site-footer a:hover {
+    text-decoration: underline;
+}

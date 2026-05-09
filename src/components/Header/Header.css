@@ -1,23 +1,47 @@
-header{
-    background-image: url(../src/assets/header_background.png);
+header a {
+    text-decoration: none;
+    color: inherit;
+}
+
+header {
+    background-color: #FAA52F;
+}
+
+header.header--dark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.52) 0%, transparent 100%);
+    z-index: 10;
+}
+
+header.header--dark #button-home {
+    color: #fff;
+    text-shadow: none;
+}
+
+header.header--hero {
+    background-image: url(../../assets/header_background.png);
     background-position: 55% 45%;
     background-size: 210%;
     background-repeat: no-repeat;
     height: 350px;
 }
 
-#header-container-menu{
+#header-container-menu {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 65px;
     width: 100%;
     box-sizing: border-box;
+    padding: 0 4px;
 }
 
-#button-actions{
+#button-actions {
     color: black;
-    font-family: 'Kronaone';
+    font-family: 'KronaOne', sans-serif;
     margin-left: 10px;
     padding: 15px;
     display: flex;
@@ -29,9 +53,9 @@ header{
     border-radius: 5px;
 }
 
-#button-home{
+#button-home {
     color: black;
-    font-family: 'Kronaone';
+    font-family: 'KronaOne', sans-serif;
     padding: 15px;
     display: flex;
     justify-content: center;
@@ -41,23 +65,19 @@ header{
     border-radius: 5px;
 }
 
-#button-home p {
-    text-shadow: 0 0 2px #6d6d6d;
-}
-
-#logo-small-home{
+#logo-small-home {
     width: 35px;
     margin: 15px;
 }
 
-#header-container-logo{
+#header-container-logo {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 250px;
 }
 
-#logo-big-home{
+#logo-big-home {
     width: 300px;
     filter: drop-shadow(0 0px 15px rgba(0, 0, 0, 1));
 }

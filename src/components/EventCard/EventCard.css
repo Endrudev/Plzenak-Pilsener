@@ -1,0 +1,110 @@
+.event-card {
+    display: flex;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.09);
+    height: 150px;
+    transition: box-shadow 0.18s, transform 0.18s;
+}
+
+.event-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+    transform: translateY(-2px);
+}
+
+.event-image {
+    width: 44%;
+    flex-shrink: 0;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+}
+
+.event-image--majales {
+    background: linear-gradient(160deg, #1a2a5e 0%, #3a5fa0 50%, #6b3c8f 100%);
+}
+
+.event-image--sklo {
+    background: linear-gradient(160deg, #c97b1a 0%, #e8a020 60%, #f5c040 100%);
+}
+
+.event-image--prazdroj {
+    background: linear-gradient(160deg, #4a6040 0%, #7a9a6a 50%, #a0b890 100%);
+}
+
+.event-badge {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    padding: 4px 9px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.badge-today {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.badge-later {
+    background-color: #f5c518;
+    color: #000;
+}
+
+.event-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 14px;
+    text-align: center;
+    gap: 6px;
+}
+
+.event-name {
+    font-family: 'KronaOne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.25;
+    color: #111;
+}
+
+.event-date {
+    font-size: 11px;
+    color: #888;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.event-btn {
+    margin-top: 8px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #FAA52F;
+    color: #000;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 22px;
+    font-family: 'KronaOne', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: filter 0.15s;
+}
+
+.event-btn:hover {
+    filter: brightness(1.1);
+}
+
+@media (min-width: 480px) {
+    .event-name {
+        font-size: 17px;
+    }
+}
