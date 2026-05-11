@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { events } from '../../data/events.js'
+import { getEvents } from '../../lib/eventsApi.js'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import './Home.css'
 
@@ -14,17 +14,23 @@ const categories = [
 const COUNTS = [3, 6, 9]
 
 export default function Home() {
+  const [events, setEvents] = useState([])
+  const [loading, setLoading] = useState(true)
   const [stage, setStage] = useState(0)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    getEvents()
+      .then(data => setEvents(data))
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [])
 
   const visibleEvents = events.slice(0, COUNTS[stage])
 
   function handleExpand() {
-    if (stage < 2) {
-      setStage(stage + 1)
-    } else {
-      navigate('/events')
-    }
+    if (stage < 2) setStage(stage + 1)
+    else navigate('/events')
   }
 
   return (
@@ -41,9 +47,10 @@ export default function Home() {
       </div>
 
       <div id="events-list">
-        {visibleEvents.map(event => (
-          <EventCard key={event.id} event={event} />
-        ))}
+        {loading
+          ? <p style={{ textAlign: 'center', color: '#888', fontFamily: 'Montserrat' }}>Načítání…</p>
+          : visibleEvents.map(event => <EventCard key={event.id} event={event} />)
+        }
       </div>
 
       <div id="expand-separator">

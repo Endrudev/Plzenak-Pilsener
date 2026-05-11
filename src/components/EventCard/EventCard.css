@@ -75,6 +75,32 @@
     color: #111;
 }
 
+.event-tags {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.event-tag {
+    background: #FAA52F;
+    color: #fff;
+    font-size: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.event-location {
+    font-size: 11px;
+    color: #333;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    text-decoration: underline;
+}
+
 .event-date {
     font-size: 11px;
     color: #888;
@@ -106,5 +132,40 @@
 @media (min-width: 480px) {
     .event-name {
         font-size: 17px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .event-card {
+        height: auto;
+        min-height: 200px;
+    }
+
+    .event-name {
+        font-size: 22px;
+    }
+
+    .event-location {
+        font-size: 12px;
+    }
+
+    .event-date {
+        font-size: 13px;
+    }
+
+    .event-btn {
+        font-size: 14px;
+        padding: 9px 28px;
+        margin-top: 6px;
+    }
+
+    .event-badge {
+        font-size: 12px;
+        padding: 5px 11px;
+    }
+
+    .event-tag {
+        font-size: 11px;
+        padding: 3px 10px;
     }
 }

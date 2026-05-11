@@ -1,0 +1,103 @@
+#admin-page {
+    min-height: 100vh;
+    background-color: #e0dede;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+#admin-back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #fff;
+    border: 2px solid #111;
+    border-radius: 4px;
+    padding: 10px 22px;
+    font-family: 'KronaOne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+#admin-back-btn:hover {
+    background: #f0f0f0;
+}
+
+#admin-card {
+    background: #fff;
+    border: 1.5px solid #ccc;
+    width: 100%;
+    max-width: 560px;
+    padding: 60px 48px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
+#admin-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 62px;
+    color: #111;
+    margin: 0 0 40px 0;
+    letter-spacing: -1px;
+}
+
+#admin-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.admin-input {
+    width: 100%;
+    max-width: 320px;
+    background: #e0dede;
+    border: none;
+    outline: none;
+    padding: 16px 18px;
+    font-size: 15px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    box-sizing: border-box;
+}
+
+.admin-input::placeholder {
+    color: #888;
+}
+
+#admin-submit {
+    margin-top: 8px;
+    width: 100%;
+    max-width: 320px;
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 16px;
+    font-family: 'KronaOne', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+#admin-submit:hover {
+    background: #333;
+}
+
+#admin-error {
+    color: #c0392b;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    margin: 0;
+    text-align: center;
+}

@@ -1,20 +1,33 @@
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { events } from '../../data/events.js'
+import { getEventById } from '../../lib/eventsApi.js'
 import './EventDetail.css'
 
 export default function EventDetail() {
     const { id } = useParams()
     const navigate = useNavigate()
-    const event = events.find(e => e.id === Number(id))
+    const [event, setEvent] = useState(null)
+    const [loading, setLoading] = useState(true)
 
-    if (!event) {
-        return (
-            <div id="event-detail-not-found">
-                <p>Akce nenalezena.</p>
-                <button onClick={() => navigate('/events')}>Zpět na akce</button>
-            </div>
-        )
-    }
+    useEffect(() => {
+        getEventById(id)
+            .then(data => setEvent(data))
+            .catch(() => setEvent(null))
+            .finally(() => setLoading(false))
+    }, [id])
+
+    if (loading) return (
+        <div id="event-detail-not-found">
+            <p>Načítání…</p>
+        </div>
+    )
+
+    if (!event) return (
+        <div id="event-detail-not-found">
+            <p>Akce nenalezena.</p>
+            <button onClick={() => navigate('/events')}>Zpět na akce</button>
+        </div>
+    )
 
     return (
         <div id="event-detail">

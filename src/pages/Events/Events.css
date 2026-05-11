@@ -8,7 +8,7 @@
 
 /* ---------- Search section (golden bg) ---------- */
 #events-search-section {
-  background: linear-gradient(to bottom, #FAA52F, #C97000);
+  background: linear-gradient(to bottom, #C97000, #FAA52F);
   padding: 20px 16px 28px;
   display: flex;
   flex-direction: column;

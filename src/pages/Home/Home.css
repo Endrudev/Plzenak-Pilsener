@@ -150,3 +150,42 @@
     width: 100%;
   }
 }
+
+@media (min-width: 1024px) {
+  #search-bar-wrapper {
+    display: none;
+  }
+
+  #events-list {
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 28px 32px 0;
+    gap: 22px;
+    box-sizing: border-box;
+  }
+
+  #expand-separator {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 28px 32px 22px;
+  }
+
+  #categories-section {
+    max-width: 1140px;
+    padding: 0 32px 48px;
+  }
+
+  #categories-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+  }
+
+  .category-name {
+    font-size: 26px;
+  }
+}

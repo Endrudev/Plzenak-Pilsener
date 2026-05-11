@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
 
 ## Commands
 
@@ -51,19 +51,6 @@ The Events page (`header--plain`) renders an extended hero inside the `<header>`
 
 On PC (≥1024px) the home page hides the small logo and shows a search input in the nav instead. Layout uses CSS grid (`1fr auto 1fr`) to keep "Domů" perfectly centred.
 
-### Database (Supabase)
-
-PostgreSQL přes Supabase. Připojení v `src/lib/supabase.js`, CRUD operace v `src/lib/eventsApi.js`.
-
-**Tabulka `events`** — schéma v `supabase_schema.sql`. RLS je vypnuté (`alter table events disable row level security`) a nahrazeno přímými granty:
-```sql
-grant all on events to anon, authenticated;
-grant usage on sequence events_id_seq to anon, authenticated;
-```
-Důvod: nový formát Supabase publishable key (`sb_publishable_...`) není kompatibilní s RLS v supabase-js v2 — PostgREST nedokáže ověřit JWT, `auth.uid()` vrací NULL. Pro produkci je potřeba buď přejít na supabase-js v3, nebo použít klasický JWT anon key.
-
-**Auth:** Přihlášení přes `supabase.auth.signInWithPassword()`. Auth guard (`src/lib/useAuthGuard.js`) chrání `/admin/dashboard` a `/admin/create`.
-
 ### Data (`src/data/events.js`)
 
 Single source of truth for all event objects. Imported by `Home`, `Events`, and `EventDetail`. Each event has:
@@ -79,7 +66,6 @@ All three admin pages suppress the global Header/Footer and share the same gray 
 - **Admin** — login form (username + password + Přihlásit → navigates to dashboard)
 - **AdminDashboard** — paginated table (10/page) of all events with search filter and three action buttons per row: view (blue), edit (orange), delete (red). "Create new" navigates to AdminCreate.
 - **AdminCreate** — form to create a new event: Nadpis, date picker (Czech format), Popis textarea, URL, Kategorie select, Název lokace, main image button, Adresa with autocomplete, two image upload boxes, Zobrazit (preview) and Uložit (save) buttons.
-- **AdminCreate** saves via `createEvent()` from `src/lib/eventsApi.js` → Supabase `events` table.
   - **Date picker** — custom calendar popup (Czech day/month names, Monday-start grid, month navigation). The field next to the calendar icon is also directly editable in `d.m.rrrr` format. The X button navigates back (same as Zpět).
   - **Address autocomplete** — debounced (400ms) Nominatim API call. Results are restricted to Plzeňský kraj via `viewbox=12.65,50.02,13.92,49.15&bounded=1&countrycodes=cz` plus a client-side filter requiring "plzeň" in `display_name`. Selecting a suggestion fills the field and generates an OpenStreetMap embed URL (`mapSrc`) shown as a live map preview. The same `mapSrc` format is used in EventDetail for the embedded map.
 
