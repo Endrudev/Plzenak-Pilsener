@@ -4,37 +4,36 @@ import { createEvent } from '../../lib/eventsApi.js'
 import { useAuthGuard } from '../../lib/useAuthGuard.js'
 import './AdminCreate.css'
 
+//Deklarace polí pro překlad měsíců a dnů pro kalendářový popup. 
 const MONTHS = ['Leden','Únor','Březen','Duben','Květen','Červen',
-                 'Červenec','Srpen','Září','Říjen','Listopad','Prosinec']
+    'Červenec','Srpen','Září','Říjen','Listopad','Prosinec']
 const DAYS = ['Po','Út','St','Čt','Pá','So','Ne']
 
+//Převedení datumu na český formát.
 function toCzech(date) {
     if (!date) return ''
     return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`
 }
 
-function parseCzech(str) {
-    const parts = str.split('.')
-    if (parts.length !== 3) return null
-    const d = parseInt(parts[0]), m = parseInt(parts[1]) - 1, y = parseInt(parts[2])
-    if (isNaN(d) || isNaN(m) || isNaN(y) || y < 1000) return null
-    const date = new Date(y, m, d)
-    if (date.getFullYear() !== y || date.getMonth() !== m || date.getDate() !== d) return null
-    return date
-}
-
+//Porovnání Date objektů
 function isSameDay(a, b) {
-    return a && b && a.getDate() === b.getDate() &&
-        a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear()
+    return 
+        a && b && 
+        a.getDate() === b.getDate() &&
+        a.getMonth() === b.getMonth() && 
+        a.getFullYear() === b.getFullYear()
 }
 
+//Vytvoření pole Date objektů pro popup kalendář
 function buildCalendarDays(year, month) {
     const firstDay = new Date(year, month, 1).getDay()
-    const offset = (firstDay + 6) % 7 // Monday-start
+    const offset = (firstDay + 6) % 7 // Počet polí před prvním dnem v měsící
     const daysInMonth = new Date(year, month + 1, 0).getDate()
     const cells = []
-    for (let i = 0; i < offset; i++) cells.push(null)
-    for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(year, month, d))
+    for (let i = 0; i < offset; i++)
+        cells.push(null)
+    for (let d = 1; d <= daysInMonth; d++) 
+        cells.push(new Date(year, month, d))
     return cells
 }
 
@@ -62,7 +61,7 @@ export default function AdminCreate() {
     const calRef = useRef(null)
     const addressRef = useRef(null)
 
-    // Close suggestions on outside click
+    //Zavření okna po kliknutí mimo element
     useEffect(() => {
         function onOutside(e) {
             if (addressRef.current && !addressRef.current.contains(e.target))
@@ -72,7 +71,7 @@ export default function AdminCreate() {
         return () => document.removeEventListener('mousedown', onOutside)
     }, [])
 
-    // Debounced suggestions fetch
+    //Debounce + našeptávání adres přes OpenStreetMap API
     useEffect(() => {
         if (address.trim().length < 3) { setSuggestions([]); setShowSuggestions(false); return }
         const timer = setTimeout(async () => {
@@ -97,6 +96,7 @@ export default function AdminCreate() {
         return () => clearTimeout(timer)
     }, [address])
 
+    //Výběr adresy z našeptávače
     function selectSuggestion(item) {
         setAddress(item.display_name)
         setSuggestions([])
@@ -108,6 +108,7 @@ export default function AdminCreate() {
         setGeocoding(false)
     }
 
+    //
     useEffect(() => {
         function onClickOutside(e) {
             if (calRef.current && !calRef.current.contains(e.target)) {
@@ -127,22 +128,6 @@ export default function AdminCreate() {
         setSelected(date)
         setInputVal(toCzech(date))
         setShowCal(false)
-    }
-
-    function handleInputChange(e) {
-        const val = e.target.value
-        setInputVal(val)
-        const parsed = parseCzech(val)
-        if (parsed) {
-            setSelected(parsed)
-            setViewYear(parsed.getFullYear())
-            setViewMonth(parsed.getMonth())
-        }
-    }
-
-    function clearDate() {
-        setSelected(null)
-        setInputVal('')
     }
 
     function prevMonth() {
@@ -213,7 +198,7 @@ export default function AdminCreate() {
                             id="create-date-display"
                             type="text"
                             value={inputVal}
-                            onChange={handleInputChange}
+                            readOnly
                             placeholder="d.m.rrrr"
                         />
 

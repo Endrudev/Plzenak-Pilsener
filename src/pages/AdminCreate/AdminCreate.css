@@ -389,6 +389,15 @@
     transition: background 0.15s;
 }
 
+.create-action-btn:last-child{
+    background: #ffd79e;
+    color: #000000;
+}
+
 .create-action-btn:hover {
     background: #f0f0f0;
+}
+
+.create-action-btn:hover:last-child {
+    background: #ffb348;
 }

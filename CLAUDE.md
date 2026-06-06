@@ -93,6 +93,22 @@ Two fonts:
 
 Event image backgrounds are CSS gradients via classes defined in `src/components/EventCard/EventCard.css` (`.event-image--majales`, `.event-image--sklo`, `.event-image--prazdroj`). Add new gradient classes there when adding new event types.
 
+### Ongoing: DevOps migration (Supabase → own stack)
+
+**Status:** In progress — currently on Step 1 of 13. Full plan in Claude memory (`devops-migration-plan`).
+
+Supabase is being replaced with: Node.js/Express API (`backend/`) + PostgreSQL (Docker) + Nginx frontend. All three services will run via Docker Compose.
+
+Key files changing:
+- `src/lib/supabase.js` → delete
+- `src/lib/eventsApi.js` → rewrite to fetch
+- `src/lib/useAuthGuard.js` → JWT from localStorage
+- `src/pages/Admin/Admin.jsx` → fetch `/api/auth/login`
+
+New `backend/` folder is a separate Node.js project with its own `package.json`. Do not confuse it with the root frontend project.
+
+---
+
 ### Component conventions
 
 - Source files are `.jsx` (not `.tsx`) despite TypeScript being listed as a dev dependency — the TS config is present for the build step only.
