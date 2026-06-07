@@ -95,7 +95,7 @@ Event image backgrounds are CSS gradients via classes defined in `src/components
 
 ### Ongoing: DevOps migration (Supabase → own stack)
 
-**Status:** In progress — currently on Step 3 of 13 (completed: 1–3). Full plan in Claude memory (`devops-migration-plan`).
+**Status:** In progress — currently on Step 4 of 13 (completed: 1–4). Full plan in Claude memory (`devops-migration-plan`).
 
 Supabase is being replaced with: Node.js/Express API (`backend/`) + PostgreSQL (Docker) + Nginx frontend. All three services will run via Docker Compose.
 
