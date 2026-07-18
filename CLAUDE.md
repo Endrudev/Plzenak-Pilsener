@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## How we work on this project — READ FIRST
+
+There is a companion Obsidian vault, `Plzenak-Pilsener-docs`, sitting next to this repo (sibling folder). Its `README.md` states the hard rule for this project, and it overrides default Claude Code behavior:
+
+- This project exists purely for the author's (ondra.stindl@gmail.com) own learning. **The author writes all production code, config, and infrastructure themselves.**
+- Claude's role is **strictly advisory**: explain concepts, review code, propose alternatives, help debug, discuss architecture/plans — never hand over a finished implementation to paste in.
+- Do not write or edit application code (frontend, backend, infra, Dockerfiles, etc.) unless explicitly asked to for a specific, narrow reason. Default to explaining/reviewing instead of editing.
+- The **docs vault itself is the exception** — Claude may read and keep it updated (new decisions, plan changes, journal entries) as documentation, since that's not production code.
+- See the vault for full context: `01 Projekt/Přehled.md` (overview), `04 DevOps/Migrace ze Supabase.md` (migration plan/status), `05 Poznámky/Deník.md` (running decision log).
+
 ## Commands
 
 ```bash
