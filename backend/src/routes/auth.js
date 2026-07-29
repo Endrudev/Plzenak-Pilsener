@@ -29,7 +29,7 @@ router.post('/login', async (req, res) => {
         }
     }catch(err) {
         console.error(err.message)
-        res.status(500).json({error: 'Něco se pokazilo.'})
+        res.status(500).json({error: 'Uživatel nebyl přihlášen.'})
     }
 })
 

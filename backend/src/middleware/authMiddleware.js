@@ -4,7 +4,7 @@ function authMiddleware(req, res, next){
     const headerAuth = req.get('Authorization')
 
     if(!headerAuth || !headerAuth.startsWith('Bearer ')){
-        return res.status(401).json({error : 'Něco se pokazilo.'})
+        return res.status(401).json({error : 'Uživatel nemá pro akci oprávnění.'})
     }
 
     const token = headerAuth.split(' ')[1]

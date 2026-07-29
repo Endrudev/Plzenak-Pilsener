@@ -1,6 +1,7 @@
 const express =require('express')
 const router = express.Router()
 const {query} = require('../db/pool')
+const authMiddleware = require('../middleware/authMiddleware')
 
 function mapEvent(event) {
     return {
@@ -17,6 +18,24 @@ function mapEvent(event) {
         imgClass: event.img_class,
         mapSrc: event.map_src,
         createdAt: event.created_at
+    }
+}
+
+function mapEventReverse(event) {
+    return{
+        id: event.id,
+        name: event.name,
+        date: event.date,
+        location: event.location,
+        tags: event.tags,
+        badge: event.badge,
+        url: event.url,
+        description: event.description,
+        date_short: event.dateShort,
+        badge_type: event.badgeType,
+        img_class: event.imgClass,
+        map_src: event.mapSrc,
+        created_at: event.createdAt
     }
 }
 
@@ -46,6 +65,23 @@ router.get('/:id', async(req, res) => {
     }catch(err) {
         console.error(err.message)
         res.status(500).json({error: 'Konkrétní akci nelze načíst. Zkuste to znovu.'})
+    }
+})
+
+router.post('/', authMiddleware, async(req, res) => {
+    try{
+        const result = mapEventReverse(req.body)
+        const insertResult = await query(`
+            INSERT INTO events (name, date, date_short, location, tags, badge, badge_type, img_class, url, description, map_src)
+            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            RETURNING *;
+            `, [result.name, result.date, result.date_short, result.location, result.tags, result.badge, result.badge_type, result.img_class, result.url, result.description, result.map_src]
+        )
+            res.status(201).json(mapEvent(insertResult.rows[0]))
+        }
+    catch(err) {
+        console.error(err.message)
+        res.status(500).json({error: 'Akci nelze vytvořit. Zkuste to znovu.'})
     }
 })
 

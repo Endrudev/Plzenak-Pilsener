@@ -1,0 +1,17 @@
+POST http://localhost:3001/api/events
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsImlhdCI6MTc4NTMxNTM0NSwiZXhwIjoxNzg1MzQ0MTQ1fQ.R_YwAlwgVx5y5IqIp5n7CAPp8h8lSPPk-70gjBWsyfU
+
+{
+    "name": "Testovací akce",
+    "date": "01.01.2027",
+    "dateShort": "01.01.",
+    "location": "Testovací lokace",
+    "tags": ["Test"],
+    "badge": "Nové",
+    "badgeType": "today",
+    "imgClass": "event-image--majales",
+    "url": "https://example.com",
+    "description": ["První odstavec popisu.", "Druhý odstavec popisu."],
+    "mapSrc": "https://www.openstreetmap.org/export/embed.html?bbox=13.36%2C49.73%2C13.40%2C49.75"
+}
