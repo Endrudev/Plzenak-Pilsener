@@ -1,6 +1,6 @@
 POST http://localhost:3001/api/events
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsImlhdCI6MTc4NTMxNTM0NSwiZXhwIjoxNzg1MzQ0MTQ1fQ.R_YwAlwgVx5y5IqIp5n7CAPp8h8lSPPk-70gjBWsyfU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsImlhdCI6MTc4NTUyNDg4NCwiZXhwIjoxNzg1NTUzNjg0fQ.1A3PIC3HzHiPEsqTBPRjQMK21pQXrC2xFLteYGIaK0U
 
 {
     "name": "Testovací akce",

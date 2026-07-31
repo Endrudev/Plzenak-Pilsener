@@ -1,0 +1,3 @@
+DELETE http://localhost:3001/api/events/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsImlhdCI6MTc4NTUyNTE1MiwiZXhwIjoxNzg1NTUzOTUyfQ.rrDjmJvPc4mAO2_l-jmWIY4cuDINOUamRYn2OsewwIQ
