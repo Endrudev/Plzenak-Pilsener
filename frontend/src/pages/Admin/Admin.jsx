@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../../lib/supabase.js'
 import './Admin.css'
 
 export default function Admin() {
@@ -14,7 +13,7 @@ export default function Admin() {
         if (!email || !password) { setError('Vyplňte e-mail a heslo.'); return }
         setLoading(true)
         setError('')
-        const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
+        const { error: authError } = await fetch(import.meta.env.VITE_API_URL, )
         setLoading(false)
         if (authError) { setError('Nesprávný e-mail nebo heslo.'); return }
         navigate('/admin/dashboard')
