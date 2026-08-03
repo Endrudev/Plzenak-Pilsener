@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { getEvents } from '../../lib/eventsApi.js'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import './Events.css'
 

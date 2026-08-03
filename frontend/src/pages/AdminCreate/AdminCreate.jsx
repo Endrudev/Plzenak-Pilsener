@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createEvent } from '../../lib/eventsApi.js'
-import { useAuthGuard } from '../../lib/useAuthGuard.js'
 import './AdminCreate.css'
 
 //Deklarace polí pro překlad měsíců a dnů pro kalendářový popup. 

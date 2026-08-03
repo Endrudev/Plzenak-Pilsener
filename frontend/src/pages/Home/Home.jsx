@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getEvents } from '../../lib/eventsApi.js'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import './Home.css'
 
@@ -18,13 +17,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [stage, setStage] = useState(0)
   const navigate = useNavigate()
-
-  useEffect(() => {
-    getEvents()
-      .then(data => setEvents(data))
-      .catch(console.error)
-      .finally(() => setLoading(false))
-  }, [])
 
   const visibleEvents = events.slice(0, COUNTS[stage])
 

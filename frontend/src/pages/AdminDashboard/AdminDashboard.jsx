@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getEvents, deleteEvent } from '../../lib/eventsApi.js'
-import { supabase } from '../../lib/supabase.js'
-import { useAuthGuard } from '../../lib/useAuthGuard.js'
 import './AdminDashboard.css'
 
 const PER_PAGE = 10
@@ -18,7 +15,6 @@ export default function AdminDashboard() {
     useEffect(() => { fetchEvents() }, [])
 
     async function handleSignOut() {
-        await supabase.auth.signOut()
         navigate('/admin')
     }
 

@@ -13,10 +13,22 @@ export default function Admin() {
         if (!email || !password) { setError('Vyplňte e-mail a heslo.'); return }
         setLoading(true)
         setError('')
-        const { error: authError } = await fetch(import.meta.env.VITE_API_URL, )
+        const fetchResult = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({email, password}),
+        })
+        const data = await fetchResult.json()
         setLoading(false)
-        if (authError) { setError('Nesprávný e-mail nebo heslo.'); return }
-        navigate('/admin/dashboard')
+        if(!fetchResult.ok) {
+            setError(data.error)
+            return
+        }else{
+            localStorage.setItem('token', data.token)
+            navigate('/admin/dashboard')
+        }
     }
 
     function handleKeyDown(e) {
