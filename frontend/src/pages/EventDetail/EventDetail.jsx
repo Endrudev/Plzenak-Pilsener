@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { getEventById } from '../../lib/eventsApi.js'
 import './EventDetail.css'
 
 export default function EventDetail() {

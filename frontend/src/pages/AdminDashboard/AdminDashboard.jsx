@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { getEvents, deleteEvent } from '../../lib/eventsApi.js'
+import { useAuthGuard } from '../../lib/useAuthGuard.js'
 import './AdminDashboard.css'
 
 const PER_PAGE = 10

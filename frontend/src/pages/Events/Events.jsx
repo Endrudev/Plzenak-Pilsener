@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import EventCard from '../../components/EventCard/EventCard.jsx'
+import { getEvents } from '../../lib/eventsApi.js'
 import './Events.css'
 
 const PER_PAGE = 5

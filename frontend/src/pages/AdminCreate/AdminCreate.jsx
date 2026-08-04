@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { createEvent } from '../../lib/eventsApi.js'
+import { useAuthGuard } from '../../lib/useAuthGuard.js'
 import './AdminCreate.css'
 
 //Deklarace polí pro překlad měsíců a dnů pro kalendářový popup. 
@@ -15,11 +17,12 @@ function toCzech(date) {
 
 //Porovnání Date objektů
 function isSameDay(a, b) {
-    return 
+    return( 
         a && b && 
         a.getDate() === b.getDate() &&
         a.getMonth() === b.getMonth() && 
         a.getFullYear() === b.getFullYear()
+    )
 }
 
 //Vytvoření pole Date objektů pro popup kalendář
@@ -316,7 +319,7 @@ export default function AdminCreate() {
                                 height="220"
                                 frameBorder="0"
                                 loading="lazy"
-                              />
+                            />
                         }
                     </div>
                 )}
@@ -329,7 +332,7 @@ export default function AdminCreate() {
                                 ? <img src={img} alt="" />
                                 : <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round">
                                     <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                                  </svg>
+                                </svg>
                             }
                             <input type="file" accept="image/*" hidden onChange={e => handleImage(i, e)} />
                         </label>
