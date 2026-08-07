@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createEvent } from '../../lib/eventsApi.js'
+import { createEvent, uploadEventImage } from '../../lib/eventsApi.js'
 import { useAuthGuard } from '../../lib/useAuthGuard.js'
 import './AdminCreate.css'
 
@@ -58,6 +58,7 @@ export default function AdminCreate() {
     const [showSuggestions, setShowSuggestions] = useState(false)
     const [mapSrc, setMapSrc] = useState('')
     const [geocoding, setGeocoding] = useState(false)
+    const [imageUrl1, setImageUrl1] = useState(null)
 
     const calRef = useRef(null)
     const addressRef = useRef(null)
@@ -142,11 +143,15 @@ export default function AdminCreate() {
     }
 
     async function handleSave() {
-        if (!title.trim()) { alert('Vyplňte nadpis.'); return }
-
+        if (!title.trim()) { alert('Vyplňte nadpis.'); return
+        }if(imageUrl1 === null) { alert('Přidejte obrázek.'); return 
+        }if(!category.trim()) { alert('Vyplňte kategorii.'); return 
+        }if(!description.trim()) { alert('Vyplňte popis.'); return 
+        }if(!locationName.trim()) { alert('Vyplňte lokaci.'); return 
+        }
         setSaving(true)
         try {
-            await createEvent({
+            const response = await createEvent({
                 name:        title,
                 date:        inputVal || null,
                 dateShort:   inputVal ? inputVal.slice(0, inputVal.lastIndexOf('.')) : null,
@@ -159,6 +164,7 @@ export default function AdminCreate() {
                 description: description ? description.split('\n').filter(Boolean) : [],
                 mapSrc:      mapSrc || null,
             })
+            await uploadEventImage(response.id, imageUrl1)
             navigate('/admin/dashboard')
         } catch (e) {
             alert('Chyba při ukládání: ' + e.message)
@@ -172,6 +178,9 @@ export default function AdminCreate() {
         if (!file) return
         const url = URL.createObjectURL(file)
         setImages(prev => prev.map((img, i) => i === index ? url : img))
+        if(index === 0){
+            setImageUrl1(file)
+        }
     }
 
     const today = new Date()

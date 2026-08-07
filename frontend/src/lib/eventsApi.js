@@ -60,3 +60,20 @@ export async function deleteEvent(id){
         throw new Error(data.error)
     }
 }
+
+export async function uploadEventImage(id, image){
+    const formData = new FormData()
+    formData.append('image', image)
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events/${id}/image`, {
+        method: 'POST',
+        headers: {
+            'Authorization' : `Bearer ${localStorage.getItem('token')}`
+        },
+        body: formData,
+    })
+    const data = await response.json()
+    if (!response.ok){
+        throw new Error(data.error)
+    }
+    return data
+}

@@ -2,6 +2,9 @@ const express =require('express')
 const router = express.Router()
 const {query} = require('../db/pool')
 const authMiddleware = require('../middleware/authMiddleware')
+const multer = require('multer')
+const upload = multer({ storage: multer.memoryStorage() })
+const {sendObject} = require('../lib/r2')
 
 function mapEvent(event) {
     return {
@@ -17,7 +20,8 @@ function mapEvent(event) {
         badgeType: event.badge_type,
         imgClass: event.img_class,
         mapSrc: event.map_src,
-        createdAt: event.created_at
+        createdAt: event.created_at,
+        imageUrl: event.image_url
     }
 }
 
@@ -35,7 +39,8 @@ function mapEventReverse(event) {
         badge_type: event.badgeType,
         img_class: event.imgClass,
         map_src: event.mapSrc,
-        created_at: event.createdAt
+        created_at: event.createdAt,
+        image_url: event.imageUrl
     }
 }
 
@@ -120,6 +125,28 @@ router.delete('/:id', authMiddleware, async(req, res) =>{
     }catch(err) {
         console.error(err.message)
         res.status(500).json({error: 'Akci nelze odstranit. Zkuste to znovu.'})
+    }
+})
+
+router.post('/:id/image', authMiddleware, upload.single('image'), async (req, res) => {
+    try {
+        const key = `events/${req.params.id}-${Date.now()}-${req.file.originalname}`
+        await sendObject(key, req.file.buffer, req.file.mimetype)
+        const urlPath = `${process.env.R2_PUBLIC_URL}/${key}`
+        const updateResult = await query(`
+            UPDATE events
+            SET image_url = $1
+            WHERE id = $2
+            RETURNING *;
+            `, [urlPath, req.params.id])
+        if(updateResult.rows.length === 0){
+            res.status(404).json({error: 'Neplatné id akce. Zkuste to znovu.'})
+        }else{
+            res.status(200).json(mapEvent(updateResult.rows[0]))
+        }
+    }catch(err) {
+        console.error(err.message)
+        res.status(500).json({error: 'Akci nelze aktualizovat. Zkuste to znovu.'})
     }
 })
 
