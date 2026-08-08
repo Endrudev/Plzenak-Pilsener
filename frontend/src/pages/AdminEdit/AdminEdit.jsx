@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { createEvent, uploadEventImage, deleteEvent } from '../../lib/eventsApi.js'
+import { useNavigate, useParams } from 'react-router-dom'
+import { uploadEventImage, getEventById, updateEvent } from '../../lib/eventsApi.js'
 import { useAuthGuard } from '../../lib/useAuthGuard.js'
-import './AdminCreate.css'
+import './AdminEdit.css'
 
 //Deklarace polí pro překlad měsíců a dnů pro kalendářový popup. 
 const MONTHS = ['Leden','Únor','Březen','Duben','Květen','Červen',
@@ -38,7 +38,8 @@ function buildCalendarDays(year, month) {
     return cells
 }
 
-export default function AdminCreate() {
+export default function AdminEdit() {
+    const { id } = useParams()
     const navigate = useNavigate()
     useAuthGuard()
     const [selected, setSelected] = useState(new Date(2026, 3, 30))
@@ -62,6 +63,25 @@ export default function AdminCreate() {
 
     const calRef = useRef(null)
     const addressRef = useRef(null)
+
+    useEffect(() => {
+        async function insertEventData(){
+            const event = await getEventById(id)
+            setTitle(event.name)
+            setInputVal(event.date)
+
+            const parts = event.date.split('.')
+            const parsedDate = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]))
+            setImages([event.imageUrl, null])
+            setMapSrc(event.mapSrc)
+            setSelected(parsedDate)
+            setLocationName(event.location)
+            setDescription(event.description.join('\n'))
+            setCategory(event.tags?.[0])
+            setUrl(event.url)
+        }
+        insertEventData()
+    }, [id])
 
     //Zavření okna po kliknutí mimo element
     useEffect(() => {
@@ -144,15 +164,14 @@ export default function AdminCreate() {
 
     async function handleSave() {
         if (!title.trim()) { alert('Vyplňte nadpis.'); return
-        }if(imageUrl1 === null) { alert('Přidejte obrázek.'); return 
         }if(!category.trim()) { alert('Vyplňte kategorii.'); return 
-        }if(!description.trim()) { alert('Vyplňte popis.'); return 
         }if(!locationName.trim()) { alert('Vyplňte lokaci.'); return 
+        }if(!description.trim()) { alert('Vyplňte popis.'); return 
         }
         setSaving(true)
         let response = null
         try {
-            response = await createEvent({
+            response = await updateEvent(id, {
                 name:        title,
                 date:        inputVal || null,
                 dateShort:   inputVal ? inputVal.slice(0, inputVal.lastIndexOf('.')) : null,
@@ -165,15 +184,12 @@ export default function AdminCreate() {
                 description: description ? description.split('\n').filter(Boolean) : [],
                 mapSrc:      mapSrc || null,
             })
-            await uploadEventImage(response.id, imageUrl1)
+            if(imageUrl1 !== null){
+                await uploadEventImage(response.id, imageUrl1)
+            }
             navigate('/admin/dashboard')
         } catch (e) {
             alert('Chyba při ukládání: ' + e.message)
-            try{
-                if(response !== null){await deleteEvent(response.id)}
-            }catch (err){
-                console.error(err.message)
-            }
         } finally {
             setSaving(false)
         }
