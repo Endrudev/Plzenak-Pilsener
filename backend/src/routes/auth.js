@@ -6,6 +6,10 @@ const jwt = require('jsonwebtoken')
 
 router.post('/login', async (req, res) => {
     try{
+        if(!req.body.email || !req.body.password){
+            res.status(400).json({error: 'V požadavku chybí heslo nebo email.'})
+            return
+        }
         const {email, password} = req.body
 
         const result = await query(`SELECT * FROM admins WHERE email = $1`, [email])

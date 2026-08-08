@@ -1,6 +1,6 @@
 POST http://localhost:3001/api/events
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsImlhdCI6MTc4NTUyNDg4NCwiZXhwIjoxNzg1NTUzNjg0fQ.1A3PIC3HzHiPEsqTBPRjQMK21pQXrC2xFLteYGIaK0U
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsImlhdCI6MTc4NjE5MjU0NiwiZXhwIjoxNzg2MjIxMzQ2fQ.pbWZHYH0O-Vf3WPBc-sDXcH9Xn2fKDdySEw3tTQEhbw
 
 {
     "name": "Testovací akce",
@@ -12,6 +12,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiO
     "badgeType": "today",
     "imgClass": "event-image--majales",
     "url": "https://example.com",
-    "description": ["První odstavec popisu.", "Druhý odstavec popisu."],
+    "description": [""],
     "mapSrc": "https://www.openstreetmap.org/export/embed.html?bbox=13.36%2C49.73%2C13.40%2C49.75"
 }

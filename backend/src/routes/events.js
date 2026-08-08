@@ -76,6 +76,10 @@ router.get('/:id', async(req, res) => {
 router.post('/', authMiddleware, async(req, res) => {
     try{
         const result = mapEventReverse(req.body)
+        if(!req.body.name || !req.body.date || !req.body.dateShort || !req.body.location || !req.body.description || req.body.description.length === 0 || !req.body.description.some(item => item.trim() !== '')){
+            res.status(400).json({error: 'V požadavku chybí povinná data.'})
+            return
+        }
         const insertResult = await query(`
             INSERT INTO events (name, date, date_short, location, tags, badge, badge_type, img_class, url, description, map_src)
             VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
@@ -93,6 +97,10 @@ router.post('/', authMiddleware, async(req, res) => {
 router.put('/:id', authMiddleware, async(req, res) => {
     try{
         const result = mapEventReverse(req.body)
+        if(!req.body.name || !req.body.date || !req.body.dateShort || !req.body.location || !req.body.description || req.body.description.length === 0 || !req.body.description.some(item => item.trim() !== '')){
+            res.status(400).json({error: 'V požadavku chybí povinná data.'})
+            return
+        }
         const updateResult = await query(`
             UPDATE events SET name = $1, date = $2, location = $3, tags = $4, badge = $5, url = $6, description = $7, date_short = $8, badge_type = $9, img_class = $10, map_src = $11 
             WHERE id = $12 
