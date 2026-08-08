@@ -8,6 +8,7 @@ import Admin from './pages/Admin/Admin.jsx'
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard.jsx'
 import AdminCreate from './pages/AdminCreate/AdminCreate.jsx'
 import AdminEdit from './pages/AdminEdit/AdminEdit.jsx'
+import NotFound from './pages/NotFound/NotFound.jsx'
 
 function Layout() {
     const { pathname } = useLocation()
@@ -25,6 +26,7 @@ function Layout() {
                     <Route path="/admin/dashboard" element={<AdminDashboard />} />
                     <Route path="/admin/create" element={<AdminCreate />} />
                     <Route path="/admin/edit/:id" element={<AdminEdit />} />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </main>
             {!isAdmin && <Footer />}
