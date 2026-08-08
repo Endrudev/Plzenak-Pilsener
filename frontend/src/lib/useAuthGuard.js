@@ -7,6 +7,21 @@ export function useAuthGuard(){
         const token = localStorage.getItem('token')
         if(!token) {
             navigate('/admin')
+        }else{
+            let payload = null
+            try{
+                const parts = token.split('.')
+                const decoded = atob(parts[1])
+                payload = JSON.parse(decoded)
+            }catch(err){
+                navigate('/admin')
+                localStorage.removeItem('token')
+                return
+            }
+            if(payload.exp < (Date.now()/1000)){
+                navigate('/admin')
+                localStorage.removeItem('token')
+            }
         }
     }, [])
 }
