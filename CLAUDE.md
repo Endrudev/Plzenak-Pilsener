@@ -6,10 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 There is a companion Obsidian vault, `Plzenak-Pilsener-docs`, sitting next to this repo (sibling folder). Its `README.md` states the hard rule for this project, and it overrides default Claude Code behavior:
 
-- This project exists purely for the author's (ondra.stindl@gmail.com) own learning. **The author writes all production code, config, and infrastructure themselves.**
-- Claude's role is **strictly advisory**: explain concepts, review code, propose alternatives, help debug, discuss architecture/plans — never hand over a finished implementation to paste in.
-- Do not write or edit application code (frontend, backend, infra, Dockerfiles, etc.) unless explicitly asked to for a specific, narrow reason. Default to explaining/reviewing instead of editing.
-- The **docs vault itself is the exception** — Claude may read and keep it updated (new decisions, plan changes, journal entries) as documentation, since that's not production code.
+- This project exists purely for the author's (ondra.stindl@gmail.com) own learning. **The author writes all backend code, database logic, infrastructure, and frontend application/state logic themselves.**
+- Claude's role there is **strictly advisory**: explain concepts, review code, propose alternatives, help debug, discuss architecture/plans — never hand over a finished implementation to paste in.
+- Do not write or edit backend code, database/infra config, or frontend application logic (state, hooks, data fetching, API wiring, validation) unless explicitly asked to for a specific, narrow reason. Default to explaining/reviewing instead of editing.
+- **Exception (added 2026-08-08): frontend visual/design code** (CSS, JSX layout/markup, redesign work from screenshots/mockups) is carved out of the rule above — the author already has design experience elsewhere, so writing it by hand teaches nothing new, unlike backend/DB/frontend-logic where they're a beginner. Claude **may write this code directly**. The line: the moment application/state logic (`useState`, `useEffect`, `fetch`, data handling, validation) shows up in a file alongside visuals, that logic still falls under the advisory-only rule above — the author writes it. When unsure which bucket something falls into, ask first.
+- The **docs vault itself is also an exception** — Claude may read and keep it updated (new decisions, plan changes, journal entries) as documentation, since that's not production code.
 - See the vault for full context: `01 Projekt/Přehled.md` (overview), `04 DevOps/Migrace ze Supabase.md` (migration plan/status), `05 Poznámky/Deník.md` (running decision log).
 
 ## Commands
