@@ -3,8 +3,9 @@ const router = express.Router()
 const {query} = require('../db/pool')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const loginLimiter = require('../middleware/rateLimiter')
 
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
     try{
         if(!req.body.email || !req.body.password){
             res.status(400).json({error: 'V požadavku chybí heslo nebo email.'})
