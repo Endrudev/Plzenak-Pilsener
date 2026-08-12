@@ -1,9 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import { getEvents } from '../../lib/eventsApi.js'
 import './Events.css'
 
 const PER_PAGE = 5
+
+const CATEGORIES = [
+  { name: 'Kultura', icon: '🎭' },
+  { name: 'Sport', icon: '⚽' },
+  { name: 'Gastro', icon: '🍺' },
+  { name: 'Hudba', icon: '🎵' },
+  { name: 'Památky', icon: '⛪' },
+  { name: 'Pro děti', icon: '🙂' },
+]
+
+const QUICK_FILTERS = [
+  { name: 'Dnes', icon: '☀️' },
+  { name: 'Tento týden', icon: '📅' },
+  { name: 'Zdarma', icon: '🏷️' },
+  { name: 'TOP akce', icon: '★' },
+]
 
 export default function Events() {
   const [allEvents, setAllEvents] = useState([])
@@ -29,9 +45,114 @@ export default function Events() {
   return (
     <div id="events-page">
 
+      {/* Filter bar — TODO: vstupy zatím nejsou propojené na žádný stav/filtrování/řazení */}
+      <div id="events-filter-card">
+        <div id="events-search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="text" placeholder="Hledat koncerty…" aria-label="Hledat akce" />
+        </div>
+
+        <div id="events-filter-row">
+          <div className="events-filter-select">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />
+            </svg>
+            <select defaultValue="">
+              <option value="" disabled>Kategorie</option>
+              {CATEGORIES.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+            </select>
+            <svg className="events-filter-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div className="events-filter-select">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+            </svg>
+            <select defaultValue="">
+              <option value="" disabled>Místo</option>
+            </select>
+            <svg className="events-filter-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div className="events-filter-select">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <select defaultValue="">
+              <option value="" disabled>Datum</option>
+            </select>
+            <svg className="events-filter-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <button type="button" id="events-search-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            Vyhledat
+          </button>
+        </div>
+
+        <div className="events-filter-divider" />
+
+        <div className="events-filter-group">
+          <span className="events-filter-group-label">Kategorie</span>
+          <div className="events-pill-row">
+            {CATEGORIES.map(c => (
+              <button type="button" key={c.name} className="events-pill">
+                <span aria-hidden="true">{c.icon}</span> {c.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="events-filter-divider" />
+
+        <div id="events-filter-group-row">
+          <div className="events-filter-group">
+            <span className="events-filter-group-label">Rychlý filtr</span>
+            <div className="events-pill-row">
+              {QUICK_FILTERS.map(f => (
+                <button type="button" key={f.name} className="events-pill">
+                  <span aria-hidden="true">{f.icon}</span> {f.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div id="events-view-toggle">
+            <button type="button" className="events-view-toggle-btn events-view-toggle-btn--active">Seznam</button>
+            <button type="button" className="events-view-toggle-btn">Mapa</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="events-sort-row">
+        <span id="events-sort-label">Řadit podle</span>
+        <div id="events-sort-select">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="6" y1="20" x2="6" y2="4" /><polyline points="2 8 6 4 10 8" /><line x1="18" y1="4" x2="18" y2="20" /><polyline points="14 16 18 20 22 16" />
+          </svg>
+          <select defaultValue="nearest">
+            <option value="nearest">Nejbližší</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="events-section-header">
+        <h2>Všechny akce</h2>
+        {!loading && (
+          <span id="events-count">Zobrazeno {visibleEvents.length} z {allEvents.length} akcí</span>
+        )}
+      </div>
+
       <div id="events-list">
         {loading
-          ? <p style={{ textAlign: 'center', color: '#888', fontFamily: 'Montserrat', padding: '40px 0' }}>Načítání…</p>
+          ? <p id="events-loading">Načítání…</p>
           : visibleEvents.map(event => <EventCard key={event.id} event={event} />)
         }
       </div>

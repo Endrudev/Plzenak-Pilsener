@@ -17,68 +17,158 @@ export default function EventDetail() {
     }, [id])
 
     if (loading) return (
-        <div id="event-detail-not-found">
+        <div id="detail-not-found">
             <p>Načítání…</p>
         </div>
     )
 
     if (!event) return (
-        <div id="event-detail-not-found">
+        <div id="detail-not-found">
             <p>Akce nenalezena.</p>
             <button onClick={() => navigate('/events')}>Zpět na akce</button>
         </div>
     )
 
     return (
-        <div id="event-detail">
+        <div id="detail-page">
 
-            <div className={`event-detail-hero ${event.imgClass}`}>
-                <div className="event-detail-hero-overlay">
-                    <h1 className="event-detail-title">{event.name}</h1>
-                    <div className="event-detail-meta">
-                        {event.dateShort && <span>{event.dateShort}</span>}
-                        {event.dateShort && event.location && <span className="meta-separator">|</span>}
-                        {event.location && <span>{event.location}</span>}
-                        <span className={`event-badge badge-${event.badgeType}`}>{event.badge}</span>
+            <section
+                id="detail-hero"
+                className={event.imageUrl ? '' : 'detail-hero--fallback'}
+                style={event.imageUrl ? { backgroundImage: `url(${event.imageUrl})` } : undefined}
+            >
+                {/* TODO: vizuální placeholdery, export do kalendáře a Web Share API zatím nejsou zapojené */}
+                <div id="detail-hero-actions">
+                    <button type="button" className="detail-hero-action-btn">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        Do kalendáře
+                    </button>
+                    <button type="button" className="detail-hero-action-btn">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+                            <line x1="8.6" y1="10.5" x2="15.4" y2="6.5" /><line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+                        </svg>
+                        Sdílet
+                    </button>
+                </div>
+
+                <div id="detail-hero-content">
+                    <div id="detail-hero-badges">
+                        {event.badge && (
+                            <span className={`event-badge badge-${event.badgeType}`}>{event.badge}</span>
+                        )}
+                        {event.tags?.[0] && <span className="event-tag">{event.tags[0]}</span>}
+                    </div>
+                    <h1 id="detail-title">{event.name}</h1>
+                    <div id="detail-hero-meta">
+                        {event.date && (
+                            <span>
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                                {event.date}
+                            </span>
+                        )}
+                        {event.location && (
+                            <span>
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+                                </svg>
+                                {event.location}
+                            </span>
+                        )}
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {event.description.length > 0 && (
-                <div className="event-detail-description">
-                    {event.description.map((para, i) => (
-                        <p key={i}>{para}</p>
-                    ))}
+            <div id="detail-body">
+                <div id="detail-main">
+
+                    {event.description?.length > 0 && (
+                        <section className="detail-section">
+                            <h2>O akci</h2>
+                            {event.description.map((para, i) => (
+                                <p key={i}>{para}</p>
+                            ))}
+                            {event.url && (
+                                <a href={event.url} target="_blank" rel="noreferrer" id="detail-website-link">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" />
+                                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                                    </svg>
+                                    {event.url}
+                                </a>
+                            )}
+                        </section>
+                    )}
+
+                    {event.mapSrc && (
+                        <section className="detail-section">
+                            <h2>Kde to je</h2>
+                            {/* TODO: vizuální placeholder — reálné odložené načtení mapy až po souhlasu (cookies) čeká na stavovou logiku */}
+                            <div id="detail-map-placeholder">
+                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M9 18l-5 2V6l5-2 6 2 5-2v14l-5 2-6-2z" /><line x1="9" y1="4" x2="9" y2="18" /><line x1="15" y1="6" x2="15" y2="20" />
+                                    <line x1="2" y1="2" x2="22" y2="22" />
+                                </svg>
+                                <p id="detail-map-title">Mapa se nenačetla</p>
+                                <p id="detail-map-text">Mapu poskytuje Google Maps, které ukládají cookies třetích stran.<br />Načteme ji, až nám to dovolíš.</p>
+                                <button type="button" id="detail-map-btn">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+                                    </svg>
+                                    Zobrazit mapu (načíst Google Maps)
+                                </button>
+                            </div>
+                            {event.location && (
+                                <p id="detail-location-line">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+                                    </svg>
+                                    {event.location}
+                                </p>
+                            )}
+                        </section>
+                    )}
+
                 </div>
-            )}
 
-            <div className="event-detail-actions">
-                <a
-                    href={event.url ?? '#'}
-                    className="event-buy-btn"
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    Koupit
-                </a>
-                {event.date && <p className="event-detail-date">{event.date}</p>}
-                {event.url && (
-                    <p className="event-detail-url">
-                        URL: <a href={event.url} target="_blank" rel="noreferrer">{event.url}</a>
-                    </p>
-                )}
+                <aside id="detail-sidebar">
+                    <div className="detail-card">
+                        <span id="detail-ticket-label">Vstupenka</span>
+                        <a
+                            href={event.url ?? '#'}
+                            id="detail-buy-btn"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />
+                            </svg>
+                            Koupit vstupenky
+                        </a>
+                        {/* TODO: vizuální placeholdery, export do kalendáře a Web Share API zatím nejsou zapojené */}
+                        <div id="detail-sidebar-actions">
+                            <button type="button" className="detail-sidebar-action-btn">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                                Kalendář
+                            </button>
+                            <button type="button" className="detail-sidebar-action-btn">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+                                    <line x1="8.6" y1="10.5" x2="15.4" y2="6.5" /><line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+                                </svg>
+                                Sdílet
+                            </button>
+                        </div>
+                    </div>
+                </aside>
             </div>
-
-            {event.mapSrc && (
-                <div className="event-detail-map">
-                    <iframe
-                        src={event.mapSrc}
-                        title="Mapa místa konání"
-                        allowFullScreen
-                        loading="lazy"
-                    />
-                </div>
-            )}
 
         </div>
     )

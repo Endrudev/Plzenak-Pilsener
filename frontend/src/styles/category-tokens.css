@@ -1,0 +1,37 @@
+/* Plzeňák — Category color tokens
+   Jemný posun odstínu v rámci jantarové palety. Jedna rodina, šest odstínů.
+   Použij všude, kde se kategorie objevuje: dlaždice, dropdown, badge na kartě, header stránky kategorie.
+   POZOR: "TOP akce" není kategorie — je to zvýraznění (StatusPill / rychlý filtr), token nemá. */
+:root {
+  /* Solid — dlaždice, ikony, header */
+  --category-gastro: #E8720C;   /* nejsytější — CTA orange */
+  --category-pamatky: #E17F11;
+  --category-hudba: #E38E14;
+  --category-kultura: #EF9F27;  /* medová */
+  --category-sport: #F5A623;    /* zlatá */
+  --category-deti: #F8B551;
+
+  /* Soft — plochy dlaždic a pozadí badge */
+  --category-gastro-soft: #FBE3CE;
+  --category-pamatky-soft: #FBE7D0;
+  --category-hudba-soft: #FBEAD2;
+  --category-kultura-soft: #FCEFD6;
+  --category-sport-soft: #FDF3DA;
+  --category-deti-soft: #FEF6E0;
+
+  /* Gradient — sytý jantarový gradient dlaždice (135°). Ne pastel. */
+  --category-gastro-grad: linear-gradient(135deg, #EF7F14 0%, #CF6309 100%);
+  --category-pamatky-grad: linear-gradient(135deg, #EE8A16 0%, #D66C09 100%);
+  --category-hudba-grad: linear-gradient(135deg, #F0951E 0%, #DD760C 100%);
+  --category-kultura-grad: linear-gradient(135deg, #F3A72C 0%, #E1810F 100%);
+  --category-sport-grad: linear-gradient(135deg, #F7B437 0%, #E88E12 100%);
+  --category-deti-grad: linear-gradient(135deg, #F9BE4C 0%, #EE9A1C 100%);
+
+  /* Ink — text na soft ploše */
+  --category-gastro-ink: #8A3D02;
+  --category-pamatky-ink: #7F4405;
+  --category-hudba-ink: #7E4A06;
+  --category-kultura-ink: #854F0B;
+  --category-sport-ink: #8A5C08;
+  --category-deti-ink: #8A6410;
+}

@@ -1,171 +1,144 @@
 .event-card {
     display: flex;
-    background: #fff;
-    border-radius: 14px;
+    flex-direction: column;
+    background: var(--surface);
+    border-radius: var(--radius-card);
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.09);
-    height: 150px;
-    transition: box-shadow 0.18s, transform 0.18s;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--dur-base) var(--ease-standard), transform var(--dur-base) var(--ease-standard);
 }
 
 .event-card:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+    box-shadow: var(--shadow-card-hover);
     transform: translateY(-2px);
 }
 
 .event-image {
-    width: 44%;
-    flex-shrink: 0;
     position: relative;
+    height: 132px;
     background-size: cover;
     background-position: center;
 }
 
 .event-image--majales {
-    background: linear-gradient(160deg, #1a2a5e 0%, #3a5fa0 50%, #6b3c8f 100%);
+    background: var(--category-kultura-grad);
 }
 
 .event-image--sklo {
-    background: linear-gradient(160deg, #c97b1a 0%, #e8a020 60%, #f5c040 100%);
+    background: var(--category-gastro-grad);
 }
 
 .event-image--prazdroj {
-    background: linear-gradient(160deg, #4a6040 0%, #7a9a6a 50%, #a0b890 100%);
+    background: var(--category-sport-grad);
 }
 
 .event-badge {
     position: absolute;
     bottom: 10px;
     left: 10px;
-    padding: 4px 9px;
-    border-radius: 5px;
-    font-size: 11px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: var(--fs-2xs);
+    font-family: var(--font-sans);
+    font-weight: var(--fw-semibold);
     white-space: nowrap;
 }
 
 .badge-today {
-    background-color: #4caf50;
-    color: #fff;
+    background-color: var(--green-today);
+    color: var(--green-today-ink);
 }
 
 .badge-later {
-    background-color: #f5c518;
-    color: #000;
+    background-color: var(--amber);
+    color: var(--badge-ink);
 }
 
 .event-info {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 14px 14px;
-    text-align: center;
-    gap: 6px;
-}
-
-.event-name {
-    font-family: 'KronaOne', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1.25;
-    color: #111;
+    align-items: flex-start;
+    padding: var(--space-4);
+    text-align: left;
+    gap: var(--space-2);
 }
 
 .event-tags {
     display: flex;
-    gap: 5px;
+    gap: 6px;
     flex-wrap: wrap;
-    justify-content: center;
 }
 
 .event-tag {
-    background: #FAA52F;
-    color: #fff;
-    font-size: 10px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
+    background: var(--badge-bg);
+    color: var(--badge-ink);
+    font-size: var(--fs-2xs);
+    font-family: var(--font-sans);
+    font-weight: var(--fw-medium);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
     white-space: nowrap;
 }
 
-.event-location {
-    font-size: 11px;
-    color: #333;
+.event-name {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: var(--fw-semibold);
     margin: 0;
-    font-family: 'Montserrat', sans-serif;
-    text-decoration: underline;
+    line-height: var(--lh-snug);
+    color: var(--ink);
 }
 
-.event-date {
-    font-size: 11px;
-    color: #888;
-    margin: 0;
-    font-family: 'Montserrat', sans-serif;
+.event-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-xs);
+    color: var(--ink-3);
+    font-family: var(--font-sans);
+}
+
+.event-location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.event-meta-dot {
+    color: var(--hairline);
 }
 
 .event-btn {
-    margin-top: 8px;
-    display: inline-flex;
+    margin-top: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #FAA52F;
-    color: #000;
+    background-color: var(--amber-cta);
+    color: #fff;
     border: none;
-    border-radius: 20px;
-    padding: 8px 22px;
-    font-family: 'KronaOne', sans-serif;
-    font-size: 13px;
+    border-radius: var(--radius-el);
+    padding: 11px 18px;
+    font-family: var(--font-sans);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-body);
     cursor: pointer;
     text-decoration: none;
-    transition: filter 0.15s;
+    transition: filter var(--dur-fast) var(--ease-standard);
 }
 
 .event-btn:hover {
-    filter: brightness(1.1);
-}
-
-@media (min-width: 480px) {
-    .event-name {
-        font-size: 17px;
-    }
+    filter: brightness(1.08);
 }
 
 @media (min-width: 1024px) {
-    .event-card {
-        height: auto;
-        min-height: 200px;
+    .event-image {
+        height: 180px;
     }
 
     .event-name {
-        font-size: 22px;
-    }
-
-    .event-location {
-        font-size: 12px;
-    }
-
-    .event-date {
-        font-size: 13px;
-    }
-
-    .event-btn {
-        font-size: 14px;
-        padding: 9px 28px;
-        margin-top: 6px;
-    }
-
-    .event-badge {
-        font-size: 12px;
-        padding: 5px 11px;
-    }
-
-    .event-tag {
-        font-size: 11px;
-        padding: 3px 10px;
+        font-size: var(--fs-h2);
     }
 }

@@ -4,7 +4,7 @@ import { createEvent, uploadEventImage, deleteEvent } from '../../lib/eventsApi.
 import { useAuthGuard } from '../../lib/useAuthGuard.js'
 import './AdminCreate.css'
 
-//Deklarace polí pro překlad měsíců a dnů pro kalendářový popup. 
+//Deklarace polí pro překlad měsíců a dnů pro kalendářový popup.
 const MONTHS = ['Leden','Únor','Březen','Duben','Květen','Červen',
     'Červenec','Srpen','Září','Říjen','Listopad','Prosinec']
 const DAYS = ['Po','Út','St','Čt','Pá','So','Ne']
@@ -17,10 +17,10 @@ function toCzech(date) {
 
 //Porovnání Date objektů
 function isSameDay(a, b) {
-    return( 
-        a && b && 
+    return(
+        a && b &&
         a.getDate() === b.getDate() &&
-        a.getMonth() === b.getMonth() && 
+        a.getMonth() === b.getMonth() &&
         a.getFullYear() === b.getFullYear()
     )
 }
@@ -33,7 +33,7 @@ function buildCalendarDays(year, month) {
     const cells = []
     for (let i = 0; i < offset; i++)
         cells.push(null)
-    for (let d = 1; d <= daysInMonth; d++) 
+    for (let d = 1; d <= daysInMonth; d++)
         cells.push(new Date(year, month, d))
     return cells
 }
@@ -144,10 +144,10 @@ export default function AdminCreate() {
 
     async function handleSave() {
         if (!title.trim()) { alert('Vyplňte nadpis.'); return
-        }if(imageUrl1 === null) { alert('Přidejte obrázek.'); return 
-        }if(!category.trim()) { alert('Vyplňte kategorii.'); return 
-        }if(!description.trim()) { alert('Vyplňte popis.'); return 
-        }if(!locationName.trim()) { alert('Vyplňte lokaci.'); return 
+        }if(imageUrl1 === null) { alert('Přidejte obrázek.'); return
+        }if(!category.trim()) { alert('Vyplňte kategorii.'); return
+        }if(!description.trim()) { alert('Vyplňte popis.'); return
+        }if(!locationName.trim()) { alert('Vyplňte lokaci.'); return
         }
         setSaving(true)
         let response = null
@@ -193,171 +193,220 @@ export default function AdminCreate() {
     const cells = buildCalendarDays(viewYear, viewMonth)
 
     return (
-        <div id="create-page">
-            <button className="back-btn" onClick={() => navigate(-1)}>Zpět</button>
+        <div id="ac-page">
+            <div id="ac-card">
 
-            <div id="create-card">
-
-                {/* Row 1 — title + date */}
-                <div id="create-top-row">
-                    <input className="create-input" id="create-title" type="text" placeholder="Nadpis" value={title} onChange={e => setTitle(e.target.value)} />
-                    <div id="create-date-group" ref={calRef}>
-                        <button id="create-cal-btn" type="button" onClick={openCalendar} title="Vybrat datum">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                <line x1="16" y1="2" x2="16" y2="6"/>
-                                <line x1="8" y1="2" x2="8" y2="6"/>
-                                <line x1="3" y1="10" x2="21" y2="10"/>
-                            </svg>
-                        </button>
-                        <input
-                            id="create-date-display"
-                            type="text"
-                            value={inputVal}
-                            readOnly
-                            placeholder="d.m.rrrr"
-                        />
-
-                        {showCal && (
-
-                            <div id="cal-popup">
-                                <div id="cal-header">
-                                    <button type="button" className="cal-nav" onClick={prevMonth}>
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-                                    </button>
-                                    <span id="cal-month-label">{MONTHS[viewMonth]} {viewYear}</span>
-                                    <button type="button" className="cal-nav" onClick={nextMonth}>
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-                                    </button>
-                                </div>
-                                <div id="cal-grid">
-                                    {DAYS.map(d => (
-                                        <div key={d} className="cal-day-name">{d}</div>
-                                    ))}
-                                    {cells.map((date, i) => (
-                                        <div
-                                            key={i}
-                                            className={[
-                                                'cal-day',
-                                                !date ? 'cal-empty' : '',
-                                                date && isSameDay(date, selected) ? 'cal-selected' : '',
-                                                date && isSameDay(date, today) ? 'cal-today' : '',
-                                            ].join(' ')}
-                                            onClick={() => date && selectDay(date)}
-                                        >
-                                            {date ? date.getDate() : ''}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                    <button id="create-date-clear" type="button" onClick={() => navigate(-1)} title="Zpět">
+                {/* Header — název + zavřít (stejná akce jako dřívější "Zpět") */}
+                <div id="create-header">
+                    <h1 id="create-heading">Vytvořit akci</h1>
+                    <button id="create-close-btn" type="button" onClick={() => navigate(-1)} title="Zpět" aria-label="Zavřít">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                         </svg>
                     </button>
                 </div>
 
-                {/* Popis textarea */}
-                <textarea className="create-input" id="create-desc" placeholder="Popis" value={description} onChange={e => setDescription(e.target.value)} />
+                <div id="create-body">
 
-                {/* URL */}
-                <input className="create-input" type="url" placeholder="URL" value={url} onChange={e => setUrl(e.target.value)} />
-
-                {/* Kategorie + Název lokace */}
-                <div className="create-two-col">
-                    <div id="create-category-wrapper">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="6 9 12 15 18 9"/>
-                        </svg>
-                        <select id="create-category" value={category} onChange={e => setCategory(e.target.value)}>
-                            <option value="">Kategorie</option>
-                            <option>Kultura</option>
-                            <option>Sport</option>
-                            <option>Gastro</option>
-                            <option>TOP akce</option>
-                        </select>
+                    {/* Nadpis */}
+                    <div className="create-field">
+                        <label className="create-label" htmlFor="f-title">Nadpis</label>
+                        <input id="f-title" className="ac-input" type="text" placeholder="Název akce" value={title} onChange={e => setTitle(e.target.value)} />
                     </div>
-                    <input className="create-input" type="text" placeholder="Název lokace" value={locationName} onChange={e => setLocationName(e.target.value)} />
-                </div>
 
-                {/* Image button + Adresa */}
-                <div className="create-two-col">
-                    <label id="create-img-icon-btn" title="Přidat obrázek">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2"/>
-                            <circle cx="8.5" cy="8.5" r="1.5"/>
-                            <polyline points="21 15 16 10 5 21"/>
-                        </svg>
-                        <input type="file" accept="image/*" hidden />
-                    </label>
-                    <div id="create-address-wrapper" ref={addressRef}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/>
-                            <circle cx="12" cy="10" r="3"/>
-                        </svg>
-                        <input
-                            className="create-input"
-                            type="text"
-                            placeholder="Adresa"
-                            value={address}
-                            onChange={e => setAddress(e.target.value)}
-                            onKeyDown={e => e.key === 'Escape' && setShowSuggestions(false)}
-                            autoComplete="off"
-                        />
-                        {showSuggestions && (
-                            <ul id="address-suggestions">
-                                {suggestions.map((item, i) => (
-                                    <li
-                                        key={i}
-                                        className="address-suggestion"
-                                        onMouseDown={() => selectSuggestion(item)}
-                                    >
-                                        {item.display_name}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </div>
-                </div>
+                    {/* Datum + Kategorie */}
+                    <div className="create-row-2">
+                        <div className="create-field">
+                            <label className="create-label">Datum</label>
+                            <div id="ac-date-group" ref={calRef}>
+                                <input
+                                    id="ac-date-display"
+                                    className="ac-input ac-input--plain"
+                                    type="text"
+                                    value={inputVal}
+                                    readOnly
+                                    placeholder="Vyber…"
+                                    onClick={openCalendar}
+                                />
+                                <button id="ac-cal-btn" type="button" onClick={openCalendar} title="Vybrat datum" aria-label="Vybrat datum">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                        <line x1="16" y1="2" x2="16" y2="6" />
+                                        <line x1="8" y1="2" x2="8" y2="6" />
+                                        <line x1="3" y1="10" x2="21" y2="10" />
+                                    </svg>
+                                </button>
 
-                {/* Map preview */}
-                {(geocoding || mapSrc) && (
-                    <div id="map-preview">
-                        {geocoding
-                            ? <div id="map-loading">Hledám polohu…</div>
-                            : <iframe
-                                src={mapSrc}
-                                title="Náhled mapy"
-                                width="100%"
-                                height="220"
-                                frameBorder="0"
-                                loading="lazy"
-                            />
-                        }
-                    </div>
-                )}
+                                {showCal && (
+                                    <div id="ac-cal-popup">
+                                        <div id="ac-cal-header">
+                                            <button type="button" className="ac-cal-nav" onClick={prevMonth}>
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6" /></svg>
+                                            </button>
+                                            <span id="ac-cal-month-label">{MONTHS[viewMonth]} {viewYear}</span>
+                                            <button type="button" className="ac-cal-nav" onClick={nextMonth}>
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+                                            </button>
+                                        </div>
+                                        <div id="ac-cal-grid">
+                                            {DAYS.map(d => (
+                                                <div key={d} className="ac-cal-day-name">{d}</div>
+                                            ))}
+                                            {cells.map((date, i) => (
+                                                <div
+                                                    key={i}
+                                                    className={[
+                                                        'ac-cal-day',
+                                                        !date ? 'ac-cal-empty' : '',
+                                                        date && isSameDay(date, selected) ? 'ac-cal-selected' : '',
+                                                        date && isSameDay(date, today) ? 'ac-cal-today' : '',
+                                                    ].join(' ')}
+                                                    onClick={() => date && selectDay(date)}
+                                                >
+                                                    {date ? date.getDate() : ''}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
 
-                {/* Image upload boxes */}
-                <div id="create-images-row">
-                    {images.map((img, i) => (
-                        <label key={i} className="create-img-box">
-                            {img
-                                ? <img src={img} alt="" />
-                                : <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round">
-                                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                        <div className="create-field">
+                            <label className="create-label" htmlFor="f-category">Kategorie</label>
+                            <div className="create-select-wrapper">
+                                <select id="f-category" value={category} onChange={e => setCategory(e.target.value)}>
+                                    <option value="">Vyber…</option>
+                                    <option>Kultura</option>
+                                    <option>Sport</option>
+                                    <option>Gastro</option>
+                                    <option>TOP akce</option>
+                                </select>
+                                <svg className="create-select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="6 9 12 15 18 9" />
                                 </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Popis */}
+                    <div className="create-field">
+                        <label className="create-label" htmlFor="f-desc">Popis</label>
+                        <textarea id="f-desc" className="ac-input" placeholder="Krátký popis akce…" value={description} onChange={e => setDescription(e.target.value)} />
+                    </div>
+
+                    {/* Název lokace + Adresa */}
+                    <div className="create-row-2">
+                        <div className="create-field">
+                            <label className="create-label" htmlFor="f-location">Název lokace</label>
+                            <input id="f-location" className="ac-input" type="text" placeholder="Např. Plochá dráha Plzeň" value={locationName} onChange={e => setLocationName(e.target.value)} />
+                        </div>
+
+                        <div className="create-field" ref={addressRef}>
+                            <label className="create-label" htmlFor="f-address">Adresa</label>
+                            <div className="create-input-icon-wrapper">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" />
+                                    <circle cx="12" cy="10" r="3" />
+                                </svg>
+                                <input
+                                    id="f-address"
+                                    className="ac-input ac-input--plain"
+                                    type="text"
+                                    placeholder="Ulice a číslo, město"
+                                    value={address}
+                                    onChange={e => setAddress(e.target.value)}
+                                    onKeyDown={e => e.key === 'Escape' && setShowSuggestions(false)}
+                                    autoComplete="off"
+                                />
+                            </div>
+                            {showSuggestions && (
+                                <ul id="ac-address-suggestions">
+                                    {suggestions.map((item, i) => (
+                                        <li
+                                            key={i}
+                                            className="ac-address-suggestion"
+                                            onMouseDown={() => selectSuggestion(item)}
+                                        >
+                                            {item.display_name}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Náhled mapy */}
+                    {(geocoding || mapSrc) && (
+                        <div id="ac-map-preview">
+                            {geocoding
+                                ? <div id="ac-map-loading">Hledám polohu…</div>
+                                : <iframe
+                                    src={mapSrc}
+                                    title="Náhled mapy"
+                                    width="100%"
+                                    height="200"
+                                    frameBorder="0"
+                                    loading="lazy"
+                                />
                             }
-                            <input type="file" accept="image/*" hidden onChange={e => handleImage(i, e)} />
-                        </label>
-                    ))}
+                        </div>
+                    )}
+
+                    {/* Obrázky */}
+                    <div className="create-field">
+                        <label className="create-label">Obrázky</label>
+                        <div id="ac-images-row">
+                            {['Hlavní obrázek', 'Další obrázek'].map((label, i) => (
+                                <label key={i} className="create-img-dropzone">
+                                    {images[i]
+                                        ? <img src={images[i]} alt="" />
+                                        : (
+                                            <>
+                                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                                                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                                                    <circle cx="8.5" cy="8.5" r="1.5" />
+                                                    <polyline points="21 15 16 10 5 21" />
+                                                </svg>
+                                                <span className="dropzone-label">{label}</span>
+                                                <span className="dropzone-sub">or <u>browse files</u></span>
+                                            </>
+                                        )
+                                    }
+                                    <input type="file" accept="image/*" hidden onChange={e => handleImage(i, e)} />
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Oficiální URL */}
+                    <div className="create-field">
+                        <label className="create-label" htmlFor="f-url">Oficiální URL</label>
+                        <div className="create-input-icon-wrapper">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="2" y1="12" x2="22" y2="12" />
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                            </svg>
+                            <input id="f-url" className="ac-input ac-input--plain" type="url" placeholder="https://…" value={url} onChange={e => setUrl(e.target.value)} />
+                        </div>
+                    </div>
+
                 </div>
 
-                {/* Action buttons */}
-                <div id="create-actions">
-                    <button className="create-action-btn" onClick={() => navigate('/events')}>Zobrazit</button>
-                    <button className="create-action-btn" id="save-btn" onClick={handleSave} disabled={saving}>
+                {/* Footer akce */}
+                <div id="create-footer">
+                    <button id="create-preview-btn" type="button" onClick={() => navigate('/events')}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        Zobrazit
+                    </button>
+                    <button id="create-save-btn" type="button" onClick={handleSave} disabled={saving}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
                         {saving ? 'Ukládám…' : 'Uložit'}
                     </button>
                 </div>
