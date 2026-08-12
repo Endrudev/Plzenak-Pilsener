@@ -3,8 +3,6 @@ import EventCard from '../../components/EventCard/EventCard.jsx'
 import { getEvents } from '../../lib/eventsApi.js'
 import './Events.css'
 
-const PER_PAGE = 5
-
 const CATEGORIES = [
   { name: 'Kultura', icon: '🎭' },
   { name: 'Sport', icon: '⚽' },
@@ -22,9 +20,12 @@ const QUICK_FILTERS = [
 ]
 
 export default function Events() {
+  const PER_PAGE = 5
+
   const [allEvents, setAllEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     getEvents()
@@ -33,9 +34,13 @@ export default function Events() {
       .finally(() => setLoading(false))
   }, [])
 
-  const totalPages = Math.max(1, Math.ceil(allEvents.length / PER_PAGE))
+  const filteredEvents = allEvents.filter(e => 
+    e.name.toLowerCase().includes(search.toLowerCase())
+  )
+
+  const totalPages = Math.max(1, Math.ceil(filteredEvents.length / PER_PAGE))
   const currentPage = Math.min(page, totalPages)
-  const visibleEvents = allEvents.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE)
+  const visibleEvents = filteredEvents.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE)
 
   function getPaginationItems() {
     if (totalPages <= 6) return Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -51,7 +56,13 @@ export default function Events() {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
-          <input type="text" placeholder="Hledat koncerty…" aria-label="Hledat akce" />
+          <input 
+            type="text" 
+            placeholder="Hledat koncerty…" 
+            aria-label="Hledat akce"
+            value={search}
+            onChange={e => {setSearch(e.target.value); setPage(1)}}
+          />
         </div>
 
         <div id="events-filter-row">
@@ -146,14 +157,16 @@ export default function Events() {
       <div id="events-section-header">
         <h2>Všechny akce</h2>
         {!loading && (
-          <span id="events-count">Zobrazeno {visibleEvents.length} z {allEvents.length} akcí</span>
+          <span id="events-count">Zobrazeno {visibleEvents.length} z {filteredEvents.length} akcí</span>
         )}
       </div>
 
       <div id="events-list">
         {loading
           ? <p id="events-loading">Načítání…</p>
-          : visibleEvents.map(event => <EventCard key={event.id} event={event} />)
+          : filteredEvents.length === 0
+            ? <p id="events-loading">Žádné akce neodpovídají hledání.</p>
+            : visibleEvents.map(event => <EventCard key={event.id} event={event} />)
         }
       </div>
 
