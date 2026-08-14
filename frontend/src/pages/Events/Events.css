@@ -158,6 +158,25 @@
   background: var(--surface-sunk);
 }
 
+.events-pill--active {
+  background: var(--amber-cta);
+  border-color: var(--amber-cta);
+  color: #fff;
+}
+
+.events-pill--active:hover {
+  background: var(--amber-cta);
+}
+
+.events-pill:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.events-pill:disabled:hover {
+  background: var(--surface);
+}
+
 #events-filter-group-row {
   display: flex;
   flex-direction: column;

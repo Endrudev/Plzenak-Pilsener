@@ -5,12 +5,48 @@ import { getEvents } from '../../lib/eventsApi.js'
 import './Home.css'
 
 const CATEGORIES = [
-  { name: 'Gastro', icon: '🍺' },
-  { name: 'Kultura', icon: '🎭' },
-  { name: 'Hudba', icon: '🎵' },
-  { name: 'Sport', icon: '⚽' },
-  { name: 'Památky', icon: '⛪' },
-  { name: 'Pro děti', icon: '🙂' },
+  {
+    name: 'Gastro', icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5.5 8.5h8.5V19a2 2 0 0 1-2 2H7.5a2 2 0 0 1-2-2z" /><path d="M14 11h2.5a2.75 2.75 0 0 1 0 5.5H14" /><path d="M5.5 8.5a2.2 2.2 0 0 1 2-2.2 2.6 2.6 0 0 1 4.5-1.5A2.3 2.3 0 0 1 14 8.5" />
+      </svg>
+    )
+  },
+  {
+    name: 'Kultura', icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 5h7v5a3.5 3.5 0 0 1-7 0z" /><circle cx="6.2" cy="7.2" r=".6" fill="currentColor" stroke="none" /><circle cx="8.8" cy="7.2" r=".6" fill="currentColor" stroke="none" /><path d="M13 9h7v5a3.5 3.5 0 0 1-7 0z" /><circle cx="15.2" cy="11.2" r=".6" fill="currentColor" stroke="none" /><circle cx="17.8" cy="11.2" r=".6" fill="currentColor" stroke="none" />
+      </svg>
+    )
+  },
+  {
+    name: 'Hudba', icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 18V6.2l10-2V16" /><circle cx="6.8" cy="18" r="2.2" /><circle cx="16.8" cy="16" r="2.2" />
+      </svg>
+    )
+  },
+  {
+    name: 'Sport', icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="8.5" /><path d="m12 8.8 3.04 2.21-1.16 3.58h-3.76l-1.16-3.58z" /><path d="M12 8.8V3.6M15.04 11.01 19.9 9.4M13.88 14.59 17 18.7M10.12 14.59 7 18.7M8.96 11.01 4.1 9.4" />
+      </svg>
+    )
+  },
+  {
+    name: 'Památky', icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m3.5 9.5 8.5-5.5 8.5 5.5" /><path d="M3.5 19.5h17M4.8 9.5v10M9.6 9.5v10M14.4 9.5v10M19.2 9.5v10" />
+      </svg>
+    )
+  },
+  {
+    name: 'Pro děti', icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 15c2.8 0 5-2.5 5-5.6S14.8 4 12 4 7 6.4 7 9.4 9.2 15 12 15Z" /><path d="m11 15.2 1 1.3 1-1.3" /><path d="M12 16.5c0 1.2-1.5 1.2-1.5 2.4s1.5 1.2 1.5 2.4" />
+      </svg>
+    )
+  },
 ]
 
 export default function Home() {
@@ -42,12 +78,33 @@ export default function Home() {
             <div id="hero-content">
               <div id="hero-card-badges">
                 {heroEvent.tags?.[0] && <span className="hero-badge hero-badge--soft">{heroEvent.tags[0]}</span>}
-                {heroEvent.url && <span className="hero-badge hero-badge--ticket">🎟 Koupit vstupenku</span>}
+                {heroEvent.url && (
+                  <span className="hero-badge hero-badge--ticket">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h13A1.5 1.5 0 0 1 20 8.5v1.6a2 2 0 0 0 0 3.8v1.6A1.5 1.5 0 0 1 18.5 17h-13A1.5 1.5 0 0 1 4 15.5v-1.6a2 2 0 0 0 0-3.8z" /><path d="M14 7v10" strokeDasharray="2 2.4" />
+                    </svg>
+                    Koupit vstupenku
+                  </span>
+                )}
               </div>
               <h1 id="hero-title">{heroEvent.name}</h1>
               <div id="hero-meta">
-                {heroEvent.date && <span>📅 {heroEvent.date}</span>}
-                {heroEvent.location && <span>📍 {heroEvent.location}</span>}
+                {heroEvent.date && (
+                  <span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="4" y="4.5" width="16" height="16.5" rx="2" /><path d="M4 9.5h16M8.5 3v3M15.5 3v3" />
+                    </svg>
+                    {heroEvent.date}
+                  </span>
+                )}
+                {heroEvent.location && (
+                  <span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" /><circle cx="12" cy="10" r="2.5" />
+                    </svg>
+                    {heroEvent.location}
+                  </span>
+                )}
               </div>
               <div id="hero-cta-row">
                 <Link to={`/events/${heroEvent.id}`} id="hero-cta">Zobrazit →</Link>
@@ -155,8 +212,22 @@ export default function Home() {
                   <h3>{event.name}</h3>
                   {event.description?.[0] && <p>{event.description[0]}</p>}
                   <div className="event-meta">
-                    {event.date && <span>📅 {event.date}</span>}
-                    {event.location && <span>📍 {event.location}</span>}
+                    {event.date && (
+                      <span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="4" y="4.5" width="16" height="16.5" rx="2" /><path d="M4 9.5h16M8.5 3v3M15.5 3v3" />
+                        </svg>
+                        {event.date}
+                      </span>
+                    )}
+                    {event.location && (
+                      <span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" /><circle cx="12" cy="10" r="2.5" />
+                        </svg>
+                        {event.location}
+                      </span>
+                    )}
                   </div>
                   <span className="event-btn">Zobrazit →</span>
                 </div>
@@ -180,7 +251,11 @@ export default function Home() {
       {/* Promo bannery — TODO: 3D ilustrace zatím chybí, čeká se na assety */}
       <section id="promo-section">
         <div className="promo-card">
-          <span className="promo-icon">🍺</span>
+          <span className="promo-icon" style={{ color: 'var(--category-gastro)' }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5.5 8.5h8.5V19a2 2 0 0 1-2 2H7.5a2 2 0 0 1-2-2z" /><path d="M14 11h2.5a2.75 2.75 0 0 1 0 5.5H14" /><path d="M5.5 8.5a2.2 2.2 0 0 1 2-2.2 2.6 2.6 0 0 1 4.5-1.5A2.3 2.3 0 0 1 14 8.5" />
+            </svg>
+          </span>
           <div className="promo-text">
             <span className="promo-eyebrow">Gastro v Plzni</span>
             <h3>Objevuj gastro akce</h3>
@@ -189,7 +264,11 @@ export default function Home() {
           <Link to="/events?kategorie=Gastro" className="promo-btn">Zobrazit gastro →</Link>
         </div>
         <div className="promo-card">
-          <span className="promo-icon">⛪</span>
+          <span className="promo-icon" style={{ color: 'var(--category-pamatky)' }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m3.5 9.5 8.5-5.5 8.5 5.5" /><path d="M3.5 19.5h17M4.8 9.5v10M9.6 9.5v10M14.4 9.5v10M19.2 9.5v10" />
+            </svg>
+          </span>
           <div className="promo-text">
             <span className="promo-eyebrow">Památky v Plzni</span>
             <h3>Projdi si památky města</h3>

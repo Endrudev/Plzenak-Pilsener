@@ -46,15 +46,52 @@ function mapEventReverse(event) {
 
 router.get('/', async(req, res) => {
     try{
+        const { q, kategorie, misto, filtr } = req.query
+        const conditions = []
+        const values = []
+        if (q) {
+        values.push(`%${q}%`)
+        conditions.push(`name ILIKE $${values.length}`)
+        }
+        if (kategorie) {
+        values.push(kategorie)
+        conditions.push(`EXISTS (SELECT 1 FROM unnest(tags) t WHERE t ILIKE $${values.length})`)
+        }
+        if (misto) {
+        values.push(misto)
+        conditions.push(`location = $${values.length}`)
+        }
+        if (filtr === 'top-akce') {
+        values.push('TOP akce')
+        conditions.push(`EXISTS (SELECT 1 FROM unnest(tags) t WHERE t ILIKE $${values.length})`)
+        }
+        if (filtr === 'dnes') {
+        conditions.push(`TO_DATE(date, 'DD.MM.YYYY') = CURRENT_DATE`)
+        }
+        if (filtr === 'tento-tyden') {
+        conditions.push(`TO_DATE(date, 'DD.MM.YYYY') BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'`)
+        }
+        const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
         let result = await query(`SELECT * FROM events
-            ORDER BY id;`)
+            ${whereClause}
+            ORDER BY id;`, values)
         result = result.rows.map(mapEvent)
         res.json(result)
     }catch(err) {
         console.error(err.message)
         res.status(500).json({error: 'Akce nelze načíst. Zkuste to znovu.'})
     }
-    })
+})
+
+router.get('/locations', async(req, res) => {
+    try{
+        const result = await query('SELECT DISTINCT location FROM events ORDER BY location;')
+        res.json(result.rows.map(row => row.location))
+    }catch(err){
+        console.error(err.message)
+        res.status(500).json({error: 'Lokace nelze načíst. Zkuste to znovu.'})
+    }
+})
 
 router.get('/:id', async(req, res) => {
     try{

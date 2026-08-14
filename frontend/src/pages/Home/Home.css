@@ -69,6 +69,9 @@
 }
 
 .hero-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-family: var(--font-sans);
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
@@ -103,6 +106,12 @@
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
   color: rgba(255, 255, 255, 0.92);
+}
+
+#hero-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 #hero-cta-row {
@@ -452,6 +461,12 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
+.top-card-body .event-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .top-card-body .event-btn {
   margin-top: 4px;
   color: var(--sun);
@@ -492,8 +507,8 @@
 }
 
 .promo-icon {
-  font-size: 40px;
-  line-height: 1;
+  display: flex;
+  flex-shrink: 0;
 }
 
 .promo-text {
@@ -585,7 +600,8 @@
 }
 
 .category-icon {
-  font-size: 22px;
+  display: flex;
+  color: #fff;
   align-self: flex-end;
   margin-bottom: auto;
 }

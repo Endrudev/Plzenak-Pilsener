@@ -1,5 +1,19 @@
-export async function getEvents(){
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events`)
+export async function getEvents(filter = {}){
+    const params = new URLSearchParams()
+    Object.entries(filter).forEach(([key, value]) => {
+        if (value) params.set(key, value)
+    })
+    const queryString = params.toString()
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events${queryString ? `?${queryString}` : ''}`)
+    const data = await response.json()
+    if (!response.ok){
+        throw new Error(data.error)
+    }
+    return data
+}
+
+export async function getEventLocations(){
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events/locations`)
     const data = await response.json()
     if (!response.ok){
         throw new Error(data.error)
