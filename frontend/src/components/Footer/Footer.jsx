@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import './Footer.css'
 
 export default function Footer() {
@@ -6,8 +7,8 @@ export default function Footer() {
             <div id="footer-inner">
                 <p id="footer-copy">© Plzeňák 2026</p>
                 <nav id="footer-links">
-                    <a href="#">Zásady ochrany osobních údajů</a>
-                    <a href="#">Podmínky užití</a>
+                    <Link to="/zasady-ochrany-osobnich-udaju">Zásady ochrany osobních údajů</Link>
+                    <Link to="/podminky-uziti">Podmínky užití</Link>
                     <button type="button" id="footer-cookie-btn">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="12" cy="12" r="10" />

@@ -8,6 +8,8 @@ import Admin from './pages/Admin/Admin.jsx'
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard.jsx'
 import AdminCreate from './pages/AdminCreate/AdminCreate.jsx'
 import AdminEdit from './pages/AdminEdit/AdminEdit.jsx'
+import Privacy from './pages/Privacy/Privacy.jsx'
+import Terms from './pages/Terms/Terms.jsx'
 import NotFound from './pages/NotFound/NotFound.jsx'
 
 function Layout() {
@@ -26,6 +28,8 @@ function Layout() {
                     <Route path="/admin/dashboard" element={<AdminDashboard />} />
                     <Route path="/admin/create" element={<AdminCreate />} />
                     <Route path="/admin/edit/:id" element={<AdminEdit />} />
+                    <Route path="/zasady-ochrany-osobnich-udaju" element={<Privacy />} />
+                    <Route path="/podminky-uziti" element={<Terms />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </main>
