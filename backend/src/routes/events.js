@@ -4,7 +4,7 @@ const {query} = require('../db/pool')
 const authMiddleware = require('../middleware/authMiddleware')
 const multer = require('multer')
 const upload = multer({ storage: multer.memoryStorage() })
-const {sendObject} = require('../lib/r2')
+const {sendObject, deleteObject} = require('../lib/r2')
 
 function mapEvent(event) {
     return {
@@ -165,6 +165,17 @@ router.delete('/:id', authMiddleware, async(req, res) =>{
         if(deleteResult.rows.length === 0){
             res.status(404).json({error: 'Neplatné id akce. Zkuste to znovu.'})
         }else{
+            const deletedEvent = deleteResult.rows[0]
+            const key = deletedEvent.image_key
+                || (deletedEvent.image_url ? deletedEvent.image_url.replace(`${process.env.R2_PUBLIC_URL}/`, '') : null) 
+            
+            if(key){
+                try{
+                    await deleteObject(key)
+                }catch(r2err){
+                    console.error('Nepodařilo se smazat obrázek z R2:', r2err.message)
+                }
+            }
             res.status(204).send()
         }
     }catch(err) {
@@ -180,10 +191,10 @@ router.post('/:id/image', authMiddleware, upload.single('image'), async (req, re
         const urlPath = `${process.env.R2_PUBLIC_URL}/${key}`
         const updateResult = await query(`
             UPDATE events
-            SET image_url = $1
-            WHERE id = $2
+            SET image_url = $1, image_key = $2
+            WHERE id = $3
             RETURNING *;
-            `, [urlPath, req.params.id])
+            `, [urlPath, key, req.params.id])
         if(updateResult.rows.length === 0){
             res.status(404).json({error: 'Neplatné id akce. Zkuste to znovu.'})
         }else{

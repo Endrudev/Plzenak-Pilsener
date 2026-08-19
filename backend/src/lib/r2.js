@@ -1,4 +1,4 @@
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
+const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3')
 
 const settings = {
     region: 'auto',
@@ -21,6 +21,15 @@ async function sendObject(key, buffer, contentType) {
     await client.send(objectData)
 }
 
+async function deleteObject(key){
+    const objectData = new DeleteObjectCommand({
+        Bucket: process.env.R2_BUCKET_NAME,
+        Key: key,
+    })
+    await client.send(objectData)
+}
+
 module.exports = {
-    sendObject
+    sendObject,
+    deleteObject
 }
