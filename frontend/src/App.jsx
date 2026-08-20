@@ -11,14 +11,34 @@ import AdminEdit from './pages/AdminEdit/AdminEdit.jsx'
 import Privacy from './pages/Privacy/Privacy.jsx'
 import Terms from './pages/Terms/Terms.jsx'
 import NotFound from './pages/NotFound/NotFound.jsx'
+import { ConsentProvider, useConsent } from './lib/ConsentContext.jsx'
+import CookieBanner from './components/CookieBanner/CookieBanner.jsx'
+import CookieSettings from './components/CookieSettings/CookieSettings.jsx'
+
 
 function Layout() {
     const { pathname } = useLocation()
     const isAdmin = pathname.startsWith('/admin')
+    const { consent, acceptAll, rejectAll, save, openSettings, closeSettings, isSettingsOpen } = useConsent()
 
     return (
         <>
             {!isAdmin && <Header />}
+            {!isAdmin && consent === null && (
+                <CookieBanner
+                    onAccept={acceptAll}
+                    onReject={rejectAll}
+                    onOpenSettings={openSettings}
+                />
+            )}
+            {!isAdmin && isSettingsOpen && (
+                <CookieSettings
+                    initialMaps={consent?.maps ?? false}
+                    onSave={save}
+                    onRejectAll={rejectAll}
+                    onClose={closeSettings}
+                />
+            )}
             <main>
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -41,7 +61,9 @@ function Layout() {
 function App() {
     return (
         <BrowserRouter>
-            <Layout />
+            <ConsentProvider>
+                <Layout/>
+            </ConsentProvider>
         </BrowserRouter>
     )
 }

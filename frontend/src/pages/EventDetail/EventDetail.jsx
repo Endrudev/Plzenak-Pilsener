@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getEventById } from '../../lib/eventsApi.js'
+import { useConsent } from '../../lib/ConsentContext.jsx'
+import MapConsent from '../../components/ConsentGate/MapConsent.jsx'
 import './EventDetail.css'
 
 export default function EventDetail() {
     const { id } = useParams()
     const navigate = useNavigate()
     const [event, setEvent] = useState(null)
+    const { consent, acceptAll } = useConsent()
     const [loading, setLoading] = useState(true)
+    const [mapLoadedOnce, setMapLoadedOnce] = useState(false)
 
     useEffect(() => {
+        setMapLoadedOnce(false)
         getEventById(id)
             .then(data => setEvent(data))
             .catch(() => setEvent(null))
@@ -108,21 +113,16 @@ export default function EventDetail() {
                     {event.mapSrc && (
                         <section className="detail-section">
                             <h2>Kde to je</h2>
-                            {/* TODO: vizuální placeholder — reálné odložené načtení mapy až po souhlasu (cookies) čeká na stavovou logiku */}
-                            <div id="detail-map-placeholder">
-                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M9 18l-5 2V6l5-2 6 2 5-2v14l-5 2-6-2z" /><line x1="9" y1="4" x2="9" y2="18" /><line x1="15" y1="6" x2="15" y2="20" />
-                                    <line x1="2" y1="2" x2="22" y2="22" />
-                                </svg>
-                                <p id="detail-map-title">Mapa se nenačetla</p>
-                                <p id="detail-map-text">Mapu poskytuje Google Maps, které ukládají cookies třetích stran.<br />Načteme ji, až nám to dovolíš.</p>
-                                <button type="button" id="detail-map-btn">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
-                                    </svg>
-                                    Zobrazit mapu (načíst Google Maps)
-                                </button>
-                            </div>
+                            {/* TODO: podmíněné vykreslení reálného iframu vs. MapConsent podle souhlasu (ConsentContext) čeká na napojení stavové logiky */}
+                            {consent?.maps || mapLoadedOnce ? (
+                                <iframe id="detail-map-frame" src={event.mapSrc} title={`Mapa – ${event.location}`} loading="lazy" />
+                            ) : (
+                                <MapConsent
+                                    variant="detail"
+                                    onLoadOnce={() => setMapLoadedOnce(true)}
+                                    onAlwaysLoad={acceptAll}
+                                />
+                            )}
                             {event.location && (
                                 <p id="detail-location-line">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
