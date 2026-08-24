@@ -113,7 +113,6 @@ export default function EventDetail() {
                     {event.mapSrc && (
                         <section className="detail-section">
                             <h2>Kde to je</h2>
-                            {/* TODO: podmíněné vykreslení reálného iframu vs. MapConsent podle souhlasu (ConsentContext) čeká na napojení stavové logiky */}
                             {consent?.maps || mapLoadedOnce ? (
                                 <iframe id="detail-map-frame" src={event.mapSrc} title={`Mapa – ${event.location}`} loading="lazy" />
                             ) : (
