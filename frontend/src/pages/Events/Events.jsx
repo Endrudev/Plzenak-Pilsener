@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import { getEvents, getEventLocations } from '../../lib/eventsApi.js'
 import { useSearchParams } from 'react-router-dom'
+import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
 import './Events.css'
 
 const CATEGORIES = [
@@ -148,30 +149,28 @@ export default function Events() {
         </div>
 
         <div id="events-filter-row">
-          <div className="events-filter-select">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />
-            </svg>
-            <select value={kategorie} onChange={e => updateFilter('kategorie', e.target.value)}>
-              <option value="" disabled>Kategorie</option>
-              {CATEGORIES.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
-            </select>
-            <svg className="events-filter-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </div>
-          <div className="events-filter-select">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
-            </svg>
-            <select value={misto} onChange={e => updateFilter('misto', e.target.value)}>
-              <option value="">Místo</option>
-              {locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
-            </select>
-            <svg className="events-filter-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </div>
+          <FilterSelect
+            placeholder="Kategorie"
+            value={kategorie}
+            onChange={v => updateFilter('kategorie', v)}
+            options={CATEGORIES.map(c => ({ value: c.name, label: c.name, icon: c.icon }))}
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />
+              </svg>
+            }
+          />
+          <FilterSelect
+            placeholder="Místo"
+            value={misto}
+            onChange={v => updateFilter('misto', v)}
+            options={locations.map(loc => ({ value: loc, label: loc }))}
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+              </svg>
+            }
+          />
           <div className="events-filter-select">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />

@@ -339,6 +339,11 @@
     flex: 1;
   }
 
+  /* Vlastní dropdown (FilterSelect) se v řádku dělí o místo stejně jako selecty */
+  #events-filter-row .filter-dropdown {
+    flex: 1;
+  }
+
   #events-search-btn {
     flex-shrink: 0;
     padding: 0 var(--space-5);
