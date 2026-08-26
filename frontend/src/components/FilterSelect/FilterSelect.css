@@ -1,0 +1,149 @@
+/* Vlastní dropdown pro filtry — viz Styling a komponenty (Formuláře, Popover) */
+
+.filter-dropdown {
+    position: relative;
+    display: inline-flex;
+    /* Šířka roste podle obsahu, ale nikdy neuteče mimo řádek filtru.
+       Stránka si ji může přebít (na mobilu typicky width: 100%). */
+    min-width: 150px;
+    max-width: 100%;
+}
+
+/* ---------- spouštěč ---------- */
+
+.filter-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+    padding: 0 var(--space-3) 0 var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-el);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color var(--dur-fast) var(--ease-standard),
+                box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+.filter-dropdown-trigger:hover {
+    border-color: var(--ink-3);
+}
+
+.filter-dropdown-trigger:focus-visible {
+    outline: none;
+    border-color: var(--amber-cta);
+    box-shadow: var(--focus-shadow);
+}
+
+.filter-dropdown--open .filter-dropdown-trigger {
+    border-color: var(--amber-cta);
+}
+
+.filter-dropdown-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: var(--ink-3);
+}
+
+/* Text bere zbylé místo, takže šipka drží u pravého okraje bez ohledu na délku */
+.filter-dropdown-label {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filter-dropdown-label--placeholder {
+    color: var(--ink-3);
+}
+
+.filter-dropdown-chevron {
+    flex-shrink: 0;
+    color: var(--ink-3);
+    transition: transform var(--dur-base) var(--ease-standard);
+}
+
+.filter-dropdown--open .filter-dropdown-chevron {
+    transform: rotate(180deg);
+}
+
+/* ---------- popover ---------- */
+
+.filter-dropdown-popover {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: 0;
+    z-index: 30;
+    /* nikdy užší než spouštěč, ale delší položky ho smí roztáhnout */
+    min-width: 100%;
+    max-width: 280px;
+    max-height: 320px;
+    overflow-y: auto;
+    margin: 0;
+    padding: var(--space-2);
+    list-style: none;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    box-shadow: var(--shadow-pop);
+}
+
+.filter-dropdown-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 40px;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-body);
+    color: var(--ink);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* Pevná stopa, aby se text zarovnal i u položek bez ikony */
+.filter-dropdown-option-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    color: var(--ink-3);
+}
+
+.filter-dropdown-option-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Nasvícení myší i klávesnicí je stejné — uživatel má jen jedno "kde jsem" */
+.filter-dropdown-option--active {
+    background: var(--surface-sunk);
+}
+
+.filter-dropdown-option--selected {
+    background: var(--surface-sunk);
+    font-weight: var(--fw-medium);
+}
+
+.filter-dropdown-check {
+    flex-shrink: 0;
+    color: var(--amber-cta);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .filter-dropdown-trigger,
+    .filter-dropdown-chevron {
+        transition: none;
+    }
+}
