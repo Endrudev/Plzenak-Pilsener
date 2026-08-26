@@ -105,11 +105,19 @@
   font-weight: var(--fw-semibold);
   font-size: var(--fs-body);
   cursor: pointer;
-  transition: filter var(--dur-fast) var(--ease-standard);
+  /* 2.6 Button hover */
+  transition: background-color var(--dur-fast) var(--ease-standard),
+              transform var(--dur-fast) var(--ease-standard);
 }
 
-#events-search-btn:hover {
-  filter: brightness(1.08);
+#events-search-btn:hover,
+#events-search-btn:focus-visible {
+  background: var(--amber-cta-hover);
+}
+
+/* 2.8 Tap */
+#events-search-btn:active {
+  transform: scale(var(--scale-tap));
 }
 
 .events-filter-divider {
@@ -151,11 +159,19 @@
   font-weight: var(--fw-medium);
   color: var(--ink);
   cursor: pointer;
-  transition: background var(--dur-fast) var(--ease-standard);
+  transition: background var(--dur-fast) var(--ease-standard),
+              transform var(--dur-fast) var(--ease-standard);
+  /* 2.14 Chip — nabíhá se scale 0.9 → 1 */
+  animation: chip-in var(--dur-fast) var(--ease-standard);
 }
 
 .events-pill:hover {
   background: var(--surface-sunk);
+}
+
+/* 2.8 Tap */
+.events-pill:active {
+  transform: scale(var(--scale-tap));
 }
 
 .events-pill--active {

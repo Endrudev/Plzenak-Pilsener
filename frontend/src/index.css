@@ -94,12 +94,117 @@
   --shadow-inset:      inset 0 0 0 1px #DAD0BF;
   --focus-shadow:      0 0 0 3px rgba(232, 114, 12, 0.40);
 
-  /* ---------- MOTION ---------- */
-  --dur-fast: 120ms;
-  --dur-base: 180ms;
-  --dur-slow: 260ms;
-  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
+  /* ---------- MOTION ----------
+     Sada B z motion specu (návrh Plzeňák). Nahradila původní konzervativnější
+     hodnoty: base 180→220ms, slow 260→400ms, jiná křivka. Původní křivka
+     zůstává jako --ease-legacy, protože ji spec vyhrazuje pro dvě místa
+     (crossfade hero karuselu a šířku teček). --ease-out byl nepoužívaný,
+     v sadě B není a byl odstraněn. */
+
+  /* trvání */
+  --dur-fast:      120ms;
+  --dur-base:      220ms;
+  --dur-slow:      400ms;
+  --dur-crossfade: 800ms;   /* hero karusel, prolnutí fotek */
+  --dur-dot:       260ms;   /* šířka aktivní tečky karuselu */
+
+  /* easing */
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-legacy:   cubic-bezier(0.2, 0, 0, 1);   /* jen crossfade + tečky */
+  --ease-reduced:  linear;                       /* prefers-reduced-motion */
+
+  /* delay a stagger — spotřebuje až JS vrstva (fade-up při scrollu) */
+  --stagger-grid: 60ms;
+  --stagger-hero: 80ms;
+  --delay-mount:  40ms;
+  --stagger-max:  8;        /* dál už jen fade bez posunu */
+
+  /* smyčky */
+  --loop-pulse:        2400ms;
+  --loop-pulse-delay:  1600ms;
+  --loop-shimmer:      1400ms;
+  --carousel-interval: 5500ms;
+
+  /* geometrie transformů */
+  --y-fade-up:        16px;   /* karty, sekce */
+  --y-fade-up-hero:   12px;   /* hero prvky */
+  --lift-card:        -4px;
+  --scale-tile:       1.02;   /* hover dlaždice kategorie */
+  --scale-tap:        0.98;
+  --scale-modal:      0.96;
+  --scale-chip:       0.9;
+  --scale-pulse:      1.04;
+  --opacity-pulse:    0.88;
+  --parallax-factor:  0.18;   /* × výška hero → max 40px */
+  --hero-photo-scale: 1.06;
+  --hero-scrim:       0.50;
+
+  /* prahy scrollu — kondenzace filtrační lišty (hystereze, ať lišta neblikne) */
+  --dense-on:  200px;
+  --dense-off: 160px;
+}
+
+/* ---------- MOTION · globální pravidla ----------
+   Závazná pravidla ze specu:
+   1) Animuje se jen transform a opacity. Povolené výjimky jsou levné CSS
+      transitiony: box-shadow na hoveru, background u tlačítka,
+      background-position u shimmeru a width u tečky karuselu.
+   2) Naráz běží nejvýš jedna nepřetržitá smyčka (pulz NEBO shimmer).
+   3) prefers-reduced-motion vypíná posuny, scale, parallax i smyčky.  */
+
+/* Pulz trvá 2400ms a pak 1600ms nic — dohromady cyklus 4000ms,
+   takže vlastní pulz zabírá prvních 60 % a zbytek je klid. */
+@keyframes pulse-today {
+  0%           { transform: scale(1);                  opacity: 1; }
+  30%          { transform: scale(var(--scale-pulse)); opacity: var(--opacity-pulse); }
+  60%, 100%    { transform: scale(1);                  opacity: 1; }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position:  200% 0; }
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(var(--scale-modal)); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes chip-in {
+  from { opacity: 0; transform: scale(var(--scale-chip)); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes popover-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Skeleton pro načítací stavy — druhá povolená výjimka (background-position).
+   Smyčka běží jen když neběží pulz „Dnes“, viz pravidlo 2 výše. */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-sunk) 25%,
+    var(--skeleton-hi) 50%,
+    var(--surface-sunk) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer var(--loop-shimmer) var(--ease-standard) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: var(--dur-fast) !important;
+    transition-timing-function: var(--ease-reduced) !important;
+  }
 }
 
 html, body {

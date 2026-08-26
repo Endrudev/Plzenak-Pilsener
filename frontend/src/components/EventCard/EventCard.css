@@ -5,12 +5,20 @@
     border-radius: var(--radius-card);
     overflow: hidden;
     box-shadow: var(--shadow-card);
-    transition: box-shadow var(--dur-base) var(--ease-standard), transform var(--dur-base) var(--ease-standard);
+    /* 2.5 Hover lift karty — fast, box-shadow je povolená CSS výjimka */
+    transition: box-shadow var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-.event-card:hover {
+.event-card:hover,
+.event-card:focus-within {
     box-shadow: var(--shadow-card-hover);
-    transform: translateY(-2px);
+    transform: translateY(var(--lift-card));
+}
+
+/* 2.8 Tap — stisk celé karty */
+.event-card:active {
+    transform: scale(var(--scale-tap));
 }
 
 .event-image {
@@ -44,9 +52,14 @@
     white-space: nowrap;
 }
 
+/* 2.15 Pulz „Dnes“ — ambientní smyčka.
+   Perioda 2400 ms, mezi cykly prodleva 1600 ms; řešeno delší animací
+   s klidovou částí, ať se nemusí řetězit dvě animace. */
 .badge-today {
     background-color: var(--green-today);
     color: var(--green-today-ink);
+    animation: pulse-today calc(var(--loop-pulse) + var(--loop-pulse-delay))
+               var(--ease-standard) infinite;
 }
 
 .badge-later {
@@ -126,11 +139,19 @@
     font-size: var(--fs-body);
     cursor: pointer;
     text-decoration: none;
-    transition: filter var(--dur-fast) var(--ease-standard);
+    /* 2.6 Button hover — ztmavení pozadí, ne filter (background je povolená výjimka) */
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-.event-btn:hover {
-    filter: brightness(1.08);
+.event-btn:hover,
+.event-btn:focus-visible {
+    background-color: var(--amber-cta-hover);
+}
+
+/* 2.8 Tap */
+.event-btn:active {
+    transform: scale(var(--scale-tap));
 }
 
 @media (min-width: 1024px) {
