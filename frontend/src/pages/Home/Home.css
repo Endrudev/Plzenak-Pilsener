@@ -130,11 +130,19 @@
   font-size: var(--fs-body);
   padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-el);
-  transition: filter var(--dur-fast) var(--ease-standard);
+  /* 2.6 Button hover — ztmavení pozadí */
+  transition: background-color var(--dur-fast) var(--ease-standard),
+              transform var(--dur-fast) var(--ease-standard);
 }
 
-#hero-cta:hover {
-  filter: brightness(1.08);
+#hero-cta:hover,
+#hero-cta:focus-visible {
+  background: var(--amber-cta-hover);
+}
+
+/* 2.8 Tap */
+#hero-cta:active {
+  transform: scale(var(--scale-tap));
 }
 
 #hero-counter {
@@ -179,6 +187,16 @@
   height: 7px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.4);
+  /* 2.10 Tečky karuselu — jediné místo (spolu s crossfadem) s legacy křivkou.
+     Animovaná šířka je čtvrtá povolená výjimka z pravidla „jen transform a opacity“. */
+  transition: width var(--dur-dot) var(--ease-legacy),
+              background var(--dur-dot) var(--ease-legacy),
+              border-radius var(--dur-dot) var(--ease-legacy);
+}
+
+/* 2.8 Tap */
+.hero-dot:active {
+  transform: scale(var(--scale-tap));
 }
 
 .hero-dot--active {
@@ -400,11 +418,20 @@
   overflow: hidden;
   text-decoration: none;
   color: #fff;
-  transition: transform var(--dur-base) var(--ease-standard);
+  /* 2.5 Hover lift karty */
+  transition: transform var(--dur-fast) var(--ease-standard),
+              box-shadow var(--dur-fast) var(--ease-standard);
 }
 
-.top-card:hover {
-  transform: translateY(-2px);
+.top-card:hover,
+.top-card:focus-within {
+  transform: translateY(var(--lift-card));
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* 2.8 Tap */
+.top-card:active {
+  transform: scale(var(--scale-tap));
 }
 
 .top-card-image {
@@ -551,11 +578,19 @@
   font-size: var(--fs-body);
   padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-el);
-  transition: filter var(--dur-fast) var(--ease-standard);
+  /* 2.6 Button hover */
+  transition: background-color var(--dur-fast) var(--ease-standard),
+              transform var(--dur-fast) var(--ease-standard);
 }
 
-.promo-btn:hover {
-  filter: brightness(1.08);
+.promo-btn:hover,
+.promo-btn:focus-visible {
+  background: var(--amber-cta-hover);
+}
+
+/* 2.8 Tap */
+.promo-btn:active {
+  transform: scale(var(--scale-tap));
 }
 
 .promo-btn--outline {
@@ -591,12 +626,21 @@
   padding: var(--space-4);
   gap: 2px;
   text-decoration: none;
-  transition: filter var(--dur-fast) var(--ease-standard);
+  /* 2.7 Hover dlaždice — scale, ne ztmavení */
+  transition: transform var(--dur-fast) var(--ease-standard),
+              box-shadow var(--dur-fast) var(--ease-standard);
   box-sizing: border-box;
 }
 
-.category-card:hover {
-  filter: brightness(1.06);
+.category-card:hover,
+.category-card:focus-visible {
+  transform: scale(var(--scale-tile));
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* 2.8 Tap */
+.category-card:active {
+  transform: scale(var(--scale-tap));
 }
 
 .category-icon {
