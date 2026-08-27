@@ -47,9 +47,11 @@ Frontend and backend are separate npm projects in `frontend/` and `backend/` —
 
 ```bash
 # frontend/
-npm run dev       # Start dev server at http://localhost:5173
-npm run build     # TypeScript check + Vite production build
-npm run preview   # Preview production build locally
+npm run dev         # Start dev server at http://localhost:5173
+npm run build       # TypeScript check + Vite production build
+npm run preview     # Preview production build locally
+npm test            # Vitest, single run (this is what CI runs)
+npm run test:watch  # Vitest in watch mode
 
 # backend/
 npm run dev       # nodemon index.js — Express API at http://localhost:3001
@@ -57,7 +59,18 @@ npm run migrate   # apply pending SQL migrations (schema_migrations tracking)
 npm run seed      # create admin account from ADMIN_EMAIL/ADMIN_PASSWORD in .env
 ```
 
-No linting or test tooling is configured on either side. PostgreSQL runs as a standalone Docker container (no `docker-compose.yml` yet — that's the main launch blocker).
+No linter on either side. **Vitest** is set up in `frontend/` only (jsdom enabled per-file via a `// @vitest-environment jsdom` docblock); `backend/` has no test runner yet. PostgreSQL runs as a standalone Docker container (no `docker-compose.yml` yet — that's the main launch blocker).
+
+## Git workflow and CI
+
+Work goes through **branches and pull requests**, never straight to `main` (`typ/popis` naming, e.g. `feat/`, `fix/`, `ci/`, `refactor/`, `test/`, `chore/`). The repo allows **squash merging only**, deletes head branches automatically, and prefills the squash commit from the PR title and description — so PR titles read like commit messages.
+
+`.github/workflows/ci.yml` runs on every pull request and on pushes to `main`, in two parallel jobs:
+
+- **frontend** — `npm ci` → `npm test` → `npm run build`
+- **backend** — `npm ci` → `node --check` over every `.js` (no build, no tests yet)
+
+Node version comes from `.nvmrc` at the repo root. `cache-dependency-path` in the workflow is relative to the **repo root**, not to `working-directory`. Details and the reasoning behind each setting: `04 DevOps/Nasazení a CI.md` in the vault.
 
 ## Purpose
 
