@@ -1,1 +1,1 @@
-GET http://localhost:3001/api/events
+GET http://localhost:3001/api/events?datum=vikend
