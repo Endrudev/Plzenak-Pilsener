@@ -5,7 +5,7 @@
 > Osobní studijní projekt. Píšu ho proto, abych se naučil fullstack vývoj do hloubky — od SQL migrací přes REST API a autentizaci až po nasazení. Detaily o tom, jak vznikal, jsou v sekci [Jak projekt vznikal](#jak-projekt-vznikal).
 
 > [!NOTE]
-> **Aktuální stav: rozpracováno, zatím bez nasazení.** Aplikace je funkční lokálně — backend, databáze, administrace i veřejná část běží. Právě stavím CI pipeline; po ní přijde end-to-end testování a teprve pak nasazení. Podrobněji v sekci [Stav a další kroky](#stav-a-další-kroky).
+> **Aktuální stav: rozpracováno, zatím bez nasazení.** Aplikace je funkční lokálně — backend, databáze, administrace i veřejná část běží. CI pipeline hlídá každý pull request; teď dopisuji unit testy a pak přijde kontejnerizace a nasazení. Podrobněji v sekci [Stav a další kroky](#stav-a-další-kroky).
 
 ---
 
@@ -27,10 +27,10 @@
 
 **Veřejná část**
 - Přehled akcí s fotogalerií, kategoriemi a časovými štítky (Dnes / Tento týden / TOP akce)
-- **Server-side filtrování a hledání** — text, kategorie, lokace i rychlé filtry se skládají do jednoho parametrizovaného SQL dotazu; stav filtru žije v URL (`useSearchParams`), takže odkaz na výsledek hledání jde sdílet
+- **Server-side filtrování, hledání a řazení** — text, kategorie, lokace, časový rozsah i značka se skládají do jednoho parametrizovaného SQL dotazu; hledá se na potvrzení (tlačítko nebo Enter), ne při psaní, a stav filtru žije v URL (`useSearchParams`), takže odkaz na výsledek jde sdílet
 - Detail akce s popisem, odkazem na akci a vloženou mapou
 - Stránkování, prázdné stavy, globální 404
-- **Souhlasová vrstva (GDPR)** — cookie lišta, modal s nastavením kategorií a mapa, která se bez souhlasu vůbec neinicializuje (do kliknutí neodejde na Google Maps žádný request)
+- **Souhlasová vrstva (GDPR)** — cookie lišta, modal s nastavením kategorií a mapa, která se bez souhlasu vůbec neinicializuje (do kliknutí neodejde na OpenStreetMap žádný request)
 - Stránky Zásady ochrany osobních údajů a Podmínky užití
 
 **Administrace** (chráněná JWT)
@@ -162,7 +162,7 @@ Základ: `/api`. Zápisové operace vyžadují hlavičku `Authorization: Bearer 
 |---|:---:|:---:|---|
 | `GET` | `/health` | — | health check |
 | `POST` | `/auth/login` | — | přihlášení, vrací JWT (platnost 8 h); rate limit 5 / 15 min |
-| `GET` | `/events` | — | seznam akcí; filtry `q`, `kategorie`, `misto`, `filtr` |
+| `GET` | `/events` | — | seznam budoucích akcí; filtry `q`, `kategorie`, `misto`, `datum`, `top` a řazení `razeni` |
 | `GET` | `/events/locations` | — | seznam unikátních lokací pro filtr |
 | `GET` | `/events/:id` | — | detail akce |
 | `POST` | `/events` | ✓ | vytvoření akce |
@@ -226,11 +226,12 @@ Aplikace běží lokálně a je funkční — psaní i čtení akcí, administra
 
 | # | Krok | Stav |
 |:--:|---|---|
-| 1 | **CI pipeline** (GitHub Actions — build a kontrola) | 🔨 právě se na tom pracuje |
-| 2 | **End-to-end testování** celého toku (login, CRUD, veřejné čtení) | ⏳ čeká na CI |
-| 3 | **Nasazení** — Dockerfile pro backend, Nginx pro frontend, `docker-compose.yml` | ⏳ čeká na testy |
+| 1 | **CI pipeline** (GitHub Actions — dva joby, běží na každém PR i po merge) | ✅ hotovo |
+| 2 | **Unit testy** (Vitest) — pokrytá souhlasová vrstva, zbytek se dopisuje | 🔨 rozpracováno |
+| 3 | **Nasazení** — Dockerfile pro backend, Nginx pro frontend, `docker-compose.yml` | ⏳ další na řadě |
+| 4 | **End-to-end ověření** celého toku (login, CRUD, veřejné čtení) v Compose prostředí | ⏳ čeká na nasazení |
 
-Unit testy (Vitest) zatím nejsou — vědomé rozhodnutí, prioritou bylo nejdřív pochopit celý stack.
+Pipeline hlídá u frontendu instalaci z lockfilu, testy a produkční build (včetně typové kontroly), u backendu instalaci a syntaktickou kontrolu všech souborů. Až budou testy i na backendu, syntaktickou kontrolu nahradí.
 
 ### Známé mezery
 
@@ -239,7 +240,7 @@ Vedu si je otevřeně, jsou to rozhodnutí a dluhy, ne přehlédnutí:
 - **Fonty se tahají z Google Fonts** — request s IP uživatele odchází bez souhlasu, stejný problém, jaký už je u mapy ošetřený. Před launchem je potřeba je hostovat lokálně.
 - **Upload nemá validaci** — `multer` běží bez `limits`, MIME se nekontroluje a jméno souboru od uživatele jde přímo do R2 klíče. Ošetřit před nasazením.
 - **`POST /events` a upload obrázku jsou dvě nezávislá volání** bez atomicity; při selhání druhého se akce uklidí v `catch`, ale správně to není.
-- **Filtry na homepage jsou dekorativní** — funkční filtrování žije na `/events`. Tamtéž zatím nedělá nic select „Datum" a tlačítko „Vyhledat".
+- **Obrázek s mezerou v názvu souboru se nezobrazí** — jméno od uživatele jde do R2 klíče, mezera se dostane do URL a nevalidní `url()` v CSS prohlížeč tiše zahodí. Souvisí s chybějící validací uploadu výš.
 - **Kategorie Hudba / Památky / Pro děti** zatím nejdou vybrat ve formuláři administrace.
 - **`events.date` je `text`, ne `date`** — viz poznámka u [schématu](#databáze).
 - **Mapové zobrazení akcí** (`/mapa`) je navržené, ale neimplementované.
@@ -248,13 +249,43 @@ Vedu si je otevřeně, jsou to rozhodnutí a dluhy, ne přehlédnutí:
 
 ## Jak projekt vznikal
 
-Projekt je můj **první fullstack** a vznikal jako studijní. Pracuji na něm s pravidlem, které mi přišlo důležité si stanovit hned na začátku:
+Projekt je můj **první fullstack** a od začátku je hlavně studijní. Nejde v něm o to mít appku co nejrychleji — jde o to rozumět každé její vrstvě. Podle toho se v čase mění i to, co na projektu dělám sám a co si nechám udělat.
 
-> **Veškerý backend, databázovou logiku, infrastrukturu a aplikační/stavovou logiku frontendu píšu sám.** AI asistent (Claude Code) slouží jako konzultant — vysvětluje koncepty, dělá code review, navrhuje alternativy, pomáhá debugovat. Výjimkou je čistě vizuální frontend kód (CSS, JSX layout), kde už zkušenost mám a psaní by mě nic nového nenaučilo.
+### Fáze 1 — všechno vlastníma rukama
 
-Pravidlo je zapsané v [`CLAUDE.md`](CLAUDE.md) v kořeni repozitáře a drží se ho i historie commitů. Souběžně vedu dokumentační vault s deníkem rozhodnutí — proč padla která volba, jaké chyby jsem cestou udělal a co mě naučily. Například přechod ze Supabase na vlastní Express + PostgreSQL stack proběhl právě proto, že mi hotové BaaS řešení schovávalo přesně ty věci, které jsem se chtěl naučit.
+Začal jsem s pravidlem, které jsem si stanovil hned na první den:
 
-Historie commitů je psaná česky a inkrementálně — jde z ní přečíst postup práce, ne jen výsledek.
+> **Veškerý backend, databázovou logiku, infrastrukturu a aplikační/stavovou logiku frontendu píšu sám.** AI asistent (Claude Code) je konzultant — vysvětluje koncepty, dělá code review, navrhuje alternativy, pomáhá debugovat. Nikdy nedodává hotové řešení ke zkopírování.
+
+Bylo to nepohodlné a pomalé, a přesně o to šlo. Tahle fáze mě naučila věci, které bych přečtením hotového kódu nezískal:
+
+- **Proč jsem odešel od Supabase.** Hotové BaaS řešení mi schovávalo přesně ty věci, které jsem se chtěl naučit — vlastní auth, migrace, návrh schématu. Přepsání na vlastní Express + PostgreSQL bylo dobrovolné zdržení, které dávalo smysl.
+- **Proč tenhle projekt nemá ORM.** Parametrizované SQL přes `pg` píšu ručně, protože chci umět SQL, ne abstrakci nad ním. `$1` se váže podle **pozice** v poli — na to jsem přišel tím, že jsem si prohozením parametrů tiše zapsal hodnoty do špatných sloupců.
+- **Chyby, ze kterých si člověk odnese víc než z tutoriálu.** Funkce, co vždycky vracela `undefined` kvůli `return` na samostatném řádku. Smazání akce, které nechalo obrázek navždy v R2. Souhlasová vrstva, kde `typeof null === 'object'` propustilo neplatný zápis.
+
+Jednu výjimku jsem si povolil brzy (srpen 2026): **čistě vizuální frontend kód** — CSS a JSX layout. V designu už zkušenost mám, takže by mě jeho ruční psaní nenaučilo nic nového.
+
+### Fáze 2 — architektuře rozumím, těžiště se posouvá
+
+Ve chvíli, kdy stála celá architektura — vlastní API, JWT autentizace, migrace, upload do R2, server-side filtrování, souhlasová vrstva — se situace obrátila. **Vím, co a jak; ruční psaní mravenčí práce už mě nic nového neučí, jen zdržuje.**
+
+Od 27. 8. 2026 proto platí posunutá hranice:
+
+| Oblast | Kdo píše |
+|---|---|
+| Frontend vizuál, backendová i frontendová aplikační logika | AI asistent — s vysvětlením a po konzultaci se mnou |
+| **CI/CD, DevOps, nasazení** | **já sám** |
+| Architektonická a produktová rozhodnutí | já sám |
+
+**Co se ale nezměnilo ani o kus:** každou napsanou věc si nechám vysvětlit — co dělá, jak funguje a jaká rozhodnutí v ní jsou — a všechna rozhodnutí padají v diskuzi předtím, než se sáhne na kód. Nejde o rychlost za cenu neporozumění. Jde o to nedělat ručně to, čemu už rozumím.
+
+A hlavně: **DevOps je teď to, čemu nerozumím**, takže si ho beru na sebe a AI u něj hraje přesně tu roli, kterou dřív hrála u backendu — vysvětluje princip, ukáže malý izolovaný příklad a nechá mě to napsat. Tak vznikla CI pipeline v [`.github/workflows/ci.yml`](.github/workflows/ci.yml) a stejně vznikne i Docker a nasazení.
+
+Hranice se tedy neposouvá pohodlím, ale tím, **co už umím** — a další na řadě je infrastruktura.
+
+### Kde je vidět postup
+
+Pravidlo v aktuálním znění je v [`CLAUDE.md`](CLAUDE.md). Souběžně vedu dokumentační vault s deníkem rozhodnutí — proč padla která volba, jaké chyby jsem udělal a co mě naučily. Historie commitů je psaná česky a inkrementálně, takže z ní jde přečíst postup práce, ne jen výsledek.
 
 ---
 
