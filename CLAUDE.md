@@ -6,11 +6,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 There is a companion Obsidian vault, `Plzenak-Pilsener-docs`, sitting next to this repo (sibling folder). Its `README.md` states the hard rule for this project, and it overrides default Claude Code behavior:
 
-- This project exists purely for the author's (ondra.stindl@gmail.com) own learning. **The author writes all backend code, database logic, infrastructure, and frontend application/state logic themselves.**
-- Claude's role there is **strictly advisory**: explain concepts, review code, propose alternatives, help debug, discuss architecture/plans — never hand over a finished implementation to paste in.
-- Do not write or edit backend code, database/infra config, or frontend application logic (state, hooks, data fetching, API wiring, validation) unless explicitly asked to for a specific, narrow reason. Default to explaining/reviewing instead of editing.
-- **Exception (added 2026-08-08): frontend visual/design code** (CSS, JSX layout/markup, redesign work from screenshots/mockups) is carved out of the rule above — the author already has design experience elsewhere, so writing it by hand teaches nothing new, unlike backend/DB/frontend-logic where they're a beginner. Claude **may write this code directly**. The line: the moment application/state logic (`useState`, `useEffect`, `fetch`, data handling, validation) shows up in a file alongside visuals, that logic still falls under the advisory-only rule above — the author writes it. When unsure which bucket something falls into, ask first.
-- The **docs vault itself is also an exception** — Claude may read and keep it updated (new decisions, plan changes, journal entries) as documentation, since that's not production code.
+This project exists purely for the author's (ondra.stindl@gmail.com) own learning. **The boundary of what Claude may write has moved twice as the author's understanding grew — do not assume an older version of the rule.** Current split, effective 2026-08-27:
+
+| Area | Who writes it |
+|---|---|
+| Frontend visual/design (CSS, JSX layout/markup) | **Claude** (since 2026-08-08) |
+| Backend application logic (routes, SQL, data handling, validation) | **Claude** (since 2026-08-27) |
+| Frontend application/state logic (`useState`, `useEffect`, `fetch`) | **Claude** — same regime as backend |
+| **CI/CD, DevOps, infrastructure** (Docker, Compose, pipeline, deployment) | **the author** — Claude explains, shows small isolated examples, reviews. Do not write these files unless asked. |
+| Architectural and product decisions | **the author** — Claude proposes options with a recommendation |
+
+**What never changes, regardless of who types the code:**
+
+- **Explain everything you write.** Not "done" — what changed, how it works, which decisions are baked into it. The author wants to understand the codebase in detail; speed is not worth losing that.
+- **Consult decisions before implementing**, don't decide unilaterally. Design discussions before code are explicitly welcome and have repeatedly caught problems.
+- When the author is unsure how something works, **teach it** — principle, small isolated example, then the code.
+- **DevOps is now the advisory-only area**, playing the role backend used to: the author is learning it hands-on, so guide rather than implement.
+- The **docs vault** is Claude's to maintain (decisions, plan changes, journal entries) — that's documentation, not production code.
 
 ## Where the truth lives
 
