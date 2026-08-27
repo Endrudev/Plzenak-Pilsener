@@ -93,6 +93,9 @@
     border: 1px solid var(--hairline);
     border-radius: 12px;
     box-shadow: var(--shadow-pop);
+    /* Nábeh podle motion specu — prolnutí s posunem 4 px shora */
+    animation: popover-in var(--dur-fast) var(--ease-standard);
+    transform-origin: top center;
 }
 
 .filter-dropdown-option {
@@ -141,9 +144,5 @@
     color: var(--amber-cta);
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .filter-dropdown-trigger,
-    .filter-dropdown-chevron {
-        transition: none;
-    }
-}
+/* prefers-reduced-motion neřešíme tady — od zavedení motion tokenů je
+   globální pravidlo v index.css. */
