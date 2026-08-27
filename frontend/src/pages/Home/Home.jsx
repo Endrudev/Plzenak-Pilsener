@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import EventCard from '../../components/EventCard/EventCard.jsx'
+import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
 import { getEvents } from '../../lib/eventsApi.js'
 import './Home.css'
 
@@ -52,6 +53,20 @@ const CATEGORIES = [
 export default function Home() {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
+
+  // Homepage je rozcestník, ne nástroj — stačí hledání a kategorie.
+  // Odeslání nefiltruje tady, ale přesměruje na /events s parametry.
+  const [draft, setDraft] = useState({ q: '', kategorie: '' })
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    const params = new URLSearchParams()
+    if (draft.q.trim()) params.set('q', draft.q.trim())
+    if (draft.kategorie) params.set('kategorie', draft.kategorie)
+    const query = params.toString()
+    navigate(query ? `/events?${query}` : '/events')
+  }
 
   useEffect(() => {
     getEvents()
@@ -128,49 +143,32 @@ export default function Home() {
         )}
 
         {/* Filter bar — TODO: vstupy zatím nejsou propojené na žádný stav/filtrování */}
-        <div id="filter-bar">
+        <form id="filter-bar" onSubmit={handleSubmit}>
           <div id="filter-bar-row">
             <div id="filter-search">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
-              <input type="text" placeholder="Hledat akce v Plzni..." aria-label="Hledat akce" />
+              <input
+                type="text"
+                placeholder="Hledat akce v Plzni..."
+                aria-label="Hledat akce"
+                value={draft.q}
+                onChange={e => setDraft(d => ({ ...d, q: e.target.value }))}
+              />
             </div>
-            <div className="filter-select">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />
-              </svg>
-              <select defaultValue="">
-                <option value="" disabled>Kategorie</option>
-                {CATEGORIES.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
-              </select>
-              <svg className="filter-select-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </div>
-            <div className="filter-select">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
-              </svg>
-              <select defaultValue="">
-                <option value="" disabled>Místo</option>
-              </select>
-              <svg className="filter-select-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </div>
-            <div className="filter-select">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
-              <select defaultValue="">
-                <option value="" disabled>Datum</option>
-              </select>
-              <svg className="filter-select-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </div>
-            <button type="button" id="filter-search-btn">
+            <FilterSelect
+              placeholder="Kategorie"
+              value={draft.kategorie}
+              onChange={v => setDraft(d => ({ ...d, kategorie: v }))}
+              options={CATEGORIES.map(c => ({ value: c.name, label: c.name, icon: c.icon }))}
+              icon={
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />
+                </svg>
+              }
+            />
+            <button type="submit" id="filter-search-btn">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
@@ -179,16 +177,14 @@ export default function Home() {
           </div>
           <div id="filter-bar-row-2">
             <div id="filter-chips">
-              {['Kultura', 'Sport', 'Gastro', 'TOP akce'].map(c => (
-                <button type="button" key={c} className="filter-chip">{c}</button>
+              {['Kultura', 'Sport', 'Gastro'].map(c => (
+                <Link key={c} to={`/events?kategorie=${encodeURIComponent(c)}`} className="filter-chip">{c}</Link>
               ))}
+              <Link to="/events?top=1" className="filter-chip">TOP akce</Link>
             </div>
-            <div id="filter-view-toggle">
-              <button type="button" className="view-toggle-btn view-toggle-btn--active">Seznam</button>
-              <button type="button" className="view-toggle-btn">Mapa</button>
-            </div>
+            <Link to="/events" id="filter-all-link">Zobrazit všechny akce →</Link>
           </div>
-        </div>
+        </form>
       </section>
 
       {/* TOP akce */}

@@ -50,21 +50,9 @@ const CATEGORIES = [
   },
 ]
 
+// Časové filtry patří do dropdownu Datum, ne mezi pilulky — jinak by dva prvky
+// zapisovaly do stejného parametru a přebíjely se. Tady zůstávají jen značky.
 const QUICK_FILTERS = [
-  {
-    name: 'Dnes', icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="4" /><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4" />
-      </svg>
-    )
-  },
-  {
-    name: 'Tento týden', icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="4" y="4.5" width="16" height="16.5" rx="2" /><path d="M4 9.5h16M8.5 3v3M15.5 3v3" />
-      </svg>
-    )
-  },
   {
     name: 'Zdarma', icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -81,6 +69,22 @@ const QUICK_FILTERS = [
   },
 ]
 
+// Hodnoty musí sedět s tabulkou DATE_FILTERS na backendu (routes/events.js)
+const DATE_OPTIONS = [
+  { value: 'dnes', label: 'Dnes' },
+  { value: 'vikend', label: 'Tento víkend' },
+  { value: '7dni', label: 'Nejbližších 7 dní' },
+  { value: '30dni', label: 'Nejbližších 30 dní' },
+]
+
+// Řazení, ne filtr — proto se použije hned, bez čekání na tlačítko
+const SORT_OPTIONS = [
+  { value: 'konani', label: 'Nejdřív se koná' },
+  { value: 'pridano', label: 'Naposledy přidané' },
+]
+
+const EMPTY_FILTERS = { q: '', kategorie: '', misto: '', datum: '', top: false }
+
 export default function Events() {
   const PER_PAGE = 5
 
@@ -88,37 +92,94 @@ export default function Events() {
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [searchParams, setSearchParams] = useSearchParams()
-  const search = searchParams.get('q') || ''
-  const kategorie = searchParams.get('kategorie') || ''
-  const misto = searchParams.get('misto') || ''
-  const rychlyfiltr = searchParams.get('filtr') || ''
-  const [debouncedSearch, setDebouncedSearch] = useState(search)
   const [locations, setLocations] = useState([])
+
+  // POUŽITÝ stav — co se skutečně filtruje. Jediným zdrojem pravdy je URL.
+  const applied = {
+    q: searchParams.get('q') || '',
+    kategorie: searchParams.get('kategorie') || '',
+    misto: searchParams.get('misto') || '',
+    datum: searchParams.get('datum') || '',
+    top: searchParams.get('top') === '1',
+  }
+  // Řazení stojí mimo filtr bar, takže se použije okamžitě a nečeká na tlačítko
+  const razeni = searchParams.get('razeni') || 'konani'
+
+  // ROZPRACOVANÝ stav — co má uživatel navolené, ale ještě neodeslal
+  const [draft, setDraft] = useState(applied)
+
+  // Když se URL změní zvenčí (tlačítko Zpět, odkaz z menu kategorií v hlavičce),
+  // rozpracovaný stav se musí srovnat, jinak by bar ukazoval neplatné hodnoty.
+  useEffect(() => {
+    setDraft({
+      q: searchParams.get('q') || '',
+      kategorie: searchParams.get('kategorie') || '',
+      misto: searchParams.get('misto') || '',
+      datum: searchParams.get('datum') || '',
+      top: searchParams.get('top') === '1',
+    })
+  }, [searchParams])
 
   useEffect(() => {
     getEventLocations().then(setLocations).catch(console.error)
   }, [])
 
-
-  useEffect(() =>{
-    const timer = setTimeout(() => setDebouncedSearch(search), 400)
-    return () => clearTimeout(timer)
-  }, [search])
-
-  function updateFilter(key, value, replace = false){
-    const next = new URLSearchParams(searchParams)
-    if (value) next.set(key, value); else next.delete(key)
-    setSearchParams(next, { replace })
-    setPage(1)
-  }
-
   useEffect(() => {
     setLoading(true)
-    getEvents({ q: debouncedSearch, kategorie, misto, filtr: rychlyfiltr})
+    getEvents({
+      q: applied.q,
+      kategorie: applied.kategorie,
+      misto: applied.misto,
+      datum: applied.datum,
+      top: applied.top ? '1' : '',
+      razeni,
+    })
       .then(data => setAllEvents(data))
       .catch(console.error)
       .finally(() => setLoading(false))
-  }, [debouncedSearch, kategorie, misto, rychlyfiltr])
+  }, [applied.q, applied.kategorie, applied.misto, applied.datum, applied.top, razeni])
+
+  // Kolik polí se liší od použitého stavu — pohání vzhled tlačítka
+  const pendingCount = ['q', 'kategorie', 'misto', 'datum', 'top']
+    .filter(key => (key === 'q' ? draft.q.trim() !== applied.q : draft[key] !== applied[key]))
+    .length
+
+  // Je vůbec co mazat? Řazení se nepočítá, to není filtr.
+  const hasAppliedFilters = Boolean(
+    applied.q || applied.kategorie || applied.misto || applied.datum || applied.top
+  )
+
+  function setField(key, value) {
+    setDraft(prev => ({ ...prev, [key]: value }))
+  }
+
+  // Odeslání: rozpracovaný stav se najednou přepíše do URL a tím spustí fetch
+  function handleSubmit(e) {
+    e.preventDefault()
+    const next = new URLSearchParams()
+    if (draft.q.trim()) next.set('q', draft.q.trim())
+    if (draft.kategorie) next.set('kategorie', draft.kategorie)
+    if (draft.misto) next.set('misto', draft.misto)
+    if (draft.datum) next.set('datum', draft.datum)
+    if (draft.top) next.set('top', '1')
+    if (razeni !== 'konani') next.set('razeni', razeni)
+    setSearchParams(next)
+    setPage(1)
+  }
+
+  // Řazení mění URL rovnou, ostatní filtry nechává být
+  function changeSort(value) {
+    const next = new URLSearchParams(searchParams)
+    if (value && value !== 'konani') next.set('razeni', value); else next.delete('razeni')
+    setSearchParams(next)
+    setPage(1)
+  }
+
+  function clearFilters() {
+    setDraft(EMPTY_FILTERS)
+    setSearchParams(new URLSearchParams())
+    setPage(1)
+  }
 
   const totalPages = Math.max(1, Math.ceil(allEvents.length / PER_PAGE))
   const currentPage = Math.min(page, totalPages)
@@ -134,7 +195,7 @@ export default function Events() {
 
       {/* Filter bar — hledání, Kategorie a Místo jsou napojené na URL params a server-side filtrování.
           TODO: select "Datum" a tlačítko "Vyhledat" zatím nic nedělají (řazení neexistuje vůbec). */}
-      <div id="events-filter-card">
+      <form id="events-filter-card" onSubmit={handleSubmit}>
         <div id="events-search">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -143,16 +204,16 @@ export default function Events() {
             type="text" 
             placeholder="Hledat koncerty…" 
             aria-label="Hledat akce"
-            value={search}
-            onChange={e => updateFilter('q', e.target.value, true)}
+            value={draft.q}
+            onChange={e => setField('q', e.target.value)}
           />
         </div>
 
         <div id="events-filter-row">
           <FilterSelect
             placeholder="Kategorie"
-            value={kategorie}
-            onChange={v => updateFilter('kategorie', v)}
+            value={draft.kategorie}
+            onChange={v => setField('kategorie', v)}
             options={CATEGORIES.map(c => ({ value: c.name, label: c.name, icon: c.icon }))}
             icon={
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -162,8 +223,8 @@ export default function Events() {
           />
           <FilterSelect
             placeholder="Místo"
-            value={misto}
-            onChange={v => updateFilter('misto', v)}
+            value={draft.misto}
+            onChange={v => setField('misto', v)}
             options={locations.map(loc => ({ value: loc, label: loc }))}
             icon={
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -171,22 +232,27 @@ export default function Events() {
               </svg>
             }
           />
-          <div className="events-filter-select">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
-            <select defaultValue="">
-              <option value="" disabled>Datum</option>
-            </select>
-            <svg className="events-filter-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </div>
-          <button type="button" id="events-search-btn">
+          <FilterSelect
+            placeholder="Datum"
+            value={draft.datum}
+            onChange={v => setField('datum', v)}
+            options={DATE_OPTIONS}
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+            }
+          />
+          <button
+            type="submit"
+            id="events-search-btn"
+            className={pendingCount > 0 ? 'events-search-btn--pending' : ''}
+            disabled={loading}
+          >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
-            Vyhledat
+            {loading ? 'Hledám…' : pendingCount > 0 ? `Vyhledat (${pendingCount})` : 'Vyhledat'}
           </button>
         </div>
 
@@ -199,8 +265,8 @@ export default function Events() {
             <button
               type="button"
               key={c.name}
-              className={`events-pill${kategorie.toLowerCase() === c.name.toLowerCase() ? ' events-pill--active' : ''}`}
-              onClick={() => updateFilter('kategorie', kategorie === c.name ? '' : c.name)}
+              className={`events-pill${draft.kategorie.toLowerCase() === c.name.toLowerCase() ? ' events-pill--active' : ''}`}
+              onClick={() => setField('kategorie', draft.kategorie === c.name ? '' : c.name)}
             >
               <span aria-hidden="true">{c.icon}</span> {c.name}
             </button>
@@ -215,12 +281,8 @@ export default function Events() {
             <span className="events-filter-group-label">Rychlý filtr</span>
             <div className="events-pill-row">
               {QUICK_FILTERS.map(f => {
-                const key = f.name === 'Dnes' ? 'dnes'
-                  : f.name === 'Tento týden' ? 'tento-tyden'
-                  : f.name === 'TOP akce' ? 'top-akce'
-                  : null
-
-                if (!key) {
+                // „Zdarma“ nemá v datech oporu (chybí údaj o ceně), zůstává vypnutá
+                if (f.name !== 'TOP akce') {
                   return (
                     <button type="button" key={f.name} className="events-pill" disabled>
                       <span aria-hidden="true">{f.icon}</span> {f.name}
@@ -232,8 +294,9 @@ export default function Events() {
                   <button
                     type="button"
                     key={f.name}
-                    className={`events-pill${rychlyfiltr === key ? ' events-pill--active' : ''}`}
-                    onClick={() => updateFilter('filtr', rychlyfiltr === key ? '' : key)}
+                    className={`events-pill${draft.top ? ' events-pill--active' : ''}`}
+                    aria-pressed={draft.top}
+                    onClick={() => setField('top', !draft.top)}
                   >
                     <span aria-hidden="true">{f.icon}</span> {f.name}
                   </button>
@@ -247,25 +310,34 @@ export default function Events() {
             <button type="button" className="events-view-toggle-btn">Mapa</button>
           </div>
         </div>
-      </div>
+      </form>
 
       <div id="events-sort-row">
+        {hasAppliedFilters && (
+          <button type="button" id="events-clear-btn" onClick={clearFilters}>
+            Vymazat filtry
+          </button>
+        )}
         <span id="events-sort-label">Řadit podle</span>
-        <div id="events-sort-select">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="6" y1="20" x2="6" y2="4" /><polyline points="2 8 6 4 10 8" /><line x1="18" y1="4" x2="18" y2="20" /><polyline points="14 16 18 20 22 16" />
-          </svg>
-          <select defaultValue="nearest">
-            <option value="nearest">Nejbližší</option>
-          </select>
-        </div>
+        <FilterSelect
+          placeholder="Řazení"
+          value={razeni}
+          onChange={changeSort}
+          options={SORT_OPTIONS}
+          clearable={false}
+          icon={
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="6" y1="20" x2="6" y2="4" /><polyline points="2 8 6 4 10 8" /><line x1="18" y1="4" x2="18" y2="20" /><polyline points="14 16 18 20 22 16" />
+            </svg>
+          }
+        />
       </div>
 
       <div id="events-section-header">
         <h2>Všechny akce</h2>
-        {!loading && (
-          <span id="events-count">Zobrazeno {visibleEvents.length} z {allEvents.length} akcí</span>
-        )}
+        <span id="events-count" aria-live="polite">
+          {!loading && `Zobrazeno ${visibleEvents.length} z ${allEvents.length} akcí`}
+        </span>
       </div>
 
       <div id="events-list">
