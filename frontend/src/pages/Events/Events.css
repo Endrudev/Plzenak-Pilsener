@@ -59,48 +59,18 @@
   gap: var(--space-3);
 }
 
-.events-filter-select {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: 44px;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-el);
-  padding: 0 var(--space-8) 0 var(--space-3);
-  color: var(--ink-3);
-}
-
-.events-filter-select select {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  color: var(--ink);
-  appearance: none;
-  cursor: pointer;
-}
-
-.events-filter-chevron {
-  position: absolute;
-  right: var(--space-3);
-  color: var(--ink-3);
-  pointer-events: none;
-}
-
 #events-search-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
   height: 44px;
-  background: var(--amber-cta);
-  border: none;
+  /* Výchozí stav je sekundární (outline) — není co použít.
+     Jakmile uživatel něco změní, přepne se na plnou amber. */
+  background: var(--surface);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-el);
-  color: #fff;
+  color: var(--ink);
   font-family: var(--font-sans);
   font-weight: var(--fw-semibold);
   font-size: var(--fs-body);
@@ -112,12 +82,47 @@
 
 #events-search-btn:hover,
 #events-search-btn:focus-visible {
-  background: var(--amber-cta-hover);
+  border-color: var(--ink-3);
 }
 
 /* 2.8 Tap */
 #events-search-btn:active {
   transform: scale(var(--scale-tap));
+}
+
+/* Čekají změny → plná amber, aby bylo vidět, že je co odeslat */
+#events-search-btn.events-search-btn--pending {
+  background: var(--amber-cta);
+  border-color: var(--amber-cta);
+  color: #fff;
+}
+
+#events-search-btn.events-search-btn--pending:hover,
+#events-search-btn.events-search-btn--pending:focus-visible {
+  background: var(--amber-cta-hover);
+  border-color: var(--amber-cta-hover);
+}
+
+#events-search-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+#events-clear-btn {
+  margin-right: auto;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  color: var(--amber-cta);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+
+#events-clear-btn:hover {
+  color: var(--amber-cta-hover);
+  text-decoration: underline;
 }
 
 .events-filter-divider {
@@ -240,31 +245,6 @@
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
   color: var(--ink-3);
-}
-
-#events-sort-select {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  height: 38px;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-el);
-  padding: 0 var(--space-3);
-  color: var(--ink-3);
-  background: var(--surface);
-}
-
-#events-sort-select select {
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: var(--font-sans);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  color: var(--ink);
-  appearance: none;
-  cursor: pointer;
 }
 
 /* ---------- Section header ---------- */

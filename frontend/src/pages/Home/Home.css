@@ -165,7 +165,7 @@
   border: none;
   background: rgba(255, 255, 255, 0.16);
   color: #fff;
-  cursor: not-allowed;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -255,39 +255,6 @@
   border-color: var(--amber-cta);
 }
 
-.filter-select {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-el);
-  padding: var(--space-3) var(--space-4);
-  color: var(--ink-3);
-  flex-shrink: 0;
-}
-
-.filter-select select {
-  border: none;
-  outline: none;
-  background: transparent;
-  appearance: none;
-  font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  color: var(--ink);
-  cursor: pointer;
-}
-
-.filter-select-chevron {
-  flex-shrink: 0;
-  color: var(--ink-3);
-}
-
-.filter-select:focus-within {
-  box-shadow: var(--focus-shadow);
-  border-color: var(--amber-cta);
-}
-
 #filter-search-btn {
   display: flex;
   align-items: center;
@@ -314,31 +281,19 @@
   flex-wrap: wrap;
 }
 
-#filter-view-toggle {
-  display: flex;
-  background: var(--surface-sunk);
-  border-radius: var(--radius-pill);
-  padding: 3px;
-  flex-shrink: 0;
-}
-
-.view-toggle-btn {
-  flex: 1;
-  border: none;
-  background: none;
-  padding: 7px var(--space-4);
-  border-radius: var(--radius-pill);
+#filter-all-link {
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--ink-3);
-  cursor: not-allowed;
+  font-weight: var(--fw-medium);
+  color: var(--amber-cta);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-standard);
 }
 
-.view-toggle-btn--active {
-  background: var(--surface);
-  color: var(--ink);
-  box-shadow: var(--shadow-card);
+#filter-all-link:hover {
+  color: var(--amber-cta-hover);
+  text-decoration: underline;
 }
 
 #filter-chips {
@@ -348,6 +303,9 @@
 }
 
 .filter-chip {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -709,13 +667,9 @@
     flex: 1;
   }
 
-  .filter-select {
-    width: 160px;
-  }
+  
 
-  #filter-view-toggle {
-    width: auto;
-  }
+  
 
   #nearest-grid {
     grid-template-columns: 1fr 1fr;
