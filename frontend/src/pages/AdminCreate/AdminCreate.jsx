@@ -41,11 +41,13 @@ function buildCalendarDays(year, month) {
 export default function AdminCreate() {
     const navigate = useNavigate()
     useAuthGuard()
-    const [selected, setSelected] = useState(new Date(2026, 3, 30))
-    const [inputVal, setInputVal] = useState('30.4.2026')
+    // Výchozí je dnešek — dřív tu bylo natvrdo 30.4.2026, takže nová akce
+    // dostala loňské datum, pokud ho admin ručně nezměnil.
+    const [selected, setSelected] = useState(() => new Date())
+    const [inputVal, setInputVal] = useState(() => toCzech(new Date()))
     const [showCal, setShowCal] = useState(false)
-    const [viewYear, setViewYear] = useState(2026)
-    const [viewMonth, setViewMonth] = useState(3)
+    const [viewYear, setViewYear] = useState(() => new Date().getFullYear())
+    const [viewMonth, setViewMonth] = useState(() => new Date().getMonth())
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [url, setUrl] = useState('')
