@@ -4,6 +4,7 @@ import EventCard from '../../components/EventCard/EventCard.jsx'
 import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
 import { getEvents } from '../../lib/eventsApi.js'
 import './Home.css'
+import { imageBackground } from '../../lib/imageBackground.js'
 
 const CATEGORIES = [
   {
@@ -89,7 +90,7 @@ export default function Home() {
       {/* Hero — TODO: karusel je zatím statický (jen první akce), bez rotace/šipek/teček */}
       <section id="hero">
         {heroEvent && (
-          <div id="hero-slide" className={heroEvent.imageUrl ? '' : 'hero-slide--fallback'} style={heroEvent.imageUrl ? { backgroundImage: `url(${heroEvent.imageUrl})` } : undefined}>
+          <div id="hero-slide" className={heroEvent.imageUrl ? '' : 'hero-slide--fallback'} style={imageBackground(heroEvent.imageUrl)}>
             <div id="hero-content">
               <div id="hero-card-badges">
                 {heroEvent.tags?.[0] && <span className="hero-badge hero-badge--soft">{heroEvent.tags[0]}</span>}
@@ -199,7 +200,7 @@ export default function Home() {
               <Link to={`/events/${event.id}`} key={event.id} className="top-card">
                 <div
                   className={`top-card-image ${event.imageUrl ? '' : 'top-card-image--empty'}`}
-                  style={event.imageUrl ? { backgroundImage: `url(${event.imageUrl})` } : undefined}
+                  style={imageBackground(event.imageUrl)}
                 >
                   <span className="top-card-badge">★ TOP akce</span>
                 </div>

@@ -4,6 +4,7 @@ import { getEventById } from '../../lib/eventsApi.js'
 import { useConsent } from '../../lib/ConsentContext.jsx'
 import MapConsent from '../../components/ConsentGate/MapConsent.jsx'
 import './EventDetail.css'
+import { imageBackground } from '../../lib/imageBackground.js'
 
 export default function EventDetail() {
     const { id } = useParams()
@@ -40,7 +41,7 @@ export default function EventDetail() {
             <section
                 id="detail-hero"
                 className={event.imageUrl ? '' : 'detail-hero--fallback'}
-                style={event.imageUrl ? { backgroundImage: `url(${event.imageUrl})` } : undefined}
+                style={imageBackground(event.imageUrl)}
             >
                 {/* TODO: vizuální placeholdery, export do kalendáře a Web Share API zatím nejsou zapojené */}
                 <div id="detail-hero-actions">
