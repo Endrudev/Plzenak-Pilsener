@@ -160,8 +160,6 @@ export default function AdminCreate() {
                 dateShort:   inputVal ? inputVal.slice(0, inputVal.lastIndexOf('.')) : null,
                 location:    locationName || null,
                 tags:        category ? [category] : [],
-                badge:       null,
-                badgeType:   null,
                 imgClass:    'event-image--prazdroj',
                 url:         url || null,
                 description: description ? description.split('\n').filter(Boolean) : [],

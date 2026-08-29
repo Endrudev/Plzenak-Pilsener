@@ -80,11 +80,9 @@ function mapEvent(event) {
         date: event.date,
         location: event.location,
         tags: event.tags,
-        badge: event.badge,
         url: event.url,
         description: event.description,
         dateShort: event.date_short,
-        badgeType: event.badge_type,
         imgClass: event.img_class,
         mapSrc: event.map_src,
         createdAt: event.created_at,
@@ -99,11 +97,9 @@ function mapEventReverse(event) {
         date: event.date,
         location: event.location,
         tags: event.tags,
-        badge: event.badge,
         url: event.url,
         description: event.description,
         date_short: event.dateShort,
-        badge_type: event.badgeType,
         img_class: event.imgClass,
         map_src: event.mapSrc,
         created_at: event.createdAt,
@@ -202,10 +198,10 @@ router.post('/', authMiddleware, async(req, res) => {
             return
         }
         const insertResult = await query(`
-            INSERT INTO events (name, date, date_short, location, tags, badge, badge_type, img_class, url, description, map_src)
-            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            INSERT INTO events (name, date, date_short, location, tags, img_class, url, description, map_src)
+            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING *;
-            `, [result.name, result.date, result.date_short, result.location, result.tags, result.badge, result.badge_type, result.img_class, result.url, result.description, result.map_src]
+            `, [result.name, result.date, result.date_short, result.location, result.tags, result.img_class, result.url, result.description, result.map_src]
         )
             res.status(201).json(mapEvent(insertResult.rows[0]))
         }
@@ -223,10 +219,10 @@ router.put('/:id', authMiddleware, async(req, res) => {
             return
         }
         const updateResult = await query(`
-            UPDATE events SET name = $1, date = $2, location = $3, tags = $4, badge = $5, url = $6, description = $7, date_short = $8, badge_type = $9, img_class = $10, map_src = $11 
-            WHERE id = $12 
+            UPDATE events SET name = $1, date = $2, location = $3, tags = $4, url = $5, description = $6, date_short = $7, img_class = $8, map_src = $9 
+            WHERE id = $10 
             RETURNING *;
-            `, [result.name, result.date, result.location, result.tags, result.badge, result.url, result.description, result.date_short, result.badge_type, result.img_class, result.map_src, req.params.id]
+            `, [result.name, result.date, result.location, result.tags, result.url, result.description, result.date_short, result.img_class, result.map_src, req.params.id]
         )
         if(updateResult.rows.length === 0){
             res.status(404).json({error: 'Neplatné id akce. Zkuste to znovu.'})
