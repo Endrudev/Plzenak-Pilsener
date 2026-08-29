@@ -24,34 +24,66 @@ This project exists purely for the author's (ondra.stindl@gmail.com) own learnin
 - **DevOps is now the advisory-only area**, playing the role backend used to: the author is learning it hands-on, so guide rather than implement.
 - The **docs vault** is Claude's to maintain (decisions, plan changes, journal entries) — that's documentation, not production code.
 
-## Where the truth lives
+## Working with the documentation
 
-**The vault is the source of truth, this file is orientation.** Vault structure (reorganized 2026-08-20):
+**The vault is the source of truth. This file and the repo `README.md` are derived** — when they disagree with the vault, the vault wins and the derived copy gets fixed.
 
-| Question | Vault page |
+The rules for maintaining the vault — document header, the four genres, the source-of-truth table, update triggers and a pre-merge checklist — live in **`00 Jak vést dokumentaci.md`** at the vault root. Read it before writing anything into the vault.
+
+### Before you start a task
+
+Open the page that owns the area you're touching. The full index is the vault `README.md`; the short version:
+
+| Working on | Read first |
 |---|---|
-| What is this project, what's the status | `01 Projekt/Přehled.md` |
-| What blocks public launch | `01 Projekt/Launch checklist.md` |
-| **Anything planned/deferred/an idea** | `01 Projekt/Po launchi.md` — single list, don't scatter plans elsewhere |
-| Why is something the way it is | `05 Poznámky/Deník.md` (chronological, newest on top) |
-| Design system, visual rules, screens | `02 Frontend/Styling a komponenty.md` |
-| Cookie/consent layer | `02 Frontend/Souhlas a cookies.md` |
-| Backend routes, DB schema, R2, security | `03 Backend/*.md` |
-| Docker/CI plans | `04 DevOps/Nasazení a CI.md` |
+| Anything, first time in a session | `01 Projekt/Přehled.md` |
+| Running the app, env vars, scripts | `01 Projekt/Vývojářský start.md` |
+| Endpoints, params, status codes | `03 Backend/API.md` |
+| Backend internals, filter/sort SQL | `03 Backend/Přehled.md` |
+| DB schema, migrations | `03 Backend/Databáze.md` |
+| Auth, validation, rate limiting | `03 Backend/Bezpečnost.md` |
+| Images, R2 | `03 Backend/Obrázky a úložiště.md` |
+| Routes, pages, header | `02 Frontend/Routing a stránky.md` |
+| Frontend structure, state, conventions | `02 Frontend/Architektura.md` |
+| CSS, tokens, components | `02 Frontend/Styling a komponenty.md` |
+| Search, filters, sorting on `/events` | `02 Frontend/Filtrování a hledání.md` |
+| Cookie consent | `02 Frontend/Souhlas a cookies.md` |
+| Personal data, GDPR | `01 Projekt/Osobní údaje a GDPR.md` |
+| Tests | `04 DevOps/Testy.md` |
+| Docker, Compose, pipeline | `04 DevOps/Nasazení a CI.md` |
+| Backups, logs, ops | `04 DevOps/Provoz a data.md` |
+| **Why is X the way it is** | `01 Projekt/Rozhodnutí.md` → `05 Poznámky/Deník.md` |
+| What's planned / deferred | `01 Projekt/Launch checklist.md`, `01 Projekt/Po launchi.md` |
 
-Rule of thumb used in the vault: **topic pages describe the present, the journal the past, `Po launchi` the future.**
+`05 Poznámky/Studijní zápisky/` holds dated code walkthroughs. They **deliberately go stale — never cite them as fact.**
+
+### After you finish a task
+
+Check whether the change requires a documentation update, and if so **make it in the same session**. The trigger table is in `00 Jak vést dokumentaci.md`; the ones that come up most:
+
+- new/changed endpoint, param, status code → `03 Backend/API.md`
+- new migration → `03 Backend/Databáze.md`
+- new env variable → `.env.example` **and** `01 Projekt/Vývojářský start.md`
+- new component → component table in `02 Frontend/Styling a komponenty.md`
+- new route or page → `02 Frontend/Routing a stránky.md`
+- anything sent to a third party → `01 Projekt/Osobní údaje a GDPR.md`
+- a decision was made → `05 Poznámky/Deník.md` **and** a row in `01 Projekt/Rozhodnutí.md`
+- a known gap got fixed → tick it off in the plan **and** update the topic page
+- behaviour described in this file changed → **this file**
+
+Then bump `aktualizováno` in the header of every page you touched.
+
+> The vault is a **separate git repository**, so documentation cannot be updated in the same pull request as the code. Nothing enforces it — no CI, no reviewer. It holds only because of this instruction. (Docs CI was considered and deliberately rejected on 2026-08-28 — see the journal.)
 
 ## Commands
 
-Frontend and backend are separate npm projects in `frontend/` and `backend/` — run commands from inside each directory.
+Full setup, env vars and troubleshooting: `01 Projekt/Vývojářský start.md` in the vault.
 
 ```bash
 # frontend/
-npm run dev         # Start dev server at http://localhost:5173
+npm run dev         # dev server at http://localhost:5173
 npm run build       # TypeScript check + Vite production build
-npm run preview     # Preview production build locally
 npm test            # Vitest, single run (this is what CI runs)
-npm run test:watch  # Vitest in watch mode
 
 # backend/
 npm run dev       # nodemon index.js — Express API at http://localhost:3001
@@ -59,18 +91,13 @@ npm run migrate   # apply pending SQL migrations (schema_migrations tracking)
 npm run seed      # create admin account from ADMIN_EMAIL/ADMIN_PASSWORD in .env
 ```
 
-No linter on either side. **Vitest** is set up in `frontend/` only (jsdom enabled per-file via a `// @vitest-environment jsdom` docblock); `backend/` has no test runner yet. PostgreSQL runs as a standalone Docker container (no `docker-compose.yml` yet — that's the main launch blocker).
+No linter on either side. Vitest is set up in `frontend/` only; `backend/` has no test runner yet. PostgreSQL runs as a standalone Docker container — no `docker-compose.yml` yet, which is the main launch blocker.
 
 ## Git workflow and CI
 
 Work goes through **branches and pull requests**, never straight to `main` (`typ/popis` naming, e.g. `feat/`, `fix/`, `ci/`, `refactor/`, `test/`, `chore/`). The repo allows **squash merging only**, deletes head branches automatically, and prefills the squash commit from the PR title and description — so PR titles read like commit messages.
 
-`.github/workflows/ci.yml` runs on every pull request and on pushes to `main`, in two parallel jobs:
-
-- **frontend** — `npm ci` → `npm test` → `npm run build`
-- **backend** — `npm ci` → `node --check` over every `.js` (no build, no tests yet)
-
-Node version comes from `.nvmrc` at the repo root. `cache-dependency-path` in the workflow is relative to the **repo root**, not to `working-directory`. Details and the reasoning behind each setting: `04 DevOps/Nasazení a CI.md` in the vault.
+`.github/workflows/ci.yml` runs on every pull request and on pushes to `main`, in two parallel jobs: **frontend** (`npm ci` → `npm test` → `npm run build`) and **backend** (`npm ci` → `node --check` over every `.js`). Node version comes from `.nvmrc`. The pipeline works but is not finished — what's still missing and why is in `04 DevOps/Nasazení a CI.md`.
 
 ## Purpose
 
@@ -79,81 +106,21 @@ Event Hub is a city event aggregator for Plzeň (brand: **Plzeňák** CS / **Pil
 **User flow (public):** Home → browse/filter events → event detail
 **Admin flow:** Footer "Admin log in" → `/admin` → `/admin/dashboard` → `/admin/create` or `/admin/edit/:id`
 
-## Architecture
+## Architecture — orientation only
+
+Enough to know where to look. **Details live in the vault pages listed above** — don't restate them here, or this file will drift out of sync again.
 
 React 18 SPA (`frontend/`) built with Vite, talking to a Node.js/Express + PostgreSQL API (`backend/`), with event images in Cloudflare R2. Supabase is fully removed. Routing via react-router-dom v7.
 
-### Routing (`frontend/src/App.jsx`)
-
-`<Layout>` (inside `<BrowserRouter>`) uses `useLocation` to suppress `Header`, `Footer` **and the cookie banner/modal** on all `/admin*` routes.
-
-| Route | Component | Header/Footer |
-|---|---|---|
-| `/` | `Home` | ✓ |
-| `/events` | `Events` | ✓ |
-| `/events/:id` | `EventDetail` | ✓ |
-| `/zasady-ochrany-osobnich-udaju` | `Privacy` | ✓ |
-| `/podminky-uziti` | `Terms` | ✓ |
-| `*` | `NotFound` | ✓ |
-| `/admin` | `Admin` (login) | ✗ |
-| `/admin/dashboard` | `AdminDashboard` | ✗ |
-| `/admin/create` | `AdminCreate` | ✗ |
-| `/admin/edit/:id` | `AdminEdit` | ✗ |
-
-`<Route path="*">` must stay last. **Known bug:** `Header` has a "Mapa" button linking to `/mapa`, which is not a route — it lands on the 404 page.
-
-Since the 2026-08-13 redesign the header is a **single** variant (`#site-header`: brand lockup via `PlzenakLogo`, nav with a category dropdown, "Mapa" button). The old `header--hero`/`--dark`/`--plain` variants no longer exist.
-
-### Consent layer (`frontend/src/lib/consent.js`, `ConsentContext.jsx`)
-
-Consent lives in `localStorage` under `plzenak-consent` (`{v, ts, maps}`), versioned via `CONSENT_VERSION`; missing/invalid/outdated = undecided → banner shows and nothing optional loads. Nothing is sent to the backend. `ConsentProvider` wraps `Layout`; `useConsent()` exposes `{consent, acceptAll, rejectAll, save, openSettings, closeSettings, isSettingsOpen}`. The OpenStreetMap iframe on `EventDetail` renders only when `consent.maps === true`, otherwise `ConsentGate/MapConsent`. There is deliberately **no analytics category** (no analytics exists). Fonts are still loaded from Google Fonts before any consent — an open launch blocker.
-
-### Backend (`backend/`)
-
-Express + PostgreSQL via `pg`, no ORM (raw parametrized SQL by design).
-
-- `index.js` — entrypoint; `dotenv.config()` must run before anything that reads `process.env`
-- `src/db/pool.js` — shared pool, single `query(text, params)`
-- `src/db/migrate.js` — applies pending migrations, tracked in `schema_migrations` (001 tables, 002 `image_url`, 003 `image_key`)
-- `src/db/seed.js` — creates the admin account from `.env`
-- `src/lib/r2.js` — thin AWS SDK v3 wrapper for Cloudflare R2: `sendObject`, `deleteObject`
-- `src/routes/auth.js` — `POST /api/auth/login` (bcrypt + JWT, behind `loginLimiter`)
-- `src/routes/events.js` — `GET /`, `GET /locations`, `GET /:id` public; `POST /`, `PUT /:id`, `DELETE /:id`, `POST /:id/image` protected
-- `src/middleware/authMiddleware.js` — verifies `Authorization: Bearer <token>`, attached per-route
-- `src/middleware/rateLimiter.js` — `loginLimiter` (5 attempts / 15 min)
-
-`GET /locations` must stay above `GET /:id` in the file. Filtering is server-side: `GET /` builds a dynamic parametrized `WHERE` from `q`, `kategorie`, `misto`, `filtr`.
-
-**Auth:** JWT, no sessions. Token in `localStorage`, sent as `Authorization: Bearer`. `useAuthGuard()` checks presence **and expiry** client-side (UX only — real verification is `jwt.verify` on the backend).
-
-**Data mapping:** DB columns are `snake_case`, API/frontend `camelCase`. Mapping happens on the backend (`mapEvent`/`mapEventReverse`).
-
-**Images:** uploaded to the backend (`multer` memory) → pushed to R2 → public URL in `image_url`, object key in `image_key`. Deleting an event best-effort deletes the R2 object too. Known gaps: replacing an image orphans the old object, upload has no size/MIME validation, and the second image slot in the admin forms saves nowhere (decided 2026-08-20: remove it from the UI before launch, build `event_images` after).
-
-### Data
-
-Every public page fetches through `frontend/src/lib/eventsApi.js` (`getEvents`, `getEventLocations`, `getEventById`, `createEvent`, `updateEvent`, `deleteEvent`, `uploadEventImage`). Event shape:
-
-- `id`, `name`, `date`, `dateShort`, `location`, `tags[]`, `badge`, `badgeType`, `imgClass`, `imageUrl`
-- `url`, `description[]`, `mapSrc` — detail page only
-
-`imageUrl` (R2) takes precedence over `imgClass` (CSS gradient) everywhere an event image is drawn. `frontend/src/data/events.js` is orphaned pre-API mock data, imported nowhere.
-
-### Admin pages (`frontend/src/pages/Admin*`)
-
-- **Admin** — login form; `POST /api/auth/login`, token to `localStorage`.
-- **AdminDashboard** — `useAuthGuard()`. Paginated table (10/page), client-side name filter, view/edit/delete actions, empty state.
-- **AdminCreate / AdminEdit** — `useAuthGuard()`. Two near-identical copies of the same form (a deliberate choice over one conditional component). Custom Czech date picker, debounced Nominatim address autocomplete restricted to the Plzeň region generating the OpenStreetMap `mapSrc`, image dropzones. `AdminCreate` deletes the just-created event if the image upload fails; `AdminEdit` deliberately does not.
-
-### Styling
-
-Plain CSS co-located with each component/page — no CSS modules, no Tailwind. Tokens live in `frontend/src/index.css` (`:root`) and `frontend/src/styles/category-tokens.css`. **Never hardcode hex/px/timing in a component — always `var(--token)`.** Selectors lean heavily on `id`s (`#site-header`, `#detail-hero`) with classes for repeated elements.
-
-Fonts in use: **Inter** (`--font-sans`) and **Bricolage Grotesque** (`--font-display`), both from Google Fonts in `frontend/index.html`. `Montserrat` (loaded) and `KronaOne` (`@font-face` in `index.css`) are dead leftovers — no CSS references them.
-
-`#root` is a flex column (`min-height: 100vh`) so the footer sticks to the bottom.
+- **Routing** — `<Layout>` in `App.jsx` suppresses `Header`, `Footer` **and the cookie banner** on all `/admin*` routes. `<Route path="*">` must stay last. *Known bug: the header's "Mapa" button links to `/mapa`, which is not a route.*
+- **Backend** — Express + `pg`, no ORM, raw parametrized SQL by design. `dotenv.config()` must run before anything reading `process.env`. `GET /locations` must stay above `GET /:id`. Auth is JWT, no sessions, `authMiddleware` attached per-route.
+- **Data mapping** — DB columns are `snake_case`, API/frontend `camelCase`; mapping happens on the backend (`mapEvent`/`mapEventReverse`). Every page fetches through `frontend/src/lib/eventsApi.js`.
+- **Images** — `imageUrl` (R2) takes precedence over `imgClass` (CSS gradient) everywhere. Never build a `url()` by hand — always `lib/imageBackground.js`.
+- **Consent** — `localStorage` key `plzenak-consent`, versioned by `CONSENT_VERSION`; missing/invalid/outdated = undecided. No analytics category, deliberately. Fonts still load from Google Fonts before consent — an open launch blocker.
 
 ### Component conventions
 
 - Source files are `.jsx` (not `.tsx`) — TypeScript is present for the build step only.
 - Each component lives in its own folder under `frontend/src/components/` with a matching CSS file; each page under `frontend/src/pages/` likewise. Shared imports use `../../` relative paths.
+- Plain CSS, no CSS modules, no Tailwind. Tokens in `frontend/src/index.css` (`:root`) and `frontend/src/styles/category-tokens.css`. **Never hardcode hex/px/timing in a component — always `var(--token)`.** Selectors lean on `id`s (`#site-header`, `#detail-hero`) with classes for repeated elements.
+- `frontend/src/data/events.js` is orphaned pre-API mock data, imported nowhere.

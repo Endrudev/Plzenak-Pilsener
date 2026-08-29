@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { uploadEventImage, getEventById, updateEvent } from '../../lib/eventsApi.js'
+import { uploadEventImage, getEventById, updateEvent, deleteEvent } from '../../lib/eventsApi.js'
 import { useAuthGuard } from '../../lib/useAuthGuard.js'
 import './AdminEdit.css'
 
@@ -42,17 +42,20 @@ export default function AdminEdit() {
     const { id } = useParams()
     const navigate = useNavigate()
     useAuthGuard()
-    const [selected, setSelected] = useState(new Date(2026, 3, 30))
-    const [inputVal, setInputVal] = useState('30.4.2026')
+    // Výchozí je dnešek — dřív tu bylo natvrdo 30.4.2026, takže nová akce
+    // dostala loňské datum, pokud ho admin ručně nezměnil.
+    const [selected, setSelected] = useState(() => new Date())
+    const [inputVal, setInputVal] = useState(() => toCzech(new Date()))
     const [showCal, setShowCal] = useState(false)
-    const [viewYear, setViewYear] = useState(2026)
-    const [viewMonth, setViewMonth] = useState(3)
+    const [viewYear, setViewYear] = useState(() => new Date().getFullYear())
+    const [viewMonth, setViewMonth] = useState(() => new Date().getMonth())
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [url, setUrl] = useState('')
     const [category, setCategory] = useState('')
     const [locationName, setLocationName] = useState('')
     const [saving, setSaving] = useState(false)
+    const [deleting, setDeleting] = useState(false)
     const [images, setImages] = useState([null, null])
     const [address, setAddress] = useState('')
     const [suggestions, setSuggestions] = useState([])
@@ -67,18 +70,26 @@ export default function AdminEdit() {
     useEffect(() => {
         async function insertEventData(){
             const event = await getEventById(id)
-            setTitle(event.name)
-            setInputVal(event.date)
-
-            const parts = event.date.split('.')
-            const parsedDate = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]))
+            // Sloupce v databázi jsou nullable, ale řízený <input> nesmí dostat
+            // null ani undefined — React by ho přepnul na neřízený a od té chvíle
+            // by ignoroval value. Proto se všechno textové sráží na prázdný řetězec.
+            setTitle(event.name ?? '')
             setImages([event.imageUrl, null])
-            setMapSrc(event.mapSrc)
-            setSelected(parsedDate)
-            setLocationName(event.location)
-            setDescription(event.description.join('\n'))
-            setCategory(event.tags?.[0])
-            setUrl(event.url)
+            setMapSrc(event.mapSrc ?? '')
+            setLocationName(event.location ?? '')
+            setDescription(event.description?.join('\n') ?? '')
+            setCategory(event.tags?.[0] ?? '')
+            setUrl(event.url ?? '')
+
+            // Datum se do stavu pouští jen tehdy, když se ho podaří rozebrat.
+            // Jinak zůstane výchozí dnešek — prázdné `value` u data by formulář
+            // taky rozbilo a `null.split()` by shodilo celé načtení.
+            if (event.date) {
+                setInputVal(event.date)
+                const [day, month, year] = event.date.split('.').map(Number)
+                const parsedDate = new Date(year, month - 1, day)
+                if (!Number.isNaN(parsedDate.getTime())) setSelected(parsedDate)
+            }
         }
         insertEventData()
     }, [id])
@@ -167,6 +178,7 @@ export default function AdminEdit() {
         }if(!category.trim()) { alert('Vyplňte kategorii.'); return
         }if(!locationName.trim()) { alert('Vyplňte lokaci.'); return
         }if(!description.trim()) { alert('Vyplňte popis.'); return
+        }if(!images[0]) { alert('Akce musí mít hlavní obrázek. Vyberte nový.'); return
         }
         setSaving(true)
         let response = null
@@ -193,6 +205,35 @@ export default function AdminEdit() {
         } finally {
             setSaving(false)
         }
+    }
+
+    // Mazání je nevratné (backend smaže řádek i objekt v R2), proto potvrzovací
+    // dialog se jménem akce — window.confirm je stejný postup jako v dashboardu,
+    // vlastní modál sem přidáme, až budeme sjednocovat dialogy.
+    async function handleDelete() {
+        if (!window.confirm(`Opravdu smazat akci „${title}“? Tuhle akci nelze vrátit zpět.`)) return
+        setDeleting(true)
+        try {
+            await deleteEvent(id)
+            navigate('/admin/dashboard')
+        } catch (e) {
+            alert('Chyba při mazání: ' + e.message)
+            setDeleting(false)
+        }
+        // Při úspěchu se setDeleting nevolá — komponenta je po navigaci odmountovaná
+        // a zápis do stavu odmountované komponenty by byl zbytečný.
+    }
+
+    // Křížek jen vyprázdní slot ve formuláři — nic nemaže na serveru.
+    // Obrázek je u akce povinný, takže "odebrat" znamená "vybrat jiný": teprve
+    // nahrání nového obrázku při uložení přepíše ten dosavadní (a backend při tom
+    // uklidí starý objekt z R2). Do té doby jde editaci zavřít bez následků.
+    function handleRemoveImage(index) {
+        const current = images[index]
+        if (!current) return
+        if (current.startsWith('blob:')) URL.revokeObjectURL(current)
+        setImages(prev => prev.map((img, i) => i === index ? null : img))
+        if (index === 0) setImageUrl1(null)
     }
 
     function handleImage(index, e) {
@@ -379,13 +420,16 @@ export default function AdminEdit() {
                                         ? (
                                             <>
                                                 <img src={images[i]} alt="" />
-                                                {/* TODO: vizuální placeholder — skutečné odebrání obrázku (a smazání z R2) zatím backend neumí */}
                                                 <button
                                                     type="button"
                                                     className="ae-img-remove-btn"
                                                     title="Odebrat obrázek"
                                                     aria-label="Odebrat obrázek"
-                                                    onClick={e => { e.preventDefault(); e.stopPropagation() }}
+                                                    onClick={e => {
+                                                        e.preventDefault()
+                                                        e.stopPropagation()
+                                                        handleRemoveImage(i)
+                                                    }}
                                                 >
                                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
                                                         <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -428,15 +472,14 @@ export default function AdminEdit() {
 
                 {/* Footer akce */}
                 <div id="ae-footer">
-                    {/* TODO: vizuální placeholder — potvrzovací dialog a skutečné mazání akce dořešíme zvlášť */}
-                    <button id="ae-delete-btn" type="button">
+                    <button id="ae-delete-btn" type="button" onClick={handleDelete} disabled={deleting || saving}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <polyline points="3 6 5 6 21 6" />
                             <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
                             <path d="M10 11v6" /><path d="M14 11v6" />
                             <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
                         </svg>
-                        Smazat akci
+                        {deleting ? 'Mažu…' : 'Smazat akci'}
                     </button>
 
                     <div id="ae-footer-main-actions">

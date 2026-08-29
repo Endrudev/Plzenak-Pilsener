@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom'
 import './EventCard.css'
+import { imageBackground } from '../../lib/imageBackground.js'
 
 export default function EventCard({ event }) {
     return (
         <div className="event-card">
             <div
                 className={`event-image ${event.imageUrl ? '' : event.imgClass}`}
-                style={event.imageUrl ? { backgroundImage: `url(${event.imageUrl})` } : undefined}
+                style={imageBackground(event.imageUrl)}
             >
                 {event.badge && (
                     <span className={`event-badge badge-${event.badgeType}`}>

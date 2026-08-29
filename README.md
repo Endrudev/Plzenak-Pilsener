@@ -36,7 +36,7 @@
 **Administrace** (chráněná JWT)
 - Přihlášení, tabulka akcí s hledáním a stránkováním
 - Vytvoření a editace akce — vlastní kalendářový picker v českém formátu, našeptávač adres přes Nominatim omezený na Plzeňský kraj, z vybrané adresy se generuje URL vložené mapy
-- Upload hlavního obrázku do Cloudflare R2; při smazání akce se objekt maže i z bucketu
+- Upload hlavního obrázku do Cloudflare R2 — limit 5 MB, kontrola typu podle obsahu souboru; při výměně i smazání akce se starý objekt maže i z bucketu
 
 ---
 
@@ -170,7 +170,7 @@ Základ: `/api`. Zápisové operace vyžadují hlavičku `Authorization: Bearer 
 | `DELETE` | `/events/:id` | ✓ | smazání akce + úklid obrázku v R2 |
 | `POST` | `/events/:id/image` | ✓ | upload hlavního obrázku (`multipart/form-data`) |
 
-Hodnoty parametru `filtr`: `dnes`, `tento-tyden`, `top-akce`.
+Hodnoty `datum`: `dnes`, `vikend`, `7dni`, `30dni`. Hodnoty `razeni`: `konani` (výchozí), `pridano`. Neznámá hodnota se ignoruje, resp. spadne na výchozí řazení.
 
 ---
 
@@ -215,6 +215,7 @@ Co je v aplikaci ošetřené:
 - **Brute force** — rate limit na `/api/auth/login` (5 pokusů / 15 min)
 - **CORS** — povolený jen origin z `FRONTEND_URL`, ne wildcard
 - **Validace vstupů** — ruční kontrola povinných polí na všech zápisových endpointech
+- **Upload souborů** — limit 5 MB, whitelist MIME, ověření skutečného typu podle magických bajtů obsahu; klíč v bucketu generuje server, jméno souboru od uživatele se nepoužije
 - **Tajemství** — `.env` je v `.gitignore` a nikdy nebyl commitnutý; v repozitáři je jen `.env.example` s placeholdery
 - **Frontend** — `useAuthGuard()` kontroluje i expiraci JWT, ne pouze přítomnost tokenu; souhlasová vrstva blokuje načtení mapy třetí strany do udělení souhlasu
 
@@ -238,9 +239,7 @@ Pipeline hlídá u frontendu instalaci z lockfilu, testy a produkční build (v�
 Vedu si je otevřeně, jsou to rozhodnutí a dluhy, ne přehlédnutí:
 
 - **Fonty se tahají z Google Fonts** — request s IP uživatele odchází bez souhlasu, stejný problém, jaký už je u mapy ošetřený. Před launchem je potřeba je hostovat lokálně.
-- **Upload nemá validaci** — `multer` běží bez `limits`, MIME se nekontroluje a jméno souboru od uživatele jde přímo do R2 klíče. Ošetřit před nasazením.
 - **`POST /events` a upload obrázku jsou dvě nezávislá volání** bez atomicity; při selhání druhého se akce uklidí v `catch`, ale správně to není.
-- **Obrázek s mezerou v názvu souboru se nezobrazí** — jméno od uživatele jde do R2 klíče, mezera se dostane do URL a nevalidní `url()` v CSS prohlížeč tiše zahodí. Souvisí s chybějící validací uploadu výš.
 - **Kategorie Hudba / Památky / Pro děti** zatím nejdou vybrat ve formuláři administrace.
 - **`events.date` je `text`, ne `date`** — viz poznámka u [schématu](#databáze).
 - **Mapové zobrazení akcí** (`/mapa`) je navržené, ale neimplementované.
@@ -285,7 +284,7 @@ Hranice se tedy neposouvá pohodlím, ale tím, **co už umím** — a další n
 
 ### Kde je vidět postup
 
-Pravidlo v aktuálním znění je v [`CLAUDE.md`](CLAUDE.md). Souběžně vedu dokumentační vault s deníkem rozhodnutí — proč padla která volba, jaké chyby jsem udělal a co mě naučily. Historie commitů je psaná česky a inkrementálně, takže z ní jde přečíst postup práce, ne jen výsledek.
+Pravidlo v aktuálním znění je v [`CLAUDE.md`](CLAUDE.md). Souběžně vedu **dokumentační vault** (samostatný repozitář `Plzenak-Pilsener-docs`), který je zdrojem pravdy o projektu — architektura, API kontrakt, rejstřík rozhodnutí a deník — proč padla která volba, jaké chyby jsem udělal a co mě naučily. Historie commitů je psaná česky a inkrementálně, takže z ní jde přečíst postup práce, ne jen výsledek.
 
 ---
 
