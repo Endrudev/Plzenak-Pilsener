@@ -423,3 +423,10 @@
         margin-left: auto;
     }
 }
+
+/* Chybová varianta prázdného stavu — stejné rozvržení, jiná ikona a barva,
+   aby "backend neodpověděl" nešlo splést s "zatím žádné akce". */
+.dashboard-empty--error #dashboard-empty-icon {
+    background: var(--badge-bg);
+    color: var(--badge-ink);
+}

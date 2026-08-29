@@ -12,6 +12,7 @@ export default function AdminDashboard() {
     useAuthGuard()
     const [events, setEvents] = useState([])
     const [loading, setLoading] = useState(true)
+    const [loadError, setLoadError] = useState(null)
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1)
 
@@ -23,11 +24,17 @@ export default function AdminDashboard() {
 
     async function fetchEvents() {
         setLoading(true)
+        setLoadError(null)
         try {
             const data = await getEvents()
             setEvents(data)
         } catch (e) {
+            // Chyba musí být vidět na stránce. Samotný console.error tady nestačil:
+            // prázdná tabulka vypadala úplně stejně jako "zatím žádné akce", takže
+            // výpadek backendu se tvářil jako prázdná databáze.
             console.error(e)
+            setLoadError(e.message)
+            setEvents([])
         } finally {
             setLoading(false)
         }
@@ -128,6 +135,23 @@ export default function AdminDashboard() {
 
                 {loading ? (
                     <p id="dashboard-loading">Načítání…</p>
+                ) : loadError ? (
+                    <div id="dashboard-empty" className="dashboard-empty--error">
+                        <span id="dashboard-empty-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="13" /><line x1="12" y1="16" x2="12" y2="16" />
+                            </svg>
+                        </span>
+                        <h2>Akce se nepodařilo načíst</h2>
+                        <p>{loadError}</p>
+                        <button className="dashboard-empty-btn" onClick={fetchEvents}>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 12a9 9 0 1 1-3-6.7" /><polyline points="21 3 21 9 15 9" />
+                            </svg>
+                            Zkusit znovu
+                        </button>
+                    </div>
                 ) : filtered.length === 0 ? (
                     <div id="dashboard-empty">
                         <span id="dashboard-empty-icon">

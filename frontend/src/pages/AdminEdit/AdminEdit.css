@@ -588,3 +588,49 @@ textarea.ae-input {
         flex-direction: column;
     }
 }
+
+/* ---- Chybový stav načtení akce ---- */
+/* Zobrazuje se místo formuláře, ne vedle něj — prázdná pole by vypadala jako
+   rozpracovaná akce a uložení by přepsalo data v databázi. */
+#ae-load-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-3);
+    padding: var(--space-10) var(--space-5);
+}
+
+#ae-load-error h1 {
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-h3);
+    color: var(--ink);
+    margin: 0;
+}
+
+#ae-load-error p {
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    color: var(--ink-3);
+    margin: 0;
+    max-width: 340px;
+}
+
+#ae-load-error button {
+    margin-top: var(--space-3);
+    background: var(--amber-cta);
+    border: none;
+    border-radius: var(--radius-el);
+    padding: var(--space-3) var(--space-5);
+    font-family: var(--font-sans);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-body);
+    color: var(--surface);
+    cursor: pointer;
+    transition: filter var(--dur-fast) var(--ease-standard);
+}
+
+#ae-load-error button:hover {
+    filter: brightness(1.08);
+}
