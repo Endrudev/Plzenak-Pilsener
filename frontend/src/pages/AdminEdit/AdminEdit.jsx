@@ -56,6 +56,7 @@ export default function AdminEdit() {
     const [locationName, setLocationName] = useState('')
     const [saving, setSaving] = useState(false)
     const [deleting, setDeleting] = useState(false)
+    const [loadError, setLoadError] = useState(null)
     const [images, setImages] = useState([null, null])
     const [address, setAddress] = useState('')
     const [suggestions, setSuggestions] = useState([])
@@ -69,7 +70,19 @@ export default function AdminEdit() {
 
     useEffect(() => {
         async function insertEventData(){
-            const event = await getEventById(id)
+            setLoadError(null)
+            let event
+            try {
+                event = await getEventById(id)
+            } catch (e) {
+                // Bez tohohle skončila chyba jako unhandled rejection v konzoli a
+                // admin viděl prázdný formulář, který vypadal jako nová akce —
+                // uložení by pak přepsalo existující akci prázdnými hodnotami.
+                console.error(e)
+                setLoadError(e.message)
+                return
+            }
+
             // Sloupce v databázi jsou nullable, ale řízený <input> nesmí dostat
             // null ani undefined — React by ho přepnul na neřízený a od té chvíle
             // by ignoroval value. Proto se všechno textové sráží na prázdný řetězec.
@@ -189,8 +202,6 @@ export default function AdminEdit() {
                 dateShort:   inputVal ? inputVal.slice(0, inputVal.lastIndexOf('.')) : null,
                 location:    locationName || null,
                 tags:        category ? [category] : [],
-                badge:       null,
-                badgeType:   null,
                 imgClass:    'event-image--prazdroj',
                 url:         url || null,
                 description: description ? description.split('\n').filter(Boolean) : [],
@@ -248,6 +259,24 @@ export default function AdminEdit() {
 
     const today = new Date()
     const cells = buildCalendarDays(viewYear, viewMonth)
+
+    // Když se akce nenačte, formulář se nevykreslí vůbec. Prázdná pole by totiž
+    // vypadala jako rozpracovaná akce a uložení by přepsalo data v databázi.
+    if (loadError) {
+        return (
+            <div id="ae-page">
+                <div id="ae-card">
+                    <div id="ae-load-error">
+                        <h1>Akci se nepodařilo načíst</h1>
+                        <p>{loadError}</p>
+                        <button type="button" onClick={() => navigate('/admin/dashboard')}>
+                            Zpět na přehled
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div id="ae-page">
