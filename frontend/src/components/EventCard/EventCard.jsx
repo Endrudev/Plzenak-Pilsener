@@ -1,17 +1,21 @@
 import { Link } from 'react-router-dom'
 import './EventCard.css'
 import { imageBackground } from '../../lib/imageBackground.js'
+import { eventBadge } from '../../lib/eventBadge.js'
 
 export default function EventCard({ event }) {
+    // Plaketa se počítá z data, v databázi uložená není — viz lib/eventBadge.js
+    const badge = eventBadge(event.date)
+
     return (
         <div className="event-card">
             <div
                 className={`event-image ${event.imageUrl ? '' : event.imgClass}`}
                 style={imageBackground(event.imageUrl)}
             >
-                {event.badge && (
-                    <span className={`event-badge badge-${event.badgeType}`}>
-                        {event.badge}
+                {badge && (
+                    <span className={`event-badge badge-${badge.type}`}>
+                        {badge.text}
                     </span>
                 )}
             </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getEventById } from '../../lib/eventsApi.js'
+import { eventBadge } from '../../lib/eventBadge.js'
 import { useConsent } from '../../lib/ConsentContext.jsx'
 import MapConsent from '../../components/ConsentGate/MapConsent.jsx'
 import './EventDetail.css'
@@ -35,6 +36,10 @@ export default function EventDetail() {
         </div>
     )
 
+    // Až za guardem — do té chvíle je `event` null. Plaketa se počítá z data,
+    // v databázi uložená není (viz lib/eventBadge.js).
+    const badge = eventBadge(event.date)
+
     return (
         <div id="detail-page">
 
@@ -63,8 +68,8 @@ export default function EventDetail() {
 
                 <div id="detail-hero-content">
                     <div id="detail-hero-badges">
-                        {event.badge && (
-                            <span className={`event-badge badge-${event.badgeType}`}>{event.badge}</span>
+                        {badge && (
+                            <span className={`event-badge badge-${badge.type}`}>{badge.text}</span>
                         )}
                         {event.tags?.[0] && <span className="event-tag">{event.tags[0]}</span>}
                     </div>
