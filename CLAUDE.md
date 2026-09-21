@@ -97,7 +97,7 @@ No linter on either side. Vitest is set up in `frontend/` only; `backend/` has n
 
 Work goes through **branches and pull requests**, never straight to `main` (`typ/popis` naming, e.g. `feat/`, `fix/`, `ci/`, `refactor/`, `test/`, `chore/`). The repo allows **squash merging only**, deletes head branches automatically, and prefills the squash commit from the PR title and description — so PR titles read like commit messages.
 
-`.github/workflows/ci.yml` runs on every pull request and on pushes to `main`, in two parallel jobs: **frontend** (`npm ci` → `npm test` → `npm run build`) and **backend** (`npm ci` → `node --check` over every `.js`). Node version comes from `.nvmrc`. The pipeline works but is not finished — what's still missing and why is in `04 DevOps/Nasazení a CI.md`.
+`.github/workflows/ci.yml` runs on every pull request, on pushes to `main`, and manually via Run workflow (`workflow_dispatch`), in two parallel jobs: **frontend** (`npm ci` → `npm test` → `npm run build`) and **backend** (`npm ci` → `node --check` over every `.js`). Node version comes from `.nvmrc`. The whole file runs with `TZ: UTC` and `permissions: contents: read`, and a `concurrency` group keyed by workflow and branch cancels superseded runs. The pipeline works but is not finished — what's still missing and why is in `04 DevOps/Nasazení a CI.md`.
 
 ## Purpose
 
