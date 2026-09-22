@@ -124,14 +124,35 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    border-bottom: 2px solid transparent;
     transition: color var(--dur-fast) var(--ease-standard);
 }
 
 .nav-link--active {
     color: var(--color-ink);
     font-weight: var(--fw-semibold);
-    border-bottom-color: var(--color-primary);
+}
+
+/* Desktop vodorovná navigace (#header-nav) — pilulkové odkazy s hover/aktivní
+   pozadím podle handoffu (.nb), ne podtržení jako dřív. Mobilní drawer
+   (#header-drawer-nav) sdílí .nav-link jen kvůli barvě/tučnosti aktivního
+   stavu výš, zbytek si stylizuje sám — proto je tohle přidání navíc scoped
+   sem, ne do .nav-link základu. */
+#header-nav .nav-link {
+    min-height: var(--touch-min);
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-nav-link);
+    font-weight: var(--fw-semibold);
+    color: var(--color-ink);
+    transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
+}
+
+#header-nav .nav-link:hover {
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+#header-nav .nav-link--active {
+    color: var(--color-label);
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
 }
 
 #nav-category-wrapper {
@@ -263,18 +284,23 @@
     text-decoration: none;
 }
 
+/* Tvar (výška/padding/radius/stín) podle handoffového .nb-cta ("Přidat
+   akci" tam, "Mapa" u nás — jiná akce, tak necháváme naši jantarovou
+   barvu místo tmavé handoffové, ale kulatost/rozměry sedí přesně). */
 #header-map-btn {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
+    height: 48px;
     background: var(--color-primary);
     color: #fff;
     text-decoration: none;
     font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
+    font-weight: var(--fw-bold);
     font-size: var(--fs-body);
-    padding: var(--space-3) var(--space-5);
-    border-radius: var(--radius-pill);
+    padding: 0 var(--space-5);
+    border-radius: var(--radius-btn-s);
+    box-shadow: 0 8px 16px -10px rgba(42, 15, 4, .5);
     flex-shrink: 0;
     transition: filter var(--dur-fast) var(--ease-standard);
 }
@@ -284,8 +310,20 @@
 }
 
 @media (min-width: 768px) {
+    /* Tři skupiny (logo | nav | mapa) rozložené přes celou šířku lišty —
+       stejně jako handoff (justify-content: space-between), ne nav hned
+       za logem s mapou dotlačenou přes flex:1 jako dřív. */
+    #header-inner {
+        justify-content: space-between;
+        gap: 0;
+        min-height: 72px;
+        padding: 0 var(--space-3) 0 26px;
+    }
+
     #header-nav {
         display: flex;
+        flex: none;
+        gap: 6px;
     }
 
     #header-menu-btn,

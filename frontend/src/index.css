@@ -171,6 +171,7 @@
   --radius-field-soft: 16px;
   --radius-field: 18px;
   --radius-btn-s: 14px;
+  --radius-nav-link: 12px;   /* jen odkazy v #header-nav — handoff hodnota, mimo hlavní škálu */
   --radius-card:  22px;
   --radius-tile:  24px;
   --radius-panel: 27px;
