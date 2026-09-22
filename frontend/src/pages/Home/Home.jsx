@@ -56,19 +56,26 @@ export default function Home() {
         <HeroBento events={events} />
       </section>
 
-      {/* Sekce Hledání — tmavý pás navazující na hero, s dekorativní siluetou
-          střech jako přechod (stejná technika jako patička — viz cityscape.js
-          přes Footer.jsx). Tři dropdowny (Kdy/Co/Kde) posílají skutečné
-          parametry, které /events umí zpracovat (datum/kategorie/misto). */}
-      <section id="search-band" aria-labelledby="search-h">
-        <svg id="search-skyline" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true">
+      {/* Přechod hero → tmavý pás Hledání — siluета střech proti SVĚTLÉMU
+          pozadí stránky (ne proti tmavému pásu pod ní), stejná technika jako
+          patička: vlastní gradient přechází ze světlé do tmavé a budovy jsou
+          vybarvené tmavou barvou pásu pod nimi, aby s ním splynuly. Bez
+          téhle vrstvy proti světlému pozadí byly budovy stejnou barvou jako
+          pás pod nimi a "zmizely". */}
+      <div id="search-skyline-wrap" aria-hidden="true">
+        <svg id="search-skyline" viewBox="0 0 1440 100" preserveAspectRatio="none">
           <path d="M-10 100V36H-0V26H10V16H19V26H29V36H39V58H111V28H149V44H176V18l5 -12l5 12V44H213V58H231V32l5 -12l5 12V58H259V58H273V48H287V38H300V48H314V58H328V42H371V52H438V32L476 14L514 32V30H528V20H542V10H557V20H571V30H585V45H592V35H599V25H606V35H613V45H620V52H700V53H761V56H831V51L852 33L873 51V59L894 41L915 59V55H992V54H1014V28l5 -12l5 12V54H1045V50H1069V24l5 -12l5 12V50H1103V42H1163V29H1240V38H1312V34H1366V45L1390 27L1413 45V58H1451V100Z" />
           {[
             [77, 54], [134, 56], [191, 65], [362, 71], [476, 70], [533, 60], [704, 54],
             [761, 69], [818, 58], [932, 60], [989, 53], [1103, 63], [1274, 66], [1388, 71],
           ].map(([x, y], i) => <rect key={i} x={x} y={y} width="5" height="7" />)}
         </svg>
+      </div>
 
+      {/* Sekce Hledání — tmavý pás navazující na hero. Tři dropdowny
+          (Kdy/Co/Kde) posílají skutečné parametry, které /events umí
+          zpracovat (datum/kategorie/misto). */}
+      <section id="search-band" aria-labelledby="search-h">
         <div id="search-inner">
           <div id="search-heading-row">
             <div id="search-heading-col">
@@ -106,35 +113,38 @@ export default function Home() {
 
             <div id="search-filters">
               <FilterSelect
-                placeholder="Kdy"
+                label="Kdy"
+                placeholder="Kdykoli"
                 value={search.datum}
                 onChange={v => setSearch(s => ({ ...s, datum: v }))}
                 options={DATE_OPTIONS}
                 icon={
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3.5" y="5" width="17" height="15" rx="2.5" /><path d="M3.5 10h17M8 3v4M16 3v4" />
                   </svg>
                 }
               />
               <FilterSelect
-                placeholder="Co"
+                label="Co"
+                placeholder="Všechny kategorie"
                 value={search.kategorie}
                 onChange={v => setSearch(s => ({ ...s, kategorie: v }))}
                 options={CATEGORIES.map(c => ({ value: c.name, label: c.name, icon: c.icon(16) }))}
                 icon={
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 12l-8 8-9-9V3h8Z" /><circle cx="7.5" cy="7.5" r="1.5" />
                   </svg>
                 }
               />
               <FilterSelect
-                placeholder="Kde"
+                label="Kde"
+                placeholder="Celá Plzeň"
                 value={search.misto}
                 onChange={v => setSearch(s => ({ ...s, misto: v }))}
                 options={locations.map(loc => ({ value: loc, label: loc }))}
                 icon={
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 12l-8 8-9-9V3h8Z" /><circle cx="7.5" cy="7.5" r="1.5" />
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15 12 21 12 21z" /><circle cx="12" cy="10" r="2.4" />
                   </svg>
                 }
               />

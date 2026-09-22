@@ -64,6 +64,52 @@
     color: var(--color-text-muted);
 }
 
+/* ---------- varianta s "eyebrow" popiskem (.ddbox v handoffu) ---------- */
+.filter-dropdown-trigger--labeled {
+    position: relative;
+    height: 68px;
+    gap: 14px;
+    padding: 0 var(--space-12) 0 var(--space-5);
+    border: none;
+    border-radius: var(--radius-field);
+}
+
+.filter-dropdown-trigger--labeled .filter-dropdown-icon {
+    color: var(--color-label);
+}
+
+.filter-dropdown-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+}
+
+.filter-dropdown-eyebrow {
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.filter-dropdown-trigger--labeled .filter-dropdown-label {
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-semibold);
+    color: var(--color-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filter-dropdown-trigger--labeled .filter-dropdown-chevron {
+    position: absolute;
+    right: var(--space-5);
+    color: var(--color-text-muted);
+}
+
 .filter-dropdown-chevron {
     flex-shrink: 0;
     color: var(--color-text-muted);

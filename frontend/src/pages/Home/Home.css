@@ -22,23 +22,26 @@
   padding: 0 var(--space-4);
 }
 
-/* ---------- Sekce Hledání (tmavý pás, doslova ze zdroje) ---------- */
-#search-band {
+/* Siluета střech mezi hero a tmavým pásem Hledání — stejná technika jako
+   patička (Footer.jsx): vlastní gradient ze SVĚTLÉ barvy stránky do tmavé
+   barvy pásu pod ní a budovy vybarvené touhle tmavou barvou, aby s pásem
+   pod nimi splynuly. Bez tohohle vlastního přechodu (dřív budovy jen
+   ležely na pozadí #search-band, obarvené stejnou barvou jako ono) budovy
+   zmizely — nebyl proti čemu je vidět. preserveAspectRatio="none" záměrně
+   (stejné jako patička) — dekorace, nevadí mírné nerovnoměrné natažení
+   podle šířky. */
+#search-skyline-wrap {
   position: relative;
+  height: 100px;
   overflow: hidden;
-  background: linear-gradient(to bottom, var(--color-night) 0%, var(--color-night-2) 100%);
-  padding: var(--space-10) var(--space-4) var(--space-10);
+  background: linear-gradient(to bottom, var(--color-page) 0%, var(--color-night) 82%);
 }
 
-/* Siluета střech — stejná technika jako patička (viz Footer.jsx), přechod
-   mezi hero a tímhle pásem. preserveAspectRatio="none" záměrně (stejné jako
-   patička) — dekorace, nevadí mírné nerovnoměrné natažení podle šířky. */
 #search-skyline {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
-  height: 100px;
+  height: 100%;
   fill: var(--color-night);
   filter: drop-shadow(0 -3px 6px rgba(29, 11, 4, .35));
 }
@@ -46,6 +49,14 @@
 #search-skyline rect {
   fill: var(--color-window);
   opacity: 0.85;
+}
+
+/* ---------- Sekce Hledání (tmavý pás, doslova ze zdroje) ---------- */
+#search-band {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to bottom, var(--color-night) 0%, var(--color-night-2) 100%);
+  padding: var(--space-8) var(--space-4) var(--space-10);
 }
 
 #search-inner {
@@ -120,11 +131,14 @@
   gap: var(--space-3);
 }
 
+/* Handoff má tenhle bar 84px vysoký (na 1280px šablonu) — na reálné
+   šířce stránky to působilo neúměrně obřím vstupním polem, tak je
+   zmenšený na rozumnější 60px. */
 #search-bar {
   display: flex;
   align-items: center;
-  height: 84px;
-  padding: 8px 8px 8px 30px;
+  height: 60px;
+  padding: 6px 6px 6px 22px;
   box-sizing: border-box;
   border-radius: var(--radius-pill);
   background: #fff;
@@ -138,6 +152,8 @@
 
 #search-bar svg {
   flex-shrink: 0;
+  width: 18px;
+  height: 18px;
   color: var(--color-label);
 }
 
@@ -145,14 +161,14 @@
   flex-grow: 1;
   min-width: 0;
   height: 100%;
-  margin: 0 var(--space-4);
+  margin: 0 var(--space-3);
   border: 0;
   outline: none;
   padding: 0;
   background: transparent;
   font-family: var(--font-sans);
   font-weight: var(--fw-medium);
-  font-size: 20px;
+  font-size: var(--fs-body-lg);
   color: var(--color-ink);
 }
 
@@ -162,16 +178,21 @@
   align-items: center;
   gap: var(--space-2);
   height: 100%;
-  padding: 0 var(--space-8);
+  padding: 0 var(--space-5);
   border: 0;
   border-radius: var(--radius-pill);
   background: var(--color-primary);
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-weight: var(--fw-bold);
-  font-size: var(--fs-h3);
+  font-size: var(--fs-body);
   cursor: pointer;
   transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+#search-bar-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
 #search-bar-btn:hover,
