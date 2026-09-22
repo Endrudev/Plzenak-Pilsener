@@ -34,7 +34,7 @@ const events = [
         name: 'Rodinný den v ZOO Plzeň',
         date: '22.09.2026',
         location: 'Zoo Plzeň',
-        tags: ['Děti'],
+        tags: ['Pro děti'],
         url: null,
         description: [
             'Celodenní program pro rodiny s dětmi — komentovaná krmení, dílny pro nejmenší a hledačka po výběhu s odměnou v cíli.',
@@ -68,7 +68,7 @@ const events = [
         name: 'Loutkové divadlo Alfa – Pohádka o Smolíčkovi',
         date: '28.09.2026',
         location: 'Divadlo Alfa',
-        tags: ['Děti', 'Kultura'],
+        tags: ['Pro děti', 'Kultura'],
         url: null,
         description: [
             'Klasická česká pohádka v podání loutkoherců Divadla Alfa. Vhodné pro děti od 3 let, délka představení cca 50 minut.',
@@ -91,7 +91,7 @@ const events = [
         name: 'DEPO2015 – Deskohraní',
         date: '04.10.2026',
         location: 'DEPO2015',
-        tags: ['Kultura', 'Děti'],
+        tags: ['Kultura', 'Pro děti'],
         url: null,
         description: [
             'Celoodpolední herní maraton v bývalé tramvajové vozovně — stovky deskových her k vyzkoušení, půjčovna zdarma s vratnou zálohou.',
