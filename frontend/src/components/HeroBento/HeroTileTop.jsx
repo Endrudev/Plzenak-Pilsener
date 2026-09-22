@@ -18,11 +18,11 @@ export default function HeroTileTop({ events }) {
 
             <div className="hero-tile-overlay" aria-hidden="true">
                 <span className="hero-tile-eyebrow">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="m12 4 2.5 5.1 5.6.8-4 4 .9 5.6-5-2.7-5 2.7.9-5.6-4-4 5.6-.8z" /></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.7 5.7 6.2.8-4.6 4.3 1.2 6.2L12 16.8l-5.5 3 1.2-6.2L3.1 9.3l6.2-.8z" /></svg>
                     Výběr Plzeňáku
                 </span>
                 <h2 className="hero-tile-title">TOP akce</h2>
-                <p className="hero-tile-lead">To nejlepší, co se v Plzni chystá — posviť si a vyber.</p>
+                <p className="hero-tile-lead">To nejlepší, co se v Plzni chystá — vyber si svůj večer.</p>
             </div>
 
             <Link to="/events?top=1" className="hero-tile-arrow" aria-label="Zobrazit TOP akce">

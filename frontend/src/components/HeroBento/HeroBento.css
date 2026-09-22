@@ -76,6 +76,18 @@
     margin: 0;
 }
 
+/* Tři velikosti nadpisu dlaždice podle handoffu: TOP 76px (výchozí
+   .hero-tile-title = --fs-display-l), Hudba 56px (--md), Zbytek 36px (--sm).
+   Sdílené tady, ne v jednotlivých *.css souborech dlaždic — používá je
+   víc než jedna dlaždice, drží se to na jednom místě. */
+.hero-tile-title--md {
+    font-size: var(--fs-heading-1);
+}
+
+.hero-tile-title--sm {
+    font-size: var(--fs-heading-2);
+}
+
 .hero-tile-arrow {
     position: absolute;
     top: var(--space-5);

@@ -4,184 +4,235 @@
     color: var(--color-calm-text);
 }
 
-.ht-rest-scene {
+.ht-rest-bg {
     position: absolute;
     inset: 0;
     z-index: 0;
     background: var(--color-calm-bg);
-    overflow: hidden;
 }
 
-.hero-tile--rest .hero-tile-overlay {
-    padding: var(--space-5);
+/* Na rozdíl od Hudba/TOP tahle dlaždice NENÍ celoplošná scéna — je to malý
+   "pohled" 222×200px v pravém horním rohu, text stojí mimo něj na klidném
+   pozadí. Doslova podle handoffu. */
+.vig {
+    position: absolute;
+    right: 16px;
+    top: 14px;
+    width: 222px;
+    height: 200px;
+    z-index: 1;
+    pointer-events: none;
 }
 
-.hero-tile--rest .hero-tile-title--sm {
+.scn {
+    position: absolute;
+    inset: 0;
+    display: block;
+    animation-duration: 9s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: backwards;
+}
+
+.scn--v2, .scn--v3 { opacity: 0; }
+.scn--v1 { animation-delay: -.5s; }
+.scn--v2 { animation-delay: 2.5s; }
+.scn--v3 { animation-delay: 5.5s; }
+
+@keyframes ht-scene {
+    0%     { opacity: 0; filter: blur(8px); }
+    5.6%   { opacity: 1; filter: blur(0); }
+    24.4%  { opacity: 1; filter: blur(0); }
+    30%    { opacity: 0; filter: blur(8px); }
+    100%   { opacity: 0; filter: blur(8px); }
+}
+
+.hero-tile--rest:hover .scn,
+.hero-tile--rest:focus-visible .scn {
+    animation-name: ht-scene;
+}
+
+/* Mlha mezi výjevy — jeden prvek, 3s cyklus (třikrát rychlejší než 9s
+   smyčka výjevů), vyladěný tak, aby probliknul přesně v bodě, kdy se
+   aktuální výjev rozmazává do dalšího. Hodnoty doslova ze zdroje. */
+.mist {
+    position: absolute;
+    inset: -12%;
+    display: block;
+    opacity: 0;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(244, 247, 239, .95), rgba(236, 242, 230, .75) 55%, rgba(225, 233, 217, 0));
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes ht-mist {
+    0%, 56.7%   { opacity: 0; }
+    73.3%, 83.3% { opacity: .9; }
+    100%        { opacity: 0; }
+}
+
+.hero-tile--rest:hover .mist,
+.hero-tile--rest:focus-visible .mist {
+    animation-name: ht-mist;
+}
+
+.bulb {
+    position: absolute;
+    display: block;
+    width: 4%;
+    height: 4.4%;
+    margin: -2% 0 0 -2%;
+    border-radius: 50%;
+    background: var(--color-calm-bulb);
+    box-shadow: 0 0 4px 1px rgba(255, 236, 170, .8);
+    animation-duration: 2.4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.bulb.b1 { animation-delay: -.6s; }
+.bulb.b2 { animation-delay: -1.3s; }
+.bulb.b3 { animation-delay: -1.9s; }
+
+@keyframes ht-bulb {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: .35; }
+}
+
+.hero-tile--rest:hover .bulb,
+.hero-tile--rest:focus-visible .bulb {
+    animation-name: ht-bulb;
+}
+
+/* Přípitek ve výjevu 2 — zvednutá paže se sklenicí, mimo hlavní <svg>. */
+.raise {
+    position: absolute;
+    left: 64%;
+    top: 30%;
+    width: 14%;
+    height: 31%;
+    display: block;
+    transform-origin: 8% 94%;
+    animation-duration: 2.2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes ht-cheers {
+    0%, 100% { transform: rotate(0); }
+    35%      { transform: rotate(-10deg); }
+    45%      { transform: rotate(-4deg); }
+    55%      { transform: rotate(-10deg); }
+}
+
+.hero-tile--rest:hover .raise,
+.hero-tile--rest:focus-visible .raise {
+    animation-name: ht-cheers;
+}
+
+/* Balónek ve výjevu 3 — mimo hlavní <svg>, jemně se pohupuje. */
+.balloon {
+    position: absolute;
+    left: 44%;
+    top: 20%;
+    width: 12%;
+    height: 50%;
+    display: block;
+    transform-origin: 50% 100%;
+    animation-duration: 3.2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes ht-bob2 {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%      { transform: translateY(-4px) rotate(4deg); }
+}
+
+.hero-tile--rest:hover .balloon,
+.hero-tile--rest:focus-visible .balloon {
+    animation-name: ht-bob2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scn, .mist, .bulb, .raise, .balloon {
+        animation: none !important;
+    }
+    .scn--v1 { opacity: 1; filter: blur(0); }
+}
+
+/* ---------- text (mimo scénu, přes celou výšku dlaždice) ---------- */
+.ht-rest-overlay {
+    justify-content: space-between;
+    z-index: 2;
+}
+
+.ht-rest-top {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.hero-tile--rest .hero-tile-title {
+    max-width: 7ch;
     color: var(--color-calm-text);
-    font-size: var(--fs-h2);
+}
+
+.ht-rest-browse {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    color: var(--color-calm-text-soft);
+    pointer-events: auto;
+}
+
+.ht-rest-browse-go {
+    display: flex;
+    transition: transform var(--dur-fast) var(--ease-standard);
+}
+
+.hero-tile--rest:hover .ht-rest-browse-go,
+.hero-tile--rest:focus-visible .ht-rest-browse-go {
+    transform: translateX(4px);
 }
 
 .ht-rest-cats {
     display: flex;
-    gap: 6px;
-    margin-top: var(--space-2);
+    gap: var(--space-2);
+    pointer-events: auto;
 }
 
 .ht-rest-cat {
     display: flex;
-    width: 22px;
-    height: 22px;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 52px;
+}
+
+.ht-rest-cat-icon {
+    display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-el);
     background: rgba(255, 255, 255, .55);
     color: var(--color-calm-text-soft);
 }
 
-/* ---------- tři výjevy ---------- */
-.ht-vignette {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    filter: blur(8px);
-}
-
-.ht-vignette--1 {
-    opacity: 1;
-    filter: blur(0);
-}
-
-.hero-tile--rest:hover .ht-vignette,
-.hero-tile--rest:focus-visible .ht-vignette {
-    animation: ht-vignette 9s var(--ease-standard) infinite;
-}
-
-.hero-tile--rest:hover .ht-vignette--2,
-.hero-tile--rest:focus-visible .ht-vignette--2 { animation-delay: -6s; }
-.hero-tile--rest:hover .ht-vignette--3,
-.hero-tile--rest:focus-visible .ht-vignette--3 { animation-delay: -3s; }
-
-/* Cyklus 9s / 3 výjevy = 3s na výjev: .5s zaostření, ~1.7s viditelné,
-   .5s rozmazání, .3s mlha, pak dalších 6s (dva zbylé výjevy) skrytě čeká. */
-@keyframes ht-vignette {
-    0%      { opacity: 0; filter: blur(8px); }
-    5.5%    { opacity: 1; filter: blur(0); }
-    24%     { opacity: 1; filter: blur(0); }
-    29.5%   { opacity: 0; filter: blur(8px); }
-    100%    { opacity: 0; filter: blur(8px); }
-}
-
-.ht-fog {
-    position: absolute;
-    inset: 0;
-    background: var(--color-calm-bg);
-    opacity: 0;
-    pointer-events: none;
-}
-
-.hero-tile--rest:hover .ht-fog,
-.hero-tile--rest:focus-visible .ht-fog {
-    animation: ht-fog 3s var(--ease-standard) infinite;
-}
-
-@keyframes ht-fog {
-    0%   { opacity: 0; }
-    3%   { opacity: .9; }
-    9%   { opacity: 0; }
-    100% { opacity: 0; }
-}
-
-/* ---------- postavičky (sdílené HeroTileRest.jsx <Figure>) ---------- */
-.ht-figure {
-    position: absolute;
-    bottom: 22%;
-    width: 16px;
-    height: 32px;
-}
-
-.ht-figure--small { width: 11px; height: 20px; }
-
-.ht-figure-head {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--color-calm-text);
-    margin: 0 auto;
-    opacity: .85;
-}
-
-.ht-figure--small .ht-figure-head { width: 7px; height: 7px; }
-
-.ht-figure-body {
-    width: 16px;
-    height: 20px;
-    border-radius: 8px 8px 3px 3px;
-    background: var(--color-calm-text);
-    opacity: .72;
-    margin-top: 2px;
-}
-
-.ht-figure--small .ht-figure-body { width: 11px; height: 13px; }
-
-/* výjev 1 — pár u stánku */
-.ht-fig-a { left: 38%; }
-.ht-fig-b { left: 47%; }
-.ht-stall {
-    position: absolute;
-    left: 62%;
-    bottom: 22%;
-    width: 30px;
-    height: 26px;
-    background: var(--color-calm-text-soft);
-    opacity: .5;
-}
-.ht-stall-top {
-    position: absolute;
-    left: calc(62% - 4px);
-    bottom: calc(22% + 26px);
-    width: 38px;
-    height: 8px;
-    border-radius: 3px;
-    background: var(--color-calm-text-soft);
-    opacity: .6;
-}
-
-/* výjev 2 — přípitek */
-.ht-fig-c { left: 34%; }
-.ht-fig-d { left: 46%; }
-.ht-fig-e { left: 58%; }
-.ht-glass {
-    position: absolute;
-    left: calc(58% + 9px);
-    bottom: calc(22% + 26px);
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color-calm-text);
-    opacity: .7;
-}
-
-/* výjev 3 — dítě s balónkem */
-.ht-fig-f { left: 46%; }
-.ht-balloon-string {
-    position: absolute;
-    left: calc(46% + 9px);
-    bottom: calc(22% + 20px);
-    width: 1px;
-    height: 22px;
-    background: var(--color-calm-text-soft);
-}
-.ht-balloon {
-    position: absolute;
-    left: calc(46% + 4px);
-    bottom: calc(22% + 40px);
-    width: 12px;
-    height: 15px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    opacity: .8;
+.ht-rest-cat-label {
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-medium);
+    color: var(--color-calm-text-soft);
+    text-align: center;
 }
 
 @media (max-width: 767px) {
-    .hero-tile--rest .hero-tile-title--sm { font-size: var(--fs-h3); }
+    .hero-tile--rest .hero-tile-title { font-size: var(--fs-h3); }
+    .ht-rest-cat-label { display: none; }
 }

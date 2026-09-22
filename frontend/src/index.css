@@ -53,12 +53,35 @@
   --color-cream-muted: #D9B996;
 
   /* ---------- BARVY · kategorijní akcenty mimo jantarovou rodinu ---------- */
-  --color-music-1:    #7B3480;
-  --color-music-2:    #4A1D57;
-  --color-music-tint: #F1DDF2;
-  --color-calm-bg:        #E1E9D9;
-  --color-calm-text:      #213A26;
-  --color-calm-text-soft: #34553A;
+  /* Přesné hodnoty z handoff zdroje (dlaždice Hudba v HeroBento) — 3stupňový
+     gradient pozadí + barvy papírové siluety davu/pódia/interpreta. */
+  --color-music-1:          #3A1446;
+  --color-music-2:          #5F2769;
+  --color-music-3:          #7B3480;
+  --color-music-tint:       #F1DDF2;
+  --color-music-fan-back:   #6E2E7A;
+  --color-music-fan-front:  #A866B3;
+  --color-music-stage:      #4A1B56;
+  --color-music-figure:     #F3DDF1;
+  --color-music-figure-alt: #E4C3E6;
+  --color-music-curtain:    #C58FCC;
+  --color-music-curtain-lt: #E6C2E8;
+
+  /* Dtto pro dlaždici Zbytek programu — tři večerní výjevy (stánek,
+     přípitek, dítě s balónkem). */
+  --color-calm-bg:          #E1E9D9;
+  --color-calm-text:        #213A26;
+  --color-calm-text-soft:   #34553A;
+  --color-calm-line:        #8AA680;
+  --color-calm-ground:      #B3C8A8;
+  --color-calm-awning-a:    #DDE7D5;
+  --color-calm-awning-b:    #C6D5BC;
+  --color-calm-awning-trim: #A5BD9B;
+  --color-calm-figure:      #6A8C6D;
+  --color-calm-figure-dk:   #3F5E45;
+  --color-calm-lamp-glow:   #F4F1E4;
+  --color-calm-bulb:        #FFF3C9;
+
   --color-segment-bg:     #F3E8DA;
 
   /* ---------- GRADIENT ---------- */
