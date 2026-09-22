@@ -6,6 +6,7 @@ import { getEvents, getEventLocations } from '../../lib/eventsApi.js'
 import { useSearchParams } from 'react-router-dom'
 import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
 import { CATEGORIES } from '../../lib/categories.jsx'
+import { DATE_OPTIONS } from '../../lib/dateFilters.js'
 import { eventCountLabel } from '../../lib/pluralize.js'
 import './Events.css'
 
@@ -26,15 +27,6 @@ const QUICK_FILTERS = [
       </svg>
     )
   },
-]
-
-// Hodnoty musí sedět s větvemi filtru `datum` na backendu (routes/events.js).
-// Neznámou hodnotu backend tiše ignoruje, takže překlep se neprojeví chybou.
-const DATE_OPTIONS = [
-  { value: 'dnes', label: 'Dnes' },
-  { value: 'vikend', label: 'Tento víkend' },
-  { value: '7dni', label: 'Nejbližších 7 dní' },
-  { value: '30dni', label: 'Nejbližších 30 dní' },
 ]
 
 // Řazení, ne filtr — proto se použije hned, bez čekání na tlačítko
