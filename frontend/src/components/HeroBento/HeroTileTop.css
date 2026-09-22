@@ -23,10 +23,13 @@
     overflow: visible;
 }
 
-/* Procentuální transform-origin se v SVG bez tohohle počítá vůči celému
-   viewBoxu (850×640), ne vůči vlastnímu tvaru — proto by se např. vlajka
-   vlnila kolem levého horního rohu celé scény, ne kolem svého stožáru. */
-.shoot, .flag, .bd {
+/* Bez tohohle se `transform-origin` (a i střed pro `scale`/`rotate` bez
+   explicitního origin) v SVG počítá vůči celému viewBoxu (850×640), ne
+   vůči vlastnímu tvaru — proto se hvězda/kouř/vlajka/pták při animaci
+   "odrazily" směrem k rohu scény místo aby se hýbaly na místě. Přidáno
+   plošně na všechno, co se animuje (i `translate`-only prvky, kde na
+   tom nezáleží — neuškodí, drží se to konzistentní). */
+.sky, .st, .shoot, .flag, .puff, .bd, .flock, .lantern, .glow {
     transform-box: fill-box;
 }
 

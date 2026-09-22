@@ -153,19 +153,22 @@ export default function HeroTileTop() {
                             <stop offset="0" stopColor="var(--color-top-bg-3)" stopOpacity="0" />
                             <stop offset="1" stopColor="var(--color-top-bg-3)" stopOpacity="0.55" />
                         </linearGradient>
+                        {/* stop-color jako čistý hex + stop-opacity zvlášť, ne rgba() —
+                            spolehlivější napříč prohlížeči než barva s alfa kanálem
+                            zapsaná přímo v stop-color. */}
                         <radialGradient id="ht-glow" cx="50%" cy="100%" r="55%">
-                            <stop offset="0%" stopColor="rgba(255,238,204,.62)" />
-                            <stop offset="40%" stopColor="rgba(255,224,176,.26)" />
-                            <stop offset="75%" stopColor="rgba(255,214,160,0)" />
+                            <stop offset="0%" stopColor="#FFEECC" stopOpacity="0.62" />
+                            <stop offset="40%" stopColor="#FFE0B0" stopOpacity="0.26" />
+                            <stop offset="75%" stopColor="#FFD6A0" stopOpacity="0" />
                         </radialGradient>
                         <radialGradient id="ht-glow-far" cx="50%" cy="100%" r="55%">
-                            <stop offset="0%" stopColor="rgba(255,232,196,.42)" />
-                            <stop offset="40%" stopColor="rgba(255,220,170,.16)" />
-                            <stop offset="75%" stopColor="rgba(255,214,160,0)" />
+                            <stop offset="0%" stopColor="#FFE8C4" stopOpacity="0.42" />
+                            <stop offset="40%" stopColor="#FFDCAA" stopOpacity="0.16" />
+                            <stop offset="75%" stopColor="#FFD6A0" stopOpacity="0" />
                         </radialGradient>
                         <linearGradient id="ht-shoot-grad" x1="0" y1="0" x2="1" y2="0">
-                            <stop offset="0%" stopColor="rgba(255,236,204,0)" />
-                            <stop offset="100%" stopColor="rgba(255,244,226,.95)" />
+                            <stop offset="0%" stopColor="#FFECCC" stopOpacity="0" />
+                            <stop offset="100%" stopColor="#FFF4E2" stopOpacity="0.95" />
                         </linearGradient>
                     </defs>
 
@@ -186,9 +189,9 @@ export default function HeroTileTop() {
                     <g transform="translate(859 100)">
                         <g className="flock">
                             {BIRDS.map((b, i) => (
-                                <svg key={i} className={`bd bd${i}`} x={b.l} y={b.t} width={b.w} height={b.h} viewBox="0 0 20 10">
-                                    <path d={BIRD_D} fill="var(--color-top-bird)" />
-                                </svg>
+                                <g key={i} transform={`translate(${b.l} ${b.t}) scale(${b.w / 20} ${b.h / 10})`}>
+                                    <path className={`bd bd${i}`} d={BIRD_D} fill="var(--color-top-bird)" />
+                                </g>
                             ))}
                         </g>
                     </g>
