@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
 import HeroBento from '../../components/HeroBento/HeroBento.jsx'
+import CategoryTile from '../../components/CategoryTile/CategoryTile.jsx'
 import { getEvents } from '../../lib/eventsApi.js'
 import { CATEGORIES } from '../../lib/categories.jsx'
 import './Home.css'
@@ -140,37 +141,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Promo bannery — TODO: 3D ilustrace zatím chybí, čeká se na assety */}
-      <section id="promo-section">
-        <div className="promo-card">
-          <span className="promo-icon" style={{ color: 'var(--category-gastro)' }}>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5.5 8.5h8.5V19a2 2 0 0 1-2 2H7.5a2 2 0 0 1-2-2z" /><path d="M14 11h2.5a2.75 2.75 0 0 1 0 5.5H14" /><path d="M5.5 8.5a2.2 2.2 0 0 1 2-2.2 2.6 2.6 0 0 1 4.5-1.5A2.3 2.3 0 0 1 14 8.5" />
-            </svg>
-          </span>
-          <div className="promo-text">
-            <span className="promo-eyebrow">Gastro v Plzni</span>
-            <h3>Objevuj gastro akce</h3>
-            <p>Pivní speciály, food festivaly i degustace v plzeňských sklepech.</p>
-          </div>
-          <Link to="/events?kategorie=Gastro" className="promo-btn">Zobrazit gastro →</Link>
-        </div>
-        <div className="promo-card">
-          <span className="promo-icon" style={{ color: 'var(--category-pamatky)' }}>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m3.5 9.5 8.5-5.5 8.5 5.5" /><path d="M3.5 19.5h17M4.8 9.5v10M9.6 9.5v10M14.4 9.5v10M19.2 9.5v10" />
-            </svg>
-          </span>
-          <div className="promo-text">
-            <span className="promo-eyebrow">Památky v Plzni</span>
-            <h3>Projdi si památky města</h3>
-            <p>Katedrála sv. Bartoloměje, synagoga i historické podzemí — včetně prohlídek s průvodcem.</p>
-          </div>
-          <Link to="/events?kategorie=Pamatky" className="promo-btn promo-btn--outline">Zobrazit památky →</Link>
-        </div>
-      </section>
-
-      {/* Kategorie — TODO: Hudba/Památky/Pro děti zatím nejdou vybrat v AdminCreate, počty tedy budou 0 */}
+      {/* Kategorie — nahrazuje i dřívější samostatnou promo sekci (statické
+          "Gastro v Plzni"/"Památky v Plzni" karty čekající na 3D assety,
+          které nikdy nedorazily) — handoff řeší propagaci kategorií jen
+          touhle jednou mřížkou všech šesti, žádná duplicitní sekce vedle
+          ní. TODO: Hudba/Památky/Pro děti zatím nejdou vybrat v
+          AdminCreate, počty tedy budou 0. */}
       <section id="categories-section">
         <div className="home-section-header">
           <h2>Procházej podle kategorií</h2>
@@ -178,11 +154,7 @@ export default function Home() {
         </div>
         <div id="categories-grid">
           {CATEGORIES.map(cat => (
-            <Link to={`/events?kategorie=${cat.name}`} key={cat.name} className={`category-card category-card--${cat.slug}`}>
-              <span className="category-icon">{cat.icon(26)}</span>
-              <span className="category-name">{cat.name}</span>
-              <span className="category-count">{events.filter(e => e.tags?.includes(cat.name)).length} akcí</span>
-            </Link>
+            <CategoryTile key={cat.name} cat={cat} count={events.filter(e => e.tags?.includes(cat.name)).length} />
           ))}
         </div>
       </section>
