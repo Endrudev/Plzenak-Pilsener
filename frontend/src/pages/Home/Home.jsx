@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
+import NightSkyline from '../../components/NightSkyline/NightSkyline.jsx'
 import { getEvents } from '../../lib/eventsApi.js'
 import './Home.css'
 import { imageBackground } from '../../lib/imageBackground.js'
@@ -187,6 +188,8 @@ export default function Home() {
           </div>
         </form>
       </section>
+
+      <NightSkyline events={events} />
 
       {/* TOP akce */}
       {topEvents.length > 0 && (

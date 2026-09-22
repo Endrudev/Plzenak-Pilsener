@@ -10,7 +10,7 @@
 // Datum v databázi je text ve tvaru d.m.rrrr (sloupec je `text`, ne `date` —
 // pozůstatek první verze, vedený jako dluh). Rozebírá se ručně, protože
 // new Date('1.5.2026') je v JS závislé na prohlížeči a locale.
-function parseCzechDate(value) {
+export function parseCzechDate(value) {
     if (typeof value !== 'string') return null
     const parts = value.split('.')
     if (parts.length !== 3) return null
