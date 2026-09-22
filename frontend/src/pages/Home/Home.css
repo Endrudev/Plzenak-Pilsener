@@ -13,6 +13,15 @@
   padding: var(--space-16) 0;
 }
 
+/* HeroBento (a #filter-bar pod ní) musí sedět na stejnou šířku jako zbytek
+   stránky (#top-grid, #nearest-grid...) — dřív #hero neměl žádné omezení
+   šířky, takže dlaždice sahaly přes celou obrazovku, zatímco vše pod nimi
+   bylo omezené na var(--container). Stejný gutter/max-width vzor jako
+   ostatní sekce níž (viz @media bloky). */
+#hero {
+  padding: 0 var(--space-4);
+}
+
 /* ---------- Hero (full-bleed foto, obsah zarovnaný na content container) ---------- */
 #hero-slide {
   position: relative;
@@ -649,7 +658,7 @@
 
 /* ---------- Responsive ---------- */
 @media (min-width: 768px) {
-  #hero-content, .home-section-header, #top-grid, #nearest-grid, #promo-section, #categories-section {
+  #hero, #hero-content, .home-section-header, #top-grid, #nearest-grid, #promo-section, #categories-section {
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
@@ -701,7 +710,7 @@
 }
 
 @media (min-width: 1024px) {
-  #hero-content, .home-section-header, #top-grid, #nearest-grid, #promo-section, #categories-section {
+  #hero, #hero-content, .home-section-header, #top-grid, #nearest-grid, #promo-section, #categories-section {
     max-width: var(--container);
     padding-left: var(--space-8);
     padding-right: var(--space-8);
