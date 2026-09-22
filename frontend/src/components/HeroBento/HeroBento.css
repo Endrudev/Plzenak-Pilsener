@@ -29,13 +29,18 @@
     box-shadow: 0 0 0 3px var(--color-page), 0 0 0 6px var(--color-ink);
 }
 
+/* Text sedí NAHOŘE, ne dole — ve zdroji je to obyčejný in-flow obsah (řádek
+   s justify-content:space-between mezi textovým blokem a "go" kolečkem),
+   žádný absolutně pozicovaný overlay přilepený ke spodku dlaždice. Zbytek
+   programu má vlastní layout (justify-content:space-between přes celou
+   výšku — text nahoře, kategorie dole), co tohle přebíjí. */
 .hero-tile-overlay {
     position: absolute;
     inset: 0;
     z-index: 2;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-start;
     padding: var(--space-6);
     pointer-events: none;
 }

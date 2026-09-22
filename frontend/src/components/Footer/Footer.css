@@ -21,18 +21,21 @@
     filter: drop-shadow(0 -3px 6px rgba(29, 11, 4, .35));
 }
 
-.footer-skyline-mass {
+/* Třídy .skyline-mass/--back/.skyline-window jsou sdílené (viz
+   BuildingSkyline.jsx, používá je i sekce Hledání na Home.jsx) — barvy si
+   každé použití nastavuje samo, scoped přes vlastní className na <svg>. */
+.footer-skyline .skyline-mass {
     fill: var(--color-footer);
 }
 
 /* Zadní vrstva — tlumenější tón, ať čte jako dál/za hlavní řadou, ne jako
    stejná budova navíc. */
-.footer-skyline-mass--back {
+.footer-skyline .skyline-mass--back {
     fill: var(--color-night-2);
     opacity: 0.8;
 }
 
-.footer-skyline-window {
+.footer-skyline .skyline-window {
     fill: var(--color-window);
     opacity: 0.85;
 }

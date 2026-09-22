@@ -4,6 +4,7 @@ import EventCard from '../../components/EventCard/EventCard.jsx'
 import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
 import HeroBento from '../../components/HeroBento/HeroBento.jsx'
 import CategoryTile from '../../components/CategoryTile/CategoryTile.jsx'
+import BuildingSkyline from '../../components/NightSkyline/BuildingSkyline.jsx'
 import { getEvents, getEventLocations } from '../../lib/eventsApi.js'
 import { CATEGORIES } from '../../lib/categories.jsx'
 import { DATE_OPTIONS } from '../../lib/dateFilters.js'
@@ -56,20 +57,12 @@ export default function Home() {
         <HeroBento events={events} />
       </section>
 
-      {/* Přechod hero → tmavý pás Hledání — siluета střech proti SVĚTLÉMU
-          pozadí stránky (ne proti tmavému pásu pod ní), stejná technika jako
-          patička: vlastní gradient přechází ze světlé do tmavé a budovy jsou
-          vybarvené tmavou barvou pásu pod nimi, aby s ním splynuly. Bez
-          téhle vrstvy proti světlému pozadí byly budovy stejnou barvou jako
-          pás pod nimi a "zmizely". */}
+      {/* Přechod hero → tmavý pás Hledání — stejná procedurální silueta budov
+          jako patička (BuildingSkyline, sdílená komponenta), ne ploché
+          čáry ze zdroje. Jiné seedy než patička, ať nejde o vizuální kopii,
+          jen o stejnou techniku/kvalitu. */}
       <div id="search-skyline-wrap" aria-hidden="true">
-        <svg id="search-skyline" viewBox="0 0 1440 100" preserveAspectRatio="none">
-          <path d="M-10 100V36H-0V26H10V16H19V26H29V36H39V58H111V28H149V44H176V18l5 -12l5 12V44H213V58H231V32l5 -12l5 12V58H259V58H273V48H287V38H300V48H314V58H328V42H371V52H438V32L476 14L514 32V30H528V20H542V10H557V20H571V30H585V45H592V35H599V25H606V35H613V45H620V52H700V53H761V56H831V51L852 33L873 51V59L894 41L915 59V55H992V54H1014V28l5 -12l5 12V54H1045V50H1069V24l5 -12l5 12V50H1103V42H1163V29H1240V38H1312V34H1366V45L1390 27L1413 45V58H1451V100Z" />
-          {[
-            [77, 54], [134, 56], [191, 65], [362, 71], [476, 70], [533, 60], [704, 54],
-            [761, 69], [818, 58], [932, 60], [989, 53], [1103, 63], [1274, 66], [1388, 71],
-          ].map(([x, y], i) => <rect key={i} x={x} y={y} width="5" height="7" />)}
-        </svg>
+        <BuildingSkyline className="search-skyline" backSeed={41} frontSeed={17} winSeed={9} />
       </div>
 
       {/* Sekce Hledání — tmavý pás navazující na hero. Tři dropdowny
