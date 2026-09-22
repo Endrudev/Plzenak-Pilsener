@@ -1,0 +1,187 @@
+.hero-tile--rest {
+    grid-column: span 2;
+    grid-row: span 1;
+    color: var(--color-calm-text);
+}
+
+.ht-rest-scene {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: var(--color-calm-bg);
+    overflow: hidden;
+}
+
+.hero-tile--rest .hero-tile-overlay {
+    padding: var(--space-5);
+}
+
+.hero-tile--rest .hero-tile-title--sm {
+    color: var(--color-calm-text);
+    font-size: var(--fs-h2);
+}
+
+.ht-rest-cats {
+    display: flex;
+    gap: 6px;
+    margin-top: var(--space-2);
+}
+
+.ht-rest-cat {
+    display: flex;
+    width: 22px;
+    height: 22px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .55);
+    color: var(--color-calm-text-soft);
+}
+
+/* ---------- tři výjevy ---------- */
+.ht-vignette {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    filter: blur(8px);
+}
+
+.ht-vignette--1 {
+    opacity: 1;
+    filter: blur(0);
+}
+
+.hero-tile--rest:hover .ht-vignette,
+.hero-tile--rest:focus-visible .ht-vignette {
+    animation: ht-vignette 9s var(--ease-standard) infinite;
+}
+
+.hero-tile--rest:hover .ht-vignette--2,
+.hero-tile--rest:focus-visible .ht-vignette--2 { animation-delay: -6s; }
+.hero-tile--rest:hover .ht-vignette--3,
+.hero-tile--rest:focus-visible .ht-vignette--3 { animation-delay: -3s; }
+
+/* Cyklus 9s / 3 výjevy = 3s na výjev: .5s zaostření, ~1.7s viditelné,
+   .5s rozmazání, .3s mlha, pak dalších 6s (dva zbylé výjevy) skrytě čeká. */
+@keyframes ht-vignette {
+    0%      { opacity: 0; filter: blur(8px); }
+    5.5%    { opacity: 1; filter: blur(0); }
+    24%     { opacity: 1; filter: blur(0); }
+    29.5%   { opacity: 0; filter: blur(8px); }
+    100%    { opacity: 0; filter: blur(8px); }
+}
+
+.ht-fog {
+    position: absolute;
+    inset: 0;
+    background: var(--color-calm-bg);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hero-tile--rest:hover .ht-fog,
+.hero-tile--rest:focus-visible .ht-fog {
+    animation: ht-fog 3s var(--ease-standard) infinite;
+}
+
+@keyframes ht-fog {
+    0%   { opacity: 0; }
+    3%   { opacity: .9; }
+    9%   { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+/* ---------- postavičky (sdílené HeroTileRest.jsx <Figure>) ---------- */
+.ht-figure {
+    position: absolute;
+    bottom: 22%;
+    width: 16px;
+    height: 32px;
+}
+
+.ht-figure--small { width: 11px; height: 20px; }
+
+.ht-figure-head {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-calm-text);
+    margin: 0 auto;
+    opacity: .85;
+}
+
+.ht-figure--small .ht-figure-head { width: 7px; height: 7px; }
+
+.ht-figure-body {
+    width: 16px;
+    height: 20px;
+    border-radius: 8px 8px 3px 3px;
+    background: var(--color-calm-text);
+    opacity: .72;
+    margin-top: 2px;
+}
+
+.ht-figure--small .ht-figure-body { width: 11px; height: 13px; }
+
+/* výjev 1 — pár u stánku */
+.ht-fig-a { left: 38%; }
+.ht-fig-b { left: 47%; }
+.ht-stall {
+    position: absolute;
+    left: 62%;
+    bottom: 22%;
+    width: 30px;
+    height: 26px;
+    background: var(--color-calm-text-soft);
+    opacity: .5;
+}
+.ht-stall-top {
+    position: absolute;
+    left: calc(62% - 4px);
+    bottom: calc(22% + 26px);
+    width: 38px;
+    height: 8px;
+    border-radius: 3px;
+    background: var(--color-calm-text-soft);
+    opacity: .6;
+}
+
+/* výjev 2 — přípitek */
+.ht-fig-c { left: 34%; }
+.ht-fig-d { left: 46%; }
+.ht-fig-e { left: 58%; }
+.ht-glass {
+    position: absolute;
+    left: calc(58% + 9px);
+    bottom: calc(22% + 26px);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-calm-text);
+    opacity: .7;
+}
+
+/* výjev 3 — dítě s balónkem */
+.ht-fig-f { left: 46%; }
+.ht-balloon-string {
+    position: absolute;
+    left: calc(46% + 9px);
+    bottom: calc(22% + 20px);
+    width: 1px;
+    height: 22px;
+    background: var(--color-calm-text-soft);
+}
+.ht-balloon {
+    position: absolute;
+    left: calc(46% + 4px);
+    bottom: calc(22% + 40px);
+    width: 12px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    opacity: .8;
+}
+
+@media (max-width: 767px) {
+    .hero-tile--rest .hero-tile-title--sm { font-size: var(--fs-h3); }
+}

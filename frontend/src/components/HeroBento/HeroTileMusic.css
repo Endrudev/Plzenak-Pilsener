@@ -1,0 +1,172 @@
+.hero-tile--music {
+    grid-column: span 2;
+    grid-row: span 1;
+}
+
+.ht-music-scene {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(155deg, var(--color-music-1) 0%, var(--color-music-2) 100%);
+    overflow: hidden;
+}
+
+.hero-tile--music .hero-tile-overlay {
+    padding: var(--space-5);
+}
+
+.hero-tile-title--sm {
+    font-size: var(--fs-heading-2);
+}
+
+/* ---------- dav ---------- */
+.ht-crowd {
+    position: absolute;
+    inset: 0;
+    filter: drop-shadow(0 -2px 4px rgba(22, 4, 28, .55));
+}
+
+.ht-fan {
+    position: absolute;
+    bottom: 14%;
+    width: 16px;
+    height: 30px;
+    margin-left: -8px;
+    transform-origin: 50% 100%;
+}
+
+.ht-fan-head {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-music-tint);
+    margin: 0 auto;
+    opacity: .92;
+}
+
+.ht-fan-body {
+    width: 16px;
+    height: 19px;
+    border-radius: 8px 8px 3px 3px;
+    background: var(--color-music-tint);
+    opacity: .8;
+    margin-top: 2px;
+}
+
+/* Devět různě naladěných zpoždění/délek, ať skáčou "rozhozeně", ne unisono. */
+.ht-fan--0 { animation-duration: 1.05s; animation-delay: -.12s; }
+.ht-fan--1 { animation-duration: .95s;  animation-delay: -.47s; }
+.ht-fan--2 { animation-duration: 1.12s; animation-delay: -.8s;  }
+.ht-fan--3 { animation-duration: .98s;  animation-delay: -.3s;  }
+.ht-fan--4 { animation-duration: 1.08s; animation-delay: -.62s; }
+.ht-fan--5 { animation-duration: 1s;    animation-delay: -.05s; }
+.ht-fan--6 { animation-duration: 1.15s; animation-delay: -.9s;  }
+.ht-fan--7 { animation-duration: .92s;  animation-delay: -.38s; }
+.ht-fan--8 { animation-duration: 1.1s;  animation-delay: -.7s;  }
+
+@keyframes ht-jump {
+    0%   { transform: translateY(0) scaleY(1); }
+    30%  { transform: translateY(-9px) scaleY(1.05); }
+    62%  { transform: translateY(0) scaleY(.95); }
+    100% { transform: translateY(0) scaleY(1); }
+}
+
+.hero-tile--music:hover .ht-fan,
+.hero-tile--music:focus-visible .ht-fan {
+    animation-name: ht-jump;
+    animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(.3, .6, .4, 1);
+}
+
+/* ---------- pódium + interpret ---------- */
+.ht-stage {
+    position: absolute;
+    right: 8%;
+    bottom: 10%;
+    width: 46px;
+    height: 58px;
+    filter: drop-shadow(0 -3px 6px rgba(22, 4, 28, .6));
+}
+
+.ht-performer {
+    position: absolute;
+    bottom: 0;
+    left: 12px;
+    width: 22px;
+    height: 46px;
+}
+
+.hero-tile--music:hover .ht-performer,
+.hero-tile--music:focus-visible .ht-performer {
+    animation: ht-bob .8s ease-in-out infinite;
+}
+
+@keyframes ht-bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(3px); }
+}
+
+.ht-performer-head {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-music-tint);
+    margin: 0 auto;
+}
+
+.ht-performer-body {
+    width: 20px;
+    height: 30px;
+    border-radius: 9px 9px 3px 3px;
+    background: var(--color-music-tint);
+    margin: 2px auto 0;
+}
+
+.ht-performer-arm {
+    position: absolute;
+    top: 14px;
+    left: 2px;
+    width: 4px;
+    height: 16px;
+    border-radius: 2px;
+    background: var(--color-music-tint);
+    transform-origin: 2px 15px;
+}
+
+.hero-tile--music:hover .ht-performer-arm,
+.hero-tile--music:focus-visible .ht-performer-arm {
+    animation: ht-arm 1.6s ease-in-out infinite;
+}
+
+@keyframes ht-arm {
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(-42deg); }
+}
+
+.ht-note {
+    position: absolute;
+    top: 4px;
+    color: var(--color-music-tint);
+    opacity: 0;
+    font-size: 13px;
+    filter: drop-shadow(0 1px 2px rgba(22, 4, 28, .5));
+}
+
+.ht-note--1 { right: 0; }
+.ht-note--2 { right: 14px; top: 14px; }
+
+.hero-tile--music:hover .ht-note,
+.hero-tile--music:focus-visible .ht-note {
+    animation: ht-note 2.6s ease-out infinite;
+}
+
+.hero-tile--music:hover .ht-note--2,
+.hero-tile--music:focus-visible .ht-note--2 {
+    animation-delay: -1.3s;
+}
+
+@keyframes ht-note {
+    0%   { opacity: 0; transform: translate(0, 0); }
+    15%  { opacity: .85; }
+    100% { opacity: 0; transform: translate(9px, -30px); }
+}

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
-import NightSkyline from '../../components/NightSkyline/NightSkyline.jsx'
+import HeroBento from '../../components/HeroBento/HeroBento.jsx'
 import { getEvents } from '../../lib/eventsApi.js'
 import { CATEGORIES } from '../../lib/categories.jsx'
 import './Home.css'
@@ -33,7 +33,6 @@ export default function Home() {
       .finally(() => setLoading(false))
   }, [])
 
-  const heroEvent = events[0]
   const topEvents = events.filter(e => e.tags?.includes('TOP akce')).slice(0, 2)
   const nearestEvents = events.slice(0, 6)
 
@@ -44,63 +43,11 @@ export default function Home() {
   return (
     <div id="home">
 
-      {/* Hero — TODO: karusel je zatím statický (jen první akce), bez rotace/šipek/teček */}
       <section id="hero">
-        {heroEvent && (
-          <div id="hero-slide" className={heroEvent.imageUrl ? '' : 'hero-slide--fallback'} style={imageBackground(heroEvent.imageUrl)}>
-            <div id="hero-content">
-              <div id="hero-card-badges">
-                {heroEvent.tags?.[0] && <span className="hero-badge hero-badge--soft">{heroEvent.tags[0]}</span>}
-                {heroEvent.url && (
-                  <span className="hero-badge hero-badge--ticket">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h13A1.5 1.5 0 0 1 20 8.5v1.6a2 2 0 0 0 0 3.8v1.6A1.5 1.5 0 0 1 18.5 17h-13A1.5 1.5 0 0 1 4 15.5v-1.6a2 2 0 0 0 0-3.8z" /><path d="M14 7v10" strokeDasharray="2 2.4" />
-                    </svg>
-                    Koupit vstupenku
-                  </span>
-                )}
-              </div>
-              <h1 id="hero-title">{heroEvent.name}</h1>
-              <div id="hero-meta">
-                {heroEvent.date && (
-                  <span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="4" y="4.5" width="16" height="16.5" rx="2" /><path d="M4 9.5h16M8.5 3v3M15.5 3v3" />
-                    </svg>
-                    {heroEvent.date}
-                  </span>
-                )}
-                {heroEvent.location && (
-                  <span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" /><circle cx="12" cy="10" r="2.5" />
-                    </svg>
-                    {heroEvent.location}
-                  </span>
-                )}
-              </div>
-              <div id="hero-cta-row">
-                <Link to={`/events/${heroEvent.id}`} id="hero-cta">Zobrazit →</Link>
-                <span id="hero-counter">1 / 1</span>
-              </div>
-              <div id="hero-nav">
-                <span id="hero-dots"><span className="hero-dot hero-dot--active" /></span>
-                <button type="button" className="hero-arrow" aria-label="Předchozí">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="15 18 9 12 15 6" />
-                  </svg>
-                </button>
-                <button type="button" className="hero-arrow" aria-label="Další">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <HeroBento events={events} />
 
-        {/* Filter bar — TODO: vstupy zatím nejsou propojené na žádný stav/filtrování */}
+        {/* Vyhledávání je teď skutečně napojené — odeslání přesměruje na
+            /events s parametry, dřív bar existoval jen vizuálně. */}
         <form id="filter-bar" onSubmit={handleSubmit}>
           <div id="filter-bar-row">
             <div id="filter-search">
@@ -133,19 +80,8 @@ export default function Home() {
               Vyhledat
             </button>
           </div>
-          <div id="filter-bar-row-2">
-            <div id="filter-chips">
-              {['Kultura', 'Sport', 'Gastro'].map(c => (
-                <Link key={c} to={`/events?kategorie=${encodeURIComponent(c)}`} className="filter-chip">{c}</Link>
-              ))}
-              <Link to="/events?top=1" className="filter-chip">TOP akce</Link>
-            </div>
-            <Link to="/events" id="filter-all-link">Zobrazit všechny akce →</Link>
-          </div>
         </form>
       </section>
-
-      <NightSkyline events={events} />
 
       {/* TOP akce */}
       {topEvents.length > 0 && (

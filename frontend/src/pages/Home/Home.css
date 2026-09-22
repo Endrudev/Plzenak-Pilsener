@@ -268,9 +268,15 @@
   font-family: var(--font-sans);
   font-weight: var(--fw-semibold);
   font-size: var(--fs-body);
-  cursor: not-allowed;
+  cursor: pointer;
   flex-shrink: 0;
   white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+#filter-search-btn:hover,
+#filter-search-btn:focus-visible {
+  background: var(--color-primary-hover);
 }
 
 #filter-bar-row-2 {

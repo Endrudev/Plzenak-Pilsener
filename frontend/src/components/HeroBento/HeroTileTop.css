@@ -1,0 +1,22 @@
+.hero-tile--top {
+    grid-column: span 4;
+    grid-row: span 2;
+}
+
+/* NightSkyline je navržená jako plnou šířku samostatná sekce (výška podle
+   vlastního poměru stran 1600:660, přes `.scene{height:auto}`). V dlaždici
+   potřebuje vyplnit celou dostupnou výšku, ne si počítat vlastní — proto
+   tahle konkrétnější třída (predaná přes `className` prop, který komponenta
+   už dnes umí) přebije jen výšku scény, nic jiného v komponentě se nemění.
+   Případný "letterbox" pruh (`preserveAspectRatio="xMidYMax meet"`) splyne
+   s pozadím, protože #night-skyline má vlastní plné pozadí přes celou
+   dlaždici bez ohledu na to, kam až sahá samotné SVG. */
+#night-skyline.hero-tile-scene {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+#night-skyline.hero-tile-scene .scene {
+    height: 100%;
+}
