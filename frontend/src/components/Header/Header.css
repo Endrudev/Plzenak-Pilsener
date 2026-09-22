@@ -1,6 +1,7 @@
 #site-header {
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-line);
+    background: linear-gradient(90deg, #FFE7CF, #FFF6EC, #FFFBF6, #EEF3E8);
+    box-shadow: var(--shadow-nav);
+    border-radius: var(--radius-nav-mobile);
     position: sticky;
     top: 0;
     z-index: 30;
@@ -21,6 +22,79 @@
     align-items: center;
     text-decoration: none;
     flex-shrink: 0;
+}
+
+#header-menu-btn {
+    margin-left: auto;
+    width: var(--touch-min);
+    height: var(--touch-min);
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-ink);
+    color: var(--color-cream);
+    border: none;
+    border-radius: var(--radius-btn-s);
+    cursor: pointer;
+}
+
+#header-drawer {
+    position: fixed;
+    inset: 0;
+    top: 64px;
+    z-index: 29;
+    background: var(--color-page);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    overflow-y: auto;
+}
+
+#header-drawer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+}
+
+#header-drawer-nav .nav-link {
+    border-bottom: none;
+}
+
+#header-drawer-categories-label {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+}
+
+#header-drawer-categories-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+}
+
+#header-drawer-map {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: var(--color-primary);
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-body);
+    padding: var(--space-4);
+    border-radius: var(--radius-btn-s);
+    margin-top: auto;
 }
 
 #header-nav {
@@ -107,7 +181,7 @@
 
 #nav-category-top-text strong {
     font-size: var(--fs-sm);
-    font-weight: 700;
+    font-weight: var(--fw-bold);
 }
 
 #nav-category-top-text span:last-child {
@@ -203,7 +277,16 @@
 }
 
 @media (min-width: 768px) {
+    #site-header {
+        border-radius: var(--radius-nav);
+    }
+
     #header-nav {
         display: flex;
+    }
+
+    #header-menu-btn,
+    #header-drawer {
+        display: none;
     }
 }

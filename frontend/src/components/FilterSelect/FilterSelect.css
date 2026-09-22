@@ -21,7 +21,7 @@
     padding: 0 var(--space-3) 0 var(--space-4);
     background: var(--color-surface);
     border: 1px solid var(--color-line);
-    border-radius: var(--radius-el);
+    border-radius: var(--radius-field);
     font-family: var(--font-sans);
     font-size: var(--fs-body);
     color: var(--color-ink);
@@ -91,7 +91,7 @@
     list-style: none;
     background: var(--color-surface);
     border: 1px solid var(--color-line);
-    border-radius: 12px;
+    border-radius: var(--radius-field-soft);
     box-shadow: var(--shadow-pop);
     /* Nábeh podle motion specu — prolnutí s posunem 4 px shora */
     animation: popover-in var(--dur-fast) var(--ease-standard);

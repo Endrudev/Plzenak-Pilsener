@@ -1,61 +1,124 @@
 #site-footer {
-    background: var(--color-surface);
-    border-top: 1px solid var(--color-line);
-    padding: var(--space-5);
+    background: var(--color-footer);
+    color: var(--color-cream-muted);
+    padding: 90px var(--space-5) var(--space-8);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Silueta střech nahoře — stejný papírový motiv jako NightSkyline/EmptyState,
+   jen jako tichý pruh, ne interaktivní scéna. */
+#site-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background:
+        linear-gradient(var(--color-footer), var(--color-footer)) bottom / 100% 50% no-repeat,
+        repeating-linear-gradient(
+            90deg,
+            var(--color-night-2) 0, var(--color-night-2) 38px,
+            var(--color-footer) 38px, var(--color-footer) 40px
+        ) top / 100% 60% no-repeat;
+    opacity: 0.6;
 }
 
 #footer-inner {
+    position: relative;
     max-width: var(--container);
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-4);
-    text-align: center;
     box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: var(--space-8) var(--space-6);
 }
 
-#footer-copy {
+#footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+#footer-tagline {
     margin: 0;
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
-    color: var(--color-text-muted);
+    color: var(--color-cream-muted);
+    max-width: 28ch;
 }
 
-#footer-links {
+.footer-col-label {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-cream-muted);
+    opacity: 0.7;
+    margin-bottom: var(--space-3);
+}
+
+#footer-col-app,
+#footer-col-legal,
+#footer-col-project {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: var(--space-3) var(--space-5);
+    flex-direction: column;
+    gap: var(--space-3);
 }
 
-#footer-links a,
-#footer-cookie-btn {
+#footer-col-app a,
+#footer-col-legal a,
+#footer-col-legal button,
+#footer-col-project a {
     display: flex;
     align-items: center;
     gap: 6px;
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
-    color: var(--color-text-muted);
+    color: var(--color-cream);
     text-decoration: none;
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
+    text-align: left;
     transition: color var(--dur-fast) var(--ease-standard);
 }
 
-#footer-links a:hover,
-#footer-cookie-btn:hover {
-    color: var(--color-ink);
+#footer-col-app a:hover,
+#footer-col-legal a:hover,
+#footer-col-legal button:hover,
+#footer-col-project a:hover {
+    color: var(--color-primary-hover);
     text-decoration: underline;
 }
 
-@media (min-width: 768px) {
+#footer-copy {
+    grid-column: 1 / -1;
+    margin: var(--space-6) 0 0;
+    padding-top: var(--space-6);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-family: var(--font-sans);
+    font-size: var(--fs-xs);
+    color: var(--color-cream-muted);
+    opacity: 0.7;
+}
+
+@media (max-width: 767px) {
     #footer-inner {
-        flex-direction: row;
-        justify-content: space-between;
-        text-align: left;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #footer-brand {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 479px) {
+    #footer-inner {
+        grid-template-columns: 1fr;
     }
 }
