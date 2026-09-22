@@ -1,4 +1,6 @@
 #site-header {
+    max-width: var(--container);
+    margin: 0 auto;
     background: linear-gradient(90deg, #FFE7CF, #FFF6EC, #FFFBF6, #EEF3E8);
     box-shadow: var(--shadow-nav);
     border-radius: var(--radius-nav-mobile);
@@ -8,8 +10,6 @@
 }
 
 #header-inner {
-    max-width: var(--container);
-    margin: 0 auto;
     padding: var(--space-3) var(--space-5);
     display: flex;
     align-items: center;

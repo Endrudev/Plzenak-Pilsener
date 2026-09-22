@@ -3,10 +3,56 @@ import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
 import './Footer.css'
 import { useConsent } from '../../lib/ConsentContext.jsx'
 
+// Papírová silueta střech — stejný jazyk jako NightSkyline/EmptyState, jen
+// jako tichý pruh nad patičkou. Skutečná SVG kresba, ne CSS gradient
+// napodobenina (ta předtím vypadala jako svislé pruhy, ne jako domy).
+function FooterSkyline() {
+    return (
+        <svg className="footer-skyline" viewBox="0 0 1200 64" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+            <g fill="var(--color-night-2)">
+                <rect x="0" y="30" width="46" height="34" />
+                <rect x="50" y="14" width="34" height="50" />
+                <rect x="88" y="36" width="30" height="28" />
+                <path d="M122 36 L140 18 L158 36 Z" /><rect x="122" y="36" width="36" height="28" />
+                <rect x="162" y="22" width="34" height="42" />
+                <rect x="200" y="40" width="26" height="24" />
+                <rect x="230" y="12" width="30" height="52" />
+                <rect x="264" y="32" width="40" height="32" />
+                <path d="M308 32 L326 14 L344 32 Z" /><rect x="308" y="32" width="36" height="32" />
+                <rect x="348" y="24" width="28" height="40" />
+                <rect x="380" y="42" width="34" height="22" />
+                <rect x="418" y="18" width="32" height="46" />
+                <rect x="454" y="34" width="26" height="30" />
+                <rect x="484" y="10" width="30" height="54" />
+                <rect x="518" y="30" width="42" height="34" />
+                <path d="M564 30 L582 12 L600 30 Z" /><rect x="564" y="30" width="36" height="34" />
+                <rect x="604" y="22" width="30" height="42" />
+                <rect x="638" y="40" width="28" height="24" />
+                <rect x="670" y="14" width="32" height="50" />
+                <rect x="706" y="34" width="38" height="30" />
+                <rect x="748" y="24" width="28" height="40" />
+                <path d="M780 24 L798 6 L816 24 Z" /><rect x="780" y="24" width="36" height="40" />
+                <rect x="820" y="40" width="26" height="24" />
+                <rect x="850" y="16" width="32" height="48" />
+                <rect x="886" y="32" width="40" height="32" />
+                <rect x="930" y="22" width="28" height="42" />
+                <rect x="962" y="42" width="34" height="22" />
+                <rect x="1000" y="12" width="30" height="52" />
+                <path d="M1034 32 L1052 14 L1070 32 Z" /><rect x="1034" y="32" width="36" height="32" />
+                <rect x="1074" y="24" width="28" height="40" />
+                <rect x="1106" y="40" width="26" height="24" />
+                <rect x="1136" y="18" width="32" height="46" />
+                <rect x="1172" y="34" width="28" height="30" />
+            </g>
+        </svg>
+    )
+}
+
 export default function Footer() {
     const { openSettings } = useConsent()
     return (
         <footer id="site-footer">
+            <FooterSkyline />
             <div id="footer-inner">
                 <div id="footer-brand">
                     <PlzenakLogo size={26} tone="inverse" />

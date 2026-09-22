@@ -1,28 +1,18 @@
 #site-footer {
     background: var(--color-footer);
     color: var(--color-cream-muted);
-    padding: 90px var(--space-5) var(--space-8);
+    padding: 0 var(--space-5) var(--space-8);
     position: relative;
     overflow: hidden;
 }
 
 /* Silueta střech nahoře — stejný papírový motiv jako NightSkyline/EmptyState,
-   jen jako tichý pruh, ne interaktivní scéna. */
-#site-footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 70px;
-    background:
-        linear-gradient(var(--color-footer), var(--color-footer)) bottom / 100% 50% no-repeat,
-        repeating-linear-gradient(
-            90deg,
-            var(--color-night-2) 0, var(--color-night-2) 38px,
-            var(--color-footer) 38px, var(--color-footer) 40px
-        ) top / 100% 60% no-repeat;
-    opacity: 0.6;
+   teď jako skutečná SVG kresba (viz Footer.jsx), ne CSS gradient aproximace. */
+.footer-skyline {
+    display: block;
+    width: 100%;
+    height: 64px;
+    margin-bottom: var(--space-8);
 }
 
 #footer-inner {
