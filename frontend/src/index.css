@@ -57,6 +57,7 @@
   --color-calm-bg:        #E1E9D9;
   --color-calm-text:      #213A26;
   --color-calm-text-soft: #34553A;
+  --color-segment-bg:     #F3E8DA;
 
   /* ---------- GRADIENT ---------- */
   --hero-gradient:    linear-gradient(135deg, #EF9F27 0%, #E8720C 100%);

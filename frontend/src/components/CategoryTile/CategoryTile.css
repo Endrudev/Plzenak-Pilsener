@@ -1,0 +1,67 @@
+/* Výška a bílý text podle handoffu — dlaždice sedí na sytém jantarovém
+   gradientu dané kategorie (viz styles/category-tokens.css), takže bílý
+   text potřebuje tmavý přechod dole pro čitelnost (stejné číslo, co
+   appka používá i jinde na tmavších/sytějších plochách). */
+.category-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 184px;
+    padding: var(--space-4);
+    border-radius: var(--radius-tile);
+    color: #fff;
+    text-decoration: none;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: transform var(--dur-fast) var(--ease-standard),
+                box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+.category-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(110, 38, 0, .3), transparent 60%);
+}
+
+.category-tile:hover,
+.category-tile:focus-visible {
+    transform: translateY(var(--lift-card));
+    box-shadow: var(--shadow-card-hover);
+}
+
+.category-tile:active {
+    transform: scale(var(--scale-tap));
+}
+
+.category-tile-icon {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    opacity: 0.85;
+}
+
+.category-tile-name {
+    position: relative;
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tracking-heading);
+}
+
+.category-tile-count {
+    position: relative;
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    opacity: 0.9;
+}
+
+.category-tile--gastro  { background: var(--category-gastro-grad); }
+.category-tile--kultura { background: var(--category-kultura-grad); }
+.category-tile--hudba   { background: var(--category-hudba-grad); }
+.category-tile--sport   { background: var(--category-sport-grad); }
+.category-tile--pamatky { background: var(--category-pamatky-grad); }
+.category-tile--deti    { background: var(--category-deti-grad); }

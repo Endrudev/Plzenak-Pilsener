@@ -1,0 +1,35 @@
+.segmented {
+    display: inline-flex;
+    padding: 4px;
+    gap: 2px;
+    background: var(--color-segment-bg);
+    border-radius: var(--radius-field);
+    overflow-x: auto;
+}
+
+.segmented-btn {
+    flex: none;
+    border: none;
+    background: transparent;
+    color: var(--color-text-muted);
+    font-family: var(--font-sans);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-sm);
+    padding: 9px 16px;
+    border-radius: calc(var(--radius-field) - 4px);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                color var(--dur-fast) var(--ease-standard),
+                box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+.segmented-btn:hover {
+    color: var(--color-ink);
+}
+
+.segmented-btn--active {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    box-shadow: var(--shadow-card);
+}

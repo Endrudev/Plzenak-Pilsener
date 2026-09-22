@@ -163,3 +163,147 @@
         font-size: var(--fs-h2);
     }
 }
+
+/* ---------- varianta: list ----------
+   Handoff: celý řádek je <a href>, náhled 92×92, CTA je jen vizuální pilulka
+   uvnitř odkazu, ne samostatný interaktivní prvek. */
+.event-card--list {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3);
+    text-decoration: none;
+    color: inherit;
+}
+
+.event-card--list .event-image {
+    flex: none;
+    width: 92px;
+    height: 92px;
+    border-radius: var(--radius-el);
+}
+
+.event-card--list .event-info {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    gap: 4px;
+}
+
+.event-card--list .event-name {
+    font-size: var(--fs-body-lg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.event-card--list .event-meta {
+    flex-wrap: wrap;
+}
+
+.event-btn--list {
+    flex: none;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-primary);
+    color: #fff;
+    border-radius: var(--radius-btn-s);
+    padding: 11px 20px;
+    font-family: var(--font-sans);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-body);
+    white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+    .event-btn--list {
+        display: flex;
+    }
+}
+
+/* ---------- varianta: featured a ranked ---------- */
+.event-card--featured,
+.event-card--ranked {
+    flex-direction: row;
+    box-shadow: var(--shadow-paper);
+}
+
+.event-card--featured .event-image,
+.event-card--ranked .event-image {
+    flex: 0 0 58%;
+    height: auto;
+    min-height: 220px;
+}
+
+.event-card--ranked .event-image {
+    flex-basis: 240px;
+    min-height: 160px;
+}
+
+.event-card--featured .event-info,
+.event-card--ranked .event-info {
+    flex: 1;
+    padding: var(--space-6);
+    justify-content: center;
+}
+
+.event-card--featured .event-name {
+    font-size: var(--fs-heading-2);
+}
+
+.event-why {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.event-card--featured .event-btn,
+.event-card--ranked .event-btn {
+    width: auto;
+    align-self: flex-start;
+    padding: 13px 24px;
+}
+
+.event-rank {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    border-radius: var(--radius-pill);
+    background: var(--color-night);
+    color: var(--color-cream);
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-sm);
+}
+
+@media (max-width: 767px) {
+    .event-card--featured,
+    .event-card--ranked {
+        flex-direction: column;
+    }
+
+    .event-card--featured .event-image,
+    .event-card--ranked .event-image {
+        flex-basis: auto;
+        width: 100%;
+        min-height: 0;
+        height: 220px;
+    }
+
+    .event-card--featured .event-name {
+        -webkit-line-clamp: 3;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
