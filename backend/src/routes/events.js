@@ -109,7 +109,7 @@ function mapEventReverse(event) {
 
 router.get('/', async(req, res) => {
     try{
-        const { q, kategorie, misto, datum, top, razeni } = req.query
+        const { q, kategorie, misto, datum, top, razeni, page, perPage } = req.query
         const conditions = []
         const values = []
         conditions.push(`TO_DATE(date, 'DD.MM.YYYY') >= CURRENT_DATE`)
@@ -152,11 +152,32 @@ router.get('/', async(req, res) => {
         const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
         // Neznámá nebo chybějící hodnota spadne na výchozí řazení podle data konání
         const orderBy = SORTS[razeni] || SORTS.konani
-        let result = await query(`SELECT * FROM events
+
+        // Stránkování — page/perPage jsou nepovinné. Volající, co je nepošle
+        // (Home.jsx, AdminDashboard.jsx), dostanou velkorysou první stránku
+        // (100), ne doslova všechno bez limitu — dotaz tak zůstává vždycky
+        // omezený, i když se dnešní objem dat (pár desítek akcí) chová stejně
+        // jako dřívější "vrať úplně všechno".
+        const perPageNum = Math.min(Math.max(parseInt(perPage, 10) || 100, 1), 100)
+        const pageNum = Math.max(parseInt(page, 10) || 1, 1)
+        const offset = (pageNum - 1) * perPageNum
+
+        const countResult = await query(`SELECT COUNT(*) FROM events ${whereClause};`, values)
+        const total = parseInt(countResult.rows[0].count, 10)
+
+        const limitParam = values.length + 1
+        const offsetParam = values.length + 2
+        const result = await query(`SELECT * FROM events
             ${whereClause}
-            ORDER BY ${orderBy};`, values)
-        result = result.rows.map(mapEvent)
-        res.json(result)
+            ORDER BY ${orderBy}
+            LIMIT $${limitParam} OFFSET $${offsetParam};`, [...values, perPageNum, offset])
+
+        res.json({
+            items: result.rows.map(mapEvent),
+            total,
+            page: pageNum,
+            perPage: perPageNum,
+        })
     }catch(err) {
         console.error(err.message)
         res.status(500).json({error: 'Akce nelze načíst. Zkuste to znovu.'})

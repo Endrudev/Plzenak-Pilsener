@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import EventCard from '../../components/EventCard/EventCard.jsx'
+import Pagination from '../../components/Pagination/Pagination.jsx'
+import EmptyState from '../../components/EmptyState/EmptyState.jsx'
 import { getEvents, getEventLocations } from '../../lib/eventsApi.js'
 import { useSearchParams } from 'react-router-dom'
 import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
 import { CATEGORIES } from '../../lib/categories.jsx'
+import { eventCountLabel } from '../../lib/pluralize.js'
 import './Events.css'
 
 // Časové filtry patří do dropdownu Datum, ne mezi pilulky — jinak by dva prvky
@@ -46,6 +49,7 @@ export default function Events() {
   const PER_PAGE = 5
 
   const [allEvents, setAllEvents] = useState([])
+  const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [searchParams, setSearchParams] = useSearchParams()
@@ -90,11 +94,13 @@ export default function Events() {
       datum: applied.datum,
       top: applied.top ? '1' : '',
       razeni,
+      page,
+      perPage: PER_PAGE,
     })
-      .then(data => setAllEvents(data))
+      .then(data => { setAllEvents(data.items); setTotal(data.total) })
       .catch(console.error)
       .finally(() => setLoading(false))
-  }, [applied.q, applied.kategorie, applied.misto, applied.datum, applied.top, razeni])
+  }, [applied.q, applied.kategorie, applied.misto, applied.datum, applied.top, razeni, page])
 
   // Kolik polí se liší od použitého stavu — pohání vzhled tlačítka
   const pendingCount = ['q', 'kategorie', 'misto', 'datum', 'top']
@@ -138,14 +144,9 @@ export default function Events() {
     setPage(1)
   }
 
-  const totalPages = Math.max(1, Math.ceil(allEvents.length / PER_PAGE))
-  const currentPage = Math.min(page, totalPages)
-  const visibleEvents = allEvents.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE)
-
-  function getPaginationItems() {
-    if (totalPages <= 6) return Array.from({ length: totalPages }, (_, i) => i + 1)
-    return [1, 2, 3, 4, '...', totalPages]
-  }
+  // Stránkuje teď backend (GET /api/events?page=&perPage=) — allEvents je
+  // rovnou jen viditelná stránka, žádné klientské .slice() navíc.
+  const totalPages = Math.max(1, Math.ceil(total / PER_PAGE))
 
   return (
     <div id="events-page">
@@ -293,7 +294,7 @@ export default function Events() {
       <div id="events-section-header">
         <h2>Všechny akce</h2>
         <span id="events-count" aria-live="polite">
-          {!loading && `Zobrazeno ${visibleEvents.length} z ${allEvents.length} akcí`}
+          {!loading && `Zobrazeno ${allEvents.length} z ${eventCountLabel(total)}`}
         </span>
       </div>
 
@@ -301,26 +302,17 @@ export default function Events() {
         {loading
           ? <p id="events-loading">Načítání…</p>
           : allEvents.length === 0
-            ? <p id="events-loading">Žádné akce neodpovídají hledání.</p>
-            : visibleEvents.map(event => <EventCard key={event.id} event={event} />)
+            ? (
+              <EmptyState
+                title="Žádné akce neodpovídají hledání."
+                onReset={hasAppliedFilters ? clearFilters : undefined}
+              />
+            )
+            : allEvents.map(event => <EventCard key={event.id} event={event} />)
         }
       </div>
 
-      <div id="pagination">
-        {getPaginationItems().map((item, i) =>
-          item === '...' ? (
-            <span key={i} className="pagination-dots">…</span>
-          ) : (
-            <button
-              key={item}
-              className={`pagination-btn${currentPage === item ? ' pagination-btn--active' : ''}`}
-              onClick={() => setPage(item)}
-            >
-              {item}
-            </button>
-          )
-        )}
-      </div>
+      <Pagination page={page} totalPages={totalPages} onChange={setPage} />
 
     </div>
   )

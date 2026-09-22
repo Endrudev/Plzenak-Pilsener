@@ -28,7 +28,7 @@ export default function Home() {
 
   useEffect(() => {
     getEvents()
-      .then(data => setEvents(data))
+      .then(data => setEvents(data.items))
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [])

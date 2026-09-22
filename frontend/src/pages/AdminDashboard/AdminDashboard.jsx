@@ -27,7 +27,7 @@ export default function AdminDashboard() {
         setLoadError(null)
         try {
             const data = await getEvents()
-            setEvents(data)
+            setEvents(data.items)
         } catch (e) {
             // Chyba musí být vidět na stránce. Samotný console.error tady nestačil:
             // prázdná tabulka vypadala úplně stejně jako "zatím žádné akce", takže
