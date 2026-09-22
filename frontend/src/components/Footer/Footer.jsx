@@ -25,7 +25,16 @@ function buildSilhouette(seed) {
         const roof = ROOFS[Math.floor(rand() * ROOFS.length)]
         const roofH = roof === 'flat' || roof === 'parapet' ? 0 : 8 + rand() * 14
         buildings.push({ x, w, bodyH, roof, roofH, chimney: roof === 'flat' && rand() < 0.3 })
-        x += w + 4 + rand() * 8
+
+        // Mezery jsou schválně nepravidelné, ne jedna průměrná rozteč pořád
+        // dokola: občas se budovy mírně překryjí (jedna stojí kousek před
+        // druhou), jinde stojí těsně vedle sebe, jinde je mezi nimi vidět
+        // širší kus oblohy — jak to na skutečné siluetě bývá.
+        const gapRoll = rand()
+        const gap = gapRoll < 0.2 ? -(4 + rand() * 10)   // mírný překryv
+            : gapRoll < 0.55 ? rand() * 6                 // těsně vedle sebe
+                : 8 + rand() * 26                              // širší mezera
+        x += w + gap
     }
     return buildings
 }
@@ -74,13 +83,16 @@ function buildingWindows(building, rand) {
 function FooterSkyline() {
     const buildings = buildSilhouette(7)
     const winRand = seeded(23)
-    const windows = buildings.flatMap(b => buildingWindows(b, winRand))
 
     return (
         <svg className="footer-skyline" viewBox={`0 0 ${VIEW_W} ${BASE_Y}`} preserveAspectRatio="none" aria-hidden="true">
-            <g className="footer-skyline-mass">
-                {buildings.map((b, i) => (
-                    <g key={i}>
+            {/* Každá budova (tělo + střecha + vlastní okna) se kreslí jako
+                jeden celek v pořadí zleva doprava — díky tomu, když se dvě
+                budovy mírně překryjí, ta pozdější (a tedy "bližší") správně
+                zakryje i okna té za ní, ne jen její zeď. */}
+            {buildings.map((b, i) => (
+                <g key={i}>
+                    <g className="footer-skyline-mass">
                         <rect x={b.x} y={BASE_Y - b.bodyH} width={b.w} height={b.bodyH} />
                         {b.roofH > 0 && <path d={roofPath(b)} />}
                         {b.roof === 'parapet' && (
@@ -90,13 +102,13 @@ function FooterSkyline() {
                             <rect x={b.x + b.w * 0.68} y={BASE_Y - b.bodyH - 10} width="5" height="12" />
                         )}
                     </g>
-                ))}
-            </g>
-            <g className="footer-skyline-window">
-                {windows.map((w, i) => (
-                    <rect key={i} x={w.x} y={w.y} width="4" height="6" />
-                ))}
-            </g>
+                    <g className="footer-skyline-window">
+                        {buildingWindows(b, winRand).map((w, wi) => (
+                            <rect key={wi} x={w.x} y={w.y} width="4" height="6" />
+                        ))}
+                    </g>
+                </g>
+            ))}
         </svg>
     )
 }
