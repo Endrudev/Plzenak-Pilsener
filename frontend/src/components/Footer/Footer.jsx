@@ -1,31 +1,27 @@
 import { Link } from 'react-router-dom'
 import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
-import { cityBlock, starField } from '../NightSkyline/cityscape.js'
 import './Footer.css'
 import { useConsent } from '../../lib/ConsentContext.jsx'
 
-// Papírová silueta střech nad patičkou — stejná procedurální kresba jako
-// NightSkyline (cityscape.js), ne ruční obdélníky. Fixní seed = pokaždé
-// stejná, deterministická silueta, ne náhodná při každém načtení.
-function FooterSkyline() {
-    const { walls, roofs, cuts } = cityBlock({
-        seed: 7,
-        base: 132,
-        from: -20,
-        to: 1420,
-        minW: 42,
-        maxW: 96,
-        minH: 46,
-        maxH: 92,
-        tight: 0.72,
-    })
-    const stars = starField({ seed: 11, count: 16, from: 0, to: 1400, top: 8, bottom: 60 })
+// Silueta střech — přesná cesta ze zdrojového návrhu (Main.dc.html /
+// Homepage.dc.html), ne procedurálně generovaná. Ta z cityscape.js
+// (sdílená s NightSkyline) je stavěná pro velkou interaktivní scénu a v
+// malém dekorativním pruhu dělala nečitelný nával oken a detailů — tohle
+// je jednou nakreslený, řídce prosvětlený obrys, přesně jak ho má appka mít.
+const ROOFLINE_PATH = 'M-10 90V36H-0V26H10V16H19V26H29V36H39V58H111V28H149V44H176V18l5 -12l5 12V44H213V58H231V32l5 -12l5 12V58H259V58H273V48H287V38H300V48H314V58H328V42H371V52H438V32L476 14L514 32V30H528V20H542V10H557V20H571V30H585V45H592V35H599V25H606V35H613V45H620V52H700V53H761V56H831V51L852 33L873 51V59L894 41L915 59V55H992V54H1014V28l5 -12l5 12V54H1045V50H1069V24l5 -12l5 12V50H1103V42H1163V29H1240V38H1312V34H1366V45L1390 27L1413 45V58H1451V90Z'
 
+const WINDOWS = [
+    [77, 54], [134, 56], [191, 65], [362, 71], [476, 70], [533, 60],
+    [704, 54], [761, 69], [818, 58], [932, 60], [989, 53], [1103, 63], [1274, 66], [1388, 71],
+]
+
+function FooterSkyline() {
     return (
-        <svg className="footer-skyline" viewBox="0 0 1400 140" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-            <path className="footer-skyline-stars" d={stars} />
-            <path className="footer-skyline-mass" d={`${walls} ${roofs}`} />
-            <path className="footer-skyline-windows" d={cuts} />
+        <svg className="footer-skyline" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+            <path className="footer-skyline-mass" d={ROOFLINE_PATH} />
+            {WINDOWS.map(([x, y]) => (
+                <rect key={`${x}-${y}`} className="footer-skyline-window" x={x} y={y} width="5" height="7" />
+            ))}
         </svg>
     )
 }
@@ -38,7 +34,7 @@ export default function Footer() {
             <div id="footer-inner">
                 <div id="footer-brand">
                     <PlzenakLogo size={26} tone="inverse" />
-                    <p id="footer-tagline">Městské akce v Plzni na jednom místě.</p>
+                    <p id="footer-tagline">Všechno, co se děje v Plzni, na jednom místě.</p>
                 </div>
 
                 <nav id="footer-col-app" aria-label="Appka">

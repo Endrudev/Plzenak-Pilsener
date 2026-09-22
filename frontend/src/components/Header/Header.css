@@ -1,12 +1,18 @@
+/* Rozměry/barvy/radius jsou přímo ze zdrojového návrhu (Main.dc.html):
+   1280×72 lišta, žádné zaoblení nahoře, jen dole — flush s horní hranou
+   stránky, "plovoucí" dojem dělá jen užší šířka než viewport, ne mezera
+   nahoře. */
 #site-header {
     width: calc(100% - 2 * var(--space-4));
     max-width: var(--container);
-    margin: var(--space-4) auto 0;
-    background: linear-gradient(90deg, #FFE7CF, #FFF6EC, #FFFBF6, #EEF3E8);
+    margin: 0 auto;
+    background: linear-gradient(90deg, #FFE7CF 0%, #FFF6EC 38%, #FFFBF6 62%, #EEF3E8 100%);
+    border: 1px solid var(--color-line-soft);
+    border-top: 0;
     box-shadow: var(--shadow-nav);
-    border-radius: var(--radius-tile);
+    border-radius: var(--radius-nav);
     position: sticky;
-    top: var(--space-4);
+    top: 0;
     z-index: 30;
 }
 
