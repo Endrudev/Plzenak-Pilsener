@@ -19,35 +19,35 @@
     min-width: 0;
     height: 44px;
     padding: 0 var(--space-3) 0 var(--space-4);
-    background: var(--surface);
-    border: 1px solid var(--hairline);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-el);
     font-family: var(--font-sans);
     font-size: var(--fs-body);
-    color: var(--ink);
+    color: var(--color-ink);
     cursor: pointer;
     transition: border-color var(--dur-fast) var(--ease-standard),
                 box-shadow var(--dur-fast) var(--ease-standard);
 }
 
 .filter-dropdown-trigger:hover {
-    border-color: var(--ink-3);
+    border-color: var(--color-text-muted);
 }
 
 .filter-dropdown-trigger:focus-visible {
     outline: none;
-    border-color: var(--amber-cta);
+    border-color: var(--color-primary);
     box-shadow: var(--focus-shadow);
 }
 
 .filter-dropdown--open .filter-dropdown-trigger {
-    border-color: var(--amber-cta);
+    border-color: var(--color-primary);
 }
 
 .filter-dropdown-icon {
     display: inline-flex;
     flex-shrink: 0;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 /* Text bere zbylé místo, takže šipka drží u pravého okraje bez ohledu na délku */
@@ -61,12 +61,12 @@
 }
 
 .filter-dropdown-label--placeholder {
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 .filter-dropdown-chevron {
     flex-shrink: 0;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     transition: transform var(--dur-base) var(--ease-standard);
 }
 
@@ -89,8 +89,8 @@
     margin: 0;
     padding: var(--space-2);
     list-style: none;
-    background: var(--surface);
-    border: 1px solid var(--hairline);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: 12px;
     box-shadow: var(--shadow-pop);
     /* Nábeh podle motion specu — prolnutí s posunem 4 px shora */
@@ -106,7 +106,7 @@
     padding: var(--space-2) var(--space-3);
     border-radius: var(--radius-sm);
     font-size: var(--fs-body);
-    color: var(--ink);
+    color: var(--color-ink);
     cursor: pointer;
     white-space: nowrap;
 }
@@ -119,7 +119,7 @@
     flex-shrink: 0;
     width: 16px;
     height: 16px;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 .filter-dropdown-option-label {
@@ -131,17 +131,17 @@
 
 /* Nasvícení myší i klávesnicí je stejné — uživatel má jen jedno "kde jsem" */
 .filter-dropdown-option--active {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
 }
 
 .filter-dropdown-option--selected {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
     font-weight: var(--fw-medium);
 }
 
 .filter-dropdown-check {
     flex-shrink: 0;
-    color: var(--amber-cta);
+    color: var(--color-primary);
 }
 
 /* prefers-reduced-motion neřešíme tady — od zavedení motion tokenů je

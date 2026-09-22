@@ -1,7 +1,7 @@
 /* ===== PRIVACY PAGE — mobile first ===== */
 
 #privacy-page {
-    background: var(--bg);
+    background: var(--color-page);
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -9,7 +9,7 @@
 
 /* ---------- Header ---------- */
 #privacy-header-wrap {
-    border-bottom: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--color-line);
 }
 
 #privacy-header {
@@ -27,21 +27,21 @@
     gap: var(--space-2);
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 #privacy-breadcrumb a {
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     text-decoration: none;
     transition: color var(--dur-fast) var(--ease-standard);
 }
 
 #privacy-breadcrumb a:hover {
-    color: var(--ink);
+    color: var(--color-ink);
 }
 
 #privacy-breadcrumb span {
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 #privacy-eyebrow {
@@ -51,7 +51,7 @@
     font-weight: var(--fw-semibold);
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 #privacy-title {
@@ -59,7 +59,7 @@
     font-family: var(--font-display);
     font-size: var(--fs-h1);
     font-weight: var(--fw-semibold);
-    color: var(--ink);
+    color: var(--color-ink);
     line-height: var(--lh-tight);
 }
 
@@ -69,7 +69,7 @@
     font-family: var(--font-sans);
     font-size: var(--fs-body-lg);
     line-height: var(--lh-body);
-    color: var(--ink-2);
+    color: var(--color-text-muted);
 }
 
 #privacy-meta {
@@ -79,7 +79,7 @@
     margin-top: var(--space-4);
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 /* ---------- Body layout ---------- */
@@ -100,7 +100,7 @@
 /* ---------- TOC ---------- */
 #privacy-toc {
     margin-top: var(--space-8);
-    background: var(--surface);
+    background: var(--color-surface);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
     padding: var(--space-5);
@@ -115,7 +115,7 @@
     font-weight: var(--fw-semibold);
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 #privacy-toc nav {
@@ -128,13 +128,13 @@
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     line-height: var(--lh-snug);
-    color: var(--ink-2);
+    color: var(--color-text-muted);
     text-decoration: none;
     transition: color var(--dur-fast) var(--ease-standard);
 }
 
 .legal-toc-link:hover {
-    color: var(--amber-cta);
+    color: var(--color-primary);
 }
 
 /* ---------- Sekce prózy ---------- */
@@ -147,7 +147,7 @@
     font-family: var(--font-display);
     font-size: var(--fs-h2);
     font-weight: var(--fw-semibold);
-    color: var(--ink);
+    color: var(--color-ink);
     margin: 0 0 var(--space-3);
     scroll-margin-top: 88px;
 }
@@ -157,7 +157,7 @@
     font-family: var(--font-sans);
     font-size: var(--fs-body);
     line-height: var(--lh-body);
-    color: var(--ink-2);
+    color: var(--color-text-muted);
 }
 
 .legal-section p:last-child {
@@ -178,7 +178,7 @@
     font-family: var(--font-sans);
     font-size: var(--fs-body);
     line-height: var(--lh-body);
-    color: var(--ink-2);
+    color: var(--color-text-muted);
 }
 
 .legal-section li + li {
@@ -186,7 +186,7 @@
 }
 
 .legal-link {
-    color: var(--amber-cta);
+    color: var(--color-primary);
     text-decoration: none;
 }
 
@@ -198,7 +198,7 @@
 .legal-callout {
     margin-top: var(--space-8);
     max-width: 680px;
-    background: var(--surface);
+    background: var(--color-surface);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
     padding: var(--space-5) var(--space-6);
@@ -209,7 +209,7 @@
     font-family: var(--font-display);
     font-size: var(--fs-h3);
     font-weight: var(--fw-semibold);
-    color: var(--ink);
+    color: var(--color-ink);
 }
 
 .legal-callout p {
@@ -217,7 +217,7 @@
     font-family: var(--font-sans);
     font-size: var(--fs-body);
     line-height: var(--lh-body);
-    color: var(--ink-2);
+    color: var(--color-text-muted);
 }
 
 /* ---------- Responsive ---------- */

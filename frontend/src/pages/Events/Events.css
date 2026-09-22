@@ -1,14 +1,14 @@
 /* ===== EVENTS PAGE — mobile first ===== */
 
 #events-page {
-  background: var(--bg);
+  background: var(--color-page);
   display: flex;
   flex-direction: column;
 }
 
 /* ---------- Filter card ---------- */
 #events-filter-card {
-  background: var(--surface);
+  background: var(--color-surface);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   margin: var(--space-4);
@@ -26,15 +26,15 @@
   align-items: center;
   gap: var(--space-3);
   height: 50px;
-  background: var(--surface-sunk);
-  border: 1px solid var(--hairline);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-line);
   border-radius: var(--radius-el);
   padding: 0 var(--space-4);
-  color: var(--amber-cta);
+  color: var(--color-primary);
 }
 
 #events-search:focus-within {
-  border-color: var(--amber-cta);
+  border-color: var(--color-primary);
   box-shadow: var(--focus-shadow);
 }
 
@@ -46,11 +46,11 @@
   background: transparent;
   font-family: var(--font-sans);
   font-size: var(--fs-body);
-  color: var(--ink);
+  color: var(--color-ink);
 }
 
 #events-search input::placeholder {
-  color: var(--ink-3);
+  color: var(--color-text-muted);
 }
 
 #events-filter-row {
@@ -67,10 +67,10 @@
   height: 44px;
   /* Výchozí stav je sekundární (outline) — není co použít.
      Jakmile uživatel něco změní, přepne se na plnou amber. */
-  background: var(--surface);
-  border: 1px solid var(--hairline);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
   border-radius: var(--radius-el);
-  color: var(--ink);
+  color: var(--color-ink);
   font-family: var(--font-sans);
   font-weight: var(--fw-semibold);
   font-size: var(--fs-body);
@@ -82,7 +82,7 @@
 
 #events-search-btn:hover,
 #events-search-btn:focus-visible {
-  border-color: var(--ink-3);
+  border-color: var(--color-text-muted);
 }
 
 /* 2.8 Tap */
@@ -92,15 +92,15 @@
 
 /* Čekají změny → plná amber, aby bylo vidět, že je co odeslat */
 #events-search-btn.events-search-btn--pending {
-  background: var(--amber-cta);
-  border-color: var(--amber-cta);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: #fff;
 }
 
 #events-search-btn.events-search-btn--pending:hover,
 #events-search-btn.events-search-btn--pending:focus-visible {
-  background: var(--amber-cta-hover);
-  border-color: var(--amber-cta-hover);
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
 }
 
 #events-search-btn:disabled {
@@ -115,19 +115,19 @@
   padding: 0;
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
-  color: var(--amber-cta);
+  color: var(--color-primary);
   cursor: pointer;
   transition: color var(--dur-fast) var(--ease-standard);
 }
 
 #events-clear-btn:hover {
-  color: var(--amber-cta-hover);
+  color: var(--color-primary-hover);
   text-decoration: underline;
 }
 
 .events-filter-divider {
   height: 1px;
-  background: var(--hairline);
+  background: var(--color-line);
 }
 
 .events-filter-group {
@@ -142,7 +142,7 @@
   font-weight: var(--fw-semibold);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--color-text-muted);
 }
 
 .events-pill-row {
@@ -155,14 +155,14 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--surface);
-  border: 1px solid var(--hairline);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
   border-radius: var(--radius-pill);
   padding: 7px var(--space-3);
   font-family: var(--font-sans);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
-  color: var(--ink);
+  color: var(--color-ink);
   cursor: pointer;
   transition: background var(--dur-fast) var(--ease-standard),
               transform var(--dur-fast) var(--ease-standard);
@@ -171,7 +171,7 @@
 }
 
 .events-pill:hover {
-  background: var(--surface-sunk);
+  background: var(--color-surface-soft);
 }
 
 /* 2.8 Tap */
@@ -180,13 +180,13 @@
 }
 
 .events-pill--active {
-  background: var(--amber-cta);
-  border-color: var(--amber-cta);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: #fff;
 }
 
 .events-pill--active:hover {
-  background: var(--amber-cta);
+  background: var(--color-primary);
 }
 
 .events-pill:disabled {
@@ -195,7 +195,7 @@
 }
 
 .events-pill:disabled:hover {
-  background: var(--surface);
+  background: var(--color-surface);
 }
 
 #events-filter-group-row {
@@ -207,7 +207,7 @@
 #events-view-toggle {
   display: flex;
   align-self: flex-start;
-  background: var(--surface-sunk);
+  background: var(--color-surface-soft);
   border-radius: var(--radius-pill);
   padding: 3px;
   gap: 2px;
@@ -221,14 +221,14 @@
   font-family: var(--font-sans);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
-  color: var(--ink-2);
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
 }
 
 .events-view-toggle-btn--active {
-  background: var(--surface);
-  color: var(--ink);
+  background: var(--color-surface);
+  color: var(--color-ink);
   box-shadow: var(--shadow-card);
 }
 
@@ -244,7 +244,7 @@
 #events-sort-label {
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
-  color: var(--ink-3);
+  color: var(--color-text-muted);
 }
 
 /* ---------- Section header ---------- */
@@ -259,14 +259,14 @@
   font-family: var(--font-display);
   font-size: var(--fs-h2);
   font-weight: var(--fw-semibold);
-  color: var(--ink);
+  color: var(--color-ink);
   margin: 0;
 }
 
 #events-count {
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
-  color: var(--ink-3);
+  color: var(--color-text-muted);
 }
 
 /* ---------- Events list ---------- */
@@ -280,7 +280,7 @@
 #events-loading {
   grid-column: 1 / -1;
   text-align: center;
-  color: var(--ink-3);
+  color: var(--color-text-muted);
   font-family: var(--font-sans);
   padding: var(--space-16) 0;
 }
@@ -299,28 +299,28 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 1px solid var(--hairline);
-  background: var(--surface);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
-  color: var(--ink-2);
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: background var(--dur-fast) var(--ease-standard);
 }
 
 .pagination-btn:hover {
-  background: var(--surface-sunk);
+  background: var(--color-surface-soft);
 }
 
 .pagination-btn--active {
-  background: var(--amber-cta);
-  border-color: var(--amber-cta);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: #fff;
 }
 
 .pagination-dots {
-  color: var(--ink-3);
+  color: var(--color-text-muted);
   font-family: var(--font-sans);
   padding: 0 2px;
 }

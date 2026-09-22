@@ -1,7 +1,7 @@
 /* ===== EVENT DETAIL PAGE — mobile first ===== */
 
 #detail-page {
-    background: var(--bg);
+    background: var(--color-page);
     display: flex;
     flex-direction: column;
 }
@@ -133,7 +133,7 @@
     font-family: var(--font-display);
     font-size: var(--fs-h2);
     font-weight: var(--fw-semibold);
-    color: var(--ink);
+    color: var(--color-ink);
     margin: 0 0 var(--space-3);
 }
 
@@ -142,7 +142,7 @@
     font-family: var(--font-sans);
     font-size: var(--fs-body);
     line-height: var(--lh-body);
-    color: var(--ink-2);
+    color: var(--color-text-muted);
 }
 
 .detail-section p:last-of-type {
@@ -157,7 +157,7 @@
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
-    color: var(--amber-cta);
+    color: var(--color-primary);
     text-decoration: none;
     word-break: break-all;
 }
@@ -171,7 +171,7 @@
     display: block;
     width: 100%;
     height: 320px;
-    border: 1px solid var(--hairline);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
 }
 
@@ -182,7 +182,7 @@
     margin: var(--space-3) 0 0;
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 /* ---------- Sidebar ---------- */
@@ -193,8 +193,8 @@
 }
 
 .detail-card {
-    background: var(--surface);
-    border: 1px solid var(--hairline);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
     padding: var(--space-5);
@@ -207,7 +207,7 @@
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 #detail-buy-btn {
@@ -215,7 +215,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    background: var(--amber-cta);
+    background: var(--color-primary);
     color: #fff;
     text-decoration: none;
     font-family: var(--font-sans);
@@ -242,20 +242,20 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    background: var(--surface);
-    border: 1px solid var(--hairline);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-el);
     padding: var(--space-2) var(--space-3);
     font-family: var(--font-sans);
     font-size: var(--fs-xs);
     font-weight: var(--fw-medium);
-    color: var(--ink);
+    color: var(--color-ink);
     cursor: pointer;
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
 .detail-sidebar-action-btn:hover {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
 }
 
 /* ---------- Not found ---------- */
@@ -267,11 +267,11 @@
     min-height: 40vh;
     gap: var(--space-4);
     font-family: var(--font-sans);
-    color: var(--ink-2);
+    color: var(--color-text-muted);
 }
 
 #detail-not-found button {
-    background: var(--amber-cta);
+    background: var(--color-primary);
     color: #fff;
     border: none;
     border-radius: var(--radius-el);

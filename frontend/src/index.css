@@ -1,18 +1,20 @@
 @import './styles/category-tokens.css';
 
-@font-face {
-  font-family: 'KronaOne';
-  src: url('./assets/fonts/KronaOne-Regular.ttf') format('truetype');
-  font-weight: 400;
-}
-
 :root {
-  /* ---------- BARVY · brand / accent ---------- */
-  --amber-cta:        #E8720C;
-  --amber-cta-hover:  #CF6309;
-  --amber:            #EF9F27;
-  --sun:              #F5A623;
-  --buy-yellow:       #FFC94D;
+  /* ---------- BARVY · brand / primary ----------
+     Migrace na tokeny z handoff specu (papírový redesign, Fáze 1).
+     --amber-cta/--amber-cta-hover/--bg/--surface/--surface-sunk/--hairline/
+     --ink/--ink-2/--ink-3 byly přejmenovány na --color-* (stejné pojmenování
+     jako v handoffu) přímo, ne vedle sebe jako druhá sada — starý systém byl
+     důsledně používaný napříč ~18 CSS soubory, souběh dvou sad by jen vytvořil
+     tichý drift. --ink-2 a --ink-3 se sloučily do jednoho --color-text-muted,
+     protože handoff má jen dvě úrovně textu (ink/muted), ne tři. Tokeny bez
+     protějšku v handoffu (--sun, --green-today, --badge-*, --focus-ring…)
+     zůstávají beze změny — handoff je nepokrývá, nemá smysl je rušit. */
+  --color-primary:       #E8720C;
+  --color-primary-hover: #F58A2A;
+  --sun:                 #F5A623;
+  --buy-yellow:          #FFC94D;
 
   /* ---------- BARVY · semantické stavy ---------- */
   --green-today:      #34A853;
@@ -20,17 +22,41 @@
   --status-buy-text:  #5A3A00;
   --badge-bg:         #FBEED4;
   --badge-ink:        #854F0B;
+  --color-success:     #2F6A24;
+  --color-success-bg:  #EAF5E4;
+  --color-danger-soft:    #B03A24;
+  --color-danger-soft-bg: #FDE4E0;
 
-  /* ---------- BARVY · teplé neutrály ---------- */
-  --bg:               #EFE9DF;
-  --surface:          #FFFFFF;
-  --surface-sunk:     #F6F1E8;
-  --hairline:         #DAD0BF;
+  /* ---------- BARVY · teplé neutrály (povrchy) ---------- */
+  --color-page:         #FBF7F2;
+  --color-surface:      #FFFFFF;
+  --color-surface-soft: #FBF4EA;
+  --color-line:         #EADCC9;
+  --color-line-soft:    #EFE2D0;
 
   /* ---------- BARVY · ink / text ---------- */
-  --ink:              #1F1B16;
-  --ink-2:            #6B5E4C;
-  --ink-3:            #8A7B63;
+  --color-ink:         #2A0F04;
+  --color-ink-hover:   #1D0B04;
+  --color-text-muted:  #6E4528;
+  --color-label:       #A8480A;
+
+  /* PlzenakLogo.jsx se podle zadání nesmí měnit a čte var(--ink) přímo —
+     alias tu zůstává jen kvůli němu, nepoužívat v novém kódu. */
+  --ink: var(--color-ink);
+
+  /* ---------- BARVY · noc (hero, tmavé pásy) ---------- */
+  --color-night:       #1D0B04;
+  --color-night-2:     #2A1106;
+  --color-cream:       #FFF1DE;
+  --color-cream-muted: #D9B996;
+
+  /* ---------- BARVY · kategorijní akcenty mimo jantarovou rodinu ---------- */
+  --color-music-1:    #7B3480;
+  --color-music-2:    #4A1D57;
+  --color-music-tint: #F1DDF2;
+  --color-calm-bg:        #E1E9D9;
+  --color-calm-text:      #213A26;
+  --color-calm-text-soft: #34553A;
 
   /* ---------- GRADIENT ---------- */
   --hero-gradient:    linear-gradient(135deg, #EF9F27 0%, #E8720C 100%);
@@ -44,11 +70,21 @@
   --font-display: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
   --font-sans:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  --fw-regular:  400;
-  --fw-medium:   500;
-  --fw-semibold: 600;
+  --fw-regular:   400;
+  --fw-medium:    500;
+  --fw-semibold:  600;
+  --fw-bold:      700;
+  --fw-extrabold: 800;
 
-  /* ---------- TYPOGRAFIE · škála ---------- */
+  /* ---------- TYPOGRAFIE · škála ----------
+     --fs-display-xl/-l a --fs-heading-1/-2 a --fs-card-title jsou nové,
+     z handoff typografické tabulky (hodnoty jsou střed uvedeného rozsahu —
+     přesné clamp() křivky se doladí až při stavbě konkrétních nadpisů). */
+  --fs-display-xl: 108px;
+  --fs-display-l:  78px;
+  --fs-heading-1:  52px;
+  --fs-heading-2:  35px;
+  --fs-card-title: 23px;
   --fs-display: 44px;
   --fs-h1:      32px;
   --fs-h2:      24px;
@@ -63,6 +99,9 @@
   --lh-snug:  1.25;
   --lh-body:  1.6;
 
+  --tracking-display-xl: -0.045em;
+  --tracking-display-l:  -0.04em;
+  --tracking-heading:    -0.03em;
   --tracking-display: -0.01em;
   --tracking-label:    0.08em;
 
@@ -80,19 +119,32 @@
 
   --container:        1120px;
   --container-narrow: 720px;
+  --gutter-desktop:   80px;
+  --gutter-mobile:    16px;
+  --touch-min:        44px;
 
   /* ---------- RADIUS ---------- */
-  --radius-sm:   6px;
-  --radius-el:   10px;
-  --radius-card: 16px;
-  --radius-pill: 999px;
+  --radius-sm:    6px;
+  --radius-el:    10px;
+  --radius-field-soft: 16px;
+  --radius-field: 18px;
+  --radius-btn-s: 14px;
+  --radius-card:  22px;
+  --radius-tile:  24px;
+  --radius-panel: 27px;
+  --radius-pill:  999px;
+  --radius-nav:   0 0 24px 24px;
+  --radius-nav-mobile: 0 0 20px 20px;
 
   /* ---------- STÍNY ---------- */
   --shadow-card:       0 6px 20px rgba(31, 27, 22, 0.10);
   --shadow-card-hover: 0 10px 28px rgba(31, 27, 22, 0.14);
   --shadow-pop:        0 12px 32px rgba(31, 27, 22, 0.18);
-  --shadow-inset:      inset 0 0 0 1px #DAD0BF;
+  --shadow-inset:      inset 0 0 0 1px var(--color-line);
   --focus-shadow:      0 0 0 3px rgba(232, 114, 12, 0.40);
+  --shadow-paper:      0 1px 2px rgba(42, 15, 4, .06), 0 22px 44px -26px rgba(90, 40, 10, .45);
+  --shadow-nav:        0 16px 32px -20px rgba(90, 40, 10, .45);
+  --paper-layer:       drop-shadow(0 -3px 5px rgba(22, 5, 0, .55));
 
   /* ---------- MOTION ----------
      Sada B z motion specu (návrh Plzeňák). Nahradila původní konzervativnější
@@ -190,9 +242,9 @@
 .skeleton {
   background: linear-gradient(
     90deg,
-    var(--surface-sunk) 25%,
+    var(--color-surface-soft) 25%,
     var(--skeleton-hi) 50%,
-    var(--surface-sunk) 75%
+    var(--color-surface-soft) 75%
   );
   background-size: 200% 100%;
   animation: shimmer var(--loop-shimmer) var(--ease-standard) infinite;
@@ -211,8 +263,8 @@ html, body {
   margin: 0;
   min-height: 100%;
   font-family: var(--font-sans);
-  background: var(--bg);
-  color: var(--ink);
+  background: var(--color-page);
+  color: var(--color-ink);
 }
 
 #root {

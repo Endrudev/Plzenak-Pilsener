@@ -168,7 +168,7 @@
 #night-skyline .landmark:hover,
 #night-skyline .landmark.is-active,
 #night-skyline .landmark:focus-within {
-  color: var(--amber-cta);
+  color: var(--color-primary);
   opacity: 1;
   filter:
     blur(0px)
@@ -387,7 +387,7 @@
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-el);
   background: var(--ns-night-2);
-  box-shadow: var(--shadow-pop), inset 0 0 0 1px var(--amber-cta);
+  box-shadow: var(--shadow-pop), inset 0 0 0 1px var(--color-primary);
   pointer-events: none;
   animation: ns-tip-in var(--ns-dur-tip) var(--ease-standard) backwards;
 }
@@ -447,7 +447,7 @@
 
 #night-skyline .tip-badge--today {
   background: var(--green-today);
-  color: var(--surface);
+  color: var(--color-surface);
 }
 
 #night-skyline.night-skyline--scrim::after {

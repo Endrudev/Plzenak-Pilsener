@@ -1,6 +1,6 @@
 #site-header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--hairline);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-line);
     position: sticky;
     top: 0;
     z-index: 30;
@@ -34,7 +34,7 @@
     font-family: var(--font-sans);
     font-size: var(--fs-body);
     font-weight: var(--fw-medium);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     text-decoration: none;
     background: none;
     border: none;
@@ -48,9 +48,9 @@
 }
 
 .nav-link--active {
-    color: var(--ink);
+    color: var(--color-ink);
     font-weight: var(--fw-semibold);
-    border-bottom-color: var(--amber-cta);
+    border-bottom-color: var(--color-primary);
 }
 
 #nav-category-wrapper {
@@ -63,7 +63,7 @@
     top: calc(100% + var(--space-4));
     left: -20px;
     width: 380px;
-    background: var(--surface);
+    background: var(--color-surface);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-pop);
     padding: var(--space-3);
@@ -79,7 +79,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    background: var(--amber-cta);
+    background: var(--color-primary);
     color: #fff;
     border-radius: var(--radius-el);
     padding: var(--space-3) var(--space-4);
@@ -124,7 +124,7 @@
     font-weight: var(--fw-semibold);
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 #nav-category-grid {
@@ -140,19 +140,19 @@
     padding: var(--space-2);
     border-radius: 8px;
     text-decoration: none;
-    color: var(--ink);
+    color: var(--color-ink);
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
 .nav-category-item:hover {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
 }
 
 .nav-category-icon {
     width: 30px;
     height: 30px;
     border-radius: 8px;
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -174,11 +174,11 @@
     gap: 6px;
     margin-top: var(--space-2);
     padding: var(--space-3) var(--space-2) var(--space-1);
-    border-top: 1px solid var(--hairline);
+    border-top: 1px solid var(--color-line);
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
-    color: var(--amber-cta);
+    color: var(--color-primary);
     text-decoration: none;
 }
 
@@ -186,7 +186,7 @@
     display: flex;
     align-items: center;
     gap: 7px;
-    background: var(--amber-cta);
+    background: var(--color-primary);
     color: #fff;
     text-decoration: none;
     font-family: var(--font-sans);

@@ -19,13 +19,14 @@
   --category-sport-soft: #FDF3DA;
   --category-deti-soft: #FEF6E0;
 
-  /* Gradient — sytý jantarový gradient dlaždice (135°). Ne pastel. */
-  --category-gastro-grad: linear-gradient(135deg, #EF7F14 0%, #CF6309 100%);
-  --category-pamatky-grad: linear-gradient(135deg, #EE8A16 0%, #D66C09 100%);
-  --category-hudba-grad: linear-gradient(135deg, #F0951E 0%, #DD760C 100%);
-  --category-kultura-grad: linear-gradient(135deg, #F3A72C 0%, #E1810F 100%);
-  --category-sport-grad: linear-gradient(135deg, #F7B437 0%, #E88E12 100%);
-  --category-deti-grad: linear-gradient(135deg, #F9BE4C 0%, #EE9A1C 100%);
+  /* Gradient — sytý jantarový gradient dlaždice (135°). Ne pastel.
+     Hodnoty z handoff specu (papírový redesign) — dlaždice kategorií. */
+  --category-gastro-grad: linear-gradient(135deg, #EE7A12 0%, #CC5C08 100%);
+  --category-pamatky-grad: linear-gradient(135deg, #EA7C14 0%, #C85806 100%);
+  --category-hudba-grad: linear-gradient(135deg, #EC8418 0%, #D2660A 100%);
+  --category-kultura-grad: linear-gradient(135deg, #EE9A2A 0%, #D8740F 100%);
+  --category-sport-grad: linear-gradient(135deg, #F0A634 0%, #DE8216 100%);
+  --category-deti-grad: linear-gradient(135deg, #F2B448 0%, #E48E1E 100%);
 
   /* Ink — text na soft ploše */
   --category-gastro-ink: #8A3D02;
