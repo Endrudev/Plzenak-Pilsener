@@ -6,13 +6,30 @@
     overflow: hidden;
 }
 
-/* Silueta střech nahoře — stejný papírový motiv jako NightSkyline/EmptyState,
-   teď jako skutečná SVG kresba (viz Footer.jsx), ne CSS gradient aproximace. */
+/* Silueta střech nahoře — stejná procedurální kresba jako NightSkyline
+   (cityscape.js), ne ruční obdélníky nebo CSS gradient aproximace. Pruh má
+   vlastní přechod ze světlé (stránka nad patičkou) do tmavé (--color-footer),
+   siluety budov sedí dole, kde se s pevným pozadím patičky spojí beze švu. */
 .footer-skyline {
     display: block;
     width: 100%;
-    height: 64px;
-    margin-bottom: var(--space-8);
+    height: 130px;
+    margin-bottom: calc(-1 * var(--space-2));
+    background: linear-gradient(to bottom, var(--color-page) 0%, var(--color-night-2) 62%, var(--color-footer) 100%);
+}
+
+.footer-skyline-mass {
+    fill: var(--color-footer);
+}
+
+.footer-skyline-windows {
+    fill: var(--sun);
+    opacity: 0.55;
+}
+
+.footer-skyline-stars {
+    fill: var(--color-cream);
+    opacity: 0.7;
 }
 
 #footer-inner {

@@ -1,11 +1,12 @@
 #site-header {
+    width: calc(100% - 2 * var(--space-4));
     max-width: var(--container);
-    margin: 0 auto;
+    margin: var(--space-4) auto 0;
     background: linear-gradient(90deg, #FFE7CF, #FFF6EC, #FFFBF6, #EEF3E8);
     box-shadow: var(--shadow-nav);
-    border-radius: var(--radius-nav-mobile);
+    border-radius: var(--radius-tile);
     position: sticky;
-    top: 0;
+    top: var(--space-4);
     z-index: 30;
 }
 
@@ -277,10 +278,6 @@
 }
 
 @media (min-width: 768px) {
-    #site-header {
-        border-radius: var(--radius-nav);
-    }
-
     #header-nav {
         display: flex;
     }

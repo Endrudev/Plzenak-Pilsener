@@ -119,7 +119,7 @@
   --space-12: 48px;
   --space-16: 64px;
 
-  --container:        1120px;
+  --container:        1280px;   /* handoff: šířka obsahu 1280px, na 1440px okraje 80px */
   --container-narrow: 720px;
   --gutter-desktop:   80px;
   --gutter-mobile:    16px;
