@@ -25,6 +25,13 @@
     fill: var(--color-footer);
 }
 
+/* Zadní vrstva — tlumenější tón, ať čte jako dál/za hlavní řadou, ne jako
+   stejná budova navíc. */
+.footer-skyline-mass--back {
+    fill: var(--color-night-2);
+    opacity: 0.8;
+}
+
 .footer-skyline-window {
     fill: var(--color-window);
     opacity: 0.85;

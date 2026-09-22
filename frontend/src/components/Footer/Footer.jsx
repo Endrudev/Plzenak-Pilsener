@@ -13,15 +13,17 @@ const VIEW_W = 1440
 const BASE_Y = 90
 const ROOFS = ['flat', 'flat', 'pediment', 'bell', 'stepped', 'parapet']
 
-function buildSilhouette(seed) {
+// dense = pozadí za hlavní řadou: menší rozptyl šířky, skoro žádné velké
+// mezery, ať to za předním plánem čte jako plnější, hustší město.
+function buildSilhouette(seed, { minW = 26, maxW = 90, minH = 20, maxH = 66, dense = false } = {}) {
     const rand = seeded(seed)
     const buildings = []
     let x = -10
     while (x < VIEW_W + 10) {
         // Širší rozptyl šířky/výšky, ať se vedle sebe potkají nízké řadovky
         // i užší vyšší domy, ne jen jedna průměrná velikost pořád dokola.
-        const w = 26 + rand() * 64
-        const bodyH = 20 + rand() * 46
+        const w = minW + rand() * (maxW - minW)
+        const bodyH = minH + rand() * (maxH - minH)
         const roof = ROOFS[Math.floor(rand() * ROOFS.length)]
         const roofH = roof === 'flat' || roof === 'parapet' ? 0 : 8 + rand() * 14
         buildings.push({ x, w, bodyH, roof, roofH, chimney: roof === 'flat' && rand() < 0.3 })
@@ -29,11 +31,14 @@ function buildSilhouette(seed) {
         // Mezery jsou schválně nepravidelné, ne jedna průměrná rozteč pořád
         // dokola: občas se budovy mírně překryjí (jedna stojí kousek před
         // druhou), jinde stojí těsně vedle sebe, jinde je mezi nimi vidět
-        // širší kus oblohy — jak to na skutečné siluetě bývá.
+        // širší kus oblohy — jak to na skutečné siluetě bývá. Zadní (husté)
+        // řadě se ty velké mezery vůbec nepovolí.
         const gapRoll = rand()
-        const gap = gapRoll < 0.2 ? -(4 + rand() * 10)   // mírný překryv
-            : gapRoll < 0.55 ? rand() * 6                 // těsně vedle sebe
-                : 8 + rand() * 26                              // širší mezera
+        const gap = dense
+            ? (gapRoll < 0.4 ? -(2 + rand() * 6) : rand() * 4)
+            : gapRoll < 0.2 ? -(4 + rand() * 10)   // mírný překryv
+                : gapRoll < 0.55 ? rand() * 6         // těsně vedle sebe
+                    : 8 + rand() * 26                     // širší mezera
         x += w + gap
     }
     return buildings
@@ -80,34 +85,48 @@ function buildingWindows(building, rand) {
     return rects
 }
 
+// Jedna budova (tělo + střecha + volitelně vlastní okna) jako jeden celek
+// — když se dvě budovy mírně překryjí, ta pozdější (bližší, kreslená
+// později) tak správně zakryje i okna té za ní, ne jen její zeď.
+function Building({ b, massClass, windows }) {
+    return (
+        <g>
+            <g className={massClass}>
+                <rect x={b.x} y={BASE_Y - b.bodyH} width={b.w} height={b.bodyH} />
+                {b.roofH > 0 && <path d={roofPath(b)} />}
+                {b.roof === 'parapet' && (
+                    <rect x={b.x - 1} y={BASE_Y - b.bodyH - 3} width={b.w + 2} height="3" />
+                )}
+                {b.chimney && (
+                    <rect x={b.x + b.w * 0.68} y={BASE_Y - b.bodyH - 10} width="5" height="12" />
+                )}
+            </g>
+            {windows && (
+                <g className="footer-skyline-window">
+                    {windows.map((w, wi) => (
+                        <rect key={wi} x={w.x} y={w.y} width="4" height="6" />
+                    ))}
+                </g>
+            )}
+        </g>
+    )
+}
+
 function FooterSkyline() {
-    const buildings = buildSilhouette(7)
+    // Zadní, hustší vrstva — menší rozptyl, skoro bez mezer, tlumenější
+    // barva (viz CSS) a bez oken, ať zůstane jen výplní za hlavní řadou,
+    // ne konkurencí jejímu detailu.
+    const backBuildings = buildSilhouette(31, { minW: 16, maxW: 46, minH: 16, maxH: 58, dense: true })
+    const frontBuildings = buildSilhouette(7)
     const winRand = seeded(23)
 
     return (
         <svg className="footer-skyline" viewBox={`0 0 ${VIEW_W} ${BASE_Y}`} preserveAspectRatio="none" aria-hidden="true">
-            {/* Každá budova (tělo + střecha + vlastní okna) se kreslí jako
-                jeden celek v pořadí zleva doprava — díky tomu, když se dvě
-                budovy mírně překryjí, ta pozdější (a tedy "bližší") správně
-                zakryje i okna té za ní, ne jen její zeď. */}
-            {buildings.map((b, i) => (
-                <g key={i}>
-                    <g className="footer-skyline-mass">
-                        <rect x={b.x} y={BASE_Y - b.bodyH} width={b.w} height={b.bodyH} />
-                        {b.roofH > 0 && <path d={roofPath(b)} />}
-                        {b.roof === 'parapet' && (
-                            <rect x={b.x - 1} y={BASE_Y - b.bodyH - 3} width={b.w + 2} height="3" />
-                        )}
-                        {b.chimney && (
-                            <rect x={b.x + b.w * 0.68} y={BASE_Y - b.bodyH - 10} width="5" height="12" />
-                        )}
-                    </g>
-                    <g className="footer-skyline-window">
-                        {buildingWindows(b, winRand).map((w, wi) => (
-                            <rect key={wi} x={w.x} y={w.y} width="4" height="6" />
-                        ))}
-                    </g>
-                </g>
+            {backBuildings.map((b, i) => (
+                <Building key={`back-${i}`} b={b} massClass="footer-skyline-mass footer-skyline-mass--back" />
+            ))}
+            {frontBuildings.map((b, i) => (
+                <Building key={`front-${i}`} b={b} massClass="footer-skyline-mass" windows={buildingWindows(b, winRand)} />
             ))}
         </svg>
     )
