@@ -1,32 +1,47 @@
 import { Link } from 'react-router-dom'
 import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
-import { seeded } from '../NightSkyline/cityscape.js'
+import { seeded, pediment, bellGable, steppedGable } from '../NightSkyline/cityscape.js'
 import './Footer.css'
 import { useConsent } from '../../lib/ConsentContext.jsx'
 
-// Siluety domů jako prosté obdélníky (x, šířka, výška od paty) — vědomě,
-// ne ozdobné střechy z cityscape.js. Díky tomu jde spočítat mřížku oken
-// přesně uvnitř KAŽDÉ budovy (ne bodově kamkoliv do scény), stejně
-// pravidelně, jak okna na baráku doopravdy sedí — pár na šířku, pár
-// na výšku, se stejnou mezerou mezi sebou.
+// Budova = obdélníkové tělo (kde bydlí mřížka oken, viz buildingWindows)
+// + volitelná střecha nad ním (roofH počítá se zvlášť, do mřížky oken se
+// nezapojuje). Různé tvary střech jsou to, co dělá siluetu rozeznatelnou
+// — samotná náhodná šířka/výška pořád vypadá jako jeden typ baráku pořád
+// dokola.
 const VIEW_W = 1440
 const BASE_Y = 90
+const ROOFS = ['flat', 'flat', 'pediment', 'bell', 'stepped', 'parapet']
 
 function buildSilhouette(seed) {
     const rand = seeded(seed)
     const buildings = []
     let x = -10
     while (x < VIEW_W + 10) {
-        const w = 34 + rand() * 46
-        const h = 28 + rand() * 46
-        buildings.push({ x, w, h })
-        x += w + 5 + rand() * 9
+        // Širší rozptyl šířky/výšky, ať se vedle sebe potkají nízké řadovky
+        // i užší vyšší domy, ne jen jedna průměrná velikost pořád dokola.
+        const w = 26 + rand() * 64
+        const bodyH = 20 + rand() * 46
+        const roof = ROOFS[Math.floor(rand() * ROOFS.length)]
+        const roofH = roof === 'flat' || roof === 'parapet' ? 0 : 8 + rand() * 14
+        buildings.push({ x, w, bodyH, roof, roofH, chimney: roof === 'flat' && rand() < 0.3 })
+        x += w + 4 + rand() * 8
     }
     return buildings
 }
 
-// Okna jedné budovy: mřížka vycentrovaná uvnitř s okrajem ze všech stran,
-// pár namátkou nesvítí (`rand() < .3`), ať to nepůsobí jako děrovačka.
+function roofPath(b) {
+    const cx = b.x + b.w / 2
+    const y = BASE_Y - b.bodyH
+    if (b.roof === 'pediment') return pediment(cx, y, b.w / 2, b.roofH)
+    if (b.roof === 'bell') return bellGable(cx, y, b.w / 2, b.roofH)
+    if (b.roof === 'stepped') return steppedGable(cx, y, b.w / 2, 3, b.roofH / 3)
+    return ''
+}
+
+// Okna jedné budovy: mřížka vycentrovaná uvnitř těla (ne střechy) s okrajem
+// ze všech stran, pár namátkou nesvítí (`rand() < .3`), ať to nepůsobí
+// jako děrovačka.
 function buildingWindows(building, rand) {
     const marginX = 7
     const marginTop = 10
@@ -35,7 +50,7 @@ function buildingWindows(building, rand) {
     const winH = 6
 
     const innerW = building.w - marginX * 2
-    const innerH = building.h - marginTop - marginBottom
+    const innerH = building.bodyH - marginTop - marginBottom
     if (innerW < winW || innerH < winH) return []
 
     const cols = Math.max(1, Math.round(innerW / 15))
@@ -49,7 +64,7 @@ function buildingWindows(building, rand) {
             if (rand() < 0.3) continue
             rects.push({
                 x: building.x + marginX + stepX * (c + 0.5) - winW / 2,
-                y: BASE_Y - building.h + marginTop + stepY * (r + 0.5) - winH / 2,
+                y: BASE_Y - building.bodyH + marginTop + stepY * (r + 0.5) - winH / 2,
             })
         }
     }
@@ -65,7 +80,16 @@ function FooterSkyline() {
         <svg className="footer-skyline" viewBox={`0 0 ${VIEW_W} ${BASE_Y}`} preserveAspectRatio="none" aria-hidden="true">
             <g className="footer-skyline-mass">
                 {buildings.map((b, i) => (
-                    <rect key={i} x={b.x} y={BASE_Y - b.h} width={b.w} height={b.h} />
+                    <g key={i}>
+                        <rect x={b.x} y={BASE_Y - b.bodyH} width={b.w} height={b.bodyH} />
+                        {b.roofH > 0 && <path d={roofPath(b)} />}
+                        {b.roof === 'parapet' && (
+                            <rect x={b.x - 1} y={BASE_Y - b.bodyH - 3} width={b.w + 2} height="3" />
+                        )}
+                        {b.chimney && (
+                            <rect x={b.x + b.w * 0.68} y={BASE_Y - b.bodyH - 10} width="5" height="12" />
+                        )}
+                    </g>
                 ))}
             </g>
             <g className="footer-skyline-window">
