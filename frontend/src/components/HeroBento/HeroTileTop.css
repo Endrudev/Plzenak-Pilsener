@@ -5,12 +5,15 @@
     color: var(--color-cream);
 }
 
+/* 4 vrstvy siluety, každá svůj vlastní <svg viewBox="0 0 850 640">,
+   naskládané na sebe stejně jako ve zdroji (vzdálená → střední → blízká →
+   přední). Všechno uvnitř (okna, hvězdy, ptáci, vlajka, kouř, lucerna,
+   světla aut) je teď nativní SVG obsah ve STEJNÉM viewBoxu jako budovy —
+   škáluje se s nimi 1:1 bez ohledu na skutečnou šířku dlaždice. */
 .top-layer {
     position: absolute;
     inset: 0;
-    display: block;
     z-index: 0;
-    overflow: visible;
 }
 
 .top-layer svg {
@@ -20,23 +23,15 @@
     overflow: visible;
 }
 
-.flock-layer {
-    position: absolute;
-    inset: 0;
-    display: block;
-    overflow: hidden;
-    z-index: 0;
-}
-
-.fx, .sky, .st, .shoot, .wl, .flag, .puff, .glow, .lantern, .flock, .bd {
-    position: absolute;
-    display: block;
-    pointer-events: none;
+/* Procentuální transform-origin se v SVG bez tohohle počítá vůči celému
+   viewBoxu (850×640), ne vůči vlastnímu tvaru — proto by se např. vlajka
+   vlnila kolem levého horního rohu celé scény, ne kolem svého stožáru. */
+.shoot, .flag, .bd {
+    transform-box: fill-box;
 }
 
 /* ---------- obloha: hvězdy, padající hvězda ---------- */
 .sky {
-    inset: 0;
     animation-duration: 38s;
     animation-iteration-count: infinite;
     animation-direction: alternate;
@@ -44,7 +39,7 @@
 }
 
 .st {
-    color: var(--color-top-star);
+    fill: var(--color-top-star);
     opacity: .85;
     animation-duration: 3.2s;
     animation-iteration-count: infinite;
@@ -61,12 +56,9 @@
 }
 
 .shoot {
-    width: 110px;
-    height: 2px;
-    border-radius: 2px;
+    fill: url(#ht-shoot-grad);
     opacity: 0;
     transform-origin: 100% 50%;
-    background: linear-gradient(to right, rgba(255, 236, 204, 0), rgba(255, 244, 226, .95));
     animation-iteration-count: infinite;
     animation-timing-function: linear;
 }
@@ -83,8 +75,8 @@
 
 /* ---------- okna ---------- */
 .wl {
-    background: var(--color-window);
-    box-shadow: 0 0 5px rgba(255, 214, 150, .65);
+    fill: var(--color-window);
+    filter: drop-shadow(0 0 3px rgba(255, 214, 150, .65));
     animation-iteration-count: infinite;
     animation-timing-function: linear;
 }
@@ -97,9 +89,8 @@
 
 /* ---------- vlajka, kouř, lucerna, ptáci ---------- */
 .flag {
+    fill: var(--color-top-moon);
     transform-origin: 0 50%;
-    background: var(--color-top-moon);
-    border-radius: 1px;
     animation-duration: 1.8s;
     animation-iteration-count: infinite;
     animation-timing-function: ease-in-out;
@@ -111,8 +102,7 @@
 }
 
 .puff {
-    border-radius: 50%;
-    background: var(--color-top-smoke);
+    fill: var(--color-top-smoke);
     opacity: 0;
     animation-duration: 4.4s;
     animation-iteration-count: infinite;
@@ -136,17 +126,13 @@
     animation-timing-function: ease-in-out;
 }
 
-.lantern i {
-    position: absolute;
-    inset: 0;
-    display: block;
-    border-radius: 50%;
-    background: var(--color-top-lantern);
-    box-shadow: 0 0 6px 3px rgba(255, 214, 140, .75), 0 0 16px 6px rgba(255, 190, 110, .35);
-    animation: inherit;
-    animation-name: none;
+.lantern-flame {
+    fill: var(--color-top-lantern);
+    filter: drop-shadow(0 0 6px rgba(255, 214, 140, .75)) drop-shadow(0 0 12px rgba(255, 190, 110, .35));
+    transform-box: fill-box;
     animation-duration: .9s;
-    animation-delay: 0s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
 }
 
 @keyframes ht-lantern {
@@ -166,8 +152,6 @@
 }
 
 .flock {
-    width: 120px;
-    height: 60px;
     opacity: 0;
     animation-duration: 24s;
     animation-delay: -2s;
@@ -176,6 +160,7 @@
 }
 
 .bd {
+    transform-box: fill-box;
     transform-origin: 50% 60%;
     filter: drop-shadow(0 2px 2px rgba(22, 6, 0, .5));
     animation-duration: .55s;
@@ -201,22 +186,13 @@
 /* ---------- "světla aut" jedoucí po ulici ---------- */
 .glow {
     opacity: 0;
-    mix-blend-mode: screen;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
 }
 
-.glow i {
-    position: absolute;
-    inset: 0;
-    display: block;
-    border-radius: 50%;
+.glow-i {
     filter: blur(6px);
-    background: radial-gradient(ellipse 50% 100% at 50% 100%, rgba(255, 238, 204, .62) 0%, rgba(255, 224, 176, .26) 40%, rgba(255, 214, 160, 0) 75%);
-}
-
-.glow.far i {
-    background: radial-gradient(ellipse 50% 100% at 50% 100%, rgba(255, 232, 196, .42) 0%, rgba(255, 220, 170, .16) 40%, rgba(255, 214, 160, 0) 75%);
+    mix-blend-mode: screen;
 }
 
 .glow.g1 { animation-duration: 12s; animation-delay: -2s; }
@@ -229,8 +205,8 @@
 /* ---------- spouštění animací na hoveru/focusu ---------- */
 .hero-tile--top:hover .lantern,
 .hero-tile--top:focus-visible .lantern { animation-name: ht-lantern; }
-.hero-tile--top:hover .lantern i,
-.hero-tile--top:focus-visible .lantern i { animation-name: ht-flame; animation-iteration-count: infinite; }
+.hero-tile--top:hover .lantern-flame,
+.hero-tile--top:focus-visible .lantern-flame { animation-name: ht-flame; }
 .hero-tile--top:hover .flock,
 .hero-tile--top:focus-visible .flock { animation-name: ht-fly; }
 .hero-tile--top:hover .bd,
@@ -257,6 +233,12 @@
 @keyframes ht-twinkle-sky {
     from { transform: translate(-10px, 2px); }
     to   { transform: translate(12px, -3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sky, .st, .shoot, .wl, .flag, .puff, .lantern, .lantern-flame, .flock, .bd, .glow {
+        animation: none !important;
+    }
 }
 
 @media (max-width: 767px) {
