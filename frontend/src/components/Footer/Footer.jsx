@@ -1,27 +1,78 @@
 import { Link } from 'react-router-dom'
 import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
+import { seeded } from '../NightSkyline/cityscape.js'
 import './Footer.css'
 import { useConsent } from '../../lib/ConsentContext.jsx'
 
-// Silueta střech — přesná cesta ze zdrojového návrhu (Main.dc.html /
-// Homepage.dc.html), ne procedurálně generovaná. Ta z cityscape.js
-// (sdílená s NightSkyline) je stavěná pro velkou interaktivní scénu a v
-// malém dekorativním pruhu dělala nečitelný nával oken a detailů — tohle
-// je jednou nakreslený, řídce prosvětlený obrys, přesně jak ho má appka mít.
-const ROOFLINE_PATH = 'M-10 90V36H-0V26H10V16H19V26H29V36H39V58H111V28H149V44H176V18l5 -12l5 12V44H213V58H231V32l5 -12l5 12V58H259V58H273V48H287V38H300V48H314V58H328V42H371V52H438V32L476 14L514 32V30H528V20H542V10H557V20H571V30H585V45H592V35H599V25H606V35H613V45H620V52H700V53H761V56H831V51L852 33L873 51V59L894 41L915 59V55H992V54H1014V28l5 -12l5 12V54H1045V50H1069V24l5 -12l5 12V50H1103V42H1163V29H1240V38H1312V34H1366V45L1390 27L1413 45V58H1451V90Z'
+// Siluety domů jako prosté obdélníky (x, šířka, výška od paty) — vědomě,
+// ne ozdobné střechy z cityscape.js. Díky tomu jde spočítat mřížku oken
+// přesně uvnitř KAŽDÉ budovy (ne bodově kamkoliv do scény), stejně
+// pravidelně, jak okna na baráku doopravdy sedí — pár na šířku, pár
+// na výšku, se stejnou mezerou mezi sebou.
+const VIEW_W = 1440
+const BASE_Y = 90
 
-const WINDOWS = [
-    [77, 54], [134, 56], [191, 65], [362, 71], [476, 70], [533, 60],
-    [704, 54], [761, 69], [818, 58], [932, 60], [989, 53], [1103, 63], [1274, 66], [1388, 71],
-]
+function buildSilhouette(seed) {
+    const rand = seeded(seed)
+    const buildings = []
+    let x = -10
+    while (x < VIEW_W + 10) {
+        const w = 34 + rand() * 46
+        const h = 28 + rand() * 46
+        buildings.push({ x, w, h })
+        x += w + 5 + rand() * 9
+    }
+    return buildings
+}
+
+// Okna jedné budovy: mřížka vycentrovaná uvnitř s okrajem ze všech stran,
+// pár namátkou nesvítí (`rand() < .3`), ať to nepůsobí jako děrovačka.
+function buildingWindows(building, rand) {
+    const marginX = 7
+    const marginTop = 10
+    const marginBottom = 6
+    const winW = 4
+    const winH = 6
+
+    const innerW = building.w - marginX * 2
+    const innerH = building.h - marginTop - marginBottom
+    if (innerW < winW || innerH < winH) return []
+
+    const cols = Math.max(1, Math.round(innerW / 15))
+    const rows = Math.max(1, Math.round(innerH / 17))
+    const stepX = innerW / cols
+    const stepY = innerH / rows
+
+    const rects = []
+    for (let c = 0; c < cols; c++) {
+        for (let r = 0; r < rows; r++) {
+            if (rand() < 0.3) continue
+            rects.push({
+                x: building.x + marginX + stepX * (c + 0.5) - winW / 2,
+                y: BASE_Y - building.h + marginTop + stepY * (r + 0.5) - winH / 2,
+            })
+        }
+    }
+    return rects
+}
 
 function FooterSkyline() {
+    const buildings = buildSilhouette(7)
+    const winRand = seeded(23)
+    const windows = buildings.flatMap(b => buildingWindows(b, winRand))
+
     return (
-        <svg className="footer-skyline" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
-            <path className="footer-skyline-mass" d={ROOFLINE_PATH} />
-            {WINDOWS.map(([x, y]) => (
-                <rect key={`${x}-${y}`} className="footer-skyline-window" x={x} y={y} width="5" height="7" />
-            ))}
+        <svg className="footer-skyline" viewBox={`0 0 ${VIEW_W} ${BASE_Y}`} preserveAspectRatio="none" aria-hidden="true">
+            <g className="footer-skyline-mass">
+                {buildings.map((b, i) => (
+                    <rect key={i} x={b.x} y={BASE_Y - b.h} width={b.w} height={b.h} />
+                ))}
+            </g>
+            <g className="footer-skyline-window">
+                {windows.map((w, i) => (
+                    <rect key={i} x={w.x} y={w.y} width="4" height="6" />
+                ))}
+            </g>
         </svg>
     )
 }

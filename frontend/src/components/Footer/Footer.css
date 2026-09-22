@@ -35,6 +35,7 @@
     max-width: var(--container);
     margin: 0 auto;
     box-sizing: border-box;
+    padding-top: var(--space-12);
     display: grid;
     grid-template-columns: 1.4fr 1fr 1fr 1fr;
     gap: var(--space-8) var(--space-6);
