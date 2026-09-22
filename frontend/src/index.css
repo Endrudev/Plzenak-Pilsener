@@ -52,6 +52,22 @@
   --color-cream:       #FFF1DE;
   --color-cream-muted: #D9B996;
 
+  /* ---------- BARVY · dlaždice TOP akce (noční panorama, doslova ze zdroje) ---------- */
+  --color-top-bg-1:     #240D04;
+  --color-top-bg-2:     #5E2405;
+  --color-top-bg-3:     #8E3A06;
+  --color-top-mass-far:   #8A3906;
+  --color-top-mass-mid:   #B24C07;
+  --color-top-mass-near:  #D4640A;
+  --color-top-mass-front: #EC8A2C;
+  --color-top-detail:  #3A1604;   /* okna/detaily jako "díry" v siluetě */
+  --color-top-arch:    #2A0F04;   /* nejtmavší, přízemní oblouky/průchody */
+  --color-top-moon:    #FFE3BF;
+  --color-top-star:    #FFD9A8;
+  --color-top-bird:    #F4C99A;
+  --color-top-smoke:   #FFE9CF;
+  --color-top-lantern: #FFEFC8;
+
   /* ---------- BARVY · kategorijní akcenty mimo jantarovou rodinu ---------- */
   /* Přesné hodnoty z handoff zdroje (dlaždice Hudba v HeroBento) — 3stupňový
      gradient pozadí + barvy papírové siluety davu/pódia/interpreta. */

@@ -1,22 +1,264 @@
 .hero-tile--top {
     grid-column: span 4;
     grid-row: span 2;
+    background: linear-gradient(to bottom, var(--color-top-bg-1) 0%, var(--color-top-bg-2) 48%, var(--color-top-bg-3) 78%);
+    color: var(--color-cream);
 }
 
-/* NightSkyline je navržená jako plnou šířku samostatná sekce (výška podle
-   vlastního poměru stran 1600:660, přes `.scene{height:auto}`). V dlaždici
-   potřebuje vyplnit celou dostupnou výšku, ne si počítat vlastní — proto
-   tahle konkrétnější třída (predaná přes `className` prop, který komponenta
-   už dnes umí) přebije jen výšku scény, nic jiného v komponentě se nemění.
-   Případný "letterbox" pruh (`preserveAspectRatio="xMidYMax meet"`) splyne
-   s pozadím, protože #night-skyline má vlastní plné pozadí přes celou
-   dlaždici bez ohledu na to, kam až sahá samotné SVG. */
-#night-skyline.hero-tile-scene {
+.top-layer {
     position: absolute;
     inset: 0;
+    display: block;
+    z-index: 0;
+    overflow: visible;
+}
+
+.top-layer svg {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: visible;
+}
+
+.flock-layer {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: hidden;
     z-index: 0;
 }
 
-#night-skyline.hero-tile-scene .scene {
-    height: 100%;
+.fx, .sky, .st, .shoot, .wl, .flag, .puff, .glow, .lantern, .flock, .bd {
+    position: absolute;
+    display: block;
+    pointer-events: none;
+}
+
+/* ---------- obloha: hvězdy, padající hvězda ---------- */
+.sky {
+    inset: 0;
+    animation-duration: 38s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+}
+
+.st {
+    color: var(--color-top-star);
+    opacity: .85;
+    animation-duration: 3.2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.st.q1 { animation-duration: 2.4s; animation-delay: -.8s; }
+.st.q2 { animation-duration: 4.1s; animation-delay: -2.1s; }
+.st.q3 { animation-duration: 2.9s; animation-delay: -1.4s; }
+
+@keyframes ht-twinkle {
+    0%, 100% { opacity: .85; transform: scale(1); }
+    50%      { opacity: .25; transform: scale(.6); }
+}
+
+.shoot {
+    width: 110px;
+    height: 2px;
+    border-radius: 2px;
+    opacity: 0;
+    transform-origin: 100% 50%;
+    background: linear-gradient(to right, rgba(255, 236, 204, 0), rgba(255, 244, 226, .95));
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.shoot.s1 { animation-duration: 9s; animation-delay: -3s; }
+.shoot.s2 { animation-duration: 14s; animation-delay: -9s; }
+
+@keyframes ht-shoot {
+    0%, 86% { opacity: 0; transform: rotate(-24deg) translateX(0) scaleX(.3); }
+    88%     { opacity: 1; transform: rotate(-24deg) translateX(-40px) scaleX(1); }
+    95%     { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(.6); }
+    100%    { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(.3); }
+}
+
+/* ---------- okna ---------- */
+.wl {
+    background: var(--color-window);
+    box-shadow: 0 0 5px rgba(255, 214, 150, .65);
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.wl.off { opacity: 0; }
+.wl.lit { opacity: 1; }
+
+@keyframes ht-wOn  { 0%, 38% { opacity: 0; } 39%, 82% { opacity: 1; } 83%, 100% { opacity: 0; } }
+@keyframes ht-wOff { 0%, 52% { opacity: 1; } 53%, 78% { opacity: 0; } 79%, 100% { opacity: 1; } }
+
+/* ---------- vlajka, kouř, lucerna, ptáci ---------- */
+.flag {
+    transform-origin: 0 50%;
+    background: var(--color-top-moon);
+    border-radius: 1px;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes ht-wave {
+    0%, 100% { transform: skewY(0) scaleX(1); }
+    50%      { transform: skewY(-8deg) scaleX(.86); }
+}
+
+.puff {
+    border-radius: 50%;
+    background: var(--color-top-smoke);
+    opacity: 0;
+    animation-duration: 4.4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-out;
+}
+
+.puff.p2 { animation-delay: -1.5s; }
+.puff.p3 { animation-delay: -3s; }
+
+@keyframes ht-puff {
+    0%   { opacity: 0; transform: translate(0, 0) scale(.4); }
+    15%  { opacity: .5; }
+    100% { opacity: 0; transform: translate(26px, -60px) scale(1.7); }
+}
+
+.lantern {
+    opacity: 0;
+    animation-duration: 19s;
+    animation-delay: -4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.lantern i {
+    position: absolute;
+    inset: 0;
+    display: block;
+    border-radius: 50%;
+    background: var(--color-top-lantern);
+    box-shadow: 0 0 6px 3px rgba(255, 214, 140, .75), 0 0 16px 6px rgba(255, 190, 110, .35);
+    animation: inherit;
+    animation-name: none;
+    animation-duration: .9s;
+    animation-delay: 0s;
+}
+
+@keyframes ht-lantern {
+    0%, 14% { opacity: 0; transform: translateX(0); }
+    20%     { opacity: 1; }
+    30%     { opacity: .75; }
+    40%     { opacity: 1; transform: translateX(24px); }
+    46%     { opacity: 1; transform: translateX(24px); }
+    58%     { opacity: .8; }
+    64%     { opacity: 0; transform: translateX(48px); }
+    100%    { opacity: 0; transform: translateX(48px); }
+}
+
+@keyframes ht-flame {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(.8); }
+}
+
+.flock {
+    width: 120px;
+    height: 60px;
+    opacity: 0;
+    animation-duration: 24s;
+    animation-delay: -2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.bd {
+    transform-origin: 50% 60%;
+    filter: drop-shadow(0 2px 2px rgba(22, 6, 0, .5));
+    animation-duration: .55s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+}
+
+.bd0 { animation-delay: -.2s; }
+.bd1 { animation-delay: -.35s; }
+.bd2 { animation-delay: -.1s; }
+.bd3 { animation-delay: -.45s; }
+.bd4 { animation-delay: -.2s; }
+
+@keyframes ht-flap { from { transform: scaleY(1); } to { transform: scaleY(.35); } }
+@keyframes ht-fly {
+    0%      { transform: translate(0, 0); opacity: 0; }
+    2%      { opacity: 1; }
+    30%     { opacity: 1; }
+    34%, 100% { transform: translate(-474px, -34px); opacity: 0; }
+}
+
+/* ---------- "světla aut" jedoucí po ulici ---------- */
+.glow {
+    opacity: 0;
+    mix-blend-mode: screen;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.glow i {
+    position: absolute;
+    inset: 0;
+    display: block;
+    border-radius: 50%;
+    filter: blur(6px);
+    background: radial-gradient(ellipse 50% 100% at 50% 100%, rgba(255, 238, 204, .62) 0%, rgba(255, 224, 176, .26) 40%, rgba(255, 214, 160, 0) 75%);
+}
+
+.glow.far i {
+    background: radial-gradient(ellipse 50% 100% at 50% 100%, rgba(255, 232, 196, .42) 0%, rgba(255, 220, 170, .16) 40%, rgba(255, 214, 160, 0) 75%);
+}
+
+.glow.g1 { animation-duration: 12s; animation-delay: -2s; }
+.glow.g2 { animation-duration: 17s; animation-delay: -9s; }
+.glow.g3 { animation-duration: 21s; animation-delay: -5s; }
+
+@keyframes ht-driveL { 0% { transform: translateX(0); opacity: 0; } 3% { opacity: 1; } 42% { opacity: 1; } 45%, 100% { transform: translateX(1269px); opacity: 0; } }
+@keyframes ht-driveR { 0% { transform: translateX(1269px); opacity: 0; } 3% { opacity: 1; } 42% { opacity: 1; } 45%, 100% { transform: translateX(0); opacity: 0; } }
+
+/* ---------- spouštění animací na hoveru/focusu ---------- */
+.hero-tile--top:hover .lantern,
+.hero-tile--top:focus-visible .lantern { animation-name: ht-lantern; }
+.hero-tile--top:hover .lantern i,
+.hero-tile--top:focus-visible .lantern i { animation-name: ht-flame; animation-iteration-count: infinite; }
+.hero-tile--top:hover .flock,
+.hero-tile--top:focus-visible .flock { animation-name: ht-fly; }
+.hero-tile--top:hover .bd,
+.hero-tile--top:focus-visible .bd { animation-name: ht-flap; }
+.hero-tile--top:hover .sky,
+.hero-tile--top:focus-visible .sky { animation-name: ht-twinkle-sky; }
+.hero-tile--top:hover .st,
+.hero-tile--top:focus-visible .st { animation-name: ht-twinkle; }
+.hero-tile--top:hover .shoot,
+.hero-tile--top:focus-visible .shoot { animation-name: ht-shoot; }
+.hero-tile--top:hover .wl.off,
+.hero-tile--top:focus-visible .wl.off { animation-name: ht-wOn; }
+.hero-tile--top:hover .wl.lit,
+.hero-tile--top:focus-visible .wl.lit { animation-name: ht-wOff; }
+.hero-tile--top:hover .flag,
+.hero-tile--top:focus-visible .flag { animation-name: ht-wave; }
+.hero-tile--top:hover .puff,
+.hero-tile--top:focus-visible .puff { animation-name: ht-puff; }
+.hero-tile--top:hover .glow.ltr,
+.hero-tile--top:focus-visible .glow.ltr { animation-name: ht-driveL; }
+.hero-tile--top:hover .glow.rtl,
+.hero-tile--top:focus-visible .glow.rtl { animation-name: ht-driveR; }
+
+@keyframes ht-twinkle-sky {
+    from { transform: translate(-10px, 2px); }
+    to   { transform: translate(12px, -3px); }
+}
+
+@media (max-width: 767px) {
+    .hero-tile--top { height: 440px; }
 }

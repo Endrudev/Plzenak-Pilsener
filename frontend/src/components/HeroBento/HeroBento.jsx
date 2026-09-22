@@ -14,7 +14,7 @@ export default function HeroBento({ events }) {
 
     return (
         <div className="hero-bento">
-            <HeroTileTop events={events} />
+            <HeroTileTop />
             <HeroTileMusic count={musicCount} />
             <HeroTileRest categories={restCategories} />
         </div>
