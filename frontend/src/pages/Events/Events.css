@@ -20,33 +20,22 @@
    ze zdroje, "t-top on" kontejner), hvězdami, měsícem a teplou zářivou
    skvrnou dole. Baráky (BuildingSkyline) sedí až na úplném dně, ne
    roztažené přes celou výšku. */
+/* Hlavička je position:sticky (musí zůstat viditelná při scrollu na
+   VŠECH stránkách) — normální flow prvek, co by jinak posouval tenhle
+   pás dolů. Ve zdroji (Events.dc.html) je hlavička position:absolute a
+   plave NAD nočním pásem, který sám sahá k y=0 — stejný princip jako
+   .cat-hero na TOP akce/Hudba/Zbytek programu (viz CategoryHero.css pro
+   plné vysvětlení). Záporný margin-top o výšku hlavičky (--header-h,
+   měří se za běhu v Header.jsx) pás vizuálně "vytáhne" nahoru pod ni;
+   hlavička (z-index:30) ho překryje, a protože je užší než viewport, ve
+   žebrech okolo ní je vidět rovnou noční obloha, ne jen barevná
+   napodobenina za ní. */
 #events-hero-skyline-wrap {
   position: relative;
   height: 280px;
+  margin-top: calc(-1 * var(--header-h));
   overflow: hidden;
   background: linear-gradient(to bottom, #120502 0%, #241006 38%, #4A1D06 72%, #7A3208 100%);
-}
-
-/* Hlavička je position:sticky a sedí NAD touhle sekcí ve stromu — bez
-   tohohle by za ní (a v postranních "žebrech" kolem užší plovoucí lišty)
-   bylo vidět jen světlé pozadí stránky, ne pokračování noční oblohy.
-   Samostatný prvek, ne ::before na #events-hero-skyline-wrap — ten má
-   overflow:hidden (kvůli siluetě budov) a ořízl by cokoliv, co z něj
-   přesahuje nahoru přes vlastní hranici. Tenhle visí přímo na
-   #events-page (position:relative výš), takže ho nic neořízne, a #120502
-   je stejná barva jako první zastávka gradientu pod ním, takže na švu
-   není vidět skok. Hlavička má vlastní z-index:30 (position:sticky),
-   takže zůstane čitelná navrchu bez ohledu na z-index tady — a proto ho
-   ani nemá smysl nastavovat: #events-page nezakládá vlastní stacking
-   context (jen position:relative, bez z-indexu), takže záporný z-index
-   by tenhle prvek posunul ZA vlastní pozadí #events-page a zmizel by. */
-#events-hero-backdrop {
-  position: absolute;
-  top: -90px;
-  left: 0;
-  right: 0;
-  height: 90px;
-  background: #120502;
 }
 
 #events-sky {

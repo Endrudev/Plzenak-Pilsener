@@ -165,6 +165,11 @@
   --gutter-mobile:    16px;
   --touch-min:        44px;
 
+  /* Skutečná výška #site-header se dopočítává za běhu (viz Header.jsx,
+     ResizeObserver) a přepisuje se sem — tohle je jen fallback, než se
+     JS stihne spustit / pro SSR-less první render. */
+  --header-h: 72px;
+
   /* ---------- RADIUS ---------- */
   --radius-sm:    6px;
   --radius-el:    10px;

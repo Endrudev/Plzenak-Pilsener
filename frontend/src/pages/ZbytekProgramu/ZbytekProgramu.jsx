@@ -1,11 +1,12 @@
 import CategoryHero from '../../components/CategoryHero/CategoryHero.jsx'
 import { Scene1, Scene2, Scene3, Bulbs, BULBS_V1, BULBS_V2, RaiseArm, BalloonIcon } from '../../components/HeroBento/RestScenes.jsx'
+import CategoryFilterBar from '../../components/CategoryFilterBar/CategoryFilterBar.jsx'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import Pagination from '../../components/Pagination/Pagination.jsx'
 import EmptyState from '../../components/EmptyState/EmptyState.jsx'
-import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
 import { useEventsFilter } from '../../lib/useEventsFilter.js'
 import { SORT_OPTIONS } from '../../lib/sortOptions.js'
+import { CATEGORIES } from '../../lib/categories.jsx'
 import { eventCountLabel } from '../../lib/pluralize.js'
 import './ZbytekProgramu.css'
 import '../../styles/categoryPage.css'
@@ -16,6 +17,11 @@ import '../../styles/categoryPage.css'
 // jako TopAkce.jsx/Hudba.jsx. Viz TopAkce.jsx pro plně okomentovaný
 // základní vzor.
 const FIXED = { vyjma: 'TOP akce,Hudba' }
+const PER_PAGE = 12
+
+// "Typ akce" dropdown — zbylých 5 kategorií (bez Hudby, tu už tahle
+// stránka sama vylučuje).
+const TYPE_OPTIONS = CATEGORIES.filter(c => c.name !== 'Hudba').map(c => ({ value: c.name, label: c.name }))
 
 // Na rozdíl od TOP akce/Hudba je tenhle hero DENNÍ scéna (zdroj:
 // Zbytek.dc.html, pozadí #EEF3E8→#D3E0C9, ne noční fialová/oranžová) —
@@ -54,13 +60,16 @@ function ZbytekScene() {
 }
 
 export default function ZbytekProgramu() {
-  const { items, total, totalPages, loading, q, razeni, page, setQuery, setSort, setPage } = useEventsFilter(FIXED, 12)
+  const {
+    items, total, totalPages, loading,
+    q, razeni, typ, kdy, dirty, page,
+    setQuery, setSort, setTyp, setKdy, resetFilters, setPage,
+  } = useEventsFilter(FIXED, PER_PAGE)
 
   return (
     <div className="catpage">
       <CategoryHero
         background="linear-gradient(to bottom, #EEF3E8 0%, #E1E9D9 60%, #D3E0C9 100%)"
-        backdropColor="#EEF3E8"
         fadeColor="#B7CBA9"
         theme="light"
         scene={<ZbytekScene />}
@@ -74,46 +83,24 @@ export default function ZbytekProgramu() {
         ]}
       />
 
-      <div className="catpage-toolbar">
-        <div className="catpage-search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Hledat v programu…"
-            aria-label="Hledat v programu"
-            defaultValue={q}
-            onChange={e => setQuery(e.target.value)}
-          />
-        </div>
-
-        <div className="catpage-row">
-          <span className="catpage-count" aria-live="polite">
-            {!loading && `${eventCountLabel(total)} v programu`}
-          </span>
-          <FilterSelect
-            label="Řadit"
-            placeholder="Řazení"
-            value={razeni}
-            onChange={setSort}
-            options={SORT_OPTIONS}
-            clearable={false}
-            icon={
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3" />
-              </svg>
-            }
-          />
-        </div>
-      </div>
+      <CategoryFilterBar
+        q={q} onQueryChange={setQuery}
+        searchPlaceholder="Hledat v programu…" searchLabel="Hledat v programu"
+        typeOptions={TYPE_OPTIONS} typeValue={typ} onTypeChange={setTyp}
+        sortValue={razeni} onSortChange={setSort} sortOptions={SORT_OPTIONS}
+        kdy={kdy} onKdyChange={setKdy}
+        count={eventCountLabel(total)} countLabel="v programu"
+        dirty={dirty} onReset={resetFilters}
+      />
 
       <div className="catpage-grid">
         {loading
           ? <p className="catpage-loading">Načítání…</p>
           : items.length === 0
             ? <EmptyState title="Žádné další akce zatím nejsou vyhlášené." />
-            : items.map(event => <EventCard key={event.id} event={event} />)
+            : items.map((event, i) => (
+              <EventCard key={event.id} event={event} variant={i === 0 ? 'featured' : 'grid'} />
+            ))
         }
       </div>
 

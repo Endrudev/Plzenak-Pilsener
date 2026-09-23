@@ -10,60 +10,22 @@
   flex-direction: column;
 }
 
-.catpage-toolbar {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-5) var(--space-4) var(--space-4);
-}
-
-.catpage-search {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  height: 48px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-field);
-  padding: 0 var(--space-4);
-  color: var(--color-text-muted);
-}
-
-.catpage-search:focus-within {
-  border-color: var(--color-primary);
-  box-shadow: var(--focus-shadow);
-}
-
-.catpage-search input {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  color: var(--color-ink);
-}
-
-.catpage-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.catpage-count {
-  font-family: var(--font-sans);
-  font-size: var(--fs-sm);
-  color: var(--color-text-muted);
-}
-
+/* Hledání/filtry/počet/"Zrušit filtry" teď žije v CategoryFilterBar.jsx
+   (plovoucí karta přesahující do hero pásu, doslova podle handoffu) —
+   .catpage-toolbar/-search/-row/-count byly ploché, netvořily tenhle
+   přesah a chyběl jim filtr "Typ akce"/"Kdy". */
 .catpage-grid {
-  padding: 0 var(--space-4);
+  padding: var(--space-6) var(--space-4) 0;
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-5);
+}
+
+/* První (nejvýš seřazená) karta je vždycky na celou šířku mřížky —
+   doslova ze zdroje (*.pretty.html: card #1 je grid 12 sloupců přes
+   celou šířku obsahu, karty 2–10 jsou pak v běžné mřížce vedle sebe). */
+.catpage-grid > .event-card--featured {
+  grid-column: 1 / -1;
 }
 
 .catpage-loading {
@@ -79,8 +41,6 @@
 }
 
 @media (min-width: 768px) {
-  .catpage-toolbar,
-  .catpage-row,
   .catpage-grid,
   .catpage .pagination {
     max-width: 900px;
@@ -96,8 +56,6 @@
 }
 
 @media (min-width: 1024px) {
-  .catpage-toolbar,
-  .catpage-row,
   .catpage-grid,
   .catpage .pagination {
     max-width: var(--container);

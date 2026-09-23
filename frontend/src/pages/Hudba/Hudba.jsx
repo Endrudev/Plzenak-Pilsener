@@ -1,9 +1,9 @@
 import CategoryHero from '../../components/CategoryHero/CategoryHero.jsx'
 import MusicScene, { Fan } from '../../components/HeroBento/MusicScene.jsx'
+import CategoryFilterBar from '../../components/CategoryFilterBar/CategoryFilterBar.jsx'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import Pagination from '../../components/Pagination/Pagination.jsx'
 import EmptyState from '../../components/EmptyState/EmptyState.jsx'
-import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
 import { useEventsFilter } from '../../lib/useEventsFilter.js'
 import { SORT_OPTIONS } from '../../lib/sortOptions.js'
 import { eventCountLabel } from '../../lib/pluralize.js'
@@ -11,6 +11,7 @@ import './Hudba.css'
 import '../../styles/categoryPage.css'
 
 const FIXED = { kategorie: 'Hudba' }
+const PER_PAGE = 12
 const STAR_D = 'M0 -6L1.3 -1.3L6 0L1.3 1.3L0 6L-1.3 1.3L-6 0L-1.3 -1.3Z'
 
 // 9 hvězd, doslova ze zdroje (Hudba.dc.html) — zdroj je na pevném plátně
@@ -80,18 +81,27 @@ function HudbaScene() {
 
 // Dedikovaná stránka pro kategorii Hudba (Fáze 5) — pevný filtr
 // (`kategorie=Hudba`), viz TopAkce.jsx pro plně okomentovaný vzor
-// useEventsFilter/toolbar/gridu, tahle stránka ho jen opakuje s jinými
-// pevnými parametry/textem. Vizuální scéna (HudbaScene výš) je jediná
-// věc, co se liší strukturálně — reuse MusicScene.jsx (stejná dlaždice
-// jako na Home.jsx) + vlastní hvězdy/paprsky/doplňkový dav.
+// useEventsFilter/filter baru/gridu, tahle stránka ho jen opakuje s
+// jinými pevnými parametry/textem. Vizuální scéna (HudbaScene výš) je
+// jediná věc, co se liší strukturálně — reuse MusicScene.jsx (stejná
+// dlaždice jako na Home.jsx) + vlastní hvězdy/paprsky/doplňkový dav.
+//
+// Bez `typeOptions` v CategoryFilterBar — zdroj (Hudba.dc.html) nabízí
+// žánrový dropdown (Jazz/Rock/Klasika/Elektronika/Swing/Folk), ale žánry
+// v naší DB nejsou žádný reálný tag/kategorie (viz Rozhodnutí 1 v
+// implementačním plánu), takže by byl dropdown bez skutečné funkce —
+// raději chybí, než aby předstíral filtr, co nic nedělá.
 export default function Hudba() {
-  const { items, total, totalPages, loading, q, razeni, page, setQuery, setSort, setPage } = useEventsFilter(FIXED, 12)
+  const {
+    items, total, totalPages, loading,
+    q, razeni, kdy, dirty, page,
+    setQuery, setSort, setKdy, resetFilters, setPage,
+  } = useEventsFilter(FIXED, PER_PAGE)
 
   return (
     <div className="catpage">
       <CategoryHero
         background="linear-gradient(to bottom, #1E0B22 0%, #3A1446 45%, #7B3480 100%)"
-        backdropColor="#1E0B22"
         scene={<HudbaScene />}
         breadcrumbLabel="Hudba"
         eyebrow="Kategorie"
@@ -103,46 +113,23 @@ export default function Hudba() {
         ]}
       />
 
-      <div className="catpage-toolbar">
-        <div className="catpage-search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Hledat interpreta nebo koncert…"
-            aria-label="Hledat interpreta nebo koncert"
-            defaultValue={q}
-            onChange={e => setQuery(e.target.value)}
-          />
-        </div>
-
-        <div className="catpage-row">
-          <span className="catpage-count" aria-live="polite">
-            {!loading && `${eventCountLabel(total)} v kategorii Hudba`}
-          </span>
-          <FilterSelect
-            label="Řadit"
-            placeholder="Řazení"
-            value={razeni}
-            onChange={setSort}
-            options={SORT_OPTIONS}
-            clearable={false}
-            icon={
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3" />
-              </svg>
-            }
-          />
-        </div>
-      </div>
+      <CategoryFilterBar
+        q={q} onQueryChange={setQuery}
+        searchPlaceholder="Hledat interpreta nebo koncert…" searchLabel="Hledat interpreta nebo koncert"
+        sortValue={razeni} onSortChange={setSort} sortOptions={SORT_OPTIONS}
+        kdy={kdy} onKdyChange={setKdy}
+        count={eventCountLabel(total)} countLabel="v kategorii Hudba"
+        dirty={dirty} onReset={resetFilters}
+      />
 
       <div className="catpage-grid">
         {loading
           ? <p className="catpage-loading">Načítání…</p>
           : items.length === 0
             ? <EmptyState title="Žádné hudební akce zatím nejsou vyhlášené." />
-            : items.map(event => <EventCard key={event.id} event={event} />)
+            : items.map((event, i) => (
+              <EventCard key={event.id} event={event} variant={i === 0 ? 'featured' : 'grid'} />
+            ))
         }
       </div>
 

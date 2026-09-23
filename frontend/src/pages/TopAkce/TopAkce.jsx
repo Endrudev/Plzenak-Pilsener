@@ -1,17 +1,26 @@
 import CategoryHero from '../../components/CategoryHero/CategoryHero.jsx'
 import TopNightScene from '../../components/HeroBento/TopNightScene.jsx'
+import CategoryFilterBar from '../../components/CategoryFilterBar/CategoryFilterBar.jsx'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import Pagination from '../../components/Pagination/Pagination.jsx'
 import EmptyState from '../../components/EmptyState/EmptyState.jsx'
-import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
 import { useEventsFilter } from '../../lib/useEventsFilter.js'
 import { SORT_OPTIONS } from '../../lib/sortOptions.js'
+import { CATEGORIES } from '../../lib/categories.jsx'
 import { eventCountLabel } from '../../lib/pluralize.js'
 import './TopAkce.css'
 import '../../styles/categoryPage.css'
 
 const FIXED = { top: '1' }
+const PER_PAGE = 12
 const STAR_D = 'M0 -6L1.3 -1.3L6 0L1.3 1.3L0 6L-1.3 1.3L-6 0L-1.3 -1.3Z'
+
+// "Typ akce" dropdown v CategoryFilterBar — doslova ze zdroje jde o
+// Hudba/Divadlo/Film/Gastro/Památky/Děti, ale Divadlo/Film v naší DB
+// neexistují jako kategorie (viz Rozhodnutí 1 v implementačním plánu —
+// držíme se zavedených 6 kategorií, ne handoffových nekonzistentních
+// tabulek), takže se použije CATEGORIES (jediný zdroj pravdy).
+const TYPE_OPTIONS = CATEGORIES.map(c => ({ value: c.name, label: c.name }))
 
 // 7 hvězd + 2 padající — doslova ze zdroje (TopAkce.dc.html), rozeseté
 // přes celý 708px hero, ne jen přes samotné panorama vpravo (to má svých
@@ -79,13 +88,16 @@ function TopAkceScene() {
 // lib/useEventsFilter.js). Odkazy z hlavičky/patičky/HeroTileTop teď
 // míří sem místo na /events?top=1.
 export default function TopAkce() {
-  const { items, total, totalPages, loading, q, razeni, page, setQuery, setSort, setPage } = useEventsFilter(FIXED, 12)
+  const {
+    items, total, totalPages, loading,
+    q, razeni, typ, kdy, dirty, page,
+    setQuery, setSort, setTyp, setKdy, resetFilters, setPage,
+  } = useEventsFilter(FIXED, PER_PAGE)
 
   return (
     <div className="catpage">
       <CategoryHero
         background="linear-gradient(to bottom, #240D04 0%, #5E2405 58%, #8E3A06 88%)"
-        backdropColor="#240D04"
         scene={<TopAkceScene />}
         breadcrumbLabel="TOP akce"
         eyebrow="Výběr Plzeňáku"
@@ -97,46 +109,29 @@ export default function TopAkce() {
         ]}
       />
 
-      <div className="catpage-toolbar">
-        <div className="catpage-search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Hledat mezi TOP akcemi…"
-            aria-label="Hledat mezi TOP akcemi"
-            defaultValue={q}
-            onChange={e => setQuery(e.target.value)}
-          />
-        </div>
-
-        <div className="catpage-row">
-          <span className="catpage-count" aria-live="polite">
-            {!loading && `${eventCountLabel(total)} TOP akcí`}
-          </span>
-          <FilterSelect
-            label="Řadit"
-            placeholder="Řazení"
-            value={razeni}
-            onChange={setSort}
-            options={SORT_OPTIONS}
-            clearable={false}
-            icon={
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3" />
-              </svg>
-            }
-          />
-        </div>
-      </div>
+      <CategoryFilterBar
+        q={q} onQueryChange={setQuery}
+        searchPlaceholder="Hledat mezi TOP akcemi…" searchLabel="Hledat mezi TOP akcemi"
+        typeOptions={TYPE_OPTIONS} typeValue={typ} onTypeChange={setTyp}
+        sortValue={razeni} onSortChange={setSort} sortOptions={SORT_OPTIONS}
+        kdy={kdy} onKdyChange={setKdy}
+        count={eventCountLabel(total)} countLabel="TOP akcí"
+        dirty={dirty} onReset={resetFilters}
+      />
 
       <div className="catpage-grid">
         {loading
           ? <p className="catpage-loading">Načítání…</p>
           : items.length === 0
             ? <EmptyState title="Žádné TOP akce zatím nejsou vyhlášené." />
-            : items.map(event => <EventCard key={event.id} event={event} />)
+            : items.map((event, i) => (
+              <EventCard
+                key={event.id}
+                event={event}
+                variant={i === 0 ? 'featured' : 'grid'}
+                rank={(page - 1) * PER_PAGE + i + 1}
+              />
+            ))
         }
       </div>
 

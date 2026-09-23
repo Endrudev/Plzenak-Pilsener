@@ -1,34 +1,31 @@
 /* Rám hero pásu na TOP akce/Hudba/Zbytek programu — vizuální scéna
    (TopNightScene.jsx/MusicScene.jsx/RestScene.jsx) jde dovnitř přes
-   `scene` prop, tahle komponenta drží jen rozměr/pozadí/text. Rodič
-   (stránka) MUSÍ mít position:relative, jinak .cat-hero-backdrop
-   (přesah za sticky hlavičku, viz níž) skončí za jejím pozadím. */
+   `scene` prop, tahle komponenta drží jen rozměr/pozadí/text.
+
+   V handoffu (*.dc.html) je hlavička `position:absolute`, plave NAD
+   heroem, který sám sahá až k y=0 — takže hlavička reálně "sedí na"
+   scéně (hvězdy/dav/panorama pokračují i pod ní), ne že by byl hero
+   jen barevně napodobený pruh za užší lištou. Náš #site-header je
+   naopak `position:sticky` (musí zůstat viditelný při scrollu na
+   VŠECH stránkách, ne jen tady) — normální flow prvek, co zabírá svůj
+   vlastní řádek a hero by posouval dolů.
+
+   Řešení: hero dostane záporný margin-top přesně o výšku hlavičky
+   (--header-h, měří se za běhu v Header.jsx) — vizuálně tím "vyleze"
+   nahoru pod ni, header (z-index:30, viz Header.css) ji překryje, a
+   protože header je užší než viewport, ve žebrech okolo něj je vidět
+   hero přímo, ne jen barevná napodobenina. Žádný samostatný "backdrop"
+   div navíc netřeba. */
 .cat-hero {
     position: relative;
     height: 708px;
+    margin-top: calc(-1 * var(--header-h));
     overflow: hidden;
 }
 
-/* Hlavička je position:sticky a sedí NAD touhle sekcí ve stromu — bez
-   tohohle by za ní (a v postranních "žebrech" kolem její užší plovoucí
-   lišty) bylo vidět jen světlé pozadí stránky. Stejný trik jako
-   #events-hero-backdrop na Events.jsx — samostatný prvek, sahá nad svou
-   vlastní pozici, žádný z-index (viz ten komentář pro plné vysvětlení
-   proč). Barva #2A0F04 (--color-ink) sedí na tmavší konec pozadí, co si
-   nastaví každá stránka zvlášť (background prop). */
-.cat-hero-backdrop {
-    position: absolute;
-    top: -90px;
-    left: 0;
-    right: 0;
-    height: 90px;
-    /* barva se nastavuje inline přes backdropColor prop (CategoryHero.jsx),
-       ať sedí s první zastávkou gradientu konkrétní stránky */
-}
-
 /* Pruh dole — přechod mezi hero pásem a obsahem pod ním. Barva se
-   nastavuje inline přes fadeColor prop (CategoryHero.jsx), ze stejného
-   důvodu jako .cat-hero-backdrop výš. */
+   nastavuje inline přes fadeColor prop (CategoryHero.jsx), ať sedí s
+   první zastávkou gradientu konkrétní stránky. */
 .cat-hero-fade {
     position: absolute;
     left: 0;
@@ -37,9 +34,12 @@
     height: 40px;
 }
 
+/* Padding nahoře = výška hlavičky + stejná 24px mezera jako ve zdroji
+   (112px padding na 88px hlavičce), ne natvrdo 112px — --header-h se
+   může lišit (font-loading, breakpoint), text pod ní musí sedět vždycky. */
 .cat-hero-text {
     position: relative;
-    padding: 90px var(--space-4) 0;
+    padding: calc(var(--header-h) + 24px) var(--space-4) 0;
     display: flex;
     flex-direction: column;
     gap: var(--space-3);

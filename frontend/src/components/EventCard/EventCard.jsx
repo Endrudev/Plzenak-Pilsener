@@ -65,9 +65,13 @@ function GoArrow() {
 // variant:
 //   'grid'     — výchozí, dnešní karta beze změny (Home.jsx, Events.jsx)
 //   'list'     — řádek přes celou šířku, celý je odkaz (handoff: mobilní seznam akcí)
-//   'featured' — velká karta se vstupem `why` ("Proč jít")
-//   'ranked'   — jako featured, navíc badge #N pro žebříček (TOP akce)
-// rank: pořadové číslo pro variant="ranked"
+//   'featured' — velká karta na šířku (obrázek vlevo ~58 %), se vstupem
+//                `why` ("Proč jít") — na TOP akce/Hudba/Zbytek programu
+//                dostává první (nejvýše seřazená) karta v mřížce
+//   'ranked'   — širší varianta se side-by-side obrázkem, badge #N
+// rank: pořadové číslo — zobrazí se badge #N NEZÁVISLE na variantě (grid i
+//       featured), použité jen na TOP akce (jediná ze tří dedikovaných
+//       stránek, kde je pořadí smysluplné — žebříček)
 // why: krátký editorní důvod pro variant="featured" — appka to pole dnes nemá
 //      v datech, zobrazí se jen když ho volající předá
 export default function EventCard({ event, variant = 'grid', rank, why }) {
@@ -84,7 +88,7 @@ export default function EventCard({ event, variant = 'grid', rank, why }) {
                     {badge.text}
                 </span>
             )}
-            {variant === 'ranked' && typeof rank === 'number' && (
+            {typeof rank === 'number' && (
                 <span className="event-rank">#{rank}</span>
             )}
         </div>

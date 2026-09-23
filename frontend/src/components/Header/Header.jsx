@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
 import { CATEGORIES } from '../../lib/categories.jsx'
@@ -23,6 +23,7 @@ function CloseIcon() {
 function Header() {
     const { pathname } = useLocation()
     const [menuOpen, setMenuOpen] = useState(false)
+    const headerRef = useRef(null)
 
     // Zavřít drawer při změně stránky (klik na odkaz uvnitř) a na Escape.
     useEffect(() => { setMenuOpen(false) }, [pathname])
@@ -33,8 +34,25 @@ function Header() {
         return () => window.removeEventListener('keydown', onKeyDown)
     }, [menuOpen])
 
+    // Skutečná výška lišty (padding + obsah, mění se podle breakpointu i
+    // podle toho, jestli je vidět hamburger/desktop nav) — zapsaná jako CSS
+    // proměnná na :root, ať ji můžou číst hero sekce, co pod ni mají
+    // "zajíždět" (CategoryHero.css .cat-hero, Events.css #events-hero).
+    // Natvrdo odhadnutá hodnota by se rozbila při každé změně layoutu
+    // headeru — přesně tenhle druh chyby už se v tomhle redesignu stal
+    // vícekrát (viz komentáře o "raw px on fixed 1440 canvas").
+    useEffect(() => {
+        const el = headerRef.current
+        if (!el) return
+        const setVar = () => document.documentElement.style.setProperty('--header-h', `${el.offsetHeight}px`)
+        setVar()
+        const ro = new ResizeObserver(setVar)
+        ro.observe(el)
+        return () => ro.disconnect()
+    }, [])
+
     return (
-        <header id="site-header">
+        <header id="site-header" ref={headerRef}>
             <div id="header-inner">
                 <Link to="/" id="brand-lockup">
                     <PlzenakLogo size={24} />
