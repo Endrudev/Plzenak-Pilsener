@@ -37,88 +37,12 @@
     background: rgba(255, 255, 255, .24);
 }
 
-/* ---------- dav (dvě řady, zadní menší/tlumenější, přední větší) ---------- */
-.row {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: block;
-    pointer-events: none;
-}
-
-.row--back {
-    bottom: 26px;
-    filter: drop-shadow(0 -2px 4px rgba(22, 4, 28, .55));
-}
-
-.row--front {
-    bottom: -8px;
-    filter: drop-shadow(0 -3px 6px rgba(22, 4, 28, .6));
-}
-
-.fan {
-    position: absolute;
-    bottom: 0;
-    display: block;
-    transform-origin: 50% 100%;
-    animation-iteration-count: infinite;
-    animation-timing-function: cubic-bezier(.3, .6, .4, 1);
-}
-
-/* Devět různých délek/zpoždění skoku, ať dav skáče rozhozeně, ne v jednom
-   rytmu — hodnoty doslova ze zdroje (fan.f0..f8). */
-.fan-t0 { animation-duration: 1.05s; animation-delay: -.12s; }
-.fan-t1 { animation-duration: .95s;  animation-delay: -.47s; }
-.fan-t2 { animation-duration: 1.12s; animation-delay: -.8s;  }
-.fan-t3 { animation-duration: .98s;  animation-delay: -.3s;  }
-.fan-t4 { animation-duration: 1.08s; animation-delay: -.62s; }
-.fan-t5 { animation-duration: 1s;    animation-delay: -.05s; }
-.fan-t6 { animation-duration: 1.15s; animation-delay: -.9s;  }
-.fan-t7 { animation-duration: .92s;  animation-delay: -.38s; }
-.fan-t8 { animation-duration: 1.1s;  animation-delay: -.7s;  }
-
-@keyframes ht-jump {
-    0%, 100% { transform: translateY(0); }
-    30%      { transform: translateY(-10px); }
-    55%      { transform: translateY(0) scaleY(.96); }
-}
-
+/* ---------- spouštění animací na hoveru/focusu (malá interaktivní
+   dlaždice — na rozdíl od velkého hero pásu na /hudba, co animuje
+   nepřetržitě, viz .music-scene--on v MusicScene.css) ---------- */
 .hero-tile--music:hover .fan,
 .hero-tile--music:focus-visible .fan {
     animation-name: ht-jump;
-}
-
-/* ---------- pódium, interpret, opona, noty ---------- */
-.stage {
-    position: absolute;
-    right: 16px;
-    bottom: 0;
-    width: 140px;
-    height: 150px;
-    filter: drop-shadow(0 -3px 6px rgba(22, 4, 28, .6));
-}
-
-.stage-pillar {
-    position: absolute;
-    bottom: 34px;
-    width: 18px;
-    height: 40px;
-    border-radius: 3px;
-    background: var(--color-music-stage);
-    display: block;
-}
-
-.stage-pillar--l { left: 6px; }
-.stage-pillar--r { right: 6px; }
-
-.perf {
-    position: absolute;
-    left: 36px;
-    bottom: 32px;
-    width: 64px;
-    height: 100px;
-    display: block;
 }
 
 .hero-tile--music:hover .perf,
@@ -126,59 +50,12 @@
     animation: ht-bob .8s ease-in-out infinite;
 }
 
-@keyframes ht-bob {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(3px); }
-}
-
-.arm {
-    position: absolute;
-    left: 34px;
-    top: 9px;
-    width: 26px;
-    height: 34px;
-    display: block;
-    transform-origin: 4px 30px;
-}
-
 .hero-tile--music:hover .arm,
 .hero-tile--music:focus-visible .arm {
     animation: ht-mic 1.6s ease-in-out infinite;
 }
 
-@keyframes ht-mic {
-    0%, 100% { transform: rotate(0); }
-    50%      { transform: rotate(-30deg); }
-}
-
-.curtain {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-}
-
-.note {
-    position: absolute;
-    display: block;
-    color: var(--color-music-figure);
-    opacity: .8;
-    animation-iteration-count: infinite;
-    animation-duration: 2.6s;
-    animation-timing-function: ease-out;
-    filter: drop-shadow(0 1px 2px rgba(22, 4, 28, .5));
-}
-
-.note--n1 { right: 114px; bottom: 128px; }
-.note--n2 { right: 88px;  bottom: 112px; animation-delay: -.9s; }
-.note--n3 { right: 10px;  bottom: 120px; animation-delay: -1.7s; }
-
 .hero-tile--music:hover .note,
 .hero-tile--music:focus-visible .note {
     animation-name: ht-rise;
-}
-
-@keyframes ht-rise {
-    0%   { opacity: 0; transform: translate(0, 6px) rotate(-6deg); }
-    20%  { opacity: .95; }
-    100% { opacity: 0; transform: translate(10px, -34px) rotate(10deg); }
 }

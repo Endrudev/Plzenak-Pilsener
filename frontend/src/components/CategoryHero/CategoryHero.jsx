@@ -14,6 +14,7 @@ import './CategoryHero.css'
 // kategorie.
 export default function CategoryHero({
     background,
+    backdropColor = 'var(--color-ink)',
     scene,
     breadcrumbLabel,
     eyebrow,
@@ -24,6 +25,11 @@ export default function CategoryHero({
 }) {
     return (
         <section className="cat-hero" style={{ background }}>
+            {/* Barva backdropu MUSÍ sedět s první (nejtmavší) zastávkou
+                vlastního gradientu stránky (background prop výš) — jinak
+                je za headerem vidět barevný švy, přesně bug co se řešil
+                na Events.jsx (#events-hero-backdrop). */}
+            <div className="cat-hero-backdrop" style={{ background: backdropColor }} />
             {scene}
 
             <div className="cat-hero-fade" />

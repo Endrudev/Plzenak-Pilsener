@@ -85,6 +85,7 @@ export default function TopAkce() {
     <div className="catpage">
       <CategoryHero
         background="linear-gradient(to bottom, #240D04 0%, #5E2405 58%, #8E3A06 88%)"
+        backdropColor="#240D04"
         scene={<TopAkceScene />}
         breadcrumbLabel="TOP akce"
         eyebrow="Výběr Plzeňáku"

@@ -22,7 +22,8 @@
     left: 0;
     right: 0;
     height: 90px;
-    background: var(--color-ink);
+    /* barva se nastavuje inline přes backdropColor prop (CategoryHero.jsx),
+       ať sedí s první zastávkou gradientu konkrétní stránky */
 }
 
 /* Tmavý pruh dole — přechod mezi hero pásem a světlým obsahem pod ním. */
