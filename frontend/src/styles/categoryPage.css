@@ -40,14 +40,16 @@
   margin: var(--space-8) var(--space-4) var(--space-16);
 }
 
+/* Žádný max-width — stejně jako CategoryFilterBar.css (viz komentář
+   tam proč) a stejně jako zdrojové <main style="padding:0 80px 120px">:
+   mřížka jede na celou šířku stránky, jen s odsazením od kraje, ne
+   useknutá na užší centrovaný sloupec. Karta s hledáním nad mřížkou by
+   jinak byla širší než mřížka pod ní a vypadalo by to nesourodě. */
 @media (min-width: 768px) {
   .catpage-grid,
   .catpage .pagination {
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-    box-sizing: border-box;
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
   }
 
   .catpage-grid {
@@ -58,9 +60,8 @@
 @media (min-width: 1024px) {
   .catpage-grid,
   .catpage .pagination {
-    max-width: var(--container);
-    padding-left: var(--space-8);
-    padding-right: var(--space-8);
+    padding-left: var(--gutter-desktop);
+    padding-right: var(--gutter-desktop);
   }
 
   .catpage-grid {

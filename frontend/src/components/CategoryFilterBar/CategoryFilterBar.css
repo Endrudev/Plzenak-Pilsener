@@ -2,7 +2,17 @@
    na jejím obalu, ať přesahuje přes spodní okraj tmavého hero pásu nad
    ní). `.catfilter-wrap` drží tu zápornou mezeru, `.catfilter` samotná
    karta — dva prvky odděleně, ať margin nezasahuje do vlastního
-   box-shadow karty (ten by se jinak taky posunul a byl vidět useknutý). */
+   box-shadow karty (ten by se jinak taky posunul a byl vidět useknutý).
+
+   PRAVÝ důvod, proč byla karta "pořád stejně úzká" i po přepracování
+   řádku s hledáním: tenhle vnější wrap měl `max-width:900px` (od 768px)
+   a pak `max-width:1280px` (od 1024px) — stejný strop jako výsledková
+   mřížka. Uvnitř tak správně přerovnané hledání/dropdowny nikdy nemohly
+   být vidět širší, protože celá KARTA byla pořád useknutá na stejnou
+   šířku jako předtím. Ve zdroji (*.dc.html) `<main>` žádný max-width
+   nemá — jen 80px odsazení po stranách (`padding:0 80px 120px`) bez
+   ohledu na šířku plátna. Karta i tady teď dělá to samé: žádný strop,
+   jen odsazení od kraje. */
 .catfilter-wrap {
   position: relative;
   z-index: 1;
@@ -198,18 +208,14 @@
 
 @media (min-width: 768px) {
   .catfilter-wrap {
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: var(--space-4);
-    padding-right: var(--space-4);
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
   }
 }
 
 @media (min-width: 1024px) {
   .catfilter-wrap {
-    max-width: var(--container);
-    padding-left: var(--space-8);
-    padding-right: var(--space-8);
+    padding-left: var(--gutter-desktop);
+    padding-right: var(--gutter-desktop);
   }
 }

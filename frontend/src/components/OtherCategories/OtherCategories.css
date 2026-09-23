@@ -82,20 +82,19 @@
   }
 }
 
+/* Žádný max-width — stejný důvod jako CategoryFilterBar.css/categoryPage.css:
+   zdroj (<main style="padding:0 80px 120px">) nemá useknutý centrovaný
+   sloupec, jen odsazení od kraje. */
 @media (min-width: 768px) {
   .other-cats {
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-    box-sizing: border-box;
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
   }
 }
 
 @media (min-width: 1024px) {
   .other-cats {
-    max-width: var(--container);
-    padding-left: var(--space-8);
-    padding-right: var(--space-8);
+    padding-left: var(--gutter-desktop);
+    padding-right: var(--gutter-desktop);
   }
 }
