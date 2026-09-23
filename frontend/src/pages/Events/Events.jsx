@@ -166,6 +166,11 @@ export default function Events() {
   return (
     <div id="events-page">
 
+      {/* Noční pozadí musí sahat i za sticky hlavičku (jinak jde vidět jen
+          v postranních "žebrech" kolem ní, a nad ní zbyde světlé pozadí
+          stránky) — viz komentář u #events-hero-backdrop v CSS. */}
+      <div id="events-hero-backdrop" aria-hidden="true" />
+
       {/* Přechod header → tmavý pás. Zdroj (Events.dc.html) tuhle plochu
           nekreslí jen jako baráky — je to celá "noční obloha" o výšce 280px
           s vlastním 4stupňovým gradientem, 30 hvězdami, dvěma padajícími,

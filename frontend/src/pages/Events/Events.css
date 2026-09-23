@@ -1,6 +1,7 @@
 /* ===== EVENTS PAGE — mobile first ===== */
 
 #events-page {
+  position: relative;
   background: var(--color-page);
   display: flex;
   flex-direction: column;
@@ -24,6 +25,28 @@
   height: 280px;
   overflow: hidden;
   background: linear-gradient(to bottom, #120502 0%, #241006 38%, #4A1D06 72%, #7A3208 100%);
+}
+
+/* Hlavička je position:sticky a sedí NAD touhle sekcí ve stromu — bez
+   tohohle by za ní (a v postranních "žebrech" kolem užší plovoucí lišty)
+   bylo vidět jen světlé pozadí stránky, ne pokračování noční oblohy.
+   Samostatný prvek, ne ::before na #events-hero-skyline-wrap — ten má
+   overflow:hidden (kvůli siluetě budov) a ořízl by cokoliv, co z něj
+   přesahuje nahoru přes vlastní hranici. Tenhle visí přímo na
+   #events-page (position:relative výš), takže ho nic neořízne, a #120502
+   je stejná barva jako první zastávka gradientu pod ním, takže na švu
+   není vidět skok. Hlavička má vlastní z-index:30 (position:sticky),
+   takže zůstane čitelná navrchu bez ohledu na z-index tady — a proto ho
+   ani nemá smysl nastavovat: #events-page nezakládá vlastní stacking
+   context (jen position:relative, bez z-indexu), takže záporný z-index
+   by tenhle prvek posunul ZA vlastní pozadí #events-page a zmizel by. */
+#events-hero-backdrop {
+  position: absolute;
+  top: -140px;
+  left: 0;
+  right: 0;
+  height: 140px;
+  background: #120502;
 }
 
 #events-sky {
