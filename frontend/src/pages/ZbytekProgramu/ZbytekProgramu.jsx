@@ -4,6 +4,7 @@ import CategoryFilterBar from '../../components/CategoryFilterBar/CategoryFilter
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import Pagination from '../../components/Pagination/Pagination.jsx'
 import EmptyState from '../../components/EmptyState/EmptyState.jsx'
+import OtherCategories from '../../components/OtherCategories/OtherCategories.jsx'
 import { useEventsFilter } from '../../lib/useEventsFilter.js'
 import { SORT_OPTIONS } from '../../lib/sortOptions.js'
 import { CATEGORIES } from '../../lib/categories.jsx'
@@ -105,6 +106,8 @@ export default function ZbytekProgramu() {
       </div>
 
       <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+
+      <OtherCategories exclude="zbytek" />
     </div>
   )
 }
