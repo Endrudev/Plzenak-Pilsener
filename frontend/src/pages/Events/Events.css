@@ -6,18 +6,83 @@
   flex-direction: column;
 }
 
-/* ---------- Přechod header → tmavý hero (stejná technika jako Home.jsx
-   search-band — BuildingSkyline, jen jiné seedy). ---------- */
-#events-hero-skyline-wrap {
-  height: 100px;
-  overflow: hidden;
-  background: var(--color-page);
+@media (prefers-reduced-motion: reduce) {
+  #events-sky .st,
+  #events-sky .shoot {
+    animation: none !important;
+  }
 }
 
-.events-hero-skyline {
+/* ---------- Přechod header → tmavý hero ---------- */
+/* Zdroj tohle nekreslí jen jako baráky na světlém pozadí — je to celá
+   noční obloha 280px vysoká, s vlastním 4stupňovým gradientem (doslova
+   ze zdroje, "t-top on" kontejner), hvězdami, měsícem a teplou zářivou
+   skvrnou dole. Baráky (BuildingSkyline) sedí až na úplném dně, ne
+   roztažené přes celou výšku. */
+#events-hero-skyline-wrap {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #120502 0%, #241006 38%, #4A1D06 72%, #7A3208 100%);
+}
+
+#events-sky {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* transform-box: fill-box je nutné — bez něj se scale/rotate v SVG počítá
+   vůči celému viewBoxu, ne vůči vlastnímu tvaru (stejná past jako u TOP
+   akce dlaždice, viz HeroTileTop.css). */
+#events-sky .st,
+#events-sky .shoot {
+  transform-box: fill-box;
+}
+
+#events-sky .st {
+  color: var(--color-top-star);
+  opacity: .85;
+  animation: ht-twinkle 3.2s ease-in-out infinite;
+}
+
+#events-sky .st.q1 { animation-duration: 2.4s; animation-delay: -.8s; }
+#events-sky .st.q2 { animation-duration: 4.1s; animation-delay: -2.1s; }
+#events-sky .st.q3 { animation-duration: 2.9s; animation-delay: -1.4s; }
+
+@keyframes ht-twinkle {
+  0%, 100% { opacity: .85; transform: scale(1); }
+  50%      { opacity: .25; transform: scale(.6); }
+}
+
+#events-sky .shoot {
+  transform-origin: 100% 50%;
+  opacity: 0;
+  animation: ht-shoot 9s linear infinite;
+}
+
+#events-sky .shoot.s2 {
+  animation-duration: 14s;
+  animation-delay: -9s;
+}
+
+@keyframes ht-shoot {
+  0%, 86% { opacity: 0; transform: rotate(-24deg) translateX(0) scaleX(.3); }
+  88%     { opacity: 1; transform: rotate(-24deg) translateX(-40px) scaleX(1); }
+  95%     { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(.6); }
+  100%    { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(.3); }
+}
+
+.events-hero-skyline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+  width: 100%;
+  height: 110px;
 }
 
 .events-hero-skyline .skyline-mass {
@@ -373,7 +438,7 @@
    si nese sama, tady stačí jen odsazení kolem ní. Scoped na #events-page,
    ať neuteče do stránkování na jiných stránkách. */
 #events-page .pagination {
-  margin: var(--space-8) var(--space-4) 0;
+  margin: var(--space-8) var(--space-4) var(--space-16);
 }
 
 /* ---------- Responsive ---------- */

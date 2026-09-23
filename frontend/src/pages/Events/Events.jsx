@@ -39,6 +39,28 @@ const SORT_OPTIONS = [
 
 const EMPTY_FILTERS = { q: '', kategorie: '', misto: '', datum: '', top: false }
 
+// Osmicípá hvězda — stejný tvar jako v TOP akce dlaždici (HeroTileTop.jsx),
+// tady zase samostatně, protože instance jsou dvě rozdílná místa appky.
+const STAR_D = 'M0 -6L1.3 -1.3L6 0L1.3 1.3L0 6L-1.3 1.3L-6 0L-1.3 -1.3Z'
+
+// 30 hvězd doslova ze zdroje (Events.dc.html, kontejner "t-top on" nad
+// siluetou střech) — pozice/velikosti/q-třídy (rozhazují délku/zpoždění
+// blikání, viz Events.css) 1:1 podle handoffu.
+const EVENTS_STARS = [
+  { l: 474, t: 102, s: 8, q: '' }, { l: 268, t: 57, s: 5, q: 'q1' }, { l: 184, t: 43, s: 6, q: 'q2' },
+  { l: 1047, t: 61, s: 8, q: 'q3' }, { l: 1324, t: 15, s: 8, q: '' }, { l: 1008, t: 124, s: 8, q: 'q1' },
+  { l: 1023, t: 57, s: 8, q: 'q2' }, { l: 193, t: 132, s: 6, q: 'q3' }, { l: 50, t: 76, s: 10, q: '' },
+  { l: 844, t: 129, s: 8, q: 'q1' }, { l: 242, t: 74, s: 5, q: 'q2' }, { l: 139, t: 106, s: 10, q: 'q3' },
+  { l: 782, t: 35, s: 5, q: '' }, { l: 703, t: 68, s: 5, q: 'q1' }, { l: 1029, t: 140, s: 6, q: 'q2' },
+  { l: 1200, t: 44, s: 10, q: 'q3' }, { l: 141, t: 146, s: 5, q: '' }, { l: 1010, t: 57, s: 6, q: 'q1' },
+  { l: 1195, t: 124, s: 10, q: 'q2' }, { l: 921, t: 81, s: 10, q: 'q3' }, { l: 740, t: 117, s: 6, q: '' },
+  { l: 334, t: 32, s: 10, q: 'q1' }, { l: 1423, t: 88, s: 7, q: 'q2' }, { l: 1328, t: 134, s: 10, q: 'q3' },
+  { l: 1287, t: 58, s: 7, q: '' }, { l: 317, t: 99, s: 10, q: 'q1' }, { l: 592, t: 138, s: 5, q: 'q2' },
+  { l: 1049, t: 147, s: 6, q: 'q3' }, { l: 714, t: 70, s: 5, q: '' }, { l: 615, t: 95, s: 6, q: 'q1' },
+  { l: 556, t: 16, s: 8, q: 'q2' }, { l: 531, t: 104, s: 7, q: 'q3' }, { l: 863, t: 52, s: 8, q: '' },
+  { l: 248, t: 50, s: 5, q: 'q1' },
+]
+
 export default function Events() {
   const PER_PAGE = 5
 
@@ -144,9 +166,44 @@ export default function Events() {
   return (
     <div id="events-page">
 
-      {/* Přechod header → tmavý pás, stejná technika jako search-band na
-          Home.jsx (BuildingSkyline, jiné seedy). */}
+      {/* Přechod header → tmavý pás. Zdroj (Events.dc.html) tuhle plochu
+          nekreslí jen jako baráky — je to celá "noční obloha" o výšce 280px
+          s vlastním 4stupňovým gradientem, 30 hvězdami, dvěma padajícími,
+          měsícem a teplou zářivou skvrnou dole, teprve POD tím sedí
+          silueta střech. Baráky samotné pořád BuildingSkyline (stejná
+          technika jako Home.jsx/patička), zbytek doslova ze zdroje. */}
       <div id="events-hero-skyline-wrap" aria-hidden="true">
+        {/* Doslovné px souřadnice ze zdroje (pevné 1440px plátno) jdou jako
+            HTML nespolehlivě — na jakékoliv jiné šířce stránky by se
+            rozjely (přesně tenhle bug se stal oknům na TOP akce dlaždici).
+            Řešení je stejné: všechno uvnitř jednoho <svg viewBox>, škáluje
+            se pak s šířkou dlaždice 1:1 místo v surových px. */}
+        <svg id="events-sky" viewBox="0 0 1440 280" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="events-shoot-grad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#FFF4E2" stopOpacity="0.95" />
+                    <stop offset="100%" stopColor="#FFECCC" stopOpacity="0" />
+                </linearGradient>
+                <radialGradient id="events-glow-grad" cx="50%" cy="100%" r="75%">
+                    <stop offset="0%" stopColor="#F0801E" stopOpacity="0.4" />
+                    <stop offset="70%" stopColor="#F0801E" stopOpacity="0" />
+                </radialGradient>
+            </defs>
+
+            {EVENTS_STARS.map((s, i) => (
+                <g key={i} transform={`translate(${s.l + s.s / 2} ${s.t + s.s / 2}) scale(${s.s / 12})`}>
+                    <path className={`st ${s.q}`} d={STAR_D} />
+                </g>
+            ))}
+            <g transform="translate(520 96)"><rect className="shoot s1" width="110" height="2" rx="1" fill="url(#events-shoot-grad)" /></g>
+            <g transform="translate(1220 118)"><rect className="shoot s2" width="110" height="2" rx="1" fill="url(#events-shoot-grad)" /></g>
+
+            <g transform="translate(1180 96)">
+                <path d="M40 36a22 22 0 1 1 -17 -34a17 17 0 1 0 17 34Z" fill="var(--color-top-moon)" />
+            </g>
+
+            <rect x="0" y="50" width="1440" height="230" fill="url(#events-glow-grad)" />
+        </svg>
         <BuildingSkyline className="events-hero-skyline" backSeed={53} frontSeed={29} winSeed={13} />
       </div>
 
