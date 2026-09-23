@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import Pagination from '../../components/Pagination/Pagination.jsx'
 import EmptyState from '../../components/EmptyState/EmptyState.jsx'
+import BuildingSkyline from '../../components/NightSkyline/BuildingSkyline.jsx'
 import { getEvents, getEventLocations } from '../../lib/eventsApi.js'
 import { useSearchParams } from 'react-router-dom'
 import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
@@ -46,6 +48,10 @@ export default function Events() {
   const [page, setPage] = useState(1)
   const [searchParams, setSearchParams] = useSearchParams()
   const [locations, setLocations] = useState([])
+  // Handoff přepíná Mřížka/Seznam (ne "Mapa", jak měl dřív náš UI stub —
+  // opravdovou mapu appka nemá). Oba varianty EventCard už existují
+  // (Fáze 2), takže tohle je jen přepínání view, žádná nová logika.
+  const [view, setView] = useState('grid')
 
   // POUŽITÝ stav — co se skutečně filtruje. Jediným zdrojem pravdy je URL.
   const applied = {
@@ -94,11 +100,6 @@ export default function Events() {
       .finally(() => setLoading(false))
   }, [applied.q, applied.kategorie, applied.misto, applied.datum, applied.top, razeni, page])
 
-  // Kolik polí se liší od použitého stavu — pohání vzhled tlačítka
-  const pendingCount = ['q', 'kategorie', 'misto', 'datum', 'top']
-    .filter(key => (key === 'q' ? draft.q.trim() !== applied.q : draft[key] !== applied[key]))
-    .length
-
   // Je vůbec co mazat? Řazení se nepočítá, to není filtr.
   const hasAppliedFilters = Boolean(
     applied.q || applied.kategorie || applied.misto || applied.datum || applied.top
@@ -143,154 +144,198 @@ export default function Events() {
   return (
     <div id="events-page">
 
-      {/* Filter bar — celý je <form>: hodnoty se drží v `draft` a do URL (a tím do fetche)
-          se zapíšou až odesláním. Řazení stojí mimo a mění URL rovnou. */}
-      <form id="events-filter-card" onSubmit={handleSubmit}>
-        <div id="events-search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input 
-            type="text" 
-            placeholder="Hledat koncerty…" 
-            aria-label="Hledat akce"
-            value={draft.q}
-            onChange={e => setField('q', e.target.value)}
-          />
+      {/* Přechod header → tmavý pás, stejná technika jako search-band na
+          Home.jsx (BuildingSkyline, jiné seedy). */}
+      <div id="events-hero-skyline-wrap" aria-hidden="true">
+        <BuildingSkyline className="events-hero-skyline" backSeed={53} frontSeed={29} winSeed={13} />
+      </div>
+
+      {/* Tmavý hero pás podle handoffu (Events.dc.html, sekce akce-h) —
+          drobečková navigace, nadpis, podtitul, hledací pruh se třemi
+          dropdowny (Kdy/Co/Kde). Čtvrtý z handoffu (Cena) chybí záměrně —
+          stejný důvod jako v sekci Hledání na Home.jsx: DB nemá sloupec
+          na cenu. */}
+      <div id="events-hero">
+        <nav id="events-breadcrumb" aria-label="Drobečková navigace">
+          <Link to="/">Plzeňák</Link> / <span>Akce</span>
+        </nav>
+        <div id="events-hero-heading">
+          <h1 id="events-h">Akce v Plzni</h1>
+          <p>Koncerty, divadlo, trhy i akce pro děti. Vyhledej, vyfiltruj a vyber si, kam dnes vyrazíš.</p>
         </div>
 
-        <div id="events-filter-row">
-          <FilterSelect
-            placeholder="Kategorie"
-            value={draft.kategorie}
-            onChange={v => setField('kategorie', v)}
-            options={CATEGORIES.map(c => ({ value: c.name, label: c.name, icon: c.icon(16) }))}
-            icon={
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />
-              </svg>
-            }
-          />
-          <FilterSelect
-            placeholder="Místo"
-            value={draft.misto}
-            onChange={v => setField('misto', v)}
-            options={locations.map(loc => ({ value: loc, label: loc }))}
-            icon={
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
-              </svg>
-            }
-          />
-          <FilterSelect
-            placeholder="Datum"
-            value={draft.datum}
-            onChange={v => setField('datum', v)}
-            options={DATE_OPTIONS}
-            icon={
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
-            }
-          />
-          <button
-            type="submit"
-            id="events-search-btn"
-            className={pendingCount > 0 ? 'events-search-btn--pending' : ''}
-            disabled={loading}
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+        {/* Filtr bar — celý je <form>: hodnoty se drží v `draft` a do URL (a tím
+            do fetche) se zapíšou až odesláním. Řazení stojí mimo a mění URL rovnou. */}
+        <form id="events-search-form" onSubmit={handleSubmit}>
+          <div id="events-search-bar">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" /><path d="M20 20l-4-4" />
             </svg>
-            {loading ? 'Hledám…' : pendingCount > 0 ? `Vyhledat (${pendingCount})` : 'Vyhledat'}
-          </button>
-        </div>
+            <label htmlFor="events-q" className="visually-hidden">Hledat akce, místa nebo interprety</label>
+            <input
+              id="events-q"
+              type="search"
+              placeholder="Hledej akce, místa nebo interprety…"
+              value={draft.q}
+              onChange={e => setField('q', e.target.value)}
+            />
+            <button type="submit" id="events-search-bar-btn" disabled={loading}>
+              {loading ? 'Hledám…' : 'Hledat'}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+              </svg>
+            </button>
+          </div>
 
-        <div className="events-filter-divider" />
+          <div id="events-search-filters">
+            <FilterSelect
+              label="Kdy"
+              placeholder="Kdykoli"
+              value={draft.datum}
+              onChange={v => setField('datum', v)}
+              options={DATE_OPTIONS}
+              icon={
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3.5" y="5" width="17" height="15" rx="2.5" /><path d="M3.5 10h17M8 3v4M16 3v4" />
+                </svg>
+              }
+            />
+            <FilterSelect
+              label="Co"
+              placeholder="Všechny kategorie"
+              value={draft.kategorie}
+              onChange={v => setField('kategorie', v)}
+              options={CATEGORIES.map(c => ({ value: c.name, label: c.name, icon: c.icon(16) }))}
+              icon={
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 12l-8 8-9-9V3h8Z" /><circle cx="7.5" cy="7.5" r="1.5" />
+                </svg>
+              }
+            />
+            <FilterSelect
+              label="Kde"
+              placeholder="Celá Plzeň"
+              value={draft.misto}
+              onChange={v => setField('misto', v)}
+              options={locations.map(loc => ({ value: loc, label: loc }))}
+              icon={
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15 12 21 12 21z" /><circle cx="12" cy="10" r="2.4" />
+                </svg>
+              }
+            />
+          </div>
+        </form>
+      </div>
 
+      {/* Doplňkové filtry (kategorijní pilulky, rychlý filtr TOP akce) —
+          handoff je nemá jako samostatný řádek, ale funkčně se hodí a
+          nekoliduje s ničím výš, tak zůstávají. */}
+      <div id="events-extra-filters">
         <div className="events-filter-group">
           <span className="events-filter-group-label">Kategorie</span>
           <div className="events-pill-row">
-          {CATEGORIES.map(c => (
-            <button
-              type="button"
-              key={c.name}
-              className={`events-pill${draft.kategorie.toLowerCase() === c.name.toLowerCase() ? ' events-pill--active' : ''}`}
-              onClick={() => setField('kategorie', draft.kategorie === c.name ? '' : c.name)}
-            >
-              <span aria-hidden="true">{c.icon(16)}</span> {c.name}
-            </button>
+            {CATEGORIES.map(c => (
+              <button
+                type="button"
+                key={c.name}
+                className={`events-pill${draft.kategorie.toLowerCase() === c.name.toLowerCase() ? ' events-pill--active' : ''}`}
+                onClick={() => setField('kategorie', draft.kategorie === c.name ? '' : c.name)}
+              >
+                <span aria-hidden="true">{c.icon(16)}</span> {c.name}
+              </button>
             ))}
           </div>
         </div>
 
-        <div className="events-filter-divider" />
-
-        <div id="events-filter-group-row">
-          <div className="events-filter-group">
-            <span className="events-filter-group-label">Rychlý filtr</span>
-            <div className="events-pill-row">
-              {QUICK_FILTERS.map(f => {
-                // „Zdarma“ nemá v datech oporu (chybí údaj o ceně), zůstává vypnutá
-                if (f.name !== 'TOP akce') {
-                  return (
-                    <button type="button" key={f.name} className="events-pill" disabled>
-                      <span aria-hidden="true">{f.icon}</span> {f.name}
-                    </button>
-                  )
-                }
-
+        <div className="events-filter-group">
+          <span className="events-filter-group-label">Rychlý filtr</span>
+          <div className="events-pill-row">
+            {QUICK_FILTERS.map(f => {
+              // „Zdarma“ nemá v datech oporu (chybí údaj o ceně), zůstává vypnutá
+              if (f.name !== 'TOP akce') {
                 return (
-                  <button
-                    type="button"
-                    key={f.name}
-                    className={`events-pill${draft.top ? ' events-pill--active' : ''}`}
-                    aria-pressed={draft.top}
-                    onClick={() => setField('top', !draft.top)}
-                  >
+                  <button type="button" key={f.name} className="events-pill" disabled>
                     <span aria-hidden="true">{f.icon}</span> {f.name}
                   </button>
                 )
-              })}
-            </div>
-          </div>
+              }
 
-          <div id="events-view-toggle">
-            <button type="button" className="events-view-toggle-btn events-view-toggle-btn--active">Seznam</button>
-            <button type="button" className="events-view-toggle-btn">Mapa</button>
+              return (
+                <button
+                  type="button"
+                  key={f.name}
+                  className={`events-pill${draft.top ? ' events-pill--active' : ''}`}
+                  aria-pressed={draft.top}
+                  onClick={() => setField('top', !draft.top)}
+                >
+                  <span aria-hidden="true">{f.icon}</span> {f.name}
+                </button>
+              )
+            })}
           </div>
         </div>
-      </form>
+      </div>
 
+      {/* Počet výsledků + řazení + přepínač Mřížka/Seznam — podle handoffu
+          (tam měl přepínač tahle dvě možnosti, ne "Seznam/Mapa" jako náš
+          dřívější neaktivní stub; appka reálnou mapu nemá, ale OBĚ varianty
+          karty (grid/list) už existují, takže tohle je teď skutečně funkční). */}
       <div id="events-sort-row">
-        {hasAppliedFilters && (
-          <button type="button" id="events-clear-btn" onClick={clearFilters}>
-            Vymazat filtry
-          </button>
-        )}
-        <span id="events-sort-label">Řadit podle</span>
-        <FilterSelect
-          placeholder="Řazení"
-          value={razeni}
-          onChange={changeSort}
-          options={SORT_OPTIONS}
-          clearable={false}
-          icon={
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="6" y1="20" x2="6" y2="4" /><polyline points="2 8 6 4 10 8" /><line x1="18" y1="4" x2="18" y2="20" /><polyline points="14 16 18 20 22 16" />
-            </svg>
-          }
-        />
+        <div id="events-count-block">
+          <span id="events-count" aria-live="polite">
+            {!loading && eventCountLabel(total)}
+          </span>
+          <span id="events-count-label">v Plzni od dneška</span>
+        </div>
+
+        <div id="events-sort-row-controls">
+          {hasAppliedFilters && (
+            <button type="button" id="events-clear-btn" onClick={clearFilters}>
+              Vymazat filtry
+            </button>
+          )}
+          <FilterSelect
+            label="Řadit"
+            placeholder="Řazení"
+            value={razeni}
+            onChange={changeSort}
+            options={SORT_OPTIONS}
+            clearable={false}
+            icon={
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3" />
+              </svg>
+            }
+          />
+          <div id="events-view-toggle" role="group" aria-label="Zobrazení">
+            <button
+              type="button"
+              className={`events-view-toggle-btn${view === 'grid' ? ' events-view-toggle-btn--active' : ''}`}
+              aria-pressed={view === 'grid'}
+              onClick={() => setView('grid')}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="4" y="4" width="7" height="7" rx="1.5" /><rect x="13" y="4" width="7" height="7" rx="1.5" /><rect x="4" y="13" width="7" height="7" rx="1.5" /><rect x="13" y="13" width="7" height="7" rx="1.5" />
+              </svg>
+              Mřížka
+            </button>
+            <button
+              type="button"
+              className={`events-view-toggle-btn${view === 'list' ? ' events-view-toggle-btn--active' : ''}`}
+              aria-pressed={view === 'list'}
+              onClick={() => setView('list')}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="4" y="5" width="16" height="5" rx="1.5" /><rect x="4" y="14" width="16" height="5" rx="1.5" />
+              </svg>
+              Seznam
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div id="events-section-header">
-        <h2>Všechny akce</h2>
-        <span id="events-count" aria-live="polite">
-          {!loading && `Zobrazeno ${allEvents.length} z ${eventCountLabel(total)}`}
-        </span>
-      </div>
-
-      <div id="events-list">
+      <div id="events-list" className={view === 'list' ? 'events-list--list' : 'events-list--grid'}>
         {loading
           ? <p id="events-loading">Načítání…</p>
           : allEvents.length === 0
@@ -300,7 +345,7 @@ export default function Events() {
                 onReset={hasAppliedFilters ? clearFilters : undefined}
               />
             )
-            : allEvents.map(event => <EventCard key={event.id} event={event} />)
+            : allEvents.map(event => <EventCard key={event.id} event={event} variant={view} />)
         }
       </div>
 
