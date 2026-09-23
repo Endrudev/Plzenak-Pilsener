@@ -15,6 +15,8 @@ import './CategoryHero.css'
 export default function CategoryHero({
     background,
     backdropColor = 'var(--color-ink)',
+    fadeColor = 'var(--color-ink)',
+    theme = 'dark',
     scene,
     breadcrumbLabel,
     eyebrow,
@@ -24,7 +26,7 @@ export default function CategoryHero({
     titleSize = '104px',
 }) {
     return (
-        <section className="cat-hero" style={{ background }}>
+        <section className={`cat-hero${theme === 'light' ? ' cat-hero--light' : ''}`} style={{ background }}>
             {/* Barva backdropu MUSÍ sedět s první (nejtmavší) zastávkou
                 vlastního gradientu stránky (background prop výš) — jinak
                 je za headerem vidět barevný švy, přesně bug co se řešil
@@ -32,7 +34,7 @@ export default function CategoryHero({
             <div className="cat-hero-backdrop" style={{ background: backdropColor }} />
             {scene}
 
-            <div className="cat-hero-fade" />
+            <div className="cat-hero-fade" style={{ background: fadeColor }} />
 
             <div className="cat-hero-text">
                 <nav className="cat-hero-crumbs" aria-label="Drobečková navigace">

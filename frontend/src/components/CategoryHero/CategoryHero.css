@@ -26,14 +26,15 @@
        ať sedí s první zastávkou gradientu konkrétní stránky */
 }
 
-/* Tmavý pruh dole — přechod mezi hero pásem a světlým obsahem pod ním. */
+/* Pruh dole — přechod mezi hero pásem a obsahem pod ním. Barva se
+   nastavuje inline přes fadeColor prop (CategoryHero.jsx), ze stejného
+   důvodu jako .cat-hero-backdrop výš. */
 .cat-hero-fade {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
     height: 40px;
-    background: var(--color-ink);
 }
 
 .cat-hero-text {
@@ -109,6 +110,29 @@
     font-family: var(--font-display);
     font-size: var(--fs-h3);
     color: var(--color-cream);
+}
+
+/* ---------- světlá varianta (Zbytek programu — denní scéna, ne noční
+   jako TOP akce/Hudba) — stejné sémantické role (tlumený text/nadpis/
+   eyebrow), jen jiné barvy, doslova ze zdroje. Používá existující
+   --color-calm-* tokeny (Zbytek.jsx sdílí paletu s HeroTileRest), ať
+   nevznikají nové jednorázové tokeny pro jednu stránku. ---------- */
+.cat-hero--light .cat-hero-crumbs,
+.cat-hero--light .cat-hero-crumbs a,
+.cat-hero--light .cat-hero-lead,
+.cat-hero--light .cat-hero-stats {
+    color: var(--color-calm-text-soft);
+}
+
+.cat-hero--light .cat-hero-crumbs span,
+.cat-hero--light .cat-hero-title,
+.cat-hero--light .cat-hero-stats strong {
+    color: var(--color-calm-text);
+}
+
+.cat-hero--light .cat-hero-eyebrow {
+    background: var(--color-calm-figure-dk);
+    color: var(--color-calm-lamp-glow);
 }
 
 @media (min-width: 640px) {
