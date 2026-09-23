@@ -170,7 +170,7 @@ export default function HeroTileMusic({ count = 0 }) {
             </div>
 
             <div className="hero-tile-overlay">
-                <h2 className="hero-tile-title hero-tile-title--sm">Hudba</h2>
+                <h2 className="hero-tile-title hero-tile-title--md">Hudba</h2>
                 <p className="hero-tile-lead">{eventCountLabel(count)} tento měsíc</p>
             </div>
 

@@ -164,7 +164,12 @@
 }
 
 /* ---------- text (mimo scénu, přes celou výšku dlaždice) ---------- */
-.ht-rest-overlay {
+/* .hero-tile--rest .hero-tile-overlay (dvě třídy), ne jen .ht-rest-overlay
+   samotné — potřebuje přebít .hero-tile-overlay{justify-content:flex-start}
+   ze sdíleného HeroBento.css. Se stejnou specificitou (obě jedna třída) by
+   o vítězi rozhodovalo pořadí importu CSS souborů, což je křehké a přesně
+   tohle se pak rozbilo (kategorie se sesypaly nahoru k nadpisu místo dole). */
+.hero-tile--rest .hero-tile-overlay {
     justify-content: space-between;
     z-index: 2;
 }

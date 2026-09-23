@@ -24,12 +24,14 @@
    filter:drop-shadow na siluetě samotné. Stín z filteru potřebuje volný
    prostor kolem zdroje a #site-footer má overflow:hidden přesně na
    hranici siluety, takže se ořízl dřív, než byl vůbec vidět. Tahle
-   vrstva leží celá uvnitř #site-footer pod siluetou, nic ji neořízne. */
+   vrstva leží celá uvnitř #site-footer pod siluetou, nic ji neořízne.
+   Gradient KONČÍ průhledně (na švu se zbytkem patičky) — když končil
+   rovnou tmavý (.35 černá na 100 %), byl šev vidět jako barevný skok. */
 .footer-skyline-glow {
     display: block;
     height: 30px;
     margin-top: -30px;
-    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .35));
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, .35) 55%, transparent 100%);
     pointer-events: none;
 }
 

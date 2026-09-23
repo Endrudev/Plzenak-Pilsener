@@ -221,7 +221,7 @@ export default function HeroTileRest({ categories = [] }) {
                 <span className="mist" />
             </div>
 
-            <div className="hero-tile-overlay ht-rest-overlay">
+            <div className="hero-tile-overlay">
                 <div className="ht-rest-top">
                     <h2 className="hero-tile-title hero-tile-title--sm">Zbytek programu</h2>
                     <span className="ht-rest-browse">

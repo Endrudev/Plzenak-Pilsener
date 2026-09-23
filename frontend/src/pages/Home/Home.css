@@ -70,12 +70,16 @@
 
 /* Jemný černý glow hned pod baráky — celá vrstva leží uvnitř #search-band,
    takže ji nic neořízne (na rozdíl od filter:drop-shadow na siluetě
-   samotné, viz komentář u #search-skyline-wrap výš). */
+   samotné, viz komentář u #search-skyline-wrap výš). Gradient ZAČÍNÁ
+   průhledně (na švu s baráky, které mají fill přesně var(--color-night) —
+   stejnou barvu jako vrchol tohohle pásu) a teprve pod tím houstne. Když
+   začínal rovnou tmavý (.35 černá hned na 0 %), byl šev vidět jako barevný
+   skok — pás byl v tom místě tmavší než baráky nad ním. */
 #search-band-glow {
   position: absolute;
   inset: 0 0 auto 0;
-  height: 44px;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, .35), transparent);
+  height: 48px;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, .35) 45%, transparent 100%);
   pointer-events: none;
 }
 
