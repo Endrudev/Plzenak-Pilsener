@@ -3,26 +3,40 @@ import './EventCard.css'
 import { imageBackground } from '../../lib/imageBackground.js'
 import { eventBadge } from '../../lib/eventBadge.js'
 
+function ClockIcon() {
+    return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" />
+        </svg>
+    )
+}
+
 function LocationIcon() {
     return (
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" />
             <circle cx="12" cy="10" r="3" />
         </svg>
     )
 }
 
+// Doslova podle handoffu: čas/datum a místo jsou dva samostatné řádky
+// (vlastní ikona na každém), ne jeden řádek spojený tečkou jako dřív.
 function EventMeta({ event }) {
     return (
         <div className="event-meta">
+            {event.date && (
+                <span className="event-meta-row">
+                    <ClockIcon />
+                    {event.date}
+                </span>
+            )}
             {event.location && (
-                <span className="event-location">
+                <span className="event-meta-row">
                     <LocationIcon />
                     {event.location}
                 </span>
             )}
-            {event.location && event.date && <span className="event-meta-dot">·</span>}
-            {event.date && <span className="event-date">{event.date}</span>}
         </div>
     )
 }
@@ -33,6 +47,18 @@ function EventTags({ tags }) {
         <div className="event-tags">
             {tags.map(tag => <span key={tag} className="event-tag">{tag}</span>)}
         </div>
+    )
+}
+
+// Šipka co se na hoveru/focusu posune doprava — stejný "go" vzor jako
+// všude jinde v redesignu (Header, HeroBento, Footer...).
+function GoArrow() {
+    return (
+        <span className="event-btn-go" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+            </svg>
+        </span>
     )
 }
 
@@ -78,7 +104,7 @@ export default function EventCard({ event, variant = 'grid', rank, why }) {
                     <h2 className="event-name">{event.name}</h2>
                     <EventMeta event={event} />
                 </div>
-                <span className="event-btn event-btn--list" aria-hidden="true">Zobrazit akci</span>
+                <span className="event-btn event-btn--list" aria-hidden="true">Zobrazit akci<GoArrow /></span>
             </Link>
         )
     }
@@ -92,21 +118,21 @@ export default function EventCard({ event, variant = 'grid', rank, why }) {
                     <h2 className="event-name">{event.name}</h2>
                     {variant === 'featured' && why && <p className="event-why">{why}</p>}
                     <EventMeta event={event} />
-                    <Link to={`/events/${event.id}`} className="event-btn">Zobrazit akci</Link>
+                    <Link to={`/events/${event.id}`} className="event-btn">Zobrazit akci<GoArrow /></Link>
                 </div>
             </div>
         )
     }
 
-    // grid — výchozí, beze změny
+    // grid — výchozí, karta podle handoffu (.card.paper-l)
     return (
         <div className="event-card">
             {image}
             <div className="event-info">
-                <EventTags tags={event.tags} />
                 <h2 className="event-name">{event.name}</h2>
                 <EventMeta event={event} />
-                <Link to={`/events/${event.id}`} className="event-btn">Zobrazit</Link>
+                <EventTags tags={event.tags} />
+                <Link to={`/events/${event.id}`} className="event-btn">Zobrazit akci<GoArrow /></Link>
             </div>
         </div>
     )

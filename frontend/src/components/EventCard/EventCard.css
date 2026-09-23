@@ -1,10 +1,14 @@
+/* .card.paper-l z handoffu — --shadow-paper a --color-line-soft už přesně
+   sedí (byly zavedené dřív pro featured/ranked variantu), tady se jen
+   použijí i na výchozí "grid" kartu, co dosud měla jiný, plošší stín. */
 .event-card {
     display: flex;
     flex-direction: column;
     background: var(--color-surface);
+    border: 1px solid var(--color-line-soft);
     border-radius: var(--radius-card);
     overflow: hidden;
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--shadow-paper);
     /* 2.5 Hover lift karty — fast, box-shadow je povolená CSS výjimka */
     transition: box-shadow var(--dur-fast) var(--ease-standard),
                 transform var(--dur-fast) var(--ease-standard);
@@ -23,7 +27,7 @@
 
 .event-image {
     position: relative;
-    height: 132px;
+    height: 160px;
     background-size: cover;
     background-position: center;
 }
@@ -40,15 +44,19 @@
     background: var(--category-sport-grad);
 }
 
+/* Vlevo nahoře, ne vpravo dole jako dřív — a tvar/velikost přesně podle
+   handoffu (padding 6px 11px, verzálky, širší tracking). */
 .event-badge {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
-    padding: 4px 10px;
+    top: 14px;
+    left: 14px;
+    padding: 6px 11px;
     border-radius: var(--radius-pill);
     font-size: var(--fs-2xs);
     font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
     white-space: nowrap;
 }
 
@@ -67,14 +75,17 @@
     color: var(--badge-ink);
 }
 
+/* padding 20px 22px 22px (asymetrický, přesně podle handoffu — ne
+   jednotný var(--space-4) jako dřív), mezera mezi bloky 12px (--space-3,
+   sedí přesně). */
 .event-info {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: var(--space-4);
+    padding: 20px 22px 22px;
     text-align: left;
-    gap: var(--space-2);
+    gap: var(--space-3);
 }
 
 .event-tags {
@@ -96,32 +107,37 @@
 
 .event-name {
     font-family: var(--font-display);
-    font-size: var(--fs-h3);
-    font-weight: var(--fw-semibold);
+    font-size: var(--fs-card-title);
+    font-weight: var(--fw-bold);
     margin: 0;
     line-height: var(--lh-snug);
+    letter-spacing: var(--tracking-heading);
     color: var(--color-ink);
 }
 
+/* Čas a místo jako dva samostatné řádky (viz EventMeta v EventCard.jsx),
+   ne jeden řádek spojený tečkou jako dřív — přesně podle handoffu. */
 .event-meta {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 6px;
-    font-size: var(--fs-xs);
+    font-size: var(--fs-sm);
     color: var(--color-text-muted);
     font-family: var(--font-sans);
 }
 
-.event-location {
+.event-meta-row {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
 }
 
-.event-meta-dot {
-    color: var(--color-line);
+.event-meta-row svg {
+    flex-shrink: 0;
 }
 
+/* Pilulka (radius 999), ne zaoblený obdélník jako dřív — text je tmavý na
+   jantarovém pozadí (ne bílý), přesně podle handoffu .cta. */
 .event-btn {
     margin-top: 4px;
     width: 100%;
@@ -129,24 +145,38 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 10px;
+    min-height: 50px;
     background-color: var(--color-primary);
-    color: #fff;
+    color: var(--color-ink);
     border: none;
-    border-radius: var(--radius-el);
+    border-radius: var(--radius-pill);
     padding: 11px 18px;
     font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
-    font-size: var(--fs-body);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-h3);
     cursor: pointer;
     text-decoration: none;
     /* 2.6 Button hover — ztmavení pozadí, ne filter (background je povolená výjimka) */
     transition: background-color var(--dur-fast) var(--ease-standard),
+                color var(--dur-fast) var(--ease-standard),
                 transform var(--dur-fast) var(--ease-standard);
+}
+
+.event-btn-go {
+    display: flex;
+    transition: transform var(--dur-fast) var(--ease-standard);
+}
+
+.event-btn:hover .event-btn-go,
+.event-btn:focus-visible .event-btn-go {
+    transform: translateX(4px);
 }
 
 .event-btn:hover,
 .event-btn:focus-visible {
-    background-color: var(--color-primary-hover);
+    background-color: var(--color-ink);
+    color: var(--color-cream);
 }
 
 /* 2.8 Tap */
@@ -156,7 +186,7 @@
 
 @media (min-width: 1024px) {
     .event-image {
-        height: 180px;
+        height: 196px;
     }
 
     .event-name {
@@ -198,8 +228,12 @@
     max-width: 100%;
 }
 
+/* Kompaktní řádek — zpátky na vodorovné uspořádání (base .event-meta je
+   teď sloupec kvůli grid/featured/ranked kartám). */
 .event-card--list .event-meta {
+    flex-direction: row;
     flex-wrap: wrap;
+    gap: 12px;
 }
 
 .event-btn--list {
@@ -207,9 +241,10 @@
     display: none;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     background-color: var(--color-primary);
     color: #fff;
-    border-radius: var(--radius-btn-s);
+    border-radius: var(--radius-pill);
     padding: 11px 20px;
     font-family: var(--font-sans);
     font-weight: var(--fw-semibold);
