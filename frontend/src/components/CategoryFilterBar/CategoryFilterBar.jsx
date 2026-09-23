@@ -55,7 +55,7 @@ export default function CategoryFilterBar({
     return (
         <div className="catfilter-wrap">
             <div className="catfilter paper-l">
-                <div className={`catfilter-row1 catfilter-row1--dd${typeOptions ? 2 : 1}`}>
+                <div className="catfilter-row1">
                     <label className="catfilter-search">
                         <span className="catfilter-search-icon"><SearchIcon /></span>
                         <span className="catfilter-sr-label">{searchLabel}</span>
@@ -68,26 +68,33 @@ export default function CategoryFilterBar({
                         />
                     </label>
 
-                    {typeOptions && (
-                        <FilterSelect
-                            label="Typ akce"
-                            placeholder="Všechny typy"
-                            value={typeValue}
-                            onChange={onTypeChange}
-                            options={typeOptions}
-                            icon={<TypeIcon />}
-                        />
-                    )}
+                    {/* Dropdowny mají svůj vlastní řádek pod hledáním až do
+                        širokého desktopu (viz media query v CSS) — hledání
+                        tak nikdy nemusí "sdílet" prostor s nimi na užších
+                        šířkách a je vždycky nejširší prvek v kartě, přesně
+                        jak dominuje v artefaktu. */}
+                    <div className="catfilter-dropdowns">
+                        {typeOptions && (
+                            <FilterSelect
+                                label="Typ akce"
+                                placeholder="Všechny typy"
+                                value={typeValue}
+                                onChange={onTypeChange}
+                                options={typeOptions}
+                                icon={<TypeIcon />}
+                            />
+                        )}
 
-                    <FilterSelect
-                        label="Řadit"
-                        placeholder="Řazení"
-                        value={sortValue}
-                        onChange={onSortChange}
-                        options={sortOptions}
-                        clearable={false}
-                        icon={<SortIcon />}
-                    />
+                        <FilterSelect
+                            label="Řadit"
+                            placeholder="Řazení"
+                            value={sortValue}
+                            onChange={onSortChange}
+                            options={sortOptions}
+                            clearable={false}
+                            icon={<SortIcon />}
+                        />
+                    </div>
                 </div>
 
                 <div className="catfilter-row2">

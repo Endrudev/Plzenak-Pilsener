@@ -20,31 +20,24 @@
   box-shadow: var(--shadow-pop, 0 16px 32px -16px rgba(42, 15, 4, .25));
 }
 
-/* CSS grid, ne flex — s flex-grow na hledání a flex-wrap zároveň (kvůli
-   mobilu) se hledání při zalomení řádku chytalo svého flex-basis a
-   zůstávalo úzké, i když mělo zbylý prostor vyplnit celý. Grid s
-   `1fr` sloupcem na hledání je jednoznačný: vždycky zabere všechno, co
-   zbyde po pevných 240px dropdownech — přesně poměr ze zdroje
-   (hledání `flex-grow:1`, dropdown `width:240px`). Počet dropdownů se
-   liší podle stránky (Hudba nemá "Typ akce"), proto dvě varianty
-   tříd — viz CategoryFilterBar.jsx. */
+/* Hledání a dropdowny jsou DVĚ řady až do širokého desktopu (>=1200px) —
+   ne jeden řádek, kde by si dropdowny (i jen dva × 240px) na užší/střední
+   šířce ukously tak velký díl, že by z hledání zbylo málo místa a
+   vypadalo "úzké" (přesně tenhle dojem dělal i dřívější pokus s CSS
+   gridem 1fr/240px/240px — matematicky správně rozdělené, ale na běžné
+   šířce okna 900–1200px z 1fr zbyde jen zlomek). Řešení: hledání má svůj
+   vlastní řádek na celou šířku karty vždy, dropdowny řádek pod ním, a
+   teprve na skutečně širokém plátně (kde je na to prostor jako ve
+   zdrojovém 1440px handoffu) se to spojí do jednoho řádku vedle sebe. */
 .catfilter-row1 {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-3);
-  align-items: stretch;
-}
-
-.catfilter-row1--dd1 {
-  grid-template-columns: 1fr 240px;
-}
-
-.catfilter-row1--dd2 {
-  grid-template-columns: 1fr 240px 240px;
 }
 
 .catfilter-search {
   min-width: 0;
+  flex: 1 1 auto;
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -87,18 +80,37 @@
   color: var(--color-ink);
 }
 
-/* Šířku dropdownů (240px) dává grid sloupec na .catfilter-row1--dd1/2
-   výš — tady se řeší jen výška/pozadí (vyšší a širší než jinde na
-   stránce, FilterSelect má defaultně 44px/min-width 150px), chování/
-   přístupnost komponenty beze změny. */
-.catfilter-row1 .filter-dropdown {
-  width: 100%;
+.catfilter-dropdowns {
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* Sdílí řádek napůl mezi sebou (ne s hledáním) na užší/střední šířce;
+   výška/pozadí vlastní jen v týhle kartě — FilterSelect má defaultně
+   44px/min-width 150px, chování/přístupnost komponenty beze změny. */
+.catfilter-dropdowns .filter-dropdown {
+  flex: 1 1 0;
   min-width: 0;
 }
 
 .catfilter-row1 .filter-dropdown-trigger {
   height: 60px;
   background: var(--color-surface-soft);
+}
+
+@media (min-width: 1200px) {
+  .catfilter-row1 {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .catfilter-dropdowns {
+    flex: 0 0 auto;
+  }
+
+  .catfilter-dropdowns .filter-dropdown {
+    flex: 0 0 240px;
+  }
 }
 
 .catfilter-row2 {
@@ -173,13 +185,10 @@
   color: var(--color-primary-hover);
 }
 
-@media (max-width: 767px) {
-  /* Na mobilu se sloupce vždycky zalomí pod sebe — hledání i dropdowny
-     na plnou šířku karty, žádné pevné 240px. */
-  .catfilter-row1,
-  .catfilter-row1--dd1,
-  .catfilter-row1--dd2 {
-    grid-template-columns: 1fr;
+@media (max-width: 479px) {
+  /* Na nejužších telefonech i dropdowny pod sebe, ne napůl vedle sebe. */
+  .catfilter-dropdowns {
+    flex-direction: column;
   }
 
   .catfilter-when {
