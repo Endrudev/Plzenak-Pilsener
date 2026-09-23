@@ -1,169 +1,127 @@
-/* Stejná stavba jako hero na Events.jsx (viz Events.css pro plné
-   vysvětlení každého triku) — vytažená sem, ať ji nekopírují tři
-   samostatné stránky. Rodič (kořenový div dané stránky) MUSÍ mít
-   position:relative, jinak .cat-hero-backdrop (přesah za hlavičku)
-   skončí za pozadím té stránky, ne před ním. */
-
-.cat-hero-backdrop {
-  position: absolute;
-  top: -90px;
-  left: 0;
-  right: 0;
-  height: 90px;
-  background: #120502;
-}
-
-.cat-hero-skyline-wrap {
-  position: relative;
-  height: 280px;
-  overflow: hidden;
-  background: linear-gradient(to bottom, #120502 0%, #241006 38%, #4A1D06 72%, #7A3208 100%);
-}
-
-.cat-hero-sky {
-  position: absolute;
-  inset: 0;
-  display: block;
-}
-
-.cat-hero-sky .st {
-  position: absolute;
-  display: block;
-  color: var(--color-top-star);
-  opacity: .85;
-  animation: cat-hero-twinkle 3.2s ease-in-out infinite;
-}
-
-.cat-hero-sky .st.q1 { animation-duration: 2.4s; animation-delay: -.8s; }
-.cat-hero-sky .st.q2 { animation-duration: 4.1s; animation-delay: -2.1s; }
-.cat-hero-sky .st.q3 { animation-duration: 2.9s; animation-delay: -1.4s; }
-
-@keyframes cat-hero-twinkle {
-  0%, 100% { opacity: .85; transform: scale(1); }
-  50%      { opacity: .25; transform: scale(.6); }
-}
-
-.cat-hero-sky .shoot {
-  position: absolute;
-  display: block;
-  width: 110px;
-  height: 2px;
-  border-radius: 1px;
-  transform-origin: 100% 50%;
-  background: linear-gradient(to left, #FFF4E2, rgba(255, 236, 204, 0));
-  opacity: 0;
-  animation: cat-hero-shoot 9s linear infinite;
-}
-
-.cat-hero-sky .shoot.s2 {
-  animation-duration: 14s;
-  animation-delay: -9s;
-}
-
-@keyframes cat-hero-shoot {
-  0%, 86% { opacity: 0; transform: rotate(-24deg) translateX(0) scaleX(.3); }
-  88%     { opacity: 1; transform: rotate(-24deg) translateX(-40px) scaleX(1); }
-  95%     { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(.6); }
-  100%    { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(.3); }
-}
-
-.cat-hero-moon {
-  position: absolute;
-}
-
-.cat-hero-glow {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 230px;
-  background: radial-gradient(70% 100% at 50% 100%, rgba(240, 128, 30, .4), rgba(240, 128, 30, 0) 70%);
-}
-
-.cat-hero-buildings {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: block;
-  width: 100%;
-  height: 110px;
-}
-
-.cat-hero-buildings .skyline-mass {
-  fill: var(--color-night);
-}
-
-.cat-hero-buildings .skyline-mass--back {
-  fill: var(--color-night-2);
-  opacity: 0.75;
-}
-
-.cat-hero-buildings .skyline-window {
-  fill: var(--color-window);
-  opacity: 0.85;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cat-hero-sky .st,
-  .cat-hero-sky .shoot {
-    animation: none !important;
-  }
-}
-
-/* ---------- text obsah pod obrázkovým pásem ---------- */
+/* Rám hero pásu na TOP akce/Hudba/Zbytek programu — vizuální scéna
+   (TopNightScene.jsx/MusicScene.jsx/RestScene.jsx) jde dovnitř přes
+   `scene` prop, tahle komponenta drží jen rozměr/pozadí/text. Rodič
+   (stránka) MUSÍ mít position:relative, jinak .cat-hero-backdrop
+   (přesah za sticky hlavičku, viz níž) skončí za jejím pozadím. */
 .cat-hero {
-  position: relative;
-  background: linear-gradient(to bottom, var(--color-night) 0%, var(--color-night-2) 100%);
-  padding: var(--space-8) var(--space-4) var(--space-8);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-3);
+    position: relative;
+    height: 708px;
+    overflow: hidden;
+}
+
+/* Hlavička je position:sticky a sedí NAD touhle sekcí ve stromu — bez
+   tohohle by za ní (a v postranních "žebrech" kolem její užší plovoucí
+   lišty) bylo vidět jen světlé pozadí stránky. Stejný trik jako
+   #events-hero-backdrop na Events.jsx — samostatný prvek, sahá nad svou
+   vlastní pozici, žádný z-index (viz ten komentář pro plné vysvětlení
+   proč). Barva #2A0F04 (--color-ink) sedí na tmavší konec pozadí, co si
+   nastaví každá stránka zvlášť (background prop). */
+.cat-hero-backdrop {
+    position: absolute;
+    top: -90px;
+    left: 0;
+    right: 0;
+    height: 90px;
+    background: var(--color-ink);
+}
+
+/* Tmavý pruh dole — přechod mezi hero pásem a světlým obsahem pod ním. */
+.cat-hero-fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 40px;
+    background: var(--color-ink);
+}
+
+.cat-hero-text {
+    position: relative;
+    padding: 90px var(--space-4) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 560px;
+}
+
+.cat-hero-crumbs {
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    color: var(--color-cream-muted);
+}
+
+.cat-hero-crumbs a {
+    color: var(--color-cream-muted);
+    text-decoration: none;
+}
+
+.cat-hero-crumbs a:hover {
+    color: var(--color-primary);
+}
+
+.cat-hero-crumbs span {
+    color: var(--color-cream);
 }
 
 .cat-hero-eyebrow {
-  font-family: var(--font-sans);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--color-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    padding: 7px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
 }
 
 .cat-hero-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--fs-display-l);
-  line-height: 0.95;
-  font-weight: var(--fw-extrabold);
-  letter-spacing: var(--tracking-display-l);
-  color: var(--color-cream);
+    margin: 0;
+    font-family: var(--font-display);
+    line-height: 0.9;
+    font-weight: var(--fw-extrabold);
+    letter-spacing: -0.045em;
+    color: var(--color-cream);
 }
 
 .cat-hero-lead {
-  margin: 0;
-  max-width: 62ch;
-  font-family: var(--font-sans);
-  font-size: var(--fs-body-lg);
-  line-height: var(--lh-body);
-  color: var(--color-cream-muted);
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+    color: var(--color-cream-muted);
 }
 
-@media (min-width: 768px) {
-  .cat-hero {
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-    box-sizing: border-box;
-  }
+.cat-hero-stats {
+    display: flex;
+    gap: var(--space-6);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    color: var(--color-cream-muted);
 }
 
-@media (min-width: 1024px) {
-  .cat-hero {
-    max-width: var(--container);
-    padding-left: var(--space-8);
-    padding-right: var(--space-8);
-  }
+.cat-hero-stats strong {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    color: var(--color-cream);
+}
+
+@media (min-width: 640px) {
+    .cat-hero-text {
+        padding-left: var(--space-8);
+    }
+}
+
+@media (max-width: 767px) {
+    .cat-hero {
+        height: 460px;
+    }
+
+    .cat-hero-title {
+        font-size: var(--fs-display-l) !important;
+    }
 }
