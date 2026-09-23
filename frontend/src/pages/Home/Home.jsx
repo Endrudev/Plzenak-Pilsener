@@ -69,6 +69,13 @@ export default function Home() {
           (Kdy/Co/Kde) posílají skutečné parametry, které /events umí
           zpracovat (datum/kategorie/misto). */}
       <section id="search-band" aria-labelledby="search-h">
+        {/* Jemný černý glow — vlastní vrstva uvnitř #search-band, ne
+            filter:drop-shadow na siluetě budov nad ním. Stín z filteru
+            potřebuje volný prostor kolem zdroje a končil oříznutý o hranu
+            kontejneru (buď žádný gap = ořízlý, nebo gap = viditelná mezera
+            před pásem) — tahle vrstva leží celá uvnitř tmavého pásu, nic ji
+            neořízne ani nezakryje. */}
+        <div id="search-band-glow" aria-hidden="true" />
         <div id="search-inner">
           <div id="search-heading-row">
             <div id="search-heading-col">

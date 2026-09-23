@@ -27,15 +27,14 @@
 
 /* Siluета budov mezi hero a tmavým pásem Hledání — stejná procedurální
    generace jako patička (BuildingSkyline, sdílená komponenta). Bez
-   barevného gradientu na pozadí — jen plocha barva stránky a pod
-   budovami jemný černý glow (rozostřený stín), ne tvrdý barevný přechod.
-   Baráky mají výšku přesně 100px a wrap taky 100px se zastřiženým
-   přetokem — stín směrem dolů se tak okamžitě ořízl, dřív než byl vůbec
-   vidět. Wrap je proto o kousek vyšší než samotné baráky, ať má stín
-   pod nimi kam "spadnout" dovnitř oříznuté oblasti. */
+   barevného gradientu na pozadí — jen plocha barva stránky. Žádný
+   filter:drop-shadow tady — ten potřebuje volný prostor kolem siluety a
+   buď se ořízl o hranu kontejneru (žádný gap), nebo vytvořil viditelnou
+   mezeru před pásem (umělý gap navíc). Glow místo toho leží jako vlastní
+   vrstva uvnitř #search-band níž (viz #search-band-glow) — baráky se tak
+   sesazují přímo na pás pod nimi, beze mezery. */
 #search-skyline-wrap {
-  position: relative;
-  height: 112px;
+  height: 100px;
   overflow: hidden;
   background: var(--color-page);
 }
@@ -43,8 +42,7 @@
 .search-skyline {
   display: block;
   width: 100%;
-  height: 100px;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .4));
+  height: 100%;
 }
 
 .search-skyline .skyline-mass {
@@ -67,6 +65,17 @@
   overflow: hidden;
   background: linear-gradient(to bottom, var(--color-night) 0%, var(--color-night-2) 100%);
   padding: var(--space-8) var(--space-4) var(--space-10);
+}
+
+/* Jemný černý glow hned pod baráky — celá vrstva leží uvnitř #search-band,
+   takže ji nic neořízne (na rozdíl od filter:drop-shadow na siluetě
+   samotné, viz komentář u #search-skyline-wrap výš). */
+#search-band-glow {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 44px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, .35), transparent);
+  pointer-events: none;
 }
 
 #search-inner {
