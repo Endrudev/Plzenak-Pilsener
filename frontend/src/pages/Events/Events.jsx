@@ -9,6 +9,7 @@ import { useSearchParams } from 'react-router-dom'
 import FilterSelect from '../../components/FilterSelect/FilterSelect.jsx'
 import { CATEGORIES } from '../../lib/categories.jsx'
 import { DATE_OPTIONS } from '../../lib/dateFilters.js'
+import { SORT_OPTIONS } from '../../lib/sortOptions.js'
 import { eventCountLabel } from '../../lib/pluralize.js'
 import './Events.css'
 
@@ -29,12 +30,6 @@ const QUICK_FILTERS = [
       </svg>
     )
   },
-]
-
-// Řazení, ne filtr — proto se použije hned, bez čekání na tlačítko
-const SORT_OPTIONS = [
-  { value: 'konani', label: 'Nejdřív se koná' },
-  { value: 'pridano', label: 'Naposledy přidané' },
 ]
 
 const EMPTY_FILTERS = { q: '', kategorie: '', misto: '', datum: '', top: false }

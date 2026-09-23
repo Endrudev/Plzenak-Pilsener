@@ -1,0 +1,111 @@
+/* Sdílené styly pro tři dedikované kategorijní stránky (TOP akce, Hudba,
+   Zbytek programu) — stejná "výsledková" sekce pod CategoryHero na
+   všech třech, ať se nekopíruje 3×. Vlastní hero má každá stránka svůj
+   (CategoryHero.jsx), tohle je jen mřížka/nástrojová lišta pod ním. */
+
+.catpage {
+  position: relative;
+  background: var(--color-page);
+  display: flex;
+  flex-direction: column;
+}
+
+.catpage-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-4) var(--space-4);
+}
+
+.catpage-search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 48px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-field);
+  padding: 0 var(--space-4);
+  color: var(--color-text-muted);
+}
+
+.catpage-search:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-shadow);
+}
+
+.catpage-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  color: var(--color-ink);
+}
+
+.catpage-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.catpage-count {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+}
+
+.catpage-grid {
+  padding: 0 var(--space-4);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+.catpage-loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  padding: var(--space-16) 0;
+}
+
+.catpage .pagination {
+  margin: var(--space-8) var(--space-4) var(--space-16);
+}
+
+@media (min-width: 768px) {
+  .catpage-toolbar,
+  .catpage-row,
+  .catpage-grid,
+  .catpage .pagination {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .catpage-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .catpage-toolbar,
+  .catpage-row,
+  .catpage-grid,
+  .catpage .pagination {
+    max-width: var(--container);
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+
+  .catpage-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -157,7 +157,7 @@ function Stage() {
 // zařízeních, což tady obětujeme za jednodušší čistě CSS řešení).
 export default function HeroTileMusic({ count = 0 }) {
     return (
-        <Link to="/events?kategorie=Hudba" className="hero-tile hero-tile--music">
+        <Link to="/hudba" className="hero-tile hero-tile--music">
             <span className="music-glow" aria-hidden="true" />
             <div className="ht-music-scene" aria-hidden="true">
                 <span className="row row--back">

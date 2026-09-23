@@ -3,6 +3,9 @@ import Header from './components/Header/Header.jsx'
 import Footer from './components/Footer/Footer.jsx'
 import Home from './pages/Home/Home.jsx'
 import Events from './pages/Events/Events.jsx'
+import TopAkce from './pages/TopAkce/TopAkce.jsx'
+import Hudba from './pages/Hudba/Hudba.jsx'
+import ZbytekProgramu from './pages/ZbytekProgramu/ZbytekProgramu.jsx'
 import EventDetail from './pages/EventDetail/EventDetail.jsx'
 import Admin from './pages/Admin/Admin.jsx'
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard.jsx'
@@ -43,6 +46,9 @@ function Layout() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/events" element={<Events />} />
+                    <Route path="/top-akce" element={<TopAkce />} />
+                    <Route path="/hudba" element={<Hudba />} />
+                    <Route path="/zbytek-programu" element={<ZbytekProgramu />} />
                     <Route path="/events/:id" element={<EventDetail />} />
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/admin/dashboard" element={<AdminDashboard />} />

@@ -187,7 +187,7 @@ function Scene3() {
 // kategorie) leží mimo scénu, ne přes ni.
 export default function HeroTileRest({ categories = [] }) {
     return (
-        <Link to="/events" className="hero-tile hero-tile--rest">
+        <Link to="/zbytek-programu" className="hero-tile hero-tile--rest">
             <div className="ht-rest-bg" aria-hidden="true" />
 
             <div className="vig" aria-hidden="true">

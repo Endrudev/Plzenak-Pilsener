@@ -20,7 +20,7 @@ export default function Footer() {
                     <span className="footer-col-label">Appka</span>
                     <Link to="/">Domů</Link>
                     <Link to="/events">Akce</Link>
-                    <Link to="/events?top=1">TOP akce</Link>
+                    <Link to="/top-akce">TOP akce</Link>
                 </nav>
 
                 <nav id="footer-col-legal" aria-label="Právní informace">

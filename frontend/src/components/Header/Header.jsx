@@ -62,7 +62,7 @@ function Header() {
                             </svg>
                         </button>
                         <div id="nav-category-menu">
-                            <Link to="/events?top=1" id="nav-category-top">
+                            <Link to="/top-akce" id="nav-category-top">
                                 <span id="nav-category-top-icon">
                                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="m12 4 2.5 5.1 5.6.8-4 4 .9 5.6-5-2.7-5 2.7.9-5.6-4-4 5.6-.8z" />
@@ -114,7 +114,7 @@ function Header() {
                     <nav id="header-drawer-nav">
                         <Link to="/" className={pathname === '/' ? 'nav-link nav-link--active' : 'nav-link'}>Domů</Link>
                         <Link to="/events" className={pathname === '/events' ? 'nav-link nav-link--active' : 'nav-link'}>Akce</Link>
-                        <Link to="/events?top=1" className="nav-link">TOP akce</Link>
+                        <Link to="/top-akce" className="nav-link">TOP akce</Link>
                     </nav>
                     <div id="header-drawer-categories">
                         <span id="header-drawer-categories-label">Kategorie</span>

@@ -109,7 +109,7 @@ function mapEventReverse(event) {
 
 router.get('/', async(req, res) => {
     try{
-        const { q, kategorie, misto, datum, top, razeni, page, perPage } = req.query
+        const { q, kategorie, misto, datum, top, vyjma, razeni, page, perPage } = req.query
         const conditions = []
         const values = []
         conditions.push(`TO_DATE(date, 'DD.MM.YYYY') >= CURRENT_DATE`)
@@ -148,6 +148,16 @@ router.get('/', async(req, res) => {
         if (top === '1') {
             values.push('TOP akce')
             conditions.push(`EXISTS (SELECT 1 FROM unnest(tags) t WHERE t ILIKE $${values.length})`)
+        }
+        // Opak `kategorie`/`top` — akce, co NEMAJÍ žádný z vyjmenovaných tagů.
+        // Zatím jediný spotřebitel je stránka /zbytek-programu (vše kromě
+        // TOP akce a Hudba), ale je to obecný parametr, ne hardcoded pro ni.
+        if (vyjma) {
+            const tagy = vyjma.split(',').map(t => t.trim()).filter(Boolean)
+            for (const tag of tagy) {
+                values.push(tag)
+                conditions.push(`NOT EXISTS (SELECT 1 FROM unnest(tags) t WHERE t ILIKE $${values.length})`)
+            }
         }
         const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
         // Neznámá nebo chybějící hodnota spadne na výchozí řazení podle data konání
