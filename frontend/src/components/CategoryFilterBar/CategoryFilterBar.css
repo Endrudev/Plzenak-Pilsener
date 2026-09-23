@@ -20,15 +20,31 @@
   box-shadow: var(--shadow-pop, 0 16px 32px -16px rgba(42, 15, 4, .25));
 }
 
+/* CSS grid, ne flex — s flex-grow na hledání a flex-wrap zároveň (kvůli
+   mobilu) se hledání při zalomení řádku chytalo svého flex-basis a
+   zůstávalo úzké, i když mělo zbylý prostor vyplnit celý. Grid s
+   `1fr` sloupcem na hledání je jednoznačný: vždycky zabere všechno, co
+   zbyde po pevných 240px dropdownech — přesně poměr ze zdroje
+   (hledání `flex-grow:1`, dropdown `width:240px`). Počet dropdownů se
+   liší podle stránky (Hudba nemá "Typ akce"), proto dvě varianty
+   tříd — viz CategoryFilterBar.jsx. */
 .catfilter-row1 {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: var(--space-3);
   align-items: stretch;
 }
 
+.catfilter-row1--dd1 {
+  grid-template-columns: 1fr 240px;
+}
+
+.catfilter-row1--dd2 {
+  grid-template-columns: 1fr 240px 240px;
+}
+
 .catfilter-search {
-  flex: 1 1 260px;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -71,12 +87,13 @@
   color: var(--color-ink);
 }
 
-/* Type/sort dropdowny v týhle kartě jsou vyšší a širší než jinde na
-   stránce (FilterSelect defaultně 44px/min-width 150px) — vlastní
-   rozměr jen v tomhle kontextu, chování/přístupnost komponenty beze
-   změny. */
+/* Šířku dropdownů (240px) dává grid sloupec na .catfilter-row1--dd1/2
+   výš — tady se řeší jen výška/pozadí (vyšší a širší než jinde na
+   stránce, FilterSelect má defaultně 44px/min-width 150px), chování/
+   přístupnost komponenty beze změny. */
 .catfilter-row1 .filter-dropdown {
-  flex: 0 0 240px;
+  width: 100%;
+  min-width: 0;
 }
 
 .catfilter-row1 .filter-dropdown-trigger {
@@ -157,8 +174,12 @@
 }
 
 @media (max-width: 767px) {
-  .catfilter-row1 .filter-dropdown {
-    flex: 1 1 100%;
+  /* Na mobilu se sloupce vždycky zalomí pod sebe — hledání i dropdowny
+     na plnou šířku karty, žádné pevné 240px. */
+  .catfilter-row1,
+  .catfilter-row1--dd1,
+  .catfilter-row1--dd2 {
+    grid-template-columns: 1fr;
   }
 
   .catfilter-when {
