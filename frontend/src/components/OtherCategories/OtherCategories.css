@@ -2,11 +2,18 @@
    stránky, doslova podle handoffu (#dalsi-h sekce, .alt karty). Sdílené
    všemi třemi dedikovanými stránkami (TopAkce/Hudba/ZbytekProgramu.jsx),
    liší se jen který pár karet se zobrazí (OtherCategories.jsx `exclude`). */
+/* Šířka je STEJNÝ vzorec jako #site-header (Header.css) —
+   viz komentář v CategoryFilterBar.css, proč jeden vzorec pro celou
+   stránku, ne vlastní max-width/padding kombinace na každém bloku. */
 .other-cats {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  padding: 0 var(--space-4) var(--space-16);
+  width: calc(100% - 2 * var(--space-4));
+  max-width: var(--container);
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: var(--space-16);
 }
 
 .other-cats-title {
@@ -82,19 +89,3 @@
   }
 }
 
-/* Žádný max-width — stejný důvod jako CategoryFilterBar.css/categoryPage.css:
-   zdroj (<main style="padding:0 80px 120px">) nemá useknutý centrovaný
-   sloupec, jen odsazení od kraje. */
-@media (min-width: 768px) {
-  .other-cats {
-    padding-left: var(--space-6);
-    padding-right: var(--space-6);
-  }
-}
-
-@media (min-width: 1024px) {
-  .other-cats {
-    padding-left: var(--gutter-desktop);
-    padding-right: var(--gutter-desktop);
-  }
-}
