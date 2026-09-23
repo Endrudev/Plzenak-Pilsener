@@ -9,7 +9,12 @@
     background: linear-gradient(90deg, #FFE7CF 0%, #FFF6EC 38%, #FFFBF6 62%, #EEF3E8 100%);
     border: 1px solid var(--color-line-soft);
     border-top: 0;
-    box-shadow: var(--shadow-nav);
+    /* Stín i do stran, ne jen dolů — --shadow-nav samotný má nulový x-offset,
+       takže se prakticky neroztéká doleva/doprava. */
+    box-shadow:
+        var(--shadow-nav),
+        -14px 0 24px -20px rgba(90, 40, 10, .4),
+        14px 0 24px -20px rgba(90, 40, 10, .4);
     border-radius: var(--radius-nav);
     position: sticky;
     top: 0;
