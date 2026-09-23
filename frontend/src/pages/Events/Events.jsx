@@ -178,37 +178,28 @@ export default function Events() {
           silueta střech. Baráky samotné pořád BuildingSkyline (stejná
           technika jako Home.jsx/patička), zbytek doslova ze zdroje. */}
       <div id="events-hero-skyline-wrap" aria-hidden="true">
-        {/* Doslovné px souřadnice ze zdroje (pevné 1440px plátno) jdou jako
-            HTML nespolehlivě — na jakékoliv jiné šířce stránky by se
-            rozjely (přesně tenhle bug se stal oknům na TOP akce dlaždici).
-            Řešení je stejné: všechno uvnitř jednoho <svg viewBox>, škáluje
-            se pak s šířkou dlaždice 1:1 místo v surových px. */}
-        <svg id="events-sky" viewBox="0 0 1440 280" preserveAspectRatio="none">
-            <defs>
-                <linearGradient id="events-shoot-grad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#FFF4E2" stopOpacity="0.95" />
-                    <stop offset="100%" stopColor="#FFECCC" stopOpacity="0" />
-                </linearGradient>
-                <radialGradient id="events-glow-grad" cx="50%" cy="100%" r="75%">
-                    <stop offset="0%" stopColor="#F0801E" stopOpacity="0.4" />
-                    <stop offset="70%" stopColor="#F0801E" stopOpacity="0" />
-                </radialGradient>
-            </defs>
-
-            {EVENTS_STARS.map((s, i) => (
-                <g key={i} transform={`translate(${s.l + s.s / 2} ${s.t + s.s / 2}) scale(${s.s / 12})`}>
-                    <path className={`st ${s.q}`} d={STAR_D} />
-                </g>
-            ))}
-            <g transform="translate(520 96)"><rect className="shoot s1" width="110" height="2" rx="1" fill="url(#events-shoot-grad)" /></g>
-            <g transform="translate(1220 118)"><rect className="shoot s2" width="110" height="2" rx="1" fill="url(#events-shoot-grad)" /></g>
-
-            <g transform="translate(1180 96)">
-                <path d="M40 36a22 22 0 1 1 -17 -34a17 17 0 1 0 17 34Z" fill="var(--color-top-moon)" />
-            </g>
-
-            <rect x="0" y="50" width="1440" height="230" fill="url(#events-glow-grad)" />
+        {/* Doslovné px souřadnice ze zdroje (pevné 1440px plátno) — vodorovná
+            pozice jako % (škáluje se s šířkou dlaždice), svislá pozice a
+            velikost tvarů jako pevné px (výška pásu je vždycky přesně
+            280px, a kulaté tvary — hvězdy, měsíc — by se v jednom
+            neuniformně roztaženém <svg viewBox> (preserveAspectRatio=
+            "none") zdeformovaly do elips podle toho, jak moc se skutečná
+            šířka liší od 1440. Baráky pod tím to samé neuniformní
+            roztažení mají dál (BuildingSkyline, stejně jako patička) —
+            tam nevadí, je to jen silueta střech, ne kulaté tvary. */}
+        <span id="events-sky">
+          {EVENTS_STARS.map((s, i) => (
+            <span key={i} className={`st ${s.q}`} style={{ left: `${(s.l / 1440) * 100}%`, top: `${s.t}px`, width: `${s.s}px`, height: `${s.s}px` }}>
+              <svg width="100%" height="100%" viewBox="-6 -6 12 12" fill="currentColor"><path d={STAR_D} /></svg>
+            </span>
+          ))}
+          <span className="shoot s1" style={{ left: `${(520 / 1440) * 100}%`, top: '96px' }} />
+          <span className="shoot s2" style={{ left: `${(1220 / 1440) * 100}%`, top: '118px' }} />
+        </span>
+        <svg id="events-moon" width="46" height="46" viewBox="0 0 46 46" style={{ left: `${(1180 / 1440) * 100}%`, top: '96px' }}>
+          <path d="M40 36a22 22 0 1 1 -17 -34a17 17 0 1 0 17 34Z" fill="var(--color-top-moon)" />
         </svg>
+        <span id="events-sky-glow" />
         <BuildingSkyline className="events-hero-skyline" backSeed={53} frontSeed={29} winSeed={13} />
       </div>
 

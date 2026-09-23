@@ -42,10 +42,10 @@
    by tenhle prvek posunul ZA vlastní pozadí #events-page a zmizel by. */
 #events-hero-backdrop {
   position: absolute;
-  top: -140px;
+  top: -90px;
   left: 0;
   right: 0;
-  height: 140px;
+  height: 90px;
   background: #120502;
 }
 
@@ -53,19 +53,16 @@
   position: absolute;
   inset: 0;
   display: block;
-  width: 100%;
-  height: 100%;
 }
 
-/* transform-box: fill-box je nutné — bez něj se scale/rotate v SVG počítá
-   vůči celému viewBoxu, ne vůči vlastnímu tvaru (stejná past jako u TOP
-   akce dlaždice, viz HeroTileTop.css). */
-#events-sky .st,
-#events-sky .shoot {
-  transform-box: fill-box;
-}
-
+/* Hvězdy/padající hvězdy jako obyčejné HTML prvky, ne SVG uvnitř jednoho
+   neuniformně roztaženého <svg viewBox> — kulaté tvary by se tam
+   deformovaly do elips podle toho, jak moc se skutečná šířka liší od
+   1440 (viz komentář u JSX výš). left je %, ať drží relativní pozici
+   napříč šířkami, top/rozměry jsou pevné px, ať zůstanou kulaté. */
 #events-sky .st {
+  position: absolute;
+  display: block;
   color: var(--color-top-star);
   opacity: .85;
   animation: ht-twinkle 3.2s ease-in-out infinite;
@@ -81,7 +78,13 @@
 }
 
 #events-sky .shoot {
+  position: absolute;
+  display: block;
+  width: 110px;
+  height: 2px;
+  border-radius: 1px;
   transform-origin: 100% 50%;
+  background: linear-gradient(to left, #FFF4E2, rgba(255, 236, 204, 0));
   opacity: 0;
   animation: ht-shoot 9s linear infinite;
 }
@@ -96,6 +99,22 @@
   88%     { opacity: 1; transform: rotate(-24deg) translateX(-40px) scaleX(1); }
   95%     { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(.6); }
   100%    { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(.3); }
+}
+
+#events-moon {
+  position: absolute;
+}
+
+/* Teplá zářivá skvrna při zemi — obyčejný CSS radial-gradient (jako v
+   handoffu), ne SVG — u kruhového gradientu by neuniformní roztažení
+   udělalo z kruhu elipsu stejně jako u hvězd/měsíce. */
+#events-sky-glow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 230px;
+  background: radial-gradient(70% 100% at 50% 100%, rgba(240, 128, 30, .4), rgba(240, 128, 30, 0) 70%);
 }
 
 .events-hero-skyline {
