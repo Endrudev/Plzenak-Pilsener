@@ -23,7 +23,13 @@ const CARDS = {
         to: '/top-akce',
         title: 'TOP akce',
         subtitle: 'To nejlepší, co se v Plzni chystá',
-        background: 'linear-gradient(155deg, #F59A3A 0%, #E8720C 50%, #B9550A 100%)',
+        // Poslední zastávka gradientu doslova ze zdroje (#B9550A) neprošla
+        // kontrolou kontrastu — podtitulek (#3A1604, 13px, tenký běžný
+        // text) v nejtmavší části gradientu padal na 3.37:1, WCAG AA pro
+        // běžný text vyžaduje 4.5:1 (viz Fáze 7, přístupnostní průchod).
+        // #D07520 drží stejnou barevnou identitu (teplá oranžová), jen o
+        // trochu světlejší — podtitulek 4.82:1, nadpis 5.35:1.
+        background: 'linear-gradient(155deg, #F59A3A 0%, #E8720C 50%, #D07520 100%)',
         color: '#2A0F04',
         subtitleColor: '#3A1604',
     },

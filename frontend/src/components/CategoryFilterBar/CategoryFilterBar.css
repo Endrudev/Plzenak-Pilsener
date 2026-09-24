@@ -160,6 +160,11 @@
   color: var(--color-cream);
 }
 
+.catfilter-when-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-shadow);
+}
+
 .catfilter-status {
   display: flex;
   align-items: center;
@@ -178,6 +183,12 @@
   color: var(--color-ink);
 }
 
+/* --color-primary (#E8720C) jako barva TEXTU na bílé kartě dává jen
+   3.07:1 — pod WCAG AA hranicí 4.5:1 pro běžný text (spočítáno při
+   přístupnostním průchodu, Fáze 7). Funguje dobře jako pozadí tlačítek
+   (bílý text na oranžové), ne jako barva samotného textu na světlém
+   podkladu — tady --color-ink (19:1) + podtržení dělá "je to odkaz"
+   affordance bez kontrastního problému. */
 .catfilter-reset {
   border: 0;
   background: transparent;
@@ -185,13 +196,19 @@
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
-  color: var(--color-primary);
+  color: var(--color-ink);
   text-decoration: underline;
   cursor: pointer;
 }
 
 .catfilter-reset:hover {
-  color: var(--color-primary-hover);
+  color: var(--color-text-muted);
+}
+
+.catfilter-reset:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-shadow);
+  border-radius: 3px;
 }
 
 @media (max-width: 479px) {

@@ -60,6 +60,14 @@
     background: rgba(31, 27, 22, 0.75);
 }
 
+/* Tlačítka leží přes fotku/gradient hera — vlastní focus-visible místo
+   spoléhání na výchozí obrys prohlížeče, ať je vidět spolehlivě na
+   jakémkoliv pozadí fotky (přístupnostní průchod, Fáze 7). */
+.detail-hero-action-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-shadow);
+}
+
 #detail-hero-content {
     position: relative;
     z-index: 1;
@@ -271,6 +279,13 @@
 
 .detail-sidebar-action-btn:hover {
     background: var(--color-surface-soft);
+}
+
+.detail-sidebar-action-btn:focus-visible,
+#detail-buy-btn:focus-visible,
+#detail-mobile-cta-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-shadow);
 }
 
 /* ---------- Sticky "Koupit vstupenky" lišta na mobilu ---------- */
