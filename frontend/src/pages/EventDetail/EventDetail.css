@@ -231,6 +231,15 @@
     filter: brightness(1.08);
 }
 
+/* Akce bez event.url — dřív no-op odkaz na "#", teď viditelně vypnuté
+   tlačítko s vysvětlením. */
+.detail-buy-btn--disabled {
+    background: var(--color-surface-soft);
+    color: var(--color-text-muted);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
 #detail-sidebar-actions {
     display: flex;
     gap: var(--space-2);
@@ -256,6 +265,73 @@
 
 .detail-sidebar-action-btn:hover {
     background: var(--color-surface-soft);
+}
+
+/* ---------- Sticky "Koupit vstupenky" lišta na mobilu ---------- */
+/* Vlastní interpretace (handoff ji jen doporučuje, viz implementační
+   plán) — jen do 1024px, na desktopu má stejnou roli sticky karta v
+   postranním panelu (#detail-sidebar), viz media query dole. Spodní
+   padding na #detail-body ať lišta nikdy nepřekryje poslední kus
+   obsahu/patičku. */
+#detail-body {
+    padding-bottom: calc(var(--space-16) + 76px);
+}
+
+#detail-mobile-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-line);
+    box-shadow: 0 -8px 24px -12px rgba(31, 27, 22, 0.25);
+}
+
+#detail-mobile-cta-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+    font-family: var(--font-sans);
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+}
+
+#detail-mobile-cta-text strong {
+    color: var(--color-ink);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-sm);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#detail-mobile-cta-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-primary);
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-sm);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-el);
+    white-space: nowrap;
+}
+
+.detail-mobile-cta-btn--disabled {
+    background: var(--color-surface-soft);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
 }
 
 /* ---------- Not found ---------- */
@@ -302,6 +378,14 @@
     #detail-body {
         flex-direction: row;
         align-items: flex-start;
+        padding-bottom: var(--space-16);
+    }
+
+    /* Od 1024px přebírá roli "vždycky viditelné cesty ke koupi" sticky
+       karta v postranním panelu (#detail-sidebar níž) — sticky lišta dole
+       by byla druhá, matoucí cesta ke stejné akci vedle sebe. */
+    #detail-mobile-cta {
+        display: none;
     }
 
     #detail-main {
