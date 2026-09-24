@@ -210,11 +210,16 @@
     color: var(--color-text-muted);
 }
 
+/* border/width/cursor reset — dřív tenhle prvek byl vždycky <a> (bez
+   defaultního rámečku prohlížeče), teď je to <button> ve variantě bez
+   event.url (viz EventDetail.jsx), takže potřebuje vlastní reset. */
 #detail-buy-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
+    width: 100%;
+    border: none;
     background: var(--color-primary);
     color: #fff;
     text-decoration: none;
@@ -224,6 +229,7 @@
     padding: var(--space-3) var(--space-5);
     border-radius: var(--radius-el);
     box-shadow: var(--shadow-card);
+    cursor: pointer;
     transition: filter var(--dur-fast) var(--ease-standard);
 }
 
@@ -317,6 +323,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    border: none;
     background: var(--color-primary);
     color: #fff;
     text-decoration: none;
@@ -326,6 +333,7 @@
     padding: var(--space-3) var(--space-4);
     border-radius: var(--radius-el);
     white-space: nowrap;
+    cursor: pointer;
 }
 
 .detail-mobile-cta-btn--disabled {

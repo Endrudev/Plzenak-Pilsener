@@ -189,13 +189,17 @@ export default function EventDetail() {
                         ) : (
                             // Bez event.url není kam odkázat — dřív tu byl
                             // no-op odkaz na "#", teď je tlačítko viditelně
-                            // deaktivované s vysvětlením, ne tichá slepá cesta.
-                            <span id="detail-buy-btn" className="detail-buy-btn--disabled" aria-disabled="true">
+                            // deaktivované s vysvětlením, ne tichá slepá
+                            // cesta. Skutečný <button disabled>, ne <span
+                            // aria-disabled> — nativně vypadne z tab pořadí
+                            // a čtečka obrazovky ho spolehlivě ohlásí jako
+                            // vypnuté, žádná ruční ARIA plomba navíc.
+                            <button type="button" id="detail-buy-btn" className="detail-buy-btn--disabled" disabled>
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />
                                 </svg>
                                 Prodej zatím není online
-                            </span>
+                            </button>
                         )}
                         <div id="detail-sidebar-actions">
                             <button type="button" className="detail-sidebar-action-btn" onClick={handleAddToCalendar}>
@@ -232,9 +236,9 @@ export default function EventDetail() {
                         Koupit vstupenky
                     </a>
                 ) : (
-                    <span id="detail-mobile-cta-btn" className="detail-mobile-cta-btn--disabled" aria-disabled="true">
+                    <button type="button" id="detail-mobile-cta-btn" className="detail-mobile-cta-btn--disabled" disabled>
                         Prodej zatím není online
-                    </span>
+                    </button>
                 )}
             </div>
 
