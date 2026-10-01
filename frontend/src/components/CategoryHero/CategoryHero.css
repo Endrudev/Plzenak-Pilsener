@@ -1,0 +1,152 @@
+/* Rám hero pásu na TOP akce/Hudba/Zbytek programu — vizuální scéna
+   (TopNightScene.jsx/MusicScene.jsx/RestScene.jsx) jde dovnitř přes
+   `scene` prop, tahle komponenta drží jen rozměr/pozadí/text.
+
+   V handoffu (*.dc.html) je hlavička `position:absolute`, plave NAD
+   heroem, který sám sahá až k y=0 — takže hlavička reálně "sedí na"
+   scéně (hvězdy/dav/panorama pokračují i pod ní), ne že by byl hero
+   jen barevně napodobený pruh za užší lištou. Náš #site-header je
+   naopak `position:sticky` (musí zůstat viditelný při scrollu na
+   VŠECH stránkách, ne jen tady) — normální flow prvek, co zabírá svůj
+   vlastní řádek a hero by posouval dolů.
+
+   Řešení: hero dostane záporný margin-top přesně o výšku hlavičky
+   (--header-h, měří se za běhu v Header.jsx) — vizuálně tím "vyleze"
+   nahoru pod ni, header (z-index:30, viz Header.css) ji překryje, a
+   protože header je užší než viewport, ve žebrech okolo něj je vidět
+   hero přímo, ne jen barevná napodobenina. Žádný samostatný "backdrop"
+   div navíc netřeba. */
+.cat-hero {
+    position: relative;
+    height: 708px;
+    margin-top: calc(-1 * var(--header-h));
+    overflow: hidden;
+}
+
+/* Pruh dole — přechod mezi hero pásem a obsahem pod ním. Barva se
+   nastavuje inline přes fadeColor prop (CategoryHero.jsx), ať sedí s
+   první zastávkou gradientu konkrétní stránky. */
+.cat-hero-fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 40px;
+}
+
+/* Padding nahoře = výška hlavičky + stejná 24px mezera jako ve zdroji
+   (112px padding na 88px hlavičce), ne natvrdo 112px — --header-h se
+   může lišit (font-loading, breakpoint), text pod ní musí sedět vždycky. */
+.cat-hero-text {
+    position: relative;
+    padding: calc(var(--header-h) + 24px) var(--space-4) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 560px;
+}
+
+.cat-hero-crumbs {
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    color: var(--color-cream-muted);
+}
+
+.cat-hero-crumbs a {
+    color: var(--color-cream-muted);
+    text-decoration: none;
+}
+
+.cat-hero-crumbs a:hover {
+    color: var(--color-primary);
+}
+
+.cat-hero-crumbs span {
+    color: var(--color-cream);
+}
+
+.cat-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    padding: 7px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+}
+
+.cat-hero-title {
+    margin: 0;
+    font-family: var(--font-display);
+    line-height: 0.9;
+    font-weight: var(--fw-extrabold);
+    letter-spacing: -0.045em;
+    color: var(--color-cream);
+}
+
+.cat-hero-lead {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+    color: var(--color-cream-muted);
+}
+
+.cat-hero-stats {
+    display: flex;
+    gap: var(--space-6);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    color: var(--color-cream-muted);
+}
+
+.cat-hero-stats strong {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    color: var(--color-cream);
+}
+
+/* ---------- světlá varianta (Zbytek programu — denní scéna, ne noční
+   jako TOP akce/Hudba) — stejné sémantické role (tlumený text/nadpis/
+   eyebrow), jen jiné barvy, doslova ze zdroje. Používá existující
+   --color-calm-* tokeny (Zbytek.jsx sdílí paletu s HeroTileRest), ať
+   nevznikají nové jednorázové tokeny pro jednu stránku. ---------- */
+.cat-hero--light .cat-hero-crumbs,
+.cat-hero--light .cat-hero-crumbs a,
+.cat-hero--light .cat-hero-lead,
+.cat-hero--light .cat-hero-stats {
+    color: var(--color-calm-text-soft);
+}
+
+.cat-hero--light .cat-hero-crumbs span,
+.cat-hero--light .cat-hero-title,
+.cat-hero--light .cat-hero-stats strong {
+    color: var(--color-calm-text);
+}
+
+.cat-hero--light .cat-hero-eyebrow {
+    background: var(--color-calm-figure-dk);
+    color: var(--color-calm-lamp-glow);
+}
+
+@media (min-width: 640px) {
+    .cat-hero-text {
+        padding-left: var(--space-8);
+    }
+}
+
+@media (max-width: 767px) {
+    .cat-hero {
+        height: 460px;
+    }
+
+    .cat-hero-title {
+        font-size: var(--fs-display-l) !important;
+    }
+}

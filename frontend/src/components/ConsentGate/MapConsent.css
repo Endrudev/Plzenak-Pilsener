@@ -1,6 +1,6 @@
 .map-consent {
-    background: var(--surface-sunk);
-    border: 1px solid var(--hairline);
+    background: var(--color-surface-soft);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
     padding: var(--space-10) var(--space-5);
     display: flex;
@@ -8,18 +8,18 @@
     align-items: center;
     text-align: center;
     gap: var(--space-2);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 .map-consent-icon {
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 .map-consent-title {
     font-family: var(--font-sans);
     font-size: var(--fs-body-lg);
     font-weight: var(--fw-semibold);
-    color: var(--ink);
+    color: var(--color-ink);
     margin: var(--space-1) 0 0;
 }
 
@@ -27,7 +27,7 @@
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     line-height: var(--lh-snug);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     margin: 0;
     max-width: 380px;
 }
@@ -59,7 +59,7 @@
 }
 
 .map-consent-btn--primary {
-    background: var(--amber-cta);
+    background: var(--color-primary);
     color: #fff;
 }
 
@@ -68,19 +68,19 @@
 }
 
 .map-consent-btn--secondary {
-    background: var(--surface);
-    border: 1px solid var(--hairline);
-    color: var(--ink);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    color: var(--color-ink);
 }
 
 .map-consent-btn--secondary:hover {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
 }
 
 .map-consent-always-btn {
     background: none;
     border: none;
-    color: var(--ink-2);
+    color: var(--color-text-muted);
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
@@ -91,20 +91,20 @@
 }
 
 .map-consent-always-btn:hover {
-    color: var(--ink);
+    color: var(--color-ink);
 }
 
 .map-consent-link {
     font-family: var(--font-sans);
     font-size: var(--fs-xs);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     text-decoration: none;
     margin-top: var(--space-1);
 }
 
 .map-consent-link:hover {
     text-decoration: underline;
-    color: var(--ink-2);
+    color: var(--color-text-muted);
 }
 
 .map-consent-btn:focus-visible,

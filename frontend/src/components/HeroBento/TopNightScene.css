@@ -1,0 +1,238 @@
+/* 4 vrstvy siluety, každá svůj vlastní <svg viewBox="0 0 850 640">,
+   naskládané na sebe stejně jako ve zdroji (vzdálená → střední → blízká →
+   přední). Všechno uvnitř (okna, hvězdy, ptáci, vlajka, kouř, lucerna,
+   světla aut) je nativní SVG obsah ve STEJNÉM viewBoxu jako budovy —
+   škáluje se s nimi 1:1 bez ohledu na skutečnou šířku kontejneru. */
+.top-scene {
+    position: absolute;
+    inset: 0;
+}
+
+.top-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.top-layer svg {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: visible;
+}
+
+/* Bez tohohle se `transform-origin` (a i střed pro `scale`/`rotate` bez
+   explicitního origin) v SVG počítá vůči celému viewBoxu (850×640), ne
+   vůči vlastnímu tvaru — proto se hvězda/kouř/vlajka/pták při animaci
+   "odrazily" směrem k rohu scény místo aby se hýbaly na místě. Přidáno
+   plošně na všechno, co se animuje (i `translate`-only prvky, kde na
+   tom nezáleží — neuškodí, drží se to konzistentní). */
+.top-scene .sky, .top-scene .st, .top-scene .shoot, .top-scene .flag,
+.top-scene .puff, .top-scene .bd, .top-scene .flock, .top-scene .lantern,
+.top-scene .glow {
+    transform-box: fill-box;
+}
+
+/* ---------- obloha: hvězdy, padající hvězda ---------- */
+.top-scene .sky {
+    animation-duration: 38s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+}
+
+.top-scene .st {
+    fill: var(--color-top-star);
+    opacity: .85;
+    animation-duration: 3.2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.top-scene .st.q1 { animation-duration: 2.4s; animation-delay: -.8s; }
+.top-scene .st.q2 { animation-duration: 4.1s; animation-delay: -2.1s; }
+.top-scene .st.q3 { animation-duration: 2.9s; animation-delay: -1.4s; }
+
+@keyframes ht-twinkle {
+    0%, 100% { opacity: .85; transform: scale(1); }
+    50%      { opacity: .25; transform: scale(.6); }
+}
+
+.top-scene .shoot {
+    fill: url(#ht-shoot-grad);
+    opacity: 0;
+    transform-origin: 100% 50%;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.top-scene .shoot.s1 { animation-duration: 9s; animation-delay: -3s; }
+.top-scene .shoot.s2 { animation-duration: 14s; animation-delay: -9s; }
+
+@keyframes ht-shoot {
+    0%, 86% { opacity: 0; transform: rotate(-24deg) translateX(0) scaleX(.3); }
+    88%     { opacity: 1; transform: rotate(-24deg) translateX(-40px) scaleX(1); }
+    95%     { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(.6); }
+    100%    { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(.3); }
+}
+
+/* ---------- okna ---------- */
+.top-scene .wl {
+    fill: var(--color-window);
+    filter: drop-shadow(0 0 3px rgba(255, 214, 150, .65));
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.top-scene .wl.off { opacity: 0; }
+.top-scene .wl.lit { opacity: 1; }
+
+@keyframes ht-wOn  { 0%, 38% { opacity: 0; } 39%, 82% { opacity: 1; } 83%, 100% { opacity: 0; } }
+@keyframes ht-wOff { 0%, 52% { opacity: 1; } 53%, 78% { opacity: 0; } 79%, 100% { opacity: 1; } }
+
+/* ---------- vlajka, kouř, lucerna, ptáci ---------- */
+.top-scene .flag {
+    fill: var(--color-top-moon);
+    transform-origin: 0 50%;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes ht-wave {
+    0%, 100% { transform: skewY(0) scaleX(1); }
+    50%      { transform: skewY(-8deg) scaleX(.86); }
+}
+
+.top-scene .puff {
+    fill: var(--color-top-smoke);
+    opacity: 0;
+    animation-duration: 4.4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-out;
+}
+
+.top-scene .puff.p2 { animation-delay: -1.5s; }
+.top-scene .puff.p3 { animation-delay: -3s; }
+
+@keyframes ht-puff {
+    0%   { opacity: 0; transform: translate(0, 0) scale(.4); }
+    15%  { opacity: .5; }
+    100% { opacity: 0; transform: translate(26px, -60px) scale(1.7); }
+}
+
+.top-scene .lantern {
+    opacity: 0;
+    animation-duration: 19s;
+    animation-delay: -4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.top-scene .lantern-flame {
+    fill: var(--color-top-lantern);
+    filter: drop-shadow(0 0 6px rgba(255, 214, 140, .75)) drop-shadow(0 0 12px rgba(255, 190, 110, .35));
+    transform-box: fill-box;
+    animation-duration: .9s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes ht-lantern {
+    0%, 14% { opacity: 0; transform: translateX(0); }
+    20%     { opacity: 1; }
+    30%     { opacity: .75; }
+    40%     { opacity: 1; transform: translateX(24px); }
+    46%     { opacity: 1; transform: translateX(24px); }
+    58%     { opacity: .8; }
+    64%     { opacity: 0; transform: translateX(48px); }
+    100%    { opacity: 0; transform: translateX(48px); }
+}
+
+@keyframes ht-flame {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(.8); }
+}
+
+.top-scene .flock {
+    opacity: 0;
+    animation-duration: 24s;
+    animation-delay: -2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.top-scene .bd {
+    transform-box: fill-box;
+    transform-origin: 50% 60%;
+    filter: drop-shadow(0 2px 2px rgba(22, 6, 0, .5));
+    animation-duration: .55s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+}
+
+.top-scene .bd0 { animation-delay: -.2s; }
+.top-scene .bd1 { animation-delay: -.35s; }
+.top-scene .bd2 { animation-delay: -.1s; }
+.top-scene .bd3 { animation-delay: -.45s; }
+.top-scene .bd4 { animation-delay: -.2s; }
+
+@keyframes ht-flap { from { transform: scaleY(1); } to { transform: scaleY(.35); } }
+@keyframes ht-fly {
+    0%      { transform: translate(0, 0); opacity: 0; }
+    2%      { opacity: 1; }
+    30%     { opacity: 1; }
+    34%, 100% { transform: translate(-474px, -34px); opacity: 0; }
+}
+
+/* ---------- "světla aut" jedoucí po ulici ---------- */
+.top-scene .glow {
+    opacity: 0;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.top-scene .glow-i {
+    filter: blur(6px);
+    mix-blend-mode: screen;
+}
+
+.top-scene .glow.g1 { animation-duration: 12s; animation-delay: -2s; }
+.top-scene .glow.g2 { animation-duration: 17s; animation-delay: -9s; }
+.top-scene .glow.g3 { animation-duration: 21s; animation-delay: -5s; }
+
+@keyframes ht-driveL { 0% { transform: translateX(0); opacity: 0; } 3% { opacity: 1; } 42% { opacity: 1; } 45%, 100% { transform: translateX(1269px); opacity: 0; } }
+@keyframes ht-driveR { 0% { transform: translateX(1269px); opacity: 0; } 3% { opacity: 1; } 42% { opacity: 1; } 45%, 100% { transform: translateX(0); opacity: 0; } }
+
+@keyframes ht-twinkle-sky {
+    from { transform: translate(-10px, 2px); }
+    to   { transform: translate(12px, -3px); }
+}
+
+/* ---------- spouštění animací, když je scéna "vždycky zapnutá" ----------
+   (velké hero pozadí na /top-akce — žádná interakce by "on" spustila,
+   zdroj ho tam má natvrdo). Bento dlaždice místo tohohle spouští animace
+   přes :hover/:focus-visible — viz HeroTileTop.css. */
+.top-scene--on .lantern         { animation-name: ht-lantern; }
+.top-scene--on .lantern-flame   { animation-name: ht-flame; }
+.top-scene--on .flock           { animation-name: ht-fly; }
+.top-scene--on .bd              { animation-name: ht-flap; }
+.top-scene--on .sky             { animation-name: ht-twinkle-sky; }
+.top-scene--on .st              { animation-name: ht-twinkle; }
+.top-scene--on .shoot           { animation-name: ht-shoot; }
+.top-scene--on .wl.off          { animation-name: ht-wOn; }
+.top-scene--on .wl.lit          { animation-name: ht-wOff; }
+.top-scene--on .flag            { animation-name: ht-wave; }
+.top-scene--on .puff            { animation-name: ht-puff; }
+.top-scene--on .glow.ltr        { animation-name: ht-driveL; }
+.top-scene--on .glow.rtl        { animation-name: ht-driveR; }
+
+@media (prefers-reduced-motion: reduce) {
+    .top-scene .sky, .top-scene .st, .top-scene .shoot, .top-scene .wl,
+    .top-scene .flag, .top-scene .puff, .top-scene .lantern,
+    .top-scene .lantern-flame, .top-scene .flock, .top-scene .bd,
+    .top-scene .glow {
+        animation: none !important;
+    }
+}

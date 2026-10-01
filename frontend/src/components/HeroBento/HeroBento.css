@@ -1,0 +1,134 @@
+/* Bento grid — 6 sloupců × 2 řádky, 640px výška (handoff). TOP akce = 4
+   sloupce × 2 řádky, Hudba a Zbytek = 2 sloupce × 1 řádek každá. */
+.hero-bento {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    height: 640px;
+}
+
+/* ---------- sdílená "chrome" pro všechny tři dlaždice ---------- */
+.hero-tile {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-tile);
+    text-decoration: none;
+    outline: none;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--dur-base) var(--ease-standard);
+}
+
+.hero-tile:hover,
+.hero-tile:focus-visible {
+    box-shadow: 0 18px 40px -22px rgba(40, 20, 5, .55);
+}
+
+.hero-tile:focus-visible {
+    box-shadow: 0 0 0 3px var(--color-page), 0 0 0 6px var(--color-ink);
+}
+
+/* Text sedí NAHOŘE, ne dole — ve zdroji je to obyčejný in-flow obsah (řádek
+   s justify-content:space-between mezi textovým blokem a "go" kolečkem),
+   žádný absolutně pozicovaný overlay přilepený ke spodku dlaždice. Zbytek
+   programu má vlastní layout (justify-content:space-between přes celou
+   výšku — text nahoře, kategorie dole), co tohle přebíjí. */
+.hero-tile-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: var(--space-6);
+    pointer-events: none;
+}
+
+.hero-tile-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    background: var(--color-primary);
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    padding: 7px 12px;
+    border-radius: var(--radius-pill);
+    margin-bottom: var(--space-4);
+}
+
+.hero-tile-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-display-l);
+    font-weight: var(--fw-extrabold);
+    letter-spacing: var(--tracking-display-l);
+    line-height: 0.95;
+    color: var(--color-cream);
+    margin: 0 0 var(--space-3);
+    text-wrap: balance;
+}
+
+.hero-tile-lead {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-lg);
+    color: var(--color-cream-muted);
+    max-width: 34ch;
+    margin: 0;
+}
+
+/* Tři velikosti nadpisu dlaždice podle handoffu: TOP 76px (výchozí
+   .hero-tile-title = --fs-display-l), Hudba 56px (--md), Zbytek 36px (--sm).
+   Sdílené tady, ne v jednotlivých *.css souborech dlaždic — používá je
+   víc než jedna dlaždice, drží se to na jednom místě. */
+.hero-tile-title--md {
+    font-size: var(--fs-heading-1);
+}
+
+.hero-tile-title--sm {
+    font-size: var(--fs-heading-2);
+}
+
+.hero-tile-arrow {
+    position: absolute;
+    top: var(--space-5);
+    right: var(--space-5);
+    z-index: 3;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: #fff;
+    transition: transform var(--dur-fast) var(--ease-standard),
+                background-color var(--dur-fast) var(--ease-standard);
+}
+
+.hero-tile-arrow:hover,
+.hero-tile-arrow:focus-visible {
+    background: var(--color-primary-hover);
+    transform: translateX(2px);
+}
+
+/* ---------- responzivita (handoff §6) ---------- */
+@media (max-width: 1279px) {
+    .hero-tile-title { font-size: var(--fs-heading-1); }
+}
+
+@media (max-width: 767px) {
+    .hero-bento {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+    }
+
+    .hero-tile--top { height: 440px; }
+    .hero-tile--music,
+    .hero-tile--rest { height: 232px; }
+}

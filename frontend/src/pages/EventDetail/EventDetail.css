@@ -1,7 +1,7 @@
 /* ===== EVENT DETAIL PAGE — mobile first ===== */
 
 #detail-page {
-    background: var(--bg);
+    background: var(--color-page);
     display: flex;
     flex-direction: column;
 }
@@ -58,6 +58,14 @@
 
 .detail-hero-action-btn:hover {
     background: rgba(31, 27, 22, 0.75);
+}
+
+/* Tlačítka leží přes fotku/gradient hera — vlastní focus-visible místo
+   spoléhání na výchozí obrys prohlížeče, ať je vidět spolehlivě na
+   jakémkoliv pozadí fotky (přístupnostní průchod, Fáze 7). */
+.detail-hero-action-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-shadow);
 }
 
 #detail-hero-content {
@@ -133,7 +141,7 @@
     font-family: var(--font-display);
     font-size: var(--fs-h2);
     font-weight: var(--fw-semibold);
-    color: var(--ink);
+    color: var(--color-ink);
     margin: 0 0 var(--space-3);
 }
 
@@ -142,7 +150,7 @@
     font-family: var(--font-sans);
     font-size: var(--fs-body);
     line-height: var(--lh-body);
-    color: var(--ink-2);
+    color: var(--color-text-muted);
 }
 
 .detail-section p:last-of-type {
@@ -157,7 +165,7 @@
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
-    color: var(--amber-cta);
+    color: var(--color-primary);
     text-decoration: none;
     word-break: break-all;
 }
@@ -171,7 +179,7 @@
     display: block;
     width: 100%;
     height: 320px;
-    border: 1px solid var(--hairline);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
 }
 
@@ -182,7 +190,7 @@
     margin: var(--space-3) 0 0;
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 /* ---------- Sidebar ---------- */
@@ -193,8 +201,8 @@
 }
 
 .detail-card {
-    background: var(--surface);
-    border: 1px solid var(--hairline);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
     padding: var(--space-5);
@@ -207,15 +215,20 @@
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
+/* border/width/cursor reset — dřív tenhle prvek byl vždycky <a> (bez
+   defaultního rámečku prohlížeče), teď je to <button> ve variantě bez
+   event.url (viz EventDetail.jsx), takže potřebuje vlastní reset. */
 #detail-buy-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    background: var(--amber-cta);
+    width: 100%;
+    border: none;
+    background: var(--color-primary);
     color: #fff;
     text-decoration: none;
     font-family: var(--font-sans);
@@ -224,11 +237,21 @@
     padding: var(--space-3) var(--space-5);
     border-radius: var(--radius-el);
     box-shadow: var(--shadow-card);
+    cursor: pointer;
     transition: filter var(--dur-fast) var(--ease-standard);
 }
 
 #detail-buy-btn:hover {
     filter: brightness(1.08);
+}
+
+/* Akce bez event.url — dřív no-op odkaz na "#", teď viditelně vypnuté
+   tlačítko s vysvětlením. */
+.detail-buy-btn--disabled {
+    background: var(--color-surface-soft);
+    color: var(--color-text-muted);
+    box-shadow: none;
+    cursor: not-allowed;
 }
 
 #detail-sidebar-actions {
@@ -242,20 +265,96 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    background: var(--surface);
-    border: 1px solid var(--hairline);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-el);
     padding: var(--space-2) var(--space-3);
     font-family: var(--font-sans);
     font-size: var(--fs-xs);
     font-weight: var(--fw-medium);
-    color: var(--ink);
+    color: var(--color-ink);
     cursor: pointer;
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
 .detail-sidebar-action-btn:hover {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
+}
+
+.detail-sidebar-action-btn:focus-visible,
+#detail-buy-btn:focus-visible,
+#detail-mobile-cta-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-shadow);
+}
+
+/* ---------- Sticky "Koupit vstupenky" lišta na mobilu ---------- */
+/* Vlastní interpretace (handoff ji jen doporučuje, viz implementační
+   plán) — jen do 1024px, na desktopu má stejnou roli sticky karta v
+   postranním panelu (#detail-sidebar), viz media query dole. Spodní
+   padding na #detail-body ať lišta nikdy nepřekryje poslední kus
+   obsahu/patičku. */
+#detail-body {
+    padding-bottom: calc(var(--space-16) + 76px);
+}
+
+#detail-mobile-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-line);
+    box-shadow: 0 -8px 24px -12px rgba(31, 27, 22, 0.25);
+}
+
+#detail-mobile-cta-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+    font-family: var(--font-sans);
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+}
+
+#detail-mobile-cta-text strong {
+    color: var(--color-ink);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-sm);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#detail-mobile-cta-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: var(--color-primary);
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-sm);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-el);
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.detail-mobile-cta-btn--disabled {
+    background: var(--color-surface-soft);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
 }
 
 /* ---------- Not found ---------- */
@@ -267,11 +366,11 @@
     min-height: 40vh;
     gap: var(--space-4);
     font-family: var(--font-sans);
-    color: var(--ink-2);
+    color: var(--color-text-muted);
 }
 
 #detail-not-found button {
-    background: var(--amber-cta);
+    background: var(--color-primary);
     color: #fff;
     border: none;
     border-radius: var(--radius-el);
@@ -302,6 +401,14 @@
     #detail-body {
         flex-direction: row;
         align-items: flex-start;
+        padding-bottom: var(--space-16);
+    }
+
+    /* Od 1024px přebírá roli "vždycky viditelné cesty ke koupi" sticky
+       karta v postranním panelu (#detail-sidebar níž) — sticky lišta dole
+       by byla druhá, matoucí cesta ke stejné akci vedle sebe. */
+    #detail-mobile-cta {
+        display: none;
     }
 
     #detail-main {

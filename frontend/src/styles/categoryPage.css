@@ -1,0 +1,68 @@
+/* Sdílené styly pro tři dedikované kategorijní stránky (TOP akce, Hudba,
+   Zbytek programu) — stejná "výsledková" sekce pod CategoryHero na
+   všech třech, ať se nekopíruje 3×. Vlastní hero má každá stránka svůj
+   (CategoryHero.jsx), tohle je jen mřížka/nástrojová lišta pod ním. */
+
+.catpage {
+  position: relative;
+  background: var(--color-page);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hledání/filtry/počet/"Zrušit filtry" teď žije v CategoryFilterBar.jsx
+   (plovoucí karta přesahující do hero pásu, doslova podle handoffu) —
+   .catpage-toolbar/-search/-row/-count byly ploché, netvořily tenhle
+   přesah a chyběl jim filtr "Typ akce"/"Kdy".
+
+   Šířka (width/max-width/margin) je STEJNÝ vzorec jako #site-header
+   (Header.css) a CategoryFilterBar.css — mřížka má sedět na stejnou
+   šířku jako plovoucí lišta hlavičky a karta s hledáním nad ní, ne od
+   kraje do kraje obrazovky (moc široké) ani na vlastní jiný max-width
+   (moc úzké oproti nim). */
+.catpage-grid {
+  width: calc(100% - 2 * var(--space-4));
+  max-width: var(--container);
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: var(--space-6);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+/* První (nejvýš seřazená) karta je vždycky na celou šířku mřížky —
+   doslova ze zdroje (*.pretty.html: card #1 je grid 12 sloupců přes
+   celou šířku obsahu, karty 2–10 jsou pak v běžné mřížce vedle sebe). */
+.catpage-grid > .event-card--featured {
+  grid-column: 1 / -1;
+}
+
+.catpage-loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  padding: var(--space-16) 0;
+}
+
+.catpage .pagination {
+  width: calc(100% - 2 * var(--space-4));
+  max-width: var(--container);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-16);
+}
+
+@media (min-width: 768px) {
+  .catpage-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .catpage-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

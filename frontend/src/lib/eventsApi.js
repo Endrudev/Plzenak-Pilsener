@@ -1,3 +1,6 @@
+// Vrací { items, total, page, perPage } — GET /api/events je server-side
+// stránkované. Volající, co nepošlou page/perPage, dostanou velkorysou
+// první stránku (backend výchozí perPage=100), ne skutečně neomezený dotaz.
 export async function getEvents(filter = {}){
     const params = new URLSearchParams()
     Object.entries(filter).forEach(([key, value]) => {

@@ -1,111 +1,295 @@
 /* ===== EVENTS PAGE — mobile first ===== */
 
 #events-page {
-  background: var(--bg);
+  position: relative;
+  background: var(--color-page);
   display: flex;
   flex-direction: column;
 }
 
-/* ---------- Filter card ---------- */
-#events-filter-card {
-  background: var(--surface);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
-  margin: var(--space-4);
-  padding: var(--space-4);
+@media (prefers-reduced-motion: reduce) {
+  #events-sky .st,
+  #events-sky .shoot {
+    animation: none !important;
+  }
+}
+
+/* ---------- Přechod header → tmavý hero ---------- */
+/* Zdroj tohle nekreslí jen jako baráky na světlém pozadí — je to celá
+   noční obloha 280px vysoká, s vlastním 4stupňovým gradientem (doslova
+   ze zdroje, "t-top on" kontejner), hvězdami, měsícem a teplou zářivou
+   skvrnou dole. Baráky (BuildingSkyline) sedí až na úplném dně, ne
+   roztažené přes celou výšku. */
+/* Hlavička je position:sticky (musí zůstat viditelná při scrollu na
+   VŠECH stránkách) — normální flow prvek, co by jinak posouval tenhle
+   pás dolů. Ve zdroji (Events.dc.html) je hlavička position:absolute a
+   plave NAD nočním pásem, který sám sahá k y=0 — stejný princip jako
+   .cat-hero na TOP akce/Hudba/Zbytek programu (viz CategoryHero.css pro
+   plné vysvětlení). Záporný margin-top o výšku hlavičky (--header-h,
+   měří se za běhu v Header.jsx) pás vizuálně "vytáhne" nahoru pod ni;
+   hlavička (z-index:30) ho překryje, a protože je užší než viewport, ve
+   žebrech okolo ní je vidět rovnou noční obloha, ne jen barevná
+   napodobenina za ní. */
+#events-hero-skyline-wrap {
+  position: relative;
+  height: 280px;
+  margin-top: calc(-1 * var(--header-h));
+  overflow: hidden;
+  background: linear-gradient(to bottom, #120502 0%, #241006 38%, #4A1D06 72%, #7A3208 100%);
+}
+
+#events-sky {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+/* Hvězdy/padající hvězdy jako obyčejné HTML prvky, ne SVG uvnitř jednoho
+   neuniformně roztaženého <svg viewBox> — kulaté tvary by se tam
+   deformovaly do elips podle toho, jak moc se skutečná šířka liší od
+   1440 (viz komentář u JSX výš). left je %, ať drží relativní pozici
+   napříč šířkami, top/rozměry jsou pevné px, ať zůstanou kulaté. */
+#events-sky .st {
+  position: absolute;
+  display: block;
+  color: var(--color-top-star);
+  opacity: .85;
+  animation: ht-twinkle 3.2s ease-in-out infinite;
+}
+
+#events-sky .st.q1 { animation-duration: 2.4s; animation-delay: -.8s; }
+#events-sky .st.q2 { animation-duration: 4.1s; animation-delay: -2.1s; }
+#events-sky .st.q3 { animation-duration: 2.9s; animation-delay: -1.4s; }
+
+@keyframes ht-twinkle {
+  0%, 100% { opacity: .85; transform: scale(1); }
+  50%      { opacity: .25; transform: scale(.6); }
+}
+
+#events-sky .shoot {
+  position: absolute;
+  display: block;
+  width: 110px;
+  height: 2px;
+  border-radius: 1px;
+  transform-origin: 100% 50%;
+  background: linear-gradient(to left, #FFF4E2, rgba(255, 236, 204, 0));
+  opacity: 0;
+  animation: ht-shoot 9s linear infinite;
+}
+
+#events-sky .shoot.s2 {
+  animation-duration: 14s;
+  animation-delay: -9s;
+}
+
+@keyframes ht-shoot {
+  0%, 86% { opacity: 0; transform: rotate(-24deg) translateX(0) scaleX(.3); }
+  88%     { opacity: 1; transform: rotate(-24deg) translateX(-40px) scaleX(1); }
+  95%     { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(.6); }
+  100%    { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(.3); }
+}
+
+#events-moon {
+  position: absolute;
+}
+
+/* Teplá zářivá skvrna při zemi — obyčejný CSS radial-gradient (jako v
+   handoffu), ne SVG — u kruhového gradientu by neuniformní roztažení
+   udělalo z kruhu elipsu stejně jako u hvězd/měsíce. */
+#events-sky-glow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 230px;
+  background: radial-gradient(70% 100% at 50% 100%, rgba(240, 128, 30, .4), rgba(240, 128, 30, 0) 70%);
+}
+
+.events-hero-skyline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+  width: 100%;
+  height: 110px;
+}
+
+.events-hero-skyline .skyline-mass {
+  fill: var(--color-night);
+}
+
+.events-hero-skyline .skyline-mass--back {
+  fill: var(--color-night-2);
+  opacity: 0.75;
+}
+
+.events-hero-skyline .skyline-window {
+  fill: var(--color-window);
+  opacity: 0.85;
+}
+
+/* ---------- Tmavý hero pás (handoff: sekce akce-h) ---------- */
+#events-hero {
+  position: relative;
+  background: linear-gradient(to bottom, var(--color-night) 0%, var(--color-night-2) 100%);
+  padding: var(--space-5) var(--space-4) var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Stejný jemný černý glow jako u Home.jsx search-band a patičky — viz
+   komentáře tam, gradient na švu se siluetou začíná/končí průhledně. */
+#events-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 44px;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, .35) 45%, transparent 100%);
+  pointer-events: none;
+}
+
+#events-breadcrumb {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  color: var(--color-cream-muted);
+}
+
+#events-breadcrumb a {
+  color: var(--color-cream-muted);
+  text-decoration: none;
+}
+
+#events-breadcrumb a:hover {
+  color: var(--color-primary);
+}
+
+#events-breadcrumb span {
+  color: var(--color-cream);
+}
+
+#events-hero-heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+#events-h {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-display-l);
+  line-height: 0.95;
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-display-l);
+  color: var(--color-cream);
+}
+
+#events-hero-heading p {
+  margin: 0;
+  max-width: 62ch;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--color-cream-muted);
+}
+
+#events-search-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Stejný pilulkový bar jako sekce Hledání na Home.jsx (viz Home.css
+   #search-bar) — zmenšený z handoffových 84px stejným způsobem. */
+#events-search-bar {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 6px 6px 6px 22px;
+  box-sizing: border-box;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  box-shadow: 0 26px 50px -26px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 220, 180, .25);
+  transition: box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+#events-search-bar:focus-within {
+  box-shadow: 0 26px 50px -26px rgba(0, 0, 0, .9), 0 0 0 3px var(--color-primary);
+}
+
+#events-search-bar svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--color-label);
+}
+
+#events-search-bar input {
+  flex-grow: 1;
+  min-width: 0;
+  height: 100%;
+  margin: 0 var(--space-3);
+  border: 0;
+  outline: none;
+  padding: 0;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-body-lg);
+  color: var(--color-ink);
+}
+
+#events-search-bar-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 100%;
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+#events-search-bar-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+#events-search-bar-btn:hover,
+#events-search-bar-btn:focus-visible {
+  background: var(--color-primary-hover);
+}
+
+#events-search-bar-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+#events-search-filters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+#events-search-filters .filter-dropdown {
+  width: 100%;
+}
+
+/* ---------- Doplňkové filtry (kategorie, rychlý filtr) ---------- */
+#events-extra-filters {
+  padding: var(--space-5) var(--space-4) 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  position: sticky;
-  top: 65px;
-  z-index: 10;
-}
-
-#events-search {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  height: 50px;
-  background: var(--surface-sunk);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-el);
-  padding: 0 var(--space-4);
-  color: var(--amber-cta);
-}
-
-#events-search:focus-within {
-  border-color: var(--amber-cta);
-  box-shadow: var(--focus-shadow);
-}
-
-#events-search input {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  color: var(--ink);
-}
-
-#events-search input::placeholder {
-  color: var(--ink-3);
-}
-
-#events-filter-row {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-#events-search-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  height: 44px;
-  /* Výchozí stav je sekundární (outline) — není co použít.
-     Jakmile uživatel něco změní, přepne se na plnou amber. */
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-el);
-  color: var(--ink);
-  font-family: var(--font-sans);
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-body);
-  cursor: pointer;
-  /* 2.6 Button hover */
-  transition: background-color var(--dur-fast) var(--ease-standard),
-              transform var(--dur-fast) var(--ease-standard);
-}
-
-#events-search-btn:hover,
-#events-search-btn:focus-visible {
-  border-color: var(--ink-3);
-}
-
-/* 2.8 Tap */
-#events-search-btn:active {
-  transform: scale(var(--scale-tap));
-}
-
-/* Čekají změny → plná amber, aby bylo vidět, že je co odeslat */
-#events-search-btn.events-search-btn--pending {
-  background: var(--amber-cta);
-  border-color: var(--amber-cta);
-  color: #fff;
-}
-
-#events-search-btn.events-search-btn--pending:hover,
-#events-search-btn.events-search-btn--pending:focus-visible {
-  background: var(--amber-cta-hover);
-  border-color: var(--amber-cta-hover);
-}
-
-#events-search-btn:disabled {
-  opacity: 0.6;
-  cursor: default;
 }
 
 #events-clear-btn {
@@ -115,19 +299,14 @@
   padding: 0;
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
-  color: var(--amber-cta);
+  color: var(--color-primary);
   cursor: pointer;
   transition: color var(--dur-fast) var(--ease-standard);
 }
 
 #events-clear-btn:hover {
-  color: var(--amber-cta-hover);
+  color: var(--color-primary-hover);
   text-decoration: underline;
-}
-
-.events-filter-divider {
-  height: 1px;
-  background: var(--hairline);
 }
 
 .events-filter-group {
@@ -142,7 +321,7 @@
   font-weight: var(--fw-semibold);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--color-text-muted);
 }
 
 .events-pill-row {
@@ -155,14 +334,14 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--surface);
-  border: 1px solid var(--hairline);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
   border-radius: var(--radius-pill);
   padding: 7px var(--space-3);
   font-family: var(--font-sans);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
-  color: var(--ink);
+  color: var(--color-ink);
   cursor: pointer;
   transition: background var(--dur-fast) var(--ease-standard),
               transform var(--dur-fast) var(--ease-standard);
@@ -171,7 +350,7 @@
 }
 
 .events-pill:hover {
-  background: var(--surface-sunk);
+  background: var(--color-surface-soft);
 }
 
 /* 2.8 Tap */
@@ -180,13 +359,13 @@
 }
 
 .events-pill--active {
-  background: var(--amber-cta);
-  border-color: var(--amber-cta);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: #fff;
 }
 
 .events-pill--active:hover {
-  background: var(--amber-cta);
+  background: var(--color-primary);
 }
 
 .events-pill:disabled {
@@ -195,19 +374,13 @@
 }
 
 .events-pill:disabled:hover {
-  background: var(--surface);
-}
-
-#events-filter-group-row {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+  background: var(--color-surface);
 }
 
 #events-view-toggle {
   display: flex;
   align-self: flex-start;
-  background: var(--surface-sunk);
+  background: var(--color-surface-soft);
   border-radius: var(--radius-pill);
   padding: 3px;
   gap: 2px;
@@ -221,143 +394,102 @@
   font-family: var(--font-sans);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
-  color: var(--ink-2);
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
 }
 
 .events-view-toggle-btn--active {
-  background: var(--surface);
-  color: var(--ink);
+  background: var(--color-surface);
+  color: var(--color-ink);
   box-shadow: var(--shadow-card);
 }
 
-/* ---------- Sort row ---------- */
+/* ---------- Počet výsledků + řazení + přepínač (handoff) ---------- */
 #events-sort-row {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-3);
-  padding: 0 var(--space-4);
-}
-
-#events-sort-label {
-  font-family: var(--font-sans);
-  font-size: var(--fs-sm);
-  color: var(--ink-3);
-}
-
-/* ---------- Section header ---------- */
-#events-section-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
   padding: var(--space-5) var(--space-4) var(--space-4);
 }
 
-#events-section-header h2 {
-  font-family: var(--font-display);
-  font-size: var(--fs-h2);
-  font-weight: var(--fw-semibold);
-  color: var(--ink);
-  margin: 0;
+#events-count-block {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
 }
 
 #events-count {
+  font-family: var(--font-display);
+  font-size: var(--fs-heading-2);
+  font-weight: var(--fw-extrabold);
+  color: var(--color-ink);
+}
+
+#events-count-label {
   font-family: var(--font-sans);
-  font-size: var(--fs-sm);
-  color: var(--ink-3);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-muted);
+}
+
+#events-sort-row-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
 }
 
 /* ---------- Events list ---------- */
 #events-list {
   padding: 0 var(--space-4);
   display: grid;
-  grid-template-columns: 1fr;
   gap: var(--space-5);
+}
+
+.events-list--grid {
+  grid-template-columns: 1fr;
+}
+
+.events-list--list {
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
 }
 
 #events-loading {
   grid-column: 1 / -1;
   text-align: center;
-  color: var(--ink-3);
+  color: var(--color-text-muted);
   font-family: var(--font-sans);
   padding: var(--space-16) 0;
 }
 
-/* ---------- Pagination ---------- */
-#pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-8) var(--space-4);
-  flex-wrap: wrap;
-}
-
-.pagination-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--hairline);
-  background: var(--surface);
-  font-family: var(--font-sans);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  color: var(--ink-2);
-  cursor: pointer;
-  transition: background var(--dur-fast) var(--ease-standard);
-}
-
-.pagination-btn:hover {
-  background: var(--surface-sunk);
-}
-
-.pagination-btn--active {
-  background: var(--amber-cta);
-  border-color: var(--amber-cta);
-  color: #fff;
-}
-
-.pagination-dots {
-  color: var(--ink-3);
-  font-family: var(--font-sans);
-  padding: 0 2px;
+/* Stránkování má vlastní komponentu (Pagination.jsx/.css, Fáze 2) — styl
+   si nese sama, tady stačí jen odsazení kolem ní. Scoped na #events-page,
+   ať neuteče do stránkování na jiných stránkách. */
+#events-page .pagination {
+  margin: var(--space-8) var(--space-4) var(--space-16);
 }
 
 /* ---------- Responsive ---------- */
 @media (min-width: 640px) {
-  #events-filter-row {
+  #events-sort-row {
     flex-direction: row;
-  }
-
-  .events-filter-select {
-    flex: 1;
-  }
-
-  /* Vlastní dropdown (FilterSelect) se v řádku dělí o místo stejně jako selecty */
-  #events-filter-row .filter-dropdown {
-    flex: 1;
-  }
-
-  #events-search-btn {
-    flex-shrink: 0;
-    padding: 0 var(--space-5);
-  }
-
-  #events-filter-group-row {
-    flex-direction: row;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
   }
 }
 
 @media (min-width: 768px) {
-  #events-filter-card,
+  #events-breadcrumb,
+  #events-hero-heading,
+  #events-search-form,
+  #events-extra-filters,
   #events-sort-row,
-  #events-section-header,
-  #events-list,
-  #pagination {
+  .events-list--grid,
+  .events-list--list,
+  #events-page .pagination {
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
@@ -365,28 +497,33 @@
     box-sizing: border-box;
   }
 
-  #events-filter-card {
-    margin-top: var(--space-4);
-    margin-bottom: 0;
+  #events-search-filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  #events-list {
+  .events-list--grid {
     grid-template-columns: 1fr 1fr;
   }
 }
 
 @media (min-width: 1024px) {
-  #events-filter-card,
+  #events-breadcrumb,
+  #events-hero-heading,
+  #events-search-form,
+  #events-extra-filters,
   #events-sort-row,
-  #events-section-header,
-  #events-list,
-  #pagination {
+  .events-list--grid,
+  .events-list--list,
+  #events-page .pagination {
     max-width: var(--container);
+    margin-left: auto;
+    margin-right: auto;
     padding-left: var(--space-8);
     padding-right: var(--space-8);
+    box-sizing: border-box;
   }
 
-  #events-list {
+  .events-list--grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }

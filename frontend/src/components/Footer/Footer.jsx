@@ -1,14 +1,30 @@
 import { Link } from 'react-router-dom'
+import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
+import BuildingSkyline from '../NightSkyline/BuildingSkyline.jsx'
 import './Footer.css'
-import { useConsent } from '../../lib/ConsentContext.jsx'
+import { useConsent } from '../../lib/consent/ConsentContext.jsx'
 
 export default function Footer() {
     const { openSettings } = useConsent()
     return (
         <footer id="site-footer">
+            <BuildingSkyline className="footer-skyline" />
+            <div className="footer-skyline-glow" aria-hidden="true" />
             <div id="footer-inner">
-                <p id="footer-copy">© Plzeňák 2026</p>
-                <nav id="footer-links">
+                <div id="footer-brand">
+                    <PlzenakLogo size={26} tone="inverse" />
+                    <p id="footer-tagline">Všechno, co se děje v Plzni, na jednom místě.</p>
+                </div>
+
+                <nav id="footer-col-app" aria-label="Appka">
+                    <span className="footer-col-label">Appka</span>
+                    <Link to="/">Domů</Link>
+                    <Link to="/events">Akce</Link>
+                    <Link to="/top-akce">TOP akce</Link>
+                </nav>
+
+                <nav id="footer-col-legal" aria-label="Právní informace">
+                    <span className="footer-col-label">Právní informace</span>
                     <Link to="/zasady-ochrany-osobnich-udaju">Zásady ochrany osobních údajů</Link>
                     <Link to="/podminky-uziti">Podmínky užití</Link>
                     <button type="button" id="footer-cookie-btn" onClick={openSettings}>
@@ -18,6 +34,10 @@ export default function Footer() {
                         </svg>
                         Nastavení cookies
                     </button>
+                </nav>
+
+                <nav id="footer-col-project" aria-label="Projekt">
+                    <span className="footer-col-label">Projekt</span>
                     <a href="https://github.com/Endrudev/Plzenak-Pilsener" target="_blank" rel="noreferrer">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.9 1.3 1.9 1.3 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.3-3.2-.1-.3-.6-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3z" />
@@ -32,6 +52,8 @@ export default function Footer() {
                         Admin log in
                     </a>
                 </nav>
+
+                <p id="footer-copy">© Plzeňák 2026</p>
             </div>
         </footer>
     )

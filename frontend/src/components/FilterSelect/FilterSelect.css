@@ -19,35 +19,35 @@
     min-width: 0;
     height: 44px;
     padding: 0 var(--space-3) 0 var(--space-4);
-    background: var(--surface);
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius-el);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-field);
     font-family: var(--font-sans);
     font-size: var(--fs-body);
-    color: var(--ink);
+    color: var(--color-ink);
     cursor: pointer;
     transition: border-color var(--dur-fast) var(--ease-standard),
                 box-shadow var(--dur-fast) var(--ease-standard);
 }
 
 .filter-dropdown-trigger:hover {
-    border-color: var(--ink-3);
+    border-color: var(--color-text-muted);
 }
 
 .filter-dropdown-trigger:focus-visible {
     outline: none;
-    border-color: var(--amber-cta);
+    border-color: var(--color-primary);
     box-shadow: var(--focus-shadow);
 }
 
 .filter-dropdown--open .filter-dropdown-trigger {
-    border-color: var(--amber-cta);
+    border-color: var(--color-primary);
 }
 
 .filter-dropdown-icon {
     display: inline-flex;
     flex-shrink: 0;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 /* Text bere zbylé místo, takže šipka drží u pravého okraje bez ohledu na délku */
@@ -61,12 +61,58 @@
 }
 
 .filter-dropdown-label--placeholder {
-    color: var(--ink-3);
+    color: var(--color-text-muted);
+}
+
+/* ---------- varianta s "eyebrow" popiskem (.ddbox v handoffu) ---------- */
+.filter-dropdown-trigger--labeled {
+    position: relative;
+    height: 68px;
+    gap: 14px;
+    padding: 0 var(--space-12) 0 var(--space-5);
+    border: none;
+    border-radius: var(--radius-field);
+}
+
+.filter-dropdown-trigger--labeled .filter-dropdown-icon {
+    color: var(--color-label);
+}
+
+.filter-dropdown-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+}
+
+.filter-dropdown-eyebrow {
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.filter-dropdown-trigger--labeled .filter-dropdown-label {
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-semibold);
+    color: var(--color-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filter-dropdown-trigger--labeled .filter-dropdown-chevron {
+    position: absolute;
+    right: var(--space-5);
+    color: var(--color-text-muted);
 }
 
 .filter-dropdown-chevron {
     flex-shrink: 0;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     transition: transform var(--dur-base) var(--ease-standard);
 }
 
@@ -89,9 +135,9 @@
     margin: 0;
     padding: var(--space-2);
     list-style: none;
-    background: var(--surface);
-    border: 1px solid var(--hairline);
-    border-radius: 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-field-soft);
     box-shadow: var(--shadow-pop);
     /* Nábeh podle motion specu — prolnutí s posunem 4 px shora */
     animation: popover-in var(--dur-fast) var(--ease-standard);
@@ -106,7 +152,7 @@
     padding: var(--space-2) var(--space-3);
     border-radius: var(--radius-sm);
     font-size: var(--fs-body);
-    color: var(--ink);
+    color: var(--color-ink);
     cursor: pointer;
     white-space: nowrap;
 }
@@ -119,7 +165,7 @@
     flex-shrink: 0;
     width: 16px;
     height: 16px;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 .filter-dropdown-option-label {
@@ -131,17 +177,17 @@
 
 /* Nasvícení myší i klávesnicí je stejné — uživatel má jen jedno "kde jsem" */
 .filter-dropdown-option--active {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
 }
 
 .filter-dropdown-option--selected {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
     font-weight: var(--fw-medium);
 }
 
 .filter-dropdown-check {
     flex-shrink: 0;
-    color: var(--amber-cta);
+    color: var(--color-primary);
 }
 
 /* prefers-reduced-motion neřešíme tady — od zavedení motion tokenů je

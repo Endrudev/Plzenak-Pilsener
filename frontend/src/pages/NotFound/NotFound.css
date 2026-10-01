@@ -2,7 +2,7 @@
     position: relative;
     flex: 1;
     overflow: hidden;
-    background: var(--ink);
+    background: var(--color-ink);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -54,7 +54,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    color: var(--amber-cta);
+    color: var(--color-primary);
     font-family: var(--font-display);
     font-weight: var(--fw-semibold);
     font-size: clamp(72px, 16vw, 120px);
@@ -119,7 +119,7 @@
 }
 
 #notfound-home-btn {
-    background: var(--amber-cta);
+    background: var(--color-primary);
     color: #fff;
 }
 
@@ -155,7 +155,7 @@
 }
 
 #notfound-search:focus-within {
-    border-color: var(--amber-cta);
+    border-color: var(--color-primary);
 }
 
 #notfound-search input {
@@ -177,7 +177,7 @@
     flex-shrink: 0;
     height: 38px;
     padding: 0 var(--space-4);
-    background: var(--amber-cta);
+    background: var(--color-primary);
     border: none;
     border-radius: var(--radius-sm);
     color: #fff;

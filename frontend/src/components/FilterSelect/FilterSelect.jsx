@@ -12,6 +12,11 @@ import './FilterSelect.css'
 // Props:
 //   icon        — JSX ikona vlevo v tlačítku (nepovinné)
 //   placeholder — text, když není nic vybráno (zároveň popisek pro čtečku)
+//   label       — nepovinný malý "eyebrow" popisek nad hodnotou (velká
+//                 verzálková zkratka jako "KDY"/"CO"/"KDE" v handoffových
+//                 .ddbox dropdownech) — beze změny chování/vzhledu tam, kde
+//                 se nepředává (Events.jsx), zapojené jen v sekci Hledání
+//                 na Home.jsx, která tenhle dvouřádkový vzhled potřebuje.
 //   value       — aktuálně vybraná hodnota ('' = nic)
 //   onChange    — dostane novou hodnotu
 //   options     — [{ value, label, icon? }]
@@ -19,6 +24,7 @@ import './FilterSelect.css'
 export default function FilterSelect({
     icon = null,
     placeholder,
+    label = null,
     value = '',
     onChange,
     options = [],
@@ -125,7 +131,7 @@ export default function FilterSelect({
             <button
                 ref={triggerRef}
                 type="button"
-                className="filter-dropdown-trigger"
+                className={`filter-dropdown-trigger${label ? ' filter-dropdown-trigger--labeled' : ''}`}
                 aria-haspopup="listbox"
                 aria-expanded={open}
                 aria-label={placeholder}
@@ -134,9 +140,16 @@ export default function FilterSelect({
                 onClick={() => setOpen(o => !o)}
             >
                 {icon && <span className="filter-dropdown-icon" aria-hidden="true">{icon}</span>}
-                <span className={`filter-dropdown-label${selected ? '' : ' filter-dropdown-label--placeholder'}`}>
-                    {selected ? selected.label : placeholder}
-                </span>
+                {label ? (
+                    <span className="filter-dropdown-text">
+                        <span className="filter-dropdown-eyebrow">{label}</span>
+                        <span className="filter-dropdown-label">{selected ? selected.label : placeholder}</span>
+                    </span>
+                ) : (
+                    <span className={`filter-dropdown-label${selected ? '' : ' filter-dropdown-label--placeholder'}`}>
+                        {selected ? selected.label : placeholder}
+                    </span>
+                )}
                 <svg
                     className="filter-dropdown-chevron"
                     width="13" height="13" viewBox="0 0 24 24" fill="none"

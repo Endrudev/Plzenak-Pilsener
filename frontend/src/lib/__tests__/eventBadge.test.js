@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { eventBadge } from './eventBadge.js'
+import { eventBadge } from '../events/eventBadge.js'
 
 // Pevný „dnešek", ať testy nezávisí na tom, kdy běží. Odpoledne schválně —
 // ověřuje se tím, že o výsledku nerozhoduje denní doba.

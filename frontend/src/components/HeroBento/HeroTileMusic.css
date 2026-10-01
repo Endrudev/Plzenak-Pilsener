@@ -1,0 +1,61 @@
+.hero-tile--music {
+    grid-column: span 2;
+    grid-row: span 1;
+    color: #fff;
+}
+
+.ht-music-scene {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(170deg, var(--color-music-1) 0%, var(--color-music-2) 55%, var(--color-music-3) 100%);
+    overflow: hidden;
+}
+
+.music-glow {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    width: 220px;
+    height: 100%;
+    background: radial-gradient(55% 50% at 62% 72%, rgba(255, 200, 150, .24), rgba(255, 200, 150, 0));
+    pointer-events: none;
+}
+
+.hero-tile--music .hero-tile-lead {
+    font-size: var(--fs-body);
+    color: var(--color-music-tint);
+}
+
+.hero-tile--music .hero-tile-arrow {
+    background: rgba(255, 255, 255, .14);
+}
+
+.hero-tile--music .hero-tile-arrow:hover,
+.hero-tile--music .hero-tile-arrow:focus-visible {
+    background: rgba(255, 255, 255, .24);
+}
+
+/* ---------- spouštění animací na hoveru/focusu (malá interaktivní
+   dlaždice — na rozdíl od velkého hero pásu na /hudba, co animuje
+   nepřetržitě, viz .music-scene--on v MusicScene.css) ---------- */
+.hero-tile--music:hover .fan,
+.hero-tile--music:focus-visible .fan {
+    animation-name: ht-jump;
+}
+
+.hero-tile--music:hover .perf,
+.hero-tile--music:focus-visible .perf {
+    animation: ht-bob .8s ease-in-out infinite;
+}
+
+.hero-tile--music:hover .arm,
+.hero-tile--music:focus-visible .arm {
+    animation: ht-mic 1.6s ease-in-out infinite;
+}
+
+.hero-tile--music:hover .note,
+.hero-tile--music:focus-visible .note {
+    animation-name: ht-rise;
+}

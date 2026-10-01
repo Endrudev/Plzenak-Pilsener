@@ -1,6 +1,6 @@
 #ac-page {
     min-height: 100vh;
-    background: var(--bg);
+    background: var(--color-page);
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -9,7 +9,7 @@
 }
 
 #ac-card {
-    background: var(--surface);
+    background: var(--color-surface);
     width: 100%;
     max-width: 640px;
     box-sizing: border-box;
@@ -23,7 +23,7 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--space-5) var(--space-6);
-    border-bottom: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--color-line);
     flex-shrink: 0;
 }
 
@@ -31,7 +31,7 @@
     font-family: var(--font-display);
     font-weight: var(--fw-semibold);
     font-size: var(--fs-h2);
-    color: var(--ink);
+    color: var(--color-ink);
     margin: 0;
 }
 
@@ -44,15 +44,15 @@
     border: none;
     border-radius: var(--radius-el);
     background: none;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     cursor: pointer;
     flex-shrink: 0;
     transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
 }
 
 #create-close-btn:hover {
-    background: var(--surface-sunk);
-    color: var(--ink);
+    background: var(--color-surface-soft);
+    color: var(--color-ink);
 }
 
 /* ---- Body ---- */
@@ -84,19 +84,19 @@
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
-    color: var(--ink-2);
+    color: var(--color-text-muted);
 }
 
 /* ---- Shared input style ---- */
 .ac-input {
     height: 44px;
-    border: 1px solid var(--hairline);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-el);
-    background: var(--surface);
+    background: var(--color-surface);
     padding: 0 var(--space-4);
     font-size: var(--fs-body);
     font-family: var(--font-sans);
-    color: var(--ink);
+    color: var(--color-ink);
     outline: none;
     width: 100%;
     box-sizing: border-box;
@@ -104,11 +104,11 @@
 }
 
 .ac-input::placeholder {
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 .ac-input:focus {
-    border-color: var(--amber-cta);
+    border-color: var(--color-primary);
     box-shadow: var(--focus-shadow);
 }
 
@@ -126,16 +126,16 @@ textarea.ac-input {
     align-items: center;
     gap: var(--space-3);
     height: 44px;
-    border: 1px solid var(--hairline);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-el);
     padding: 0 var(--space-4);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     box-sizing: border-box;
     transition: border-color var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard);
 }
 
 .create-input-icon-wrapper:focus-within {
-    border-color: var(--amber-cta);
+    border-color: var(--color-primary);
     box-shadow: var(--focus-shadow);
 }
 
@@ -163,7 +163,7 @@ textarea.ac-input {
     align-items: center;
     gap: var(--space-3);
     height: 44px;
-    border: 1px solid var(--hairline);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-el);
     padding: 0 var(--space-4);
     box-sizing: border-box;
@@ -172,7 +172,7 @@ textarea.ac-input {
 }
 
 #ac-date-group:focus-within {
-    border-color: var(--amber-cta);
+    border-color: var(--color-primary);
     box-shadow: var(--focus-shadow);
 }
 
@@ -189,14 +189,14 @@ textarea.ac-input {
     flex-shrink: 0;
     border: none;
     background: none;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     cursor: pointer;
     padding: 0;
     transition: color var(--dur-fast) var(--ease-standard);
 }
 
 #ac-cal-btn:hover {
-    color: var(--ink);
+    color: var(--color-ink);
 }
 
 /* ---- Calendar popup ---- */
@@ -205,7 +205,7 @@ textarea.ac-input {
     top: calc(100% + var(--space-2));
     left: 0;
     z-index: 100;
-    background: var(--surface);
+    background: var(--color-surface);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-pop);
     padding: var(--space-3);
@@ -225,7 +225,7 @@ textarea.ac-input {
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
-    color: var(--ink);
+    color: var(--color-ink);
 }
 
 .ac-cal-nav {
@@ -235,13 +235,13 @@ textarea.ac-input {
     padding: 4px;
     display: flex;
     align-items: center;
-    color: var(--ink-2);
+    color: var(--color-text-muted);
     border-radius: var(--radius-sm);
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
 .ac-cal-nav:hover {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
 }
 
 #ac-cal-grid {
@@ -254,7 +254,7 @@ textarea.ac-input {
     font-family: var(--font-sans);
     font-size: var(--fs-2xs);
     font-weight: var(--fw-semibold);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     text-align: center;
     padding: 4px 0;
 }
@@ -266,12 +266,12 @@ textarea.ac-input {
     padding: 6px 2px;
     border-radius: var(--radius-sm);
     cursor: pointer;
-    color: var(--ink);
+    color: var(--color-ink);
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
 .ac-cal-day:not(.ac-cal-empty):hover {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
 }
 
 .ac-cal-empty {
@@ -280,11 +280,11 @@ textarea.ac-input {
 
 .ac-cal-today {
     font-weight: var(--fw-semibold);
-    color: var(--amber-cta);
+    color: var(--color-primary);
 }
 
 .ac-cal-selected {
-    background: var(--amber-cta) !important;
+    background: var(--color-primary) !important;
     color: #fff !important;
     font-weight: var(--fw-semibold);
 }
@@ -298,13 +298,13 @@ textarea.ac-input {
 .create-select-wrapper select {
     width: 100%;
     height: 100%;
-    border: 1px solid var(--hairline);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-el);
-    background: var(--surface);
+    background: var(--color-surface);
     padding: 0 var(--space-8) 0 var(--space-4);
     font-size: var(--fs-body);
     font-family: var(--font-sans);
-    color: var(--ink);
+    color: var(--color-ink);
     appearance: none;
     cursor: pointer;
     outline: none;
@@ -313,7 +313,7 @@ textarea.ac-input {
 }
 
 .create-select-wrapper select:focus {
-    border-color: var(--amber-cta);
+    border-color: var(--color-primary);
     box-shadow: var(--focus-shadow);
 }
 
@@ -322,7 +322,7 @@ textarea.ac-input {
     right: var(--space-4);
     top: 50%;
     transform: translateY(-50%);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     pointer-events: none;
 }
 
@@ -330,7 +330,7 @@ textarea.ac-input {
 #ac-address-suggestions {
     position: relative;
     z-index: 200;
-    background: var(--surface);
+    background: var(--color-surface);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-pop);
     list-style: none;
@@ -345,20 +345,20 @@ textarea.ac-input {
     border-radius: var(--radius-sm);
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
-    color: var(--ink);
+    color: var(--color-ink);
     cursor: pointer;
     line-height: var(--lh-snug);
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
 .ac-address-suggestion:hover {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
 }
 
 /* ---- Map preview ---- */
 #ac-map-preview {
     width: 100%;
-    border: 1px solid var(--hairline);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-el);
     overflow: hidden;
     box-sizing: border-box;
@@ -375,8 +375,8 @@ textarea.ac-input {
     justify-content: center;
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
-    color: var(--ink-3);
-    background: var(--surface-sunk);
+    color: var(--color-text-muted);
+    background: var(--color-surface-soft);
 }
 
 /* ---- Obrázky dropzones ---- */
@@ -388,9 +388,9 @@ textarea.ac-input {
 .create-img-dropzone {
     flex: 1;
     aspect-ratio: 4 / 3;
-    border: 1.5px dashed var(--hairline);
+    border: 1.5px dashed var(--color-line);
     border-radius: var(--radius-el);
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -399,15 +399,15 @@ textarea.ac-input {
     text-align: center;
     padding: var(--space-3);
     cursor: pointer;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     overflow: hidden;
     box-sizing: border-box;
     transition: background var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard);
 }
 
 .create-img-dropzone:hover {
-    background: var(--bg);
-    border-color: var(--ink-3);
+    background: var(--color-page);
+    border-color: var(--color-text-muted);
 }
 
 .create-img-dropzone img {
@@ -420,17 +420,17 @@ textarea.ac-input {
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
-    color: var(--ink-2);
+    color: var(--color-text-muted);
 }
 
 .dropzone-sub {
     font-family: var(--font-sans);
     font-size: var(--fs-xs);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 .dropzone-sub u {
-    color: var(--amber-cta);
+    color: var(--color-primary);
     text-decoration: underline;
 }
 
@@ -440,7 +440,7 @@ textarea.ac-input {
     flex-direction: column-reverse;
     gap: var(--space-3);
     padding: var(--space-5) var(--space-6);
-    border-top: 1px solid var(--hairline);
+    border-top: 1px solid var(--color-line);
     flex-shrink: 0;
 }
 
@@ -462,17 +462,17 @@ textarea.ac-input {
 }
 
 #create-preview-btn {
-    background: var(--surface);
-    border: 1px solid var(--hairline);
-    color: var(--ink);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    color: var(--color-ink);
 }
 
 #create-preview-btn:hover {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
 }
 
 #create-save-btn {
-    background: var(--amber-cta);
+    background: var(--color-primary);
     border: none;
     color: #fff;
 }

@@ -6,7 +6,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "migrate": "node src/db/migrate.js",
-    "seed": "node src/db/seed.js"
+    "seed": "node src/db/seed.js",
+    "seed:events": "node src/db/seedEvents.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1104.0",

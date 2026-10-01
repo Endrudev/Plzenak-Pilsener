@@ -1,323 +1,237 @@
 /* ===== HOME PAGE — mobile first ===== */
 
 #home {
-  background: var(--bg);
+  background: var(--color-page);
   display: flex;
   flex-direction: column;
 }
 
 #home-loading {
   text-align: center;
-  color: var(--ink-3);
+  color: var(--color-text-muted);
   font-family: var(--font-sans);
   padding: var(--space-16) 0;
 }
 
-/* ---------- Hero (full-bleed foto, obsah zarovnaný na content container) ---------- */
-#hero-slide {
+/* HeroBento musí sedět na stejnou šířku jako zbytek stránky (#top-grid,
+   #nearest-grid...) — dřív #hero neměl žádné omezení šířky, takže dlaždice
+   sahaly přes celou obrazovku, zatímco vše pod nimi bylo omezené na
+   var(--container). Stejný gutter/max-width vzor jako ostatní sekce níž
+   (viz @media bloky). */
+/* Mezera mezi hlavičkou a hero — ve zdroji je to gap:24px na společném
+   flex rodiči hlavičky a bento navigace, tady prostě margin nahoře. */
+#hero {
+  margin-top: var(--space-6);
+  padding: 0 var(--space-4);
+}
+
+/* Siluета budov mezi hero a tmavým pásem Hledání — stejná procedurální
+   generace jako patička (BuildingSkyline, sdílená komponenta). Bez
+   barevného gradientu na pozadí — jen plocha barva stránky. Žádný
+   filter:drop-shadow tady — ten potřebuje volný prostor kolem siluety a
+   buď se ořízl o hranu kontejneru (žádný gap), nebo vytvořil viditelnou
+   mezeru před pásem (umělý gap navíc). Glow místo toho leží jako vlastní
+   vrstva uvnitř #search-band níž (viz #search-band-glow) — baráky se tak
+   sesazují přímo na pás pod nimi, beze mezery. */
+#search-skyline-wrap {
+  margin-top: var(--space-6);
+  height: 100px;
+  overflow: hidden;
+  background: var(--color-page);
+}
+
+.search-skyline {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.search-skyline .skyline-mass {
+  fill: var(--color-night);
+}
+
+.search-skyline .skyline-mass--back {
+  fill: var(--color-night-2);
+  opacity: 0.75;
+}
+
+.search-skyline .skyline-window {
+  fill: var(--color-window);
+  opacity: 0.85;
+}
+
+/* ---------- Sekce Hledání (tmavý pás, doslova ze zdroje) ---------- */
+#search-band {
   position: relative;
   overflow: hidden;
-  min-height: 460px;
-  background-size: cover;
-  background-position: center;
-  background-color: var(--photo-backdrop);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  background: linear-gradient(to bottom, var(--color-night) 0%, var(--color-night-2) 100%);
+  padding: var(--space-8) var(--space-4) var(--space-10);
 }
 
-/* Brandovaný fallback (žádná fotka) — jantarový gradient, ne černá prázdnota */
-#hero-slide.hero-slide--fallback {
-  background-image: var(--hero-gradient);
-}
-
-/* Gradient scrim: tmavý vlevo/dole (kde je text) → průhledný vpravo/nahoru (kde je vidět foto).
-   Opacita v textové zóně (0–50 %) je dost vysoká, aby bílý text splnil WCAG AA i na světlé fotce. */
-#hero-slide::before {
-  content: '';
+/* Jemný černý glow hned pod baráky — celá vrstva leží uvnitř #search-band,
+   takže ji nic neořízne (na rozdíl od filter:drop-shadow na siluetě
+   samotné, viz komentář u #search-skyline-wrap výš). Gradient ZAČÍNÁ
+   průhledně (na švu s baráky, které mají fill přesně var(--color-night) —
+   stejnou barvu jako vrchol tohohle pásu) a teprve pod tím houstne. Když
+   začínal rovnou tmavý (.35 černá hned na 0 %), byl šev vidět jako barevný
+   skok — pás byl v tom místě tmavší než baráky nad ním. */
+#search-band-glow {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top right,
-    rgba(31, 27, 22, 0.92) 0%,
-    rgba(31, 27, 22, 0.82) 28%,
-    rgba(31, 27, 22, 0.38) 52%,
-    rgba(31, 27, 22, 0.04) 75%,
-    transparent 100%
-  );
+  inset: 0 0 auto 0;
+  height: 48px;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, .35) 45%, transparent 100%);
+  pointer-events: none;
 }
 
-#hero-content {
+#search-inner {
   position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: var(--container);
-  margin: 0 auto;
-  box-sizing: border-box;
-  padding: 0 var(--space-4) var(--space-6);
-  color: #fff;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-3);
+  gap: var(--space-6);
 }
 
-#hero-card-badges {
+#search-heading-row {
   display: flex;
-  gap: var(--space-2);
-  flex-wrap: wrap;
-}
-
-.hero-badge {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--font-sans);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  padding: 5px var(--space-3);
-  border-radius: var(--radius-pill);
-}
-
-.hero-badge--soft {
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--ink);
-}
-
-.hero-badge--ticket {
-  background: var(--buy-yellow);
-  color: var(--status-buy-text);
-}
-
-#hero-title {
-  font-family: var(--font-display);
-  font-size: var(--fs-h1);
-  font-weight: var(--fw-semibold);
-  margin: 0;
-  line-height: var(--lh-tight);
-  max-width: 620px;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
-}
-
-#hero-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  font-family: var(--font-sans);
-  font-size: var(--fs-sm);
-  color: rgba(255, 255, 255, 0.92);
-}
-
-#hero-meta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-#hero-cta-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin-top: 4px;
-}
-
-#hero-cta {
-  background: var(--amber-cta);
-  color: #fff;
-  text-decoration: none;
-  font-family: var(--font-sans);
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-body);
-  padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-el);
-  /* 2.6 Button hover — ztmavení pozadí */
-  transition: background-color var(--dur-fast) var(--ease-standard),
-              transform var(--dur-fast) var(--ease-standard);
-}
-
-#hero-cta:hover,
-#hero-cta:focus-visible {
-  background: var(--amber-cta-hover);
-}
-
-/* 2.8 Tap */
-#hero-cta:active {
-  transform: scale(var(--scale-tap));
-}
-
-#hero-counter {
-  font-family: var(--font-sans);
-  font-size: var(--fs-sm);
-  color: rgba(255, 255, 255, 0.7);
-}
-
-#hero-nav {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-top: var(--space-2);
-}
-
-.hero-arrow {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--dur-fast) var(--ease-standard);
-}
-
-.hero-arrow:hover {
-  background: rgba(255, 255, 255, 0.28);
-}
-
-#hero-dots {
-  display: flex;
-  gap: 6px;
-  margin-right: 4px;
-}
-
-.hero-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  /* 2.10 Tečky karuselu — jediné místo (spolu s crossfadem) s legacy křivkou.
-     Animovaná šířka je čtvrtá povolená výjimka z pravidla „jen transform a opacity“. */
-  transition: width var(--dur-dot) var(--ease-legacy),
-              background var(--dur-dot) var(--ease-legacy),
-              border-radius var(--dur-dot) var(--ease-legacy);
-}
-
-/* 2.8 Tap */
-.hero-dot:active {
-  transform: scale(var(--scale-tap));
-}
-
-.hero-dot--active {
-  background: var(--amber-cta);
-  width: 18px;
-  border-radius: 4px;
-}
-
-/* ---------- Filter bar (plovoucí karta pod hero, s odstupem, žádný overlap s hero-nav) ---------- */
-#filter-bar {
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-card);
-  padding: var(--space-5);
-  margin: var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-#filter-bar-row {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--space-3);
-}
-
-#filter-search {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-el);
-  padding: var(--space-3) var(--space-4);
-  color: var(--ink-3);
-}
-
-#filter-search svg {
-  flex-shrink: 0;
-}
-
-#filter-search input {
-  border: none;
-  outline: none;
-  background: transparent;
-  width: 100%;
-  font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  color: var(--ink);
-}
-
-#filter-search:focus-within {
-  box-shadow: var(--focus-shadow);
-  border-color: var(--amber-cta);
-}
-
-#filter-search-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  background: var(--amber-cta);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-el);
-  padding: var(--space-3) var(--space-5);
-  font-family: var(--font-sans);
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-body);
-  cursor: not-allowed;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-#filter-bar-row-2 {
-  display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: var(--space-3);
+  gap: var(--space-6);
   flex-wrap: wrap;
 }
 
-#filter-all-link {
+#search-heading-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+#search-eyebrow {
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  color: var(--amber-cta);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+#search-h {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-heading-1);
+  line-height: 1;
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--tracking-display);
+  color: var(--color-cream);
+}
+
+#search-more {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--touch-min);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--color-cream);
   text-decoration: none;
-  white-space: nowrap;
   transition: color var(--dur-fast) var(--ease-standard);
 }
 
-#filter-all-link:hover {
-  color: var(--amber-cta-hover);
-  text-decoration: underline;
+#search-more:hover,
+#search-more:focus-visible {
+  color: var(--color-primary);
 }
 
-#filter-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
+#search-more svg {
+  transition: transform var(--dur-fast) var(--ease-standard);
 }
 
-.filter-chip {
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
+#search-more:hover svg {
+  transform: translateX(4px);
+}
+
+#search-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Handoff má tenhle bar 84px vysoký (na 1280px šablonu) — na reálné
+   šířce stránky to působilo neúměrně obřím vstupním polem, tak je
+   zmenšený na rozumnější 60px. */
+#search-bar {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: var(--surface);
-  border: 1px solid var(--hairline);
+  height: 60px;
+  padding: 6px 6px 6px 22px;
+  box-sizing: border-box;
   border-radius: var(--radius-pill);
-  padding: var(--space-2) var(--space-4);
+  background: #fff;
+  box-shadow: 0 26px 50px -26px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 220, 180, .25);
+  transition: box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+#search-bar:focus-within {
+  box-shadow: 0 26px 50px -26px rgba(0, 0, 0, .9), 0 0 0 3px var(--color-primary);
+}
+
+#search-bar svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--color-label);
+}
+
+#search-bar input {
+  flex-grow: 1;
+  min-width: 0;
+  height: 100%;
+  margin: 0 var(--space-3);
+  border: 0;
+  outline: none;
+  padding: 0;
+  background: transparent;
   font-family: var(--font-sans);
-  font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
-  color: var(--ink-2);
-  cursor: not-allowed;
+  font-size: var(--fs-body-lg);
+  color: var(--color-ink);
+}
+
+#search-bar-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 100%;
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+#search-bar-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+#search-bar-btn:hover,
+#search-bar-btn:focus-visible {
+  background: var(--color-primary-hover);
+}
+
+#search-filters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+#search-filters .filter-dropdown {
+  width: 100%;
 }
 
 /* ---------- Shared section header ---------- */
@@ -334,26 +248,26 @@
   font-size: var(--fs-h2);
   font-weight: var(--fw-semibold);
   margin: 0;
-  color: var(--ink);
+  color: var(--color-ink);
 }
 
 .section-link {
   font-family: var(--font-sans);
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
-  color: var(--amber-cta);
+  color: var(--color-primary);
   text-decoration: none;
 }
 
 .pill-toggle {
-  background: var(--surface);
-  border: 1px solid var(--hairline);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
   border-radius: var(--radius-pill);
   padding: 7px var(--space-4);
   font-family: var(--font-sans);
   font-size: var(--fs-xs);
   font-weight: var(--fw-semibold);
-  color: var(--ink-2);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 
@@ -371,7 +285,7 @@
 
 .top-card {
   display: block;
-  background: var(--ink);
+  background: var(--color-ink);
   border-radius: var(--radius-card);
   overflow: hidden;
   text-decoration: none;
@@ -472,91 +386,6 @@
   padding: 0 var(--space-4);
 }
 
-/* ---------- Promo bannery ---------- */
-#promo-section {
-  padding: var(--space-2) var(--space-4) var(--space-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.promo-card {
-  background: var(--surface);
-  border-radius: var(--radius-card);
-  padding: var(--space-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  align-items: flex-start;
-  box-shadow: var(--shadow-card);
-}
-
-.promo-icon {
-  display: flex;
-  flex-shrink: 0;
-}
-
-.promo-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.promo-eyebrow {
-  font-family: var(--font-sans);
-  font-size: var(--fs-2xs);
-  font-weight: 700;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--amber-cta);
-}
-
-.promo-text h3 {
-  font-family: var(--font-display);
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-semibold);
-  margin: 0;
-  color: var(--ink);
-}
-
-.promo-text p {
-  font-family: var(--font-sans);
-  font-size: var(--fs-body);
-  color: var(--ink-3);
-  margin: 0;
-  line-height: var(--lh-body);
-}
-
-.promo-btn {
-  background: var(--amber-cta);
-  color: #fff;
-  text-decoration: none;
-  font-family: var(--font-sans);
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-body);
-  padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-el);
-  /* 2.6 Button hover */
-  transition: background-color var(--dur-fast) var(--ease-standard),
-              transform var(--dur-fast) var(--ease-standard);
-}
-
-.promo-btn:hover,
-.promo-btn:focus-visible {
-  background: var(--amber-cta-hover);
-}
-
-/* 2.8 Tap */
-.promo-btn:active {
-  transform: scale(var(--scale-tap));
-}
-
-.promo-btn--outline {
-  background: var(--surface);
-  color: var(--ink);
-  border: 1px solid var(--hairline);
-}
-
 /* ---------- Kategorie ---------- */
 #categories-section {
   padding: var(--space-2) var(--space-4) var(--space-10);
@@ -565,7 +394,7 @@
 #categories-count {
   font-family: var(--font-sans);
   font-size: var(--fs-xs);
-  color: var(--ink-3);
+  color: var(--color-text-muted);
 }
 
 #categories-grid {
@@ -574,76 +403,9 @@
   gap: var(--space-4);
 }
 
-.category-card {
-  position: relative;
-  min-height: 150px;
-  border-radius: var(--radius-card);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: var(--space-5);
-  gap: 2px;
-  text-decoration: none;
-  overflow: hidden;
-  /* 2.7 Hover dlaždice — scale, ne ztmavení */
-  transition: transform var(--dur-fast) var(--ease-standard),
-              box-shadow var(--dur-fast) var(--ease-standard);
-  box-sizing: border-box;
-}
-
-.category-card:hover,
-.category-card:focus-visible {
-  transform: scale(var(--scale-tile));
-  box-shadow: var(--shadow-card-hover);
-}
-
-/* 2.8 Tap */
-.category-card:active {
-  transform: scale(var(--scale-tap));
-}
-
-/* Šest odstínů jedné jantarové rodiny — Gastro nejsytější, Pro děti nejsvětlejší.
-   Tokeny v styles/category-tokens.css, tady se jen přiřazují. */
-.category-card--gastro  { background: var(--category-gastro-grad); }
-.category-card--pamatky { background: var(--category-pamatky-grad); }
-.category-card--hudba   { background: var(--category-hudba-grad); }
-.category-card--kultura { background: var(--category-kultura-grad); }
-.category-card--sport   { background: var(--category-sport-grad); }
-.category-card--deti    { background: var(--category-deti-grad); }
-
-/* Piktogram v pravém horním rohu, mimo textový sloupec */
-.category-icon {
-  position: absolute;
-  top: var(--space-4);
-  right: var(--space-4);
-  display: flex;
-  color: #fff;
-}
-
-.category-icon svg {
-  width: 20px;
-  height: 20px;
-}
-
-.category-name {
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: var(--fs-h2);
-  font-weight: 700;
-  line-height: var(--lh-tight);
-  letter-spacing: var(--tracking-display);
-}
-
-.category-count {
-  color: rgba(255, 255, 255, 0.9);
-  font-family: var(--font-sans);
-  font-size: var(--fs-xs);
-  line-height: 1.3;
-}
-
 /* ---------- Responsive ---------- */
 @media (min-width: 768px) {
-  #hero-content, .home-section-header, #top-grid, #nearest-grid, #promo-section, #categories-section {
+  #hero, #search-inner, .home-section-header, #top-grid, #nearest-grid, #categories-section {
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
@@ -651,60 +413,20 @@
     box-sizing: border-box;
   }
 
-  #filter-bar {
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-    box-sizing: border-box;
+  #search-filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-
-  #filter-bar-row {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  #filter-search {
-    flex: 1;
-  }
-
-  
-
-  
 
   #nearest-grid {
     grid-template-columns: 1fr 1fr;
   }
-
-  /* Dlaždice kategorií — od tabletu výš plná velikost podle návrhu */
-  .category-card {
-    min-height: 180px;
-  }
-
-  .category-name {
-    font-size: var(--fs-h1);
-  }
-
-  .promo-card {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .promo-text {
-    flex: 1;
-  }
 }
 
 @media (min-width: 1024px) {
-  #hero-content, .home-section-header, #top-grid, #nearest-grid, #promo-section, #categories-section {
+  #hero, #search-inner, .home-section-header, #top-grid, #nearest-grid, #categories-section {
     max-width: var(--container);
     padding-left: var(--space-8);
     padding-right: var(--space-8);
-  }
-
-  #filter-bar {
-    max-width: var(--container);
-    margin-left: auto;
-    margin-right: auto;
   }
 
   #top-grid {

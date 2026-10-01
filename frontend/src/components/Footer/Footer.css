@@ -1,61 +1,153 @@
 #site-footer {
-    background: var(--surface);
-    border-top: 1px solid var(--hairline);
-    padding: var(--space-5);
+    background: var(--color-footer);
+    color: var(--color-cream-muted);
+    padding: 0 var(--space-5) var(--space-8);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Silueta střech nahoře — přesná cesta ze zdrojového návrhu (viz Footer.jsx).
+   Pruh má vlastní přechod ze světlé (stránka nad patičkou) do tmavé
+   (--color-footer), siluety budov sedí dole, kde se s pevným pozadím
+   patičky spojí beze švu. Zdrojový návrh nechává siluetu přesahovat nad
+   patičku (negativní margin do předchozí sekce) — tady je radši
+   samostatná a kontejnovaná, protože se Footer používá na každé stránce
+   a nespoléhá se na to, co je zrovna nad ním. */
+.footer-skyline {
+    display: block;
+    width: 100%;
+    height: 90px;
+    background: linear-gradient(to bottom, var(--color-page) 0%, var(--color-night-2) 72%, var(--color-footer) 100%);
+}
+
+/* Jemný černý glow hned pod siluetou — vlastní vrstva, ne
+   filter:drop-shadow na siluetě samotné. Stín z filteru potřebuje volný
+   prostor kolem zdroje a #site-footer má overflow:hidden přesně na
+   hranici siluety, takže se ořízl dřív, než byl vůbec vidět. Tahle
+   vrstva leží celá uvnitř #site-footer pod siluetou, nic ji neořízne.
+   Gradient KONČÍ průhledně (na švu se zbytkem patičky) — když končil
+   rovnou tmavý (.35 černá na 100 %), byl šev vidět jako barevný skok. */
+.footer-skyline-glow {
+    display: block;
+    height: 30px;
+    margin-top: -30px;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, .35) 55%, transparent 100%);
+    pointer-events: none;
+}
+
+/* Třídy .skyline-mass/--back/.skyline-window jsou sdílené (viz
+   BuildingSkyline.jsx, používá je i sekce Hledání na Home.jsx) — barvy si
+   každé použití nastavuje samo, scoped přes vlastní className na <svg>. */
+.footer-skyline .skyline-mass {
+    fill: var(--color-footer);
+}
+
+/* Zadní vrstva — tlumenější tón, ať čte jako dál/za hlavní řadou, ne jako
+   stejná budova navíc. */
+.footer-skyline .skyline-mass--back {
+    fill: var(--color-night-2);
+    opacity: 0.8;
+}
+
+.footer-skyline .skyline-window {
+    fill: var(--color-window);
+    opacity: 0.85;
 }
 
 #footer-inner {
+    position: relative;
     max-width: var(--container);
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-4);
-    text-align: center;
     box-sizing: border-box;
+    padding-top: var(--space-12);
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: var(--space-8) var(--space-6);
 }
 
-#footer-copy {
+#footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+#footer-tagline {
     margin: 0;
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
-    color: var(--ink-3);
+    color: var(--color-cream-muted);
+    max-width: 28ch;
 }
 
-#footer-links {
+.footer-col-label {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-cream-muted);
+    margin-bottom: var(--space-3);
+}
+
+#footer-col-app,
+#footer-col-legal,
+#footer-col-project {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: var(--space-3) var(--space-5);
+    flex-direction: column;
+    gap: var(--space-3);
 }
 
-#footer-links a,
-#footer-cookie-btn {
+#footer-col-app a,
+#footer-col-legal a,
+#footer-col-legal button,
+#footer-col-project a {
     display: flex;
     align-items: center;
     gap: 6px;
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
-    color: var(--ink-3);
+    color: var(--color-cream);
     text-decoration: none;
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
+    text-align: left;
     transition: color var(--dur-fast) var(--ease-standard);
 }
 
-#footer-links a:hover,
-#footer-cookie-btn:hover {
-    color: var(--ink);
+#footer-col-app a:hover,
+#footer-col-legal a:hover,
+#footer-col-legal button:hover,
+#footer-col-project a:hover {
+    color: var(--color-primary-hover);
     text-decoration: underline;
 }
 
-@media (min-width: 768px) {
+#footer-copy {
+    grid-column: 1 / -1;
+    margin: var(--space-6) 0 0;
+    padding-top: var(--space-6);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-family: var(--font-sans);
+    font-size: var(--fs-xs);
+    color: var(--color-cream-muted);
+    opacity: 0.7;
+}
+
+@media (max-width: 767px) {
     #footer-inner {
-        flex-direction: row;
-        justify-content: space-between;
-        text-align: left;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #footer-brand {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 479px) {
+    #footer-inner {
+        grid-template-columns: 1fr;
     }
 }

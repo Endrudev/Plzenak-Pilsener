@@ -1,10 +1,14 @@
+/* .card.paper-l z handoffu — --shadow-paper a --color-line-soft už přesně
+   sedí (byly zavedené dřív pro featured/ranked variantu), tady se jen
+   použijí i na výchozí "grid" kartu, co dosud měla jiný, plošší stín. */
 .event-card {
     display: flex;
     flex-direction: column;
-    background: var(--surface);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line-soft);
     border-radius: var(--radius-card);
     overflow: hidden;
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--shadow-paper);
     /* 2.5 Hover lift karty — fast, box-shadow je povolená CSS výjimka */
     transition: box-shadow var(--dur-fast) var(--ease-standard),
                 transform var(--dur-fast) var(--ease-standard);
@@ -23,7 +27,7 @@
 
 .event-image {
     position: relative;
-    height: 132px;
+    height: 160px;
     background-size: cover;
     background-position: center;
 }
@@ -40,15 +44,19 @@
     background: var(--category-sport-grad);
 }
 
+/* Vlevo nahoře, ne vpravo dole jako dřív — a tvar/velikost přesně podle
+   handoffu (padding 6px 11px, verzálky, širší tracking). */
 .event-badge {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
-    padding: 4px 10px;
+    top: 14px;
+    left: 14px;
+    padding: 6px 11px;
     border-radius: var(--radius-pill);
     font-size: var(--fs-2xs);
     font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
     white-space: nowrap;
 }
 
@@ -67,14 +75,17 @@
     color: var(--badge-ink);
 }
 
+/* padding 20px 22px 22px (asymetrický, přesně podle handoffu — ne
+   jednotný var(--space-4) jako dřív), mezera mezi bloky 12px (--space-3,
+   sedí přesně). */
 .event-info {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: var(--space-4);
+    padding: 20px 22px 22px;
     text-align: left;
-    gap: var(--space-2);
+    gap: var(--space-3);
 }
 
 .event-tags {
@@ -96,32 +107,37 @@
 
 .event-name {
     font-family: var(--font-display);
-    font-size: var(--fs-h3);
-    font-weight: var(--fw-semibold);
+    font-size: var(--fs-card-title);
+    font-weight: var(--fw-bold);
     margin: 0;
     line-height: var(--lh-snug);
-    color: var(--ink);
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-ink);
 }
 
+/* Čas a místo jako dva samostatné řádky (viz EventMeta v EventCard.jsx),
+   ne jeden řádek spojený tečkou jako dřív — přesně podle handoffu. */
 .event-meta {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 6px;
-    font-size: var(--fs-xs);
-    color: var(--ink-3);
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
     font-family: var(--font-sans);
 }
 
-.event-location {
+.event-meta-row {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
 }
 
-.event-meta-dot {
-    color: var(--hairline);
+.event-meta-row svg {
+    flex-shrink: 0;
 }
 
+/* Pilulka (radius 999), ne zaoblený obdélník jako dřív — text je tmavý na
+   jantarovém pozadí (ne bílý), přesně podle handoffu .cta. */
 .event-btn {
     margin-top: 4px;
     width: 100%;
@@ -129,24 +145,38 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--amber-cta);
-    color: #fff;
+    gap: 10px;
+    min-height: 50px;
+    background-color: var(--color-primary);
+    color: var(--color-ink);
     border: none;
-    border-radius: var(--radius-el);
+    border-radius: var(--radius-pill);
     padding: 11px 18px;
     font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
-    font-size: var(--fs-body);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-h3);
     cursor: pointer;
     text-decoration: none;
     /* 2.6 Button hover — ztmavení pozadí, ne filter (background je povolená výjimka) */
     transition: background-color var(--dur-fast) var(--ease-standard),
+                color var(--dur-fast) var(--ease-standard),
                 transform var(--dur-fast) var(--ease-standard);
+}
+
+.event-btn-go {
+    display: flex;
+    transition: transform var(--dur-fast) var(--ease-standard);
+}
+
+.event-btn:hover .event-btn-go,
+.event-btn:focus-visible .event-btn-go {
+    transform: translateX(4px);
 }
 
 .event-btn:hover,
 .event-btn:focus-visible {
-    background-color: var(--amber-cta-hover);
+    background-color: var(--color-ink);
+    color: var(--color-cream);
 }
 
 /* 2.8 Tap */
@@ -156,10 +186,159 @@
 
 @media (min-width: 1024px) {
     .event-image {
-        height: 180px;
+        height: 196px;
     }
 
     .event-name {
         font-size: var(--fs-h2);
+    }
+}
+
+/* ---------- varianta: list ----------
+   Handoff: celý řádek je <a href>, náhled 92×92, CTA je jen vizuální pilulka
+   uvnitř odkazu, ne samostatný interaktivní prvek. */
+.event-card--list {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3);
+    text-decoration: none;
+    color: inherit;
+}
+
+.event-card--list .event-image {
+    flex: none;
+    width: 92px;
+    height: 92px;
+    border-radius: var(--radius-el);
+}
+
+.event-card--list .event-info {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    gap: 4px;
+}
+
+.event-card--list .event-name {
+    font-size: var(--fs-body-lg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+/* Kompaktní řádek — zpátky na vodorovné uspořádání (base .event-meta je
+   teď sloupec kvůli grid/featured/ranked kartám). */
+.event-card--list .event-meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.event-btn--list {
+    flex: none;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: var(--color-primary);
+    color: #fff;
+    border-radius: var(--radius-pill);
+    padding: 11px 20px;
+    font-family: var(--font-sans);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-body);
+    white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+    .event-btn--list {
+        display: flex;
+    }
+}
+
+/* ---------- varianta: featured a ranked ---------- */
+.event-card--featured,
+.event-card--ranked {
+    flex-direction: row;
+    box-shadow: var(--shadow-paper);
+}
+
+.event-card--featured .event-image,
+.event-card--ranked .event-image {
+    flex: 0 0 58%;
+    height: auto;
+    min-height: 220px;
+}
+
+.event-card--ranked .event-image {
+    flex-basis: 240px;
+    min-height: 160px;
+}
+
+.event-card--featured .event-info,
+.event-card--ranked .event-info {
+    flex: 1;
+    padding: var(--space-6);
+    justify-content: center;
+}
+
+.event-card--featured .event-name {
+    font-size: var(--fs-heading-2);
+}
+
+.event-why {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.event-card--featured .event-btn,
+.event-card--ranked .event-btn {
+    width: auto;
+    align-self: flex-start;
+    padding: 13px 24px;
+}
+
+.event-rank {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    border-radius: var(--radius-pill);
+    background: var(--color-night);
+    color: var(--color-cream);
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-sm);
+}
+
+@media (max-width: 767px) {
+    .event-card--featured,
+    .event-card--ranked {
+        flex-direction: column;
+    }
+
+    .event-card--featured .event-image,
+    .event-card--ranked .event-image {
+        flex-basis: auto;
+        width: 100%;
+        min-height: 0;
+        height: 220px;
+    }
+
+    .event-card--featured .event-name {
+        -webkit-line-clamp: 3;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 }

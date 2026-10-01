@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach } from 'vitest'
-import { readConsent, writeConsent, CONSENT_VERSION } from './consent.js'
+import { readConsent, writeConsent, CONSENT_VERSION } from '../consent/consent.js'
 
 beforeEach(() => {
     localStorage.clear()

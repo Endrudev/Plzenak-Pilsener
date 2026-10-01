@@ -7,3 +7,6 @@ yarn-debug.log*
 yarn-error.log*
 .claude/
 **/.env
+# Referenční PNG pro AI generování ilustrací (Recraft apod.) — pracovní
+# materiál, ne součást appky, viz reference-exports/README.md.
+reference-exports/

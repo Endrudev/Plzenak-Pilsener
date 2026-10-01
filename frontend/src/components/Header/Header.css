@@ -1,14 +1,27 @@
+/* Rozměry/barvy/radius jsou přímo ze zdrojového návrhu (Main.dc.html):
+   1280×72 lišta, žádné zaoblení nahoře, jen dole — flush s horní hranou
+   stránky, "plovoucí" dojem dělá jen užší šířka než viewport, ne mezera
+   nahoře. */
 #site-header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--hairline);
+    width: calc(100% - 2 * var(--space-4));
+    max-width: var(--container);
+    margin: 0 auto;
+    background: linear-gradient(90deg, #FFE7CF 0%, #FFF6EC 38%, #FFFBF6 62%, #EEF3E8 100%);
+    border: 1px solid var(--color-line-soft);
+    border-top: 0;
+    /* Stín i do stran, ne jen dolů — --shadow-nav samotný má nulový x-offset,
+       takže se prakticky neroztéká doleva/doprava. */
+    box-shadow:
+        var(--shadow-nav),
+        -14px 0 24px -20px rgba(90, 40, 10, .4),
+        14px 0 24px -20px rgba(90, 40, 10, .4);
+    border-radius: var(--radius-nav);
     position: sticky;
     top: 0;
     z-index: 30;
 }
 
 #header-inner {
-    max-width: var(--container);
-    margin: 0 auto;
     padding: var(--space-3) var(--space-5);
     display: flex;
     align-items: center;
@@ -23,6 +36,79 @@
     flex-shrink: 0;
 }
 
+#header-menu-btn {
+    margin-left: auto;
+    width: var(--touch-min);
+    height: var(--touch-min);
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-ink);
+    color: var(--color-cream);
+    border: none;
+    border-radius: var(--radius-btn-s);
+    cursor: pointer;
+}
+
+#header-drawer {
+    position: fixed;
+    inset: 0;
+    top: 64px;
+    z-index: 29;
+    background: var(--color-page);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    overflow-y: auto;
+}
+
+#header-drawer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+}
+
+#header-drawer-nav .nav-link {
+    border-bottom: none;
+}
+
+#header-drawer-categories-label {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+}
+
+#header-drawer-categories-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+}
+
+#header-drawer-map {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: var(--color-primary);
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-body);
+    padding: var(--space-4);
+    border-radius: var(--radius-btn-s);
+    margin-top: auto;
+}
+
 #header-nav {
     display: none;
     align-items: center;
@@ -34,7 +120,7 @@
     font-family: var(--font-sans);
     font-size: var(--fs-body);
     font-weight: var(--fw-medium);
-    color: var(--ink-3);
+    color: var(--color-text-muted);
     text-decoration: none;
     background: none;
     border: none;
@@ -43,14 +129,35 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    border-bottom: 2px solid transparent;
     transition: color var(--dur-fast) var(--ease-standard);
 }
 
 .nav-link--active {
-    color: var(--ink);
+    color: var(--color-ink);
     font-weight: var(--fw-semibold);
-    border-bottom-color: var(--amber-cta);
+}
+
+/* Desktop vodorovná navigace (#header-nav) — pilulkové odkazy s hover/aktivní
+   pozadím podle handoffu (.nb), ne podtržení jako dřív. Mobilní drawer
+   (#header-drawer-nav) sdílí .nav-link jen kvůli barvě/tučnosti aktivního
+   stavu výš, zbytek si stylizuje sám — proto je tohle přidání navíc scoped
+   sem, ne do .nav-link základu. */
+#header-nav .nav-link {
+    min-height: var(--touch-min);
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-nav-link);
+    font-weight: var(--fw-semibold);
+    color: var(--color-ink);
+    transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
+}
+
+#header-nav .nav-link:hover {
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+#header-nav .nav-link--active {
+    color: var(--color-label);
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
 }
 
 #nav-category-wrapper {
@@ -63,7 +170,7 @@
     top: calc(100% + var(--space-4));
     left: -20px;
     width: 380px;
-    background: var(--surface);
+    background: var(--color-surface);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-pop);
     padding: var(--space-3);
@@ -79,7 +186,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    background: var(--amber-cta);
+    background: var(--color-primary);
     color: #fff;
     border-radius: var(--radius-el);
     padding: var(--space-3) var(--space-4);
@@ -107,7 +214,7 @@
 
 #nav-category-top-text strong {
     font-size: var(--fs-sm);
-    font-weight: 700;
+    font-weight: var(--fw-bold);
 }
 
 #nav-category-top-text span:last-child {
@@ -124,7 +231,7 @@
     font-weight: var(--fw-semibold);
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    color: var(--ink-3);
+    color: var(--color-text-muted);
 }
 
 #nav-category-grid {
@@ -140,19 +247,19 @@
     padding: var(--space-2);
     border-radius: 8px;
     text-decoration: none;
-    color: var(--ink);
+    color: var(--color-ink);
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
 .nav-category-item:hover {
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
 }
 
 .nav-category-icon {
     width: 30px;
     height: 30px;
     border-radius: 8px;
-    background: var(--surface-sunk);
+    background: var(--color-surface-soft);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -174,26 +281,31 @@
     gap: 6px;
     margin-top: var(--space-2);
     padding: var(--space-3) var(--space-2) var(--space-1);
-    border-top: 1px solid var(--hairline);
+    border-top: 1px solid var(--color-line);
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
-    color: var(--amber-cta);
+    color: var(--color-primary);
     text-decoration: none;
 }
 
+/* Tvar (výška/padding/radius/stín) podle handoffového .nb-cta ("Přidat
+   akci" tam, "Mapa" u nás — jiná akce, tak necháváme naši jantarovou
+   barvu místo tmavé handoffové, ale kulatost/rozměry sedí přesně). */
 #header-map-btn {
     display: flex;
     align-items: center;
-    gap: 7px;
-    background: var(--amber-cta);
+    gap: 8px;
+    height: 48px;
+    background: var(--color-primary);
     color: #fff;
     text-decoration: none;
     font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
+    font-weight: var(--fw-bold);
     font-size: var(--fs-body);
-    padding: var(--space-3) var(--space-5);
-    border-radius: var(--radius-pill);
+    padding: 0 var(--space-5);
+    border-radius: var(--radius-btn-s);
+    box-shadow: 0 8px 16px -10px rgba(42, 15, 4, .5);
     flex-shrink: 0;
     transition: filter var(--dur-fast) var(--ease-standard);
 }
@@ -203,7 +315,24 @@
 }
 
 @media (min-width: 768px) {
+    /* Tři skupiny (logo | nav | mapa) rozložené přes celou šířku lišty —
+       stejně jako handoff (justify-content: space-between), ne nav hned
+       za logem s mapou dotlačenou přes flex:1 jako dřív. */
+    #header-inner {
+        justify-content: space-between;
+        gap: 0;
+        min-height: 72px;
+        padding: 0 var(--space-3) 0 26px;
+    }
+
     #header-nav {
         display: flex;
+        flex: none;
+        gap: 6px;
+    }
+
+    #header-menu-btn,
+    #header-drawer {
+        display: none;
     }
 }
