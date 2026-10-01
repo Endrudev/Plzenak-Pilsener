@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
-import { eventCountLabel } from '../../lib/pluralize.js'
+import { eventCountLabel } from '../../lib/events/pluralize.js'
 import './CategoryTile.css'
 
-// cat: jedna položka z lib/categories.jsx ({ name, slug, icon })
+// cat: jedna položka z lib/filters/categories.jsx ({ name, slug, icon })
 export default function CategoryTile({ cat, count }) {
     return (
         <Link to={`/events?kategorie=${cat.name}`} className={`category-tile category-tile--${cat.slug}`}>

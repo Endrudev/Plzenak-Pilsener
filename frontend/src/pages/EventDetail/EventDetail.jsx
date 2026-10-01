@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getEventById } from '../../lib/eventsApi.js'
-import { eventBadge } from '../../lib/eventBadge.js'
-import { useConsent } from '../../lib/ConsentContext.jsx'
+import { eventBadge } from '../../lib/events/eventBadge.js'
+import { useConsent } from '../../lib/consent/ConsentContext.jsx'
 import MapConsent from '../../components/ConsentGate/MapConsent.jsx'
-import { buildIcsFile } from '../../lib/buildIcsFile.js'
+import { buildIcsFile } from '../../lib/events/buildIcsFile.js'
 import { downloadTextFile } from '../../lib/downloadTextFile.js'
-import { shareEvent } from '../../lib/shareEvent.js'
+import { shareEvent } from '../../lib/events/shareEvent.js'
 import './EventDetail.css'
-import { imageBackground } from '../../lib/imageBackground.js'
+import { imageBackground } from '../../lib/events/imageBackground.js'
 
 export default function EventDetail() {
     const { id } = useParams()
@@ -68,7 +68,7 @@ export default function EventDetail() {
     )
 
     // Až za guardem — do té chvíle je `event` null. Plaketa se počítá z data,
-    // v databázi uložená není (viz lib/eventBadge.js).
+    // v databázi uložená není (viz lib/events/eventBadge.js).
     const badge = eventBadge(event.date)
 
     return (

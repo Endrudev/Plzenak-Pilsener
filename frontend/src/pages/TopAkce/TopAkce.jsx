@@ -5,10 +5,10 @@ import EventCard from '../../components/EventCard/EventCard.jsx'
 import Pagination from '../../components/Pagination/Pagination.jsx'
 import EmptyState from '../../components/EmptyState/EmptyState.jsx'
 import OtherCategories from '../../components/OtherCategories/OtherCategories.jsx'
-import { useEventsFilter } from '../../lib/useEventsFilter.js'
-import { SORT_OPTIONS } from '../../lib/sortOptions.js'
-import { CATEGORIES } from '../../lib/categories.jsx'
-import { eventCountLabel } from '../../lib/pluralize.js'
+import { useEventsFilter } from '../../lib/filters/useEventsFilter.js'
+import { SORT_OPTIONS } from '../../lib/filters/sortOptions.js'
+import { CATEGORIES } from '../../lib/filters/categories.jsx'
+import { eventCountLabel } from '../../lib/events/pluralize.js'
 import './TopAkce.css'
 import '../../styles/categoryPage.css'
 
@@ -86,7 +86,7 @@ function TopAkceScene() {
 
 // Dedikovaná stránka pro TOP akce (Fáze 5) — pevný filtr (`top=1`),
 // uživatel ho nemůže vypnout, jen hledat textem a řadit (viz
-// lib/useEventsFilter.js). Odkazy z hlavičky/patičky/HeroTileTop teď
+// lib/filters/useEventsFilter.js). Odkazy z hlavičky/patičky/HeroTileTop teď
 // míří sem místo na /events?top=1.
 export default function TopAkce() {
   const {

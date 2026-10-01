@@ -1,7 +1,7 @@
 import HeroTileTop from './HeroTileTop.jsx'
 import HeroTileMusic from './HeroTileMusic.jsx'
 import HeroTileRest from './HeroTileRest.jsx'
-import { CATEGORIES } from '../../lib/categories.jsx'
+import { CATEGORIES } from '../../lib/filters/categories.jsx'
 import './HeroBento.css'
 
 // Tři vstupní cesty místo jednoho hero baneru: "ukaž mi to nejlepší"

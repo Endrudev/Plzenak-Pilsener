@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import './EventCard.css'
-import { imageBackground } from '../../lib/imageBackground.js'
-import { eventBadge } from '../../lib/eventBadge.js'
+import { imageBackground } from '../../lib/events/imageBackground.js'
+import { eventBadge } from '../../lib/events/eventBadge.js'
 
 function ClockIcon() {
     return (
@@ -75,7 +75,7 @@ function GoArrow() {
 // why: krátký editorní důvod pro variant="featured" — appka to pole dnes nemá
 //      v datech, zobrazí se jen když ho volající předá
 export default function EventCard({ event, variant = 'grid', rank, why }) {
-    // Plaketa se počítá z data, v databázi uložená není — viz lib/eventBadge.js
+    // Plaketa se počítá z data, v databázi uložená není — viz lib/events/eventBadge.js
     const badge = eventBadge(event.date)
 
     const image = (

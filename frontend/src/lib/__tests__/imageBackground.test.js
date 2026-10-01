@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { imageBackground } from './imageBackground.js'
+import { imageBackground } from '../events/imageBackground.js'
 
 describe('imageBackground', () => {
     it('vrátí undefined, když akce nemá obrázek', () => {

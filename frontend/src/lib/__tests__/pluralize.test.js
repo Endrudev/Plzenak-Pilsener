@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { eventCountLabel } from './pluralize.js'
+import { eventCountLabel } from '../events/pluralize.js'
 
 describe('eventCountLabel', () => {
     it('nula', () => {

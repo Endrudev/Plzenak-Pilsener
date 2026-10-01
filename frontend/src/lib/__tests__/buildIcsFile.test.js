@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildIcsFile } from './buildIcsFile.js'
+import { buildIcsFile } from '../events/buildIcsFile.js'
 
 const BASE_EVENT = {
     id: 42,

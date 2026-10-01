@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
 import BuildingSkyline from '../NightSkyline/BuildingSkyline.jsx'
 import './Footer.css'
-import { useConsent } from '../../lib/ConsentContext.jsx'
+import { useConsent } from '../../lib/consent/ConsentContext.jsx'
 
 export default function Footer() {
     const { openSettings } = useConsent()

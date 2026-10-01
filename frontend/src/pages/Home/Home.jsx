@@ -6,10 +6,10 @@ import HeroBento from '../../components/HeroBento/HeroBento.jsx'
 import CategoryTile from '../../components/CategoryTile/CategoryTile.jsx'
 import BuildingSkyline from '../../components/NightSkyline/BuildingSkyline.jsx'
 import { getEvents, getEventLocations } from '../../lib/eventsApi.js'
-import { CATEGORIES } from '../../lib/categories.jsx'
-import { DATE_OPTIONS } from '../../lib/dateFilters.js'
+import { CATEGORIES } from '../../lib/filters/categories.jsx'
+import { DATE_OPTIONS } from '../../lib/filters/dateFilters.js'
 import './Home.css'
-import { imageBackground } from '../../lib/imageBackground.js'
+import { imageBackground } from '../../lib/events/imageBackground.js'
 
 export default function Home() {
   const [events, setEvents] = useState([])

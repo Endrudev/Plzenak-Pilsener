@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { eventCountLabel } from '../../lib/pluralize.js'
+import { eventCountLabel } from '../../lib/events/pluralize.js'
 import MusicScene from './MusicScene.jsx'
 import './HeroTileMusic.css'
 

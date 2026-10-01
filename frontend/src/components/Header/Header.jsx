@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
-import { CATEGORIES } from '../../lib/categories.jsx'
+import { CATEGORIES } from '../../lib/filters/categories.jsx'
 import './Header.css'
 
 function MenuIcon() {

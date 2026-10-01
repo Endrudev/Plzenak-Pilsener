@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { getEvents } from './eventsApi.js'
+import { getEvents } from '../eventsApi.js'
 
 // Sdílená fetch/stránkování logika pro tři dedikované kategorijní stránky
 // (TopAkce.jsx, Hudba.jsx, ZbytekProgramu.jsx) — každá má PEVNÝ filtr

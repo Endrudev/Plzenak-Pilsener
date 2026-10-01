@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { eventShareData } from './shareEvent.js'
+import { eventShareData } from '../events/shareEvent.js'
 
 describe('eventShareData', () => {
     it('spojí název a místo do textu, přiloží url', () => {

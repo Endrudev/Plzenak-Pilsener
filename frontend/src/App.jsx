@@ -14,7 +14,7 @@ import AdminEdit from './pages/AdminEdit/AdminEdit.jsx'
 import Privacy from './pages/Privacy/Privacy.jsx'
 import Terms from './pages/Terms/Terms.jsx'
 import NotFound from './pages/NotFound/NotFound.jsx'
-import { ConsentProvider, useConsent } from './lib/ConsentContext.jsx'
+import { ConsentProvider, useConsent } from './lib/consent/ConsentContext.jsx'
 import CookieBanner from './components/CookieBanner/CookieBanner.jsx'
 import CookieSettings from './components/CookieSettings/CookieSettings.jsx'
 
