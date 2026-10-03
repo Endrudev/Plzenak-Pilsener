@@ -1,5 +1,5 @@
 import CategoryHero from '../../components/CategoryHero/CategoryHero.jsx'
-import { Scene1, Scene2, Scene3, Bulbs, BULBS_V1, BULBS_V2, RaiseArm, BalloonIcon } from '../../components/HeroBento/RestScenes.jsx'
+import { LazyProgramScene } from '../../components/scenes/LazyScenes.jsx'
 import CategoryFilterBar from '../../components/CategoryFilterBar/CategoryFilterBar.jsx'
 import EventCard from '../../components/EventCard/EventCard.jsx'
 import Pagination from '../../components/Pagination/Pagination.jsx'
@@ -9,7 +9,6 @@ import { useEventsFilter } from '../../lib/filters/useEventsFilter.js'
 import { SORT_OPTIONS } from '../../lib/filters/sortOptions.js'
 import { CATEGORIES } from '../../lib/filters/categories.jsx'
 import { eventCountLabel } from '../../lib/events/pluralize.js'
-import './ZbytekProgramu.css'
 import '../../styles/categoryPage.css'
 
 // "Zbytek programu" = všechno KROMĚ TOP akce a Hudby (ty mají svoje
@@ -24,42 +23,6 @@ const PER_PAGE = 12
 // stránka sama vylučuje).
 const TYPE_OPTIONS = CATEGORIES.filter(c => c.name !== 'Hudba').map(c => ({ value: c.name, label: c.name }))
 
-// Na rozdíl od TOP akce/Hudba je tenhle hero DENNÍ scéna (zdroj:
-// Zbytek.dc.html, pozadí #EEF3E8→#D3E0C9, ne noční fialová/oranžová) —
-// tři výjevy z RestScenes.jsx (stejné jako v bento dlaždici) vedle sebe,
-// BEZ prolínání/mlhy (to je jen trik malé dlaždice, co má místo na
-// zobrazení jen jednoho výjevu najednou, viz komentář v RestScenes.jsx).
-// Žádná hvězdná obloha/paprsky — denní obloha nemá co animovat navíc.
-function ZbytekScene() {
-  return (
-    <div className="zp-vig-live" aria-hidden="true">
-      <div className="zp-scn zp-scn--v1">
-        <Scene1 shadowId="zp-s1d" />
-        {BULBS_V1.map((b, i) => (
-          <span key={i} className={`zp-bulb ${b.cls}`} style={{ left: `${b.l}%`, top: `${b.t}%` }} />
-        ))}
-      </div>
-
-      <div className="zp-scn zp-scn--v2">
-        <Scene2 shadowId="zp-s2d" />
-        {BULBS_V2.map((b, i) => (
-          <span key={i} className={`zp-bulb ${b.cls}`} style={{ left: `${b.l}%`, top: `${b.t}%` }} />
-        ))}
-        <span className="zp-raise">
-          <RaiseArm />
-        </span>
-      </div>
-
-      <div className="zp-scn zp-scn--v3">
-        <Scene3 shadowId="zp-s3d" />
-        <span className="zp-balloon">
-          <BalloonIcon />
-        </span>
-      </div>
-    </div>
-  )
-}
-
 export default function ZbytekProgramu() {
   const {
     items, total, totalPages, loading,
@@ -70,10 +33,9 @@ export default function ZbytekProgramu() {
   return (
     <div className="catpage">
       <CategoryHero
-        background="linear-gradient(to bottom, #EEF3E8 0%, #E1E9D9 60%, #D3E0C9 100%)"
-        fadeColor="#B7CBA9"
+        background="#e2e8d7"
         theme="light"
-        scene={<ZbytekScene />}
+        scene={<LazyProgramScene label="Trh, posezení a park z papíru" />}
         breadcrumbLabel="Zbytek programu"
         eyebrow="V klidu"
         title="Zbytek programu"

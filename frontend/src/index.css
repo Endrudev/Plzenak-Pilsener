@@ -86,6 +86,7 @@
   /* Dtto pro dlaždici Zbytek programu — tři večerní výjevy (stánek,
      přípitek, dítě s balónkem). */
   --color-calm-bg:          #E1E9D9;
+  --color-scene-program:    #e2e8d7;   /* pozadí ProgramScene z balíčku plzenak-scenes, dlaždice musí mít přesně tuhle barvu, aby splynul okraj zmenšené scény */
   --color-calm-text:        #213A26;
   --color-calm-text-soft:   #34553A;
   --color-calm-line:        #8AA680;
@@ -180,6 +181,7 @@
   --radius-card:  22px;
   --radius-tile:  24px;
   --radius-panel: 27px;
+  --radius-scene: 28px;      /* karty s ilustrací na homepage, hodnota z příkladu balíčku plzenak-scenes */
   --radius-pill:  999px;
   --radius-nav:   0 0 24px 24px;
   --radius-nav-mobile: 0 0 20px 20px;

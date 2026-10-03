@@ -1,0 +1,85 @@
+/* Poster a živá scéna leží přes sebe uvnitř .hero-tile-scene. */
+.hero-tile-scene {
+    overflow: hidden;
+}
+
+.hero-poster,
+.hero-live {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-poster {
+    object-fit: cover;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Stejný přesah vrstev jako `.pz-city .layer` a `.pz-concert .layer` v
+   scenes.css (inset: -24px -48px). */
+.hero-poster--bleed {
+    inset: auto;
+    left: -48px;
+    top: -24px;
+    width: calc(100% + 96px);
+    height: calc(100% + 48px);
+}
+
+/* Ztmavení pod textem, stejné přechody jako `.pz-city .shade` a `.pz-concert
+   .shade` v scenes.css (živá scéna má vlastní, tohle je pro dobu, kdy je vidět
+   jen poster). */
+.hero-poster-shade {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.hero-poster-shade--city {
+    background: radial-gradient(ellipse 58% 62% at 14% 42%, rgba(20, 6, 2, .66) 0%, rgba(20, 6, 2, .34) 45%, rgba(20, 6, 2, 0) 75%), linear-gradient(180deg, rgba(20, 6, 2, .45) 0%, rgba(20, 6, 2, 0) 22%);
+}
+
+.hero-poster-shade--concert {
+    background: radial-gradient(ellipse 55% 62% at 14% 40%, rgba(22, 4, 36, .62) 0%, rgba(22, 4, 36, .3) 48%, rgba(22, 4, 36, 0) 76%), linear-gradient(180deg, rgba(22, 4, 36, .45) 0%, rgba(22, 4, 36, 0) 22%);
+}
+
+/* Živá scéna se prolne přes poster, až je vykreslená (HeroScene.jsx). */
+.hero-live {
+    opacity: 0;
+    transition: opacity 220ms var(--ease-standard);
+}
+
+.hero-live.is-ready {
+    opacity: 1;
+}
+
+/* --- Úpravy scén jen pro dlaždice na homepage ----------------------------
+   Soubory scén se neupravují, přepisy jsou tady a platí jen uvnitř .hero-tile
+   (hero kategorií zůstává jak je v balíčku). Specificitou vyhrají nad scenes.css. */
+
+/* Okna ve městě se v balíčku rozsvěcují při načtení (od zhasnuté, s prodlevami).
+   Poster ukazuje město rozsvícené, takže by při každém najetí svítící okna
+   zhasla a znovu se rozsvěcovala. Úvodní animace se nahradí neutrální
+   (plzLit drží opacity 1), cyklické blikání oken zůstává. */
+@keyframes plzLit {
+    from, to { opacity: 1; }
+}
+
+.hero-tile .pz-city .w.fl {
+    animation-name: plzLit;
+}
+
+.hero-tile .pz-city .w.b1 { animation-name: plzLit, plzCyc1; }
+.hero-tile .pz-city .w.b2 { animation-name: plzLit, plzCyc2; }
+.hero-tile .pz-city .w.b3 { animation-name: plzLit, plzCyc3; }
+.hero-tile .pz-city .w.tv { animation-name: plzLit, plzTv; }
+
+/* Stíny davu a zpěváka na koncertu: filter: drop-shadow na skupinách, jejichž
+   děti se pořád hýbou, se musí v každém snímku přepočítat. Na malé dlaždici
+   je stín sotva vidět, a měřeno stál zhruba polovinu ceny scény. */
+.hero-tile .pz-concert .crowd-front,
+.hero-tile .pz-concert .crowd-mid,
+.hero-tile .pz-concert .singer {
+    filter: none;
+}

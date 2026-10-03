@@ -1,6 +1,6 @@
 /* Rám hero pásu na TOP akce/Hudba/Zbytek programu — vizuální scéna
-   (TopNightScene.jsx/MusicScene.jsx/RestScene.jsx) jde dovnitř přes
-   `scene` prop, tahle komponenta drží jen rozměr/pozadí/text.
+   (CityScene/ConcertScene/ProgramScene z components/scenes/) jde dovnitř
+   přes `scene` prop, tahle komponenta drží jen rozměr/pozadí/text.
 
    V handoffu (*.dc.html) je hlavička `position:absolute`, plave NAD
    heroem, který sám sahá až k y=0 — takže hlavička reálně "sedí na"
@@ -16,22 +16,30 @@
    protože header je užší než viewport, ve žebrech okolo něj je vidět
    hero přímo, ne jen barevná napodobenina. Žádný samostatný "backdrop"
    div navíc netřeba. */
+/* Výška 708px (460px na telefonu) zůstává z původního handoffu. Scéna je kreslená
+   na 16:9 a vyplní šířku okna, takže se ořízne shora: na široké obrazovce zůstane
+   vidět jen spodní část. Podrobnosti a možnosti v 02 Frontend/Hero scény ve vaultu.
+   --cat-hero-overlap platí jen pro liftScene: o tolik zasahuje karta s filtry
+   (CategoryFilterBar.css, margin-top: -48px) do spodku hero. */
 .cat-hero {
+    --cat-hero-overlap: 48px;
     position: relative;
     height: 708px;
     margin-top: calc(-1 * var(--header-h));
     overflow: hidden;
 }
 
-/* Pruh dole — přechod mezi hero pásem a obsahem pod ním. Barva se
-   nastavuje inline přes fadeColor prop (CategoryHero.jsx), ať sedí s
-   první zastávkou gradientu konkrétní stránky. */
-.cat-hero-fade {
+/* Scéna z balíčku plzenak-scenes vyplní rodiče a sama je v běžném toku,
+   takže potřebuje vlastní absolutní vrstvu — text .cat-hero-text pak leží
+   nad ní (je position: relative a v DOM až za ní). */
+.cat-hero-scene {
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 40px;
+    inset: 0;
+}
+
+/* Scéna nad kartou s filtry, pruh pod ní vyplní pozadí hero. */
+.cat-hero--lift-scene .cat-hero-scene {
+    bottom: var(--cat-hero-overlap);
 }
 
 /* Padding nahoře = výška hlavičky + stejná 24px mezera jako ve zdroji

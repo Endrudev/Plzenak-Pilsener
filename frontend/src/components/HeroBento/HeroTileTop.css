@@ -1,46 +1,8 @@
 .hero-tile--top {
-    grid-column: span 4;
+    grid-column: 1;
     grid-row: span 2;
-    background: linear-gradient(to bottom, var(--color-top-bg-1) 0%, var(--color-top-bg-2) 48%, var(--color-top-bg-3) 78%);
     color: var(--color-cream);
 }
-
-/* Scéna samotná (TopNightScene.jsx/.css) je stavěná nezávisle na tom, kde
-   se použije — tady jen o kousek zmenší z-index, ať sedí za overlay
-   textem (ten má vlastní z-index:2, viz HeroBento.css). */
-.hero-tile--top .top-scene {
-    z-index: 0;
-}
-
-/* ---------- spouštění animací na hoveru/focusu (malá interaktivní
-   dlaždice — na rozdíl od velkého hero pozadí na /top-akce, co animuje
-   nepřetržitě, viz .top-scene--on v TopNightScene.css) ---------- */
-.hero-tile--top:hover .lantern,
-.hero-tile--top:focus-visible .lantern { animation-name: ht-lantern; }
-.hero-tile--top:hover .lantern-flame,
-.hero-tile--top:focus-visible .lantern-flame { animation-name: ht-flame; }
-.hero-tile--top:hover .flock,
-.hero-tile--top:focus-visible .flock { animation-name: ht-fly; }
-.hero-tile--top:hover .bd,
-.hero-tile--top:focus-visible .bd { animation-name: ht-flap; }
-.hero-tile--top:hover .sky,
-.hero-tile--top:focus-visible .sky { animation-name: ht-twinkle-sky; }
-.hero-tile--top:hover .st,
-.hero-tile--top:focus-visible .st { animation-name: ht-twinkle; }
-.hero-tile--top:hover .shoot,
-.hero-tile--top:focus-visible .shoot { animation-name: ht-shoot; }
-.hero-tile--top:hover .wl.off,
-.hero-tile--top:focus-visible .wl.off { animation-name: ht-wOn; }
-.hero-tile--top:hover .wl.lit,
-.hero-tile--top:focus-visible .wl.lit { animation-name: ht-wOff; }
-.hero-tile--top:hover .flag,
-.hero-tile--top:focus-visible .flag { animation-name: ht-wave; }
-.hero-tile--top:hover .puff,
-.hero-tile--top:focus-visible .puff { animation-name: ht-puff; }
-.hero-tile--top:hover .glow.ltr,
-.hero-tile--top:focus-visible .glow.ltr { animation-name: ht-driveL; }
-.hero-tile--top:hover .glow.rtl,
-.hero-tile--top:focus-visible .glow.rtl { animation-name: ht-driveR; }
 
 @media (max-width: 767px) {
     .hero-tile--top { height: 440px; }

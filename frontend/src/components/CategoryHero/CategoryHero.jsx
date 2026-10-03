@@ -6,16 +6,20 @@ import './CategoryHero.css'
 // handoffu (stejná struktura na všech třech stránkách, jen jiná čísla/
 // texty/barvy pozadí).
 //
-// Vizuální scénu (noční panorama, dav, večerní výjevy...) NEDRŽÍ tahle
-// komponenta — každá stránka má svou vlastní (bento dlaždice měly
-// stejné scény dřív, teď jsou to sdílené komponenty — TopNightScene.jsx,
-// MusicScene.jsx, RestScene.jsx), předává se přes `scene` prop, ať
-// CategoryHero zůstává jen "rám" na text, ne na vizuál konkrétní
-// kategorie.
+// Vizuální scénu (noční Plzeň, koncert, trh a park) NEDRŽÍ tahle komponenta,
+// předává se přes `scene` prop, ať CategoryHero zůstává jen "rám" na text.
+// Scény z balíčku vyplní rodiče (width/height 100 %) a kreslí se v běžném
+// toku, proto jdou do vlastní absolutní vrstvy .cat-hero-scene — jinak by
+// text spadl pod ně. Spodek scény (ulice, dav, zem) nesmí nic zakrývat, takže
+// tady není žádný přechodový pruh.
+//
+// liftScene: karta s filtry překrývá spodních 48px hero. Když je na dně scény
+// něco důležitého (tramvaj v CityScene), zvedne se scéna nad kartu a pruh pod
+// ní vyplní `background`, který má mít barvu země ve scéně.
 export default function CategoryHero({
     background,
-    fadeColor = 'var(--color-ink)',
     theme = 'dark',
+    liftScene = false,
     scene,
     breadcrumbLabel,
     eyebrow,
@@ -25,10 +29,8 @@ export default function CategoryHero({
     titleSize = '104px',
 }) {
     return (
-        <section className={`cat-hero${theme === 'light' ? ' cat-hero--light' : ''}`} style={{ background }}>
-            {scene}
-
-            <div className="cat-hero-fade" style={{ background: fadeColor }} />
+        <section className={`cat-hero${theme === 'light' ? ' cat-hero--light' : ''}${liftScene ? ' cat-hero--lift-scene' : ''}`} style={{ background }}>
+            <div className="cat-hero-scene">{scene}</div>
 
             <div className="cat-hero-text">
                 <nav className="cat-hero-crumbs" aria-label="Drobečková navigace">
