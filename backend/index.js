@@ -10,6 +10,12 @@ const events = require('./src/routes/events')
 const app = express()
 const PORT = process.env.PORT || 3001
 
+// Za Nginxem vidí backend jako zdrojovou adresu Nginx, ne návštěvníka. Číslo 1 říká
+// "věř jedné proxy": req.ip je pak poslední adresa v X-Forwarded-For, kterou připsal
+// Nginx. Víc proxy před backendem (např. TLS terminátor před Nginxem) = víc skoků.
+// Hodnota true by věřila i adresám od klienta a limiter by šel obejít podvrženou hlavičkou.
+app.set('trust proxy', 1)
+
 app.use(cors({origin: process.env.FRONTEND_URL}))
 app.use(express.json())
 
