@@ -229,8 +229,8 @@ Aplikace běží lokálně a je funkční — psaní i čtení akcí, administra
 |:--:|---|---|
 | 1 | **CI pipeline** (GitHub Actions — dva joby, běží na každém PR i po merge) | ✅ hotovo |
 | 2 | **Unit testy** (Vitest) — pokrytá souhlasová vrstva, zbytek se dopisuje | 🔨 rozpracováno |
-| 3 | **Nasazení** — Dockerfile pro backend, Nginx pro frontend, `docker-compose.yml` | ⏳ další na řadě |
-| 4 | **End-to-end ověření** celého toku (login, CRUD, veřejné čtení) v Compose prostředí | ⏳ čeká na nasazení |
+| 3 | **Nasazení** — Dockerfile pro backend, Nginx pro frontend, `docker-compose.yml` | ✅ hotovo, celý stack běží v Compose |
+| 4 | **End-to-end ověření** celého toku (login, CRUD, veřejné čtení) v Compose prostředí | ✅ ověřeno přes API, ruční proklik zbývá |
 
 Pipeline hlídá u frontendu instalaci z lockfilu, testy a produkční build (včetně typové kontroly), u backendu instalaci a syntaktickou kontrolu všech souborů. Až budou testy i na backendu, syntaktickou kontrolu nahradí.
 

@@ -52,6 +52,7 @@ Open the page that owns the area you're touching. The full index is the vault `R
 | Tests | `04 DevOps/Testy.md` |
 | Docker, Compose, pipeline | `04 DevOps/Nasazení a CI.md` |
 | Backups, logs, ops | `04 DevOps/Provoz a data.md` |
+| Secrets, Doppler, Trello (**read before any `doppler` command**) | `06 Nástroje/Doppler a Trello.md` |
 | **Why is X the way it is** | `01 Projekt/Rozhodnutí.md` → `05 Poznámky/Deník.md` |
 | What's planned / deferred | `01 Projekt/Launch checklist.md`, `01 Projekt/Po launchi.md` |
 
@@ -91,7 +92,7 @@ npm run migrate   # apply pending SQL migrations (schema_migrations tracking)
 npm run seed      # create admin account from ADMIN_EMAIL/ADMIN_PASSWORD in .env
 ```
 
-No linter on either side. Vitest is set up in `frontend/` only; `backend/` has no test runner yet. PostgreSQL runs as a standalone Docker container — no `docker-compose.yml` yet, which is the main launch blocker.
+No linter on either side. Vitest is set up in `frontend/` only; `backend/` has no test runner yet. For manual development PostgreSQL runs as a standalone Docker container. The whole stack also runs from `docker-compose.yml` in the repo root: `doppler run --project plzenak --config dev -- docker compose up -d --build` (secrets come from Doppler, there is no root `.env`; details in `04 DevOps/Nasazení a CI.md`). **Never run `docker compose config` or `doppler secrets download` through Doppler — they print secret values.**
 
 ## Git workflow and CI
 
