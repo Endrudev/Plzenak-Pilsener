@@ -10,3 +10,10 @@ yarn-error.log*
 # Referenční PNG pro AI generování ilustrací (Recraft apod.) — pracovní
 # materiál, ne součást appky, viz reference-exports/README.md.
 reference-exports/
+
+# Podklady k redesignu (zip s ilustracemi a jeho rozbalená kopie). Do appky se
+# kopírují jen potřebné soubory, viz frontend/src/components/scenes/.
+redesign/
+
+# Snímky a logy z ovládání prohlížeče při ověřování vzhledu.
+.playwright-mcp/

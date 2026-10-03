@@ -1,0 +1,368 @@
+/* ==========================================================================
+   Plzeňák — animované scény (CityScene, ConcertScene, ProgramScene)
+   Každá scéna vyplní svého rodiče. Velikost určuješ ty: hero = celá výška,
+   karta na homepage = malý kontejner. Nic dalšího scény nepotřebují.
+   ========================================================================== */
+
+/* společný základ: scéna vyplní rodiče a nepřetéká */
+.pz-scene{position:relative;width:100%;height:100%;min-height:0;overflow:hidden;isolation:isolate;contain:paint}
+.pz-scene .scene{position:absolute;inset:0;pointer-events:none}
+.pz-scene .shade{position:absolute;inset:0;pointer-events:none}
+.pz-scene.pz-paused *,.pz-scene.pz-paused *::before,.pz-scene.pz-paused *::after{animation-play-state:paused !important}
+.pz-scene.pz-no-intro .rise{animation:none !important}
+.pz-scene.pz-no-intro .pc{transition:none !important}
+
+/* menší přesah vrstev pro paralaxu (původně počítáno pro celou obrazovku) */
+.pz-scene .layer{inset:-16px -32px}
+
+/* ---------------------------------------------------------------- CityScene (noční Plzeň) */
+.pz-city{--ease-out:cubic-bezier(.23,1,.32,1);position:relative;overflow:hidden;height:820px;color:#fff1de;font-family:'DM Sans',system-ui,sans-serif;background:linear-gradient(180deg,#140602 0%,#240c04 26%,#3f1606 50%,#6e280c 72%,#9a3e16 100%);isolation:isolate}
+.pz-city .scene{position:absolute;inset:0;pointer-events:none}
+.pz-city .layer{position:absolute;inset:-24px -48px;will-change:transform}
+.pz-city .rise{position:absolute;inset:0;animation:plzRise 1.7s var(--ease-out) both}
+.pz-city .layer-sky .rise{animation-name:plzFade;animation-duration:1.4s}
+.pz-city .layer svg{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}
+.pz-city .shade{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 58% 62% at 14% 42%,rgba(20,6,2,.66) 0%,rgba(20,6,2,.34) 45%,rgba(20,6,2,0) 75%),linear-gradient(180deg,rgba(20,6,2,.45) 0%,rgba(20,6,2,0) 22%)}
+/* windows: the town wakes up from the cathedral outwards */
+.pz-city .w{animation:plzOn .8s var(--ease-out) both}
+.pz-city .w.fl{animation-name:plzFlick;animation-duration:1.2s;animation-timing-function:linear}
+.pz-city .w.b1,.pz-city .w.b2,.pz-city .w.b3,.pz-city .w.tv{animation-timing-function:var(--ease-out),ease-in-out;animation-iteration-count:1,infinite;animation-fill-mode:both,none}
+.pz-city .w.b1{animation-name:plzOn,plzCyc1}
+.pz-city .w.b2{animation-name:plzOn,plzCyc2}
+.pz-city .w.b3{animation-name:plzOn,plzCyc3}
+.pz-city .w.tv{animation-name:plzOn,plzTv;animation-timing-function:var(--ease-out),steps(1,end)}
+@keyframes plzOn{from{opacity:0}to{opacity:1}}
+@keyframes plzFlick{0%{opacity:0}16%{opacity:.85}24%{opacity:.1}38%{opacity:.9}46%{opacity:.3}60%,100%{opacity:1}}
+@keyframes plzCyc1{0%,46%{opacity:1}50%,80%{opacity:0}84%,100%{opacity:1}}
+@keyframes plzCyc2{0%,62%{opacity:1}64%,71%{opacity:0}73%,100%{opacity:1}}
+@keyframes plzCyc3{0%,28%{opacity:1}32%,92%{opacity:0}96%,100%{opacity:1}}
+@keyframes plzTv{0%,100%{opacity:1}18%{opacity:.78}31%{opacity:.95}47%{opacity:.68}63%{opacity:1}79%{opacity:.84}}
+/* sky */
+.pz-city .st{animation:plzTwinkle 4s ease-in-out infinite}
+.pz-city .sp{transform-box:fill-box;transform-origin:center;animation:plzSpark 5s ease-in-out infinite}
+.pz-city .moon-glow{transform-box:fill-box;transform-origin:center;animation:plzMoon 9s ease-in-out infinite}
+.pz-city .shoot{opacity:0;animation:plzShoot 15s linear infinite}
+.pz-city .bird{transform:translateX(-80px);animation:plzFly 46s linear infinite}
+.pz-city .wing{transform-box:fill-box;transform-origin:center;animation:plzFlap .5s ease-in-out infinite alternate}
+@keyframes plzTwinkle{0%,100%{opacity:.95}50%{opacity:.18}}
+@keyframes plzSpark{0%,100%{opacity:.95;transform:scale(1) rotate(0deg)}50%{opacity:.3;transform:scale(.55) rotate(25deg)}}
+@keyframes plzMoon{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.78;transform:scale(1.08)}}
+@keyframes plzShoot{0%{opacity:0;transform:translateX(0)}.8%{opacity:1}5.5%{opacity:0;transform:translateX(520px)}100%{opacity:0;transform:translateX(520px)}}
+@keyframes plzFly{0%{transform:translate(-80px,0)}14%{transform:translate(420px,-16px)}28%{transform:translate(960px,8px)}44%{transform:translate(1700px,-10px)}100%{transform:translate(1700px,-10px)}}
+@keyframes plzFlap{to{transform:scaleY(-.45)}}
+/* light between the streets */
+.pz-city .pool{transform-box:fill-box;transform-origin:center;animation:plzBreathe 7s ease-in-out infinite}
+.pz-city .sweep{opacity:0;animation:plzSweep 24s linear infinite}
+.pz-city .sweep.rev{animation-direction:reverse}
+@keyframes plzBreathe{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
+@keyframes plzSweep{0%{opacity:0;transform:translateX(-220px)}6%{opacity:1}54%{opacity:1}60%{opacity:0;transform:translateX(1820px)}100%{opacity:0;transform:translateX(1820px)}}
+/* chimneys,flag,arches */
+.pz-city .smoke{opacity:0;transform-box:fill-box;transform-origin:center;animation:plzSmoke 7s ease-out infinite}
+.pz-city .smoke.big{animation-name:plzSmokeBig}
+.pz-city .flag{transform-box:fill-box;transform-origin:left center;animation:plzFlag 2.4s ease-in-out infinite}
+.pz-city .arch-glow{animation:plzGlow 6s ease-in-out infinite}
+.pz-city .spire-glint,.pz-city .dome-glint{animation:plzGlow 9s ease-in-out infinite}
+@keyframes plzSmoke{0%{opacity:0;transform:translate(0,0) scale(.5)}12%{opacity:.5}100%{opacity:0;transform:translate(16px,-70px) scale(2.4)}}
+@keyframes plzSmokeBig{0%{opacity:0;transform:translate(0,0) scale(.6)}10%{opacity:.4}100%{opacity:0;transform:translate(52px,-160px) scale(3.8)}}
+@keyframes plzFlag{0%,100%{transform:skewY(0deg) scaleX(1)}50%{transform:skewY(-8deg) scaleX(.88)}}
+@keyframes plzGlow{0%,100%{opacity:.62}50%{opacity:1}}
+/* street */
+.pz-city .tram{transform:translateX(-440px);animation:plzTram 36s linear 2.8s infinite}
+.pz-city .lamp{animation:plzLamp 9s linear infinite}
+.pz-city .lamp-pool{animation:plzGlow 8s ease-in-out infinite}
+@keyframes plzTram{0%{transform:translateX(-440px);animation-timing-function:cubic-bezier(.33,.1,.35,1)}22%{transform:translateX(560px);animation-timing-function:linear}34%{transform:translateX(560px);animation-timing-function:cubic-bezier(.55,0,.75,.55)}60%{transform:translateX(1900px)}100%{transform:translateX(1900px)}}
+/* tram stop — everything shares the tram's 36 s timeline (tram stands still 22–34 %).
+   The stop is on the city side,behind the track: passengers walk to the far-side door while the
+   stopped tram hides them; only the man's hat clears the roof,so he bows as he boards.
+   After the tram has gone,new passengers come up the stairs from the city,one jolt per step. */
+.pz-city .pv{transform-box:view-box;transform-origin:0 0}
+.pz-city .paxg{filter:drop-shadow(0 0 .8px rgba(255,206,150,.95)) drop-shadow(0 0 3px rgba(255,160,80,.45))}
+.pz-city .paxA{animation:plzPaxA 36s linear 2.8s infinite}
+.pz-city .paxC{animation:plzPaxC 36s linear 2.8s infinite}
+.pz-city .paxB{animation:plzPaxB 36s linear 2.8s infinite}
+.pz-city .bow{animation:plzBow 36s linear 2.8s infinite}
+@keyframes plzPaxA{0%,23.4%{transform:translate(0,0);opacity:1}25.4%{transform:translate(-26px,0)}26.4%{transform:translate(-40px,0);opacity:1}26.5%,61.9%{transform:translate(-40px,0);opacity:0}62.00%{transform:translate(147px,40px);opacity:1}62.27%{transform:translate(147px,35px)}62.60%{transform:translate(147px,35px)}62.87%{transform:translate(147px,30px)}63.20%{transform:translate(147px,30px)}63.47%{transform:translate(147px,25px)}63.80%{transform:translate(147px,25px)}64.07%{transform:translate(147px,20px)}64.40%{transform:translate(147px,20px)}64.67%{transform:translate(147px,15px)}65.00%{transform:translate(147px,15px)}65.27%{transform:translate(147px,10px)}65.60%{transform:translate(147px,10px)}65.87%{transform:translate(147px,5px)}66.20%{transform:translate(147px,5px)}66.47%{transform:translate(147px,0px)}67.20%{transform:translate(147px,0)}77.70%,100%{transform:translate(0,0);opacity:1}}
+@keyframes plzPaxC{0%,24.2%{transform:translate(0,0);opacity:1}26.4%{transform:translate(-36px,0)}27.4%{transform:translate(-50px,0);opacity:1}27.5%,65.4%{transform:translate(-50px,0);opacity:0}65.50%{transform:translate(131px,40px);opacity:1}65.77%{transform:translate(131px,35px)}66.10%{transform:translate(131px,35px)}66.37%{transform:translate(131px,30px)}66.70%{transform:translate(131px,30px)}66.97%{transform:translate(131px,25px)}67.30%{transform:translate(131px,25px)}67.57%{transform:translate(131px,20px)}67.90%{transform:translate(131px,20px)}68.17%{transform:translate(131px,15px)}68.50%{transform:translate(131px,15px)}68.77%{transform:translate(131px,10px)}69.10%{transform:translate(131px,10px)}69.37%{transform:translate(131px,5px)}69.70%{transform:translate(131px,5px)}69.97%{transform:translate(131px,0px)}70.70%{transform:translate(131px,0)}80.06%,100%{transform:translate(0,0);opacity:1}}
+@keyframes plzPaxB{0%,26.2%{transform:translate(0,0);opacity:1}28.4%,29.8%{transform:translate(-20px,0)}31%{transform:translate(-58px,0);opacity:1}31.1%,68.9%{transform:translate(-58px,0);opacity:0}69.00%{transform:translate(115px,40px);opacity:1}69.27%{transform:translate(115px,35px)}69.60%{transform:translate(115px,35px)}69.87%{transform:translate(115px,30px)}70.20%{transform:translate(115px,30px)}70.47%{transform:translate(115px,25px)}70.80%{transform:translate(115px,25px)}71.07%{transform:translate(115px,20px)}71.40%{transform:translate(115px,20px)}71.67%{transform:translate(115px,15px)}72.00%{transform:translate(115px,15px)}72.27%{transform:translate(115px,10px)}72.60%{transform:translate(115px,10px)}72.87%{transform:translate(115px,5px)}73.20%{transform:translate(115px,5px)}73.47%{transform:translate(115px,0px)}74.20%{transform:translate(115px,0)}82.41%,100%{transform:translate(0,0);opacity:1}}
+@keyframes plzBow{0%,28.4%{transform:rotate(0deg);animation-timing-function:cubic-bezier(.45,0,.3,1)}29.8%,31%{transform:rotate(-52deg)}32%,100%{transform:rotate(0deg)}}
+/* frosted shelter glass: only the city seen through the shelter is blurred.
+   The span is mapped onto the SVG viewBox (1600×900,xMidYMax slice) with container units. */
+.pz-city .layer-sb .rise{container-type:size;animation-name:plzRiseT}
+.pz-city .stop-blur{--fw:max(100cqw,calc(100cqh * 1.77778));position:absolute;display:block;left:calc((100cqw - var(--fw)) / 2 + var(--fw) * .433125);top:calc(100cqh - var(--fw) * .5625 + var(--fw) * .5025);width:calc(var(--fw) * .06125);height:calc(var(--fw) * .028125);background:rgba(255,226,190,.06);-webkit-backdrop-filter:blur(5px) saturate(.85);backdrop-filter:blur(5px) saturate(.85)}
+.pz-city .ad-glow{animation:plzAd 7s ease-in-out infinite}
+@keyframes plzAd{0%,100%{opacity:1}50%{opacity:.8}}
+@keyframes plzRiseT{from{transform:translateY(46px)}to{transform:translateY(0)}}
+@keyframes plzLamp{0%,86%,100%{opacity:1}87%{opacity:.4}88%{opacity:1}90%{opacity:.55}91%{opacity:1}}
+/* intro */
+@keyframes plzRise{from{opacity:0;transform:translateY(46px)}to{opacity:1;transform:translateY(0)}}
+@keyframes plzFade{from{opacity:0}to{opacity:1}}
+.pz-city a:focus-visible{outline:2px solid #ffd9a6;outline-offset:3px}
+/* motion off (tweak) */
+.pz-city.still *{animation:none !important}
+@media (prefers-reduced-motion:reduce){
+.pz-city .shoot,.pz-city .tram,.pz-city .ad-glow,.pz-city .pax,.pz-city .bow,.pz-city .bird,.pz-city .sweep,.pz-city .smoke,.pz-city .flag,.pz-city .wing,.pz-city .sp,.pz-city .pool,.pz-city .moon-glow{animation:none !important}
+.pz-city .rise{animation-name:plzFade !important}
+}
+
+/* ---------------------------------------------------------------- ConcertScene (koncert) */
+.pz-concert{--beat:.5s;--ease-out:cubic-bezier(.23,1,.32,1);--ease-io:cubic-bezier(.77,0,.175,1);position:relative;overflow:hidden;height:820px;color:#fbefff;font-family:'DM Sans',system-ui,sans-serif;background:radial-gradient(ellipse 55% 70% at 86% 58%,rgba(206,98,240,.34) 0%,rgba(206,98,240,0) 62%),linear-gradient(180deg,#1a0628 0%,#2c0c43 38%,#46166a 72%,#5a2280 100%);isolation:isolate}
+.pz-concert.tempo-slow{--beat:.68s}
+.pz-concert.tempo-fast{--beat:.4s}
+.pz-concert .scene{position:absolute;inset:0;pointer-events:none}
+.pz-concert .layer{position:absolute;inset:-24px -48px;will-change:transform}
+.pz-concert .rise{position:absolute;inset:0;animation:mRise 1.6s var(--ease-out) both}
+.pz-concert .layer-bg .rise,.pz-concert .layer-confetti .rise{animation-name:mFade;animation-duration:1.2s}
+.pz-concert .layer-beams .rise{animation:mLightsOn 1.4s var(--ease-out) 1s both}
+.pz-concert .layer svg{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}
+.pz-concert .beams{mix-blend-mode:screen}
+.pz-concert .crowd-front{filter:drop-shadow(0 -6px 10px rgba(16,2,28,.6))}
+.pz-concert .crowd-mid{filter:drop-shadow(0 -4px 8px rgba(16,2,28,.5))}
+.pz-concert .singer{filter:drop-shadow(-8px 2px 10px rgba(16,2,28,.45))}
+.pz-concert .shade{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 55% 62% at 14% 40%,rgba(22,4,36,.62) 0%,rgba(22,4,36,.3) 48%,rgba(22,4,36,0) 76%),linear-gradient(180deg,rgba(22,4,36,.45) 0%,rgba(22,4,36,0) 22%)}
+/* crowd — everything rides the same beat */
+.pz-concert .bob{animation:mBob var(--beat) ease-in-out infinite}
+.pz-concert .jump{transform-box:fill-box;transform-origin:50% 100%;animation:mJump calc(var(--beat) * 2) cubic-bezier(.33,0,.4,1) infinite}
+.pz-concert .wv,.pz-concert .wv2,.pz-concert .pump,.pz-concert .sway{transform-box:fill-box;transform-origin:50% 100%}
+.pz-concert .wv{animation:mWave calc(var(--beat) * 2) ease-in-out infinite alternate}
+.pz-concert .wv2{animation:mWave2 calc(var(--beat) * 4) ease-in-out infinite alternate}
+.pz-concert .pump{animation:mPump var(--beat) var(--ease-out) infinite}
+.pz-concert .sway{animation:mSway calc(var(--beat) * 4) ease-in-out infinite alternate}
+.pz-concert .pony{transform-box:fill-box;transform-origin:50% 0%;animation:mPony var(--beat) ease-in-out infinite alternate}
+.pz-concert .hairswing{transform-box:fill-box;transform-origin:50% 0%;animation:mHair calc(var(--beat) * 2) ease-in-out infinite alternate}
+.pz-concert .screen{animation:mScreen 3.2s ease-in-out infinite}
+@keyframes mBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes mJump{0%,100%{transform:translateY(0) scaleY(1)}16%{transform:translateY(5px) scaleY(.97)}48%{transform:translateY(-30px) scaleY(1.01)}78%{transform:translateY(3px) scaleY(.98)}}
+@keyframes mWave{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}
+@keyframes mWave2{from{transform:rotate(-20deg)}to{transform:rotate(16deg)}}
+@keyframes mPump{0%,100%{transform:rotate(0deg) translateY(0)}35%{transform:rotate(-7deg) translateY(-12px)}}
+@keyframes mSway{from{transform:rotate(-10deg)}to{transform:rotate(10deg)}}
+@keyframes mPony{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}
+@keyframes mHair{from{transform:skewX(-3deg)}to{transform:skewX(3deg)}}
+@keyframes mScreen{0%,100%{opacity:1}50%{opacity:.78}}
+/* the singer */
+.pz-concert .s-body{transform-box:fill-box;transform-origin:50% 100%;animation:sBody calc(var(--beat) * 2) ease-in-out infinite}
+.pz-concert .s-head{transform-box:fill-box;transform-origin:50% 100%;animation:sHead calc(var(--beat) * 2) ease-in-out infinite}
+.pz-concert .s-mouth{transform-box:fill-box;transform-origin:center;animation:sMouth calc(var(--beat) * 4) linear infinite}
+.pz-concert .s-hair{transform-box:fill-box;transform-origin:30% 100%;animation:sHair var(--beat) ease-in-out infinite alternate}
+.pz-concert .s-garm{transform-box:fill-box;transform-origin:50% 0%;animation:sArm calc(var(--beat) * 16) var(--ease-io) infinite}
+.pz-concert .s-tap{transform-box:fill-box;transform-origin:100% 100%;animation:sTap var(--beat) ease-out infinite}
+@keyframes sBody{0%,100%{transform:rotate(-1.4deg) translateY(0)}25%{transform:rotate(0deg) translateY(3px)}50%{transform:rotate(1.4deg) translateY(0)}75%{transform:rotate(0deg) translateY(3px)}}
+@keyframes sHead{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-6deg)}50%{transform:rotate(2deg)}75%{transform:rotate(-4deg)}}
+@keyframes sMouth{0%{transform:scaleY(.5)}9%{transform:scaleY(2)}17%{transform:scaleY(.8)}27%{transform:scaleY(2.3)}38%{transform:scaleY(.5)}47%{transform:scaleY(1.7)}58%{transform:scaleY(2.4)}70%{transform:scaleY(1)}81%{transform:scaleY(2.1)}92%{transform:scaleY(.6)}100%{transform:scaleY(.5)}}
+@keyframes sHair{from{transform:skewX(0deg)}to{transform:skewX(-5deg)}}
+@keyframes sArm{0%,38%{transform:rotate(0deg)}47%{transform:rotate(-152deg)}51%{transform:rotate(-140deg)}55%{transform:rotate(-152deg)}59%{transform:rotate(-140deg)}63%{transform:rotate(-152deg)}74%,100%{transform:rotate(0deg)}}
+@keyframes sTap{0%{transform:rotate(0deg)}18%{transform:rotate(9deg)}48%,100%{transform:rotate(0deg)}}
+/* notes fly out of the mic */
+.pz-concert .note{opacity:0;animation:n1 calc(var(--beat) * 12) linear infinite}
+.pz-concert .note.n2{animation-name:n2}
+.pz-concert .note.n3{animation-name:n3}
+@keyframes n1{0%{opacity:0;transform:translate(0,0) scale(.35) rotate(0deg)}8%{opacity:1;transform:translate(-16px,-26px) scale(1) rotate(-10deg)}35%{transform:translate(-30px,-110px) rotate(10deg)}65%{opacity:.95;transform:translate(-72px,-180px) rotate(-8deg)}100%{opacity:0;transform:translate(-110px,-268px) rotate(12deg) scale(.9)}}
+@keyframes n2{0%{opacity:0;transform:translate(0,0) scale(.35) rotate(0deg)}8%{opacity:1;transform:translate(-30px,-14px) scale(1) rotate(8deg)}35%{transform:translate(-120px,-70px) rotate(-12deg)}65%{opacity:.95;transform:translate(-196px,-120px) rotate(10deg)}100%{opacity:0;transform:translate(-290px,-190px) rotate(-8deg) scale(.9)}}
+@keyframes n3{0%{opacity:0;transform:translate(0,0) scale(.35) rotate(0deg)}8%{opacity:1;transform:translate(6px,-30px) scale(1) rotate(-6deg)}35%{transform:translate(40px,-118px) rotate(12deg)}65%{opacity:.95;transform:translate(70px,-196px) rotate(-10deg)}100%{opacity:0;transform:translate(118px,-280px) rotate(8deg) scale(.9)}}
+/* lights */
+.pz-concert .beam{transform-box:fill-box;transform-origin:50% 0%;animation:mBeam calc(var(--beat) * 8) ease-in-out infinite alternate,mFlash var(--beat) ease-out infinite}
+.pz-concert .beam.b2{animation-duration:calc(var(--beat) * 12),var(--beat);animation-direction:alternate-reverse,normal}
+.pz-concert .beam.b3{animation-duration:calc(var(--beat) * 10),calc(var(--beat) * 2)}
+.pz-concert .beam.b4{animation-delay:calc(var(--beat) * -3),0s}
+.pz-concert .spot{animation:mSpot calc(var(--beat) * 8) ease-in-out infinite}
+.pz-concert .kick{transform-box:fill-box;transform-origin:center;animation:mKick var(--beat) var(--ease-out) infinite}
+.pz-concert .foot{animation:mFoot calc(var(--beat) * 4) linear infinite}
+.pz-concert .dust{animation:mDust 8s linear infinite}
+.pz-concert .mote{animation:mMote 12s linear infinite}
+.pz-concert .haze{animation:mHaze 18s ease-in-out infinite alternate}
+@keyframes mBeam{from{transform:rotate(-16deg)}to{transform:rotate(16deg)}}
+@keyframes mFlash{0%{opacity:1}100%{opacity:.62}}
+@keyframes mSpot{0%,100%{opacity:.82}50%{opacity:1}}
+@keyframes mKick{0%{opacity:1;transform:scale(1.05)}100%{opacity:.55;transform:scale(1)}}
+@keyframes mFoot{0%,22%{opacity:1}34%,100%{opacity:.32}}
+@keyframes mDust{0%{opacity:0;transform:translate(0,0)}20%{opacity:.85}80%{opacity:.6}100%{opacity:0;transform:translate(10px,-70px)}}
+@keyframes mMote{0%{opacity:0;transform:translate(0,0)}25%{opacity:.6}75%{opacity:.4}100%{opacity:0;transform:translate(-30px,-90px)}}
+@keyframes mHaze{from{transform:translateX(-60px)}to{transform:translateX(60px)}}
+/* band */
+.pz-concert .gtr{transform-box:fill-box;transform-origin:50% 100%;animation:mBob var(--beat) ease-in-out infinite}
+.pz-concert .pv{transform-box:view-box;transform-origin:0 0}
+/* drummer: stays on the stool; kick on every beat,snare on 2 a 4,ride on eighths,head nods.
+   Each stroke: slow windup (ease-out up),fast strike (ease-in down) landing exactly on the beat. */
+.pz-concert .dTorso{transform-box:fill-box;transform-origin:50% 100%;animation:mDTorso calc(var(--beat) * 2) ease-in-out infinite}
+.pz-concert .dHead{animation:mDHead var(--beat) ease-out infinite}
+.pz-concert .hitL{transform:rotate(14deg);animation:mHitL calc(var(--beat) * 2) linear infinite}
+.pz-concert .hitR{animation:mHitR calc(var(--beat) / 2) linear infinite}
+.pz-concert .kickLeg{animation:mKickLeg var(--beat) linear infinite}
+.pz-concert .kick-drum{transform-box:fill-box;transform-origin:center;animation:mThump var(--beat) cubic-bezier(.23,1,.32,1) infinite}
+.pz-concert .kick-head{animation:mThumpHead var(--beat) ease-out infinite}
+.pz-concert .cym{transform-box:fill-box;transform-origin:center;animation:mCym var(--beat) ease-out infinite}
+.pz-concert .cym2{animation-duration:calc(var(--beat) / 2)}
+.pz-concert .g-head{transform-box:fill-box;transform-origin:50% 100%;animation:mBang var(--beat) ease-in-out infinite alternate}
+.pz-concert .strum{transform-box:fill-box;transform-origin:50% 0%;animation:mStrum calc(var(--beat) / 2) ease-in-out infinite alternate}
+@keyframes mDTorso{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg)}}
+@keyframes mDHead{0%{transform:translateY(0)}14%{transform:translateY(3px)}55%,100%{transform:translateY(0)}}
+@keyframes mHitL{0%{transform:rotate(14deg);animation-timing-function:cubic-bezier(.2,.6,.4,1)}38%{transform:rotate(30deg);animation-timing-function:cubic-bezier(.6,0,1,.6)}50%{transform:rotate(0deg);animation-timing-function:cubic-bezier(.2,.6,.4,1)}64%,100%{transform:rotate(14deg)}}
+@keyframes mHitR{0%{transform:rotate(0deg);animation-timing-function:cubic-bezier(.2,.6,.4,1)}55%{transform:rotate(-20deg);animation-timing-function:cubic-bezier(.6,0,1,.6)}100%{transform:rotate(0deg)}}
+@keyframes mKickLeg{0%{transform:rotate(0deg);animation-timing-function:cubic-bezier(.2,.6,.4,1)}55%{transform:rotate(-8deg);animation-timing-function:cubic-bezier(.6,0,1,.6)}100%{transform:rotate(0deg)}}
+@keyframes mThump{0%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes mThumpHead{0%{opacity:.4}100%{opacity:.14}}
+@keyframes mCym{0%{transform:rotate(-8deg)}100%{transform:rotate(0deg)}}
+@keyframes mBang{from{transform:rotate(-4deg)}to{transform:rotate(14deg)}}
+@keyframes mStrum{from{transform:rotate(-7deg)}to{transform:rotate(6deg)}}
+/* confetti */
+.pz-concert .conf{opacity:0;animation:mFall 10s linear infinite}
+.pz-concert .flip{transform-box:fill-box;transform-origin:center;animation:mFlip 1s linear infinite}
+@keyframes mFall{0%{opacity:0;transform:translate(0,0)}4%{opacity:1}25%{transform:translate(-26px,240px)}50%{transform:translate(18px,480px)}75%{transform:translate(-14px,720px)}92%{opacity:1}100%{opacity:0;transform:translate(8px,960px)}}
+@keyframes mFlip{0%{transform:rotate(0deg) scaleX(1)}25%{transform:rotate(45deg) scaleX(.15)}50%{transform:rotate(90deg) scaleX(-1)}75%{transform:rotate(135deg) scaleX(.15)}100%{transform:rotate(180deg) scaleX(1)}}
+/* intro */
+@keyframes mRise{from{opacity:0;transform:translateY(46px)}to{opacity:1;transform:translateY(0)}}
+@keyframes mFade{from{opacity:0}to{opacity:1}}
+@keyframes mLightsOn{0%{opacity:0}30%{opacity:.9}38%{opacity:.2}55%,100%{opacity:1}}
+.pz-concert a:focus-visible{outline:2px solid #f0d6ff;outline-offset:3px}
+.pz-concert.still *{animation:none !important}
+.pz-concert.still .note,.pz-concert.still .conf{opacity:0}
+@media (prefers-reduced-motion:reduce){
+.pz-concert .scene *{animation:none !important}
+.pz-concert .note,.pz-concert .conf{opacity:0}
+.pz-concert .rise{animation-name:mFade !important}
+}
+
+/* ---------------------------------------------------------------- ProgramScene (trh / posezení / park) */
+.pz-program{--ease-out:cubic-bezier(.23,1,.32,1);--ease-io:cubic-bezier(.65,0,.35,1);--pop:cubic-bezier(.34,1.5,.6,1);position:relative;overflow:hidden;min-height:820px;color:#1e3420;font-family:'DM Sans',system-ui,sans-serif;background:radial-gradient(ellipse 60% 70% at 72% 58%,#edf1e5 0%,rgba(237,241,229,0) 70%),#e2e8d7;isolation:isolate}
+.pz-program a:focus-visible,.pz-program button:focus-visible{outline:2px solid #2f4a2c;outline-offset:3px}
+.pz-program .pz-art{position:relative;width:100%;aspect-ratio:1000/720}
+.pz-program .pz-art svg{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}
+.pz-program .sc{filter:drop-shadow(0 7px 6px rgba(52,72,40,.2));pointer-events:none}
+.pz-program .ground{filter:drop-shadow(0 8px 8px rgba(52,72,40,.22))}
+.pz-program .lights{filter:drop-shadow(0 6px 5px rgba(52,72,40,.16))}
+.pz-program .lights-g{transition:transform .7s var(--ease-out),opacity .45s ease-out}
+.pz-program.on-2 .lights-g,.pz-program.on--1 .lights-g{transform:translateY(-200px);opacity:0;transition:transform .45s var(--ease-out),opacity .3s ease-out}
+/* pop-up book transitions: pieces fold down quickly,the next scene springs up one piece after another */
+.pz-program .pc{opacity:0;transform:translateY(46px) scale(.94);transform-box:fill-box;transform-origin:50% 100%;transition:transform .3s var(--ease-out),opacity .22s ease-out;transition-delay:calc(var(--i) * 22ms)}
+.pz-program .sc-slot.on .pc{opacity:1;transform:none;transition:transform .8s var(--pop),opacity .35s ease-out;transition-delay:calc(var(--i) * 75ms + 260ms)}
+.pz-program .d0{--i:0}
+.pz-program .d1{--i:1}
+.pz-program .d2{--i:2}
+.pz-program .d3{--i:3}
+.pz-program .d4{--i:4}
+.pz-program .d5{--i:5}
+.pz-program .d6{--i:6}
+.pz-program .d7{--i:7}
+.pz-program .sc-slot:not(.on) *{animation:none !important}
+/* pivots: groups rotate about the translate() point they sit on */
+.pz-program .pv{transform-box:view-box;transform-origin:0 0}
+.pz-program .pv.breathe,.pz-program .pv.shift,.pz-program .pv.shake,.pz-program .pv.bounce{transform-box:fill-box;transform-origin:50% 100%}
+.pz-program .pv.pant{transform-box:fill-box;transform-origin:50% 0%}
+/* shared */
+.pz-program .bulb{animation:rBulb 2.6s ease-in-out infinite alternate}
+.pz-program .glow{animation:rGlow 3s ease-in-out infinite}
+@keyframes rBulb{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
+@keyframes rGlow{0%,100%{opacity:.7}50%{opacity:1}}
+.pz-program .breathe{animation:rBreathe 3.2s ease-in-out infinite alternate}
+.pz-program .shift{animation:rShift 4.2s ease-in-out infinite alternate}
+@keyframes rBreathe{from{transform:scaleY(1)}to{transform:scaleY(1.012)}}
+@keyframes rShift{from{transform:rotate(-.7deg)}to{transform:rotate(.7deg)}}
+/* scene 1 — market */
+.pz-program .flap{animation:rFlap 1.7s ease-in-out infinite alternate}
+.pz-program .wobble{animation:rWobble 2.4s ease-in-out infinite}
+.pz-program .fv{animation:rShakeV 4.8s var(--ease-io) .9s infinite}
+.pz-program .fw{animation:rShakeW 4.8s var(--ease-io) .9s infinite}
+.pz-program .nodV{animation:rNodV 4.8s ease-in-out .9s infinite}
+.pz-program .nodW{animation:rNodW 4.8s ease-in-out .9s infinite}
+.pz-program .bag{transform:rotate(1deg);animation:rBag 4.8s ease-in-out .9s infinite}
+.pz-program .bx{animation:rBx 8s linear 1.2s infinite}
+.pz-program .bflip{animation:rBflip 8s steps(1,end) 1.2s infinite}
+.pz-program .by{animation:rBy 8s linear 1.2s infinite}
+.pz-program .peck{animation:rPeck 3s ease-in-out infinite}
+.pz-program .tail{animation:rTail 2.2s ease-out infinite}
+@keyframes rFlap{from{transform:rotate(-3deg) skewX(2deg)}to{transform:rotate(3deg) skewX(-2deg)}}
+@keyframes rWobble{0%,100%{transform:rotate(0deg)}20%{transform:rotate(-7deg)}40%{transform:rotate(5deg)}55%{transform:rotate(-2deg)}65%{transform:rotate(0deg)}}
+@keyframes rShakeV{0%,8%{transform:rotate(0deg)}13%{transform:rotate(-4deg)}19%{transform:rotate(3.5deg)}25%{transform:rotate(-3.4deg)}31%{transform:rotate(2.4deg)}37%{transform:rotate(-1deg)}42%,100%{transform:rotate(0deg)}}
+@keyframes rShakeW{0%,8%{transform:rotate(0deg)}13%{transform:rotate(5.2deg)}19%{transform:rotate(-4.5deg)}25%{transform:rotate(4.4deg)}31%{transform:rotate(-3.1deg)}37%{transform:rotate(1.3deg)}42%,100%{transform:rotate(0deg)}}
+@keyframes rNodV{0%,46%{transform:rotate(0deg)}52%{transform:rotate(7deg)}58%{transform:rotate(0deg)}64%{transform:rotate(6deg)}70%,100%{transform:rotate(0deg)}}
+@keyframes rNodW{0%,10%{transform:rotate(0deg)}16%{transform:rotate(-6deg)}22%{transform:rotate(0deg)}28%{transform:rotate(-5deg)}34%,74%{transform:rotate(0deg)}80%{transform:rotate(-4deg)}86%,100%{transform:rotate(0deg)}}
+@keyframes rBag{0%,10%{transform:rotate(1deg)}16%{transform:rotate(-2.5deg)}24%{transform:rotate(2deg)}32%{transform:rotate(-1.4deg)}40%{transform:rotate(1deg)}50%{transform:rotate(-.4deg)}60%,100%{transform:rotate(1deg)}}
+/* two small hops right,a look around,turn,two hops back. x glides,y arcs (up ease-out,down ease-in) */
+@keyframes rBx{0%,30%{transform:translateX(0);animation-timing-function:ease-in-out}35%{transform:translateX(14px)}38%{transform:translateX(14px);animation-timing-function:ease-in-out}43%,68%{transform:translateX(28px);animation-timing-function:ease-in-out}73%{transform:translateX(14px)}76%{transform:translateX(14px);animation-timing-function:ease-in-out}81%,100%{transform:translateX(0)}}
+@keyframes rBflip{0%,66%{transform:scaleX(1)}66.5%,97%{transform:scaleX(-1)}97.5%,100%{transform:scaleX(1)}}
+@keyframes rBy{0%,30%{transform:translateY(0) scaleY(1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}32.5%{transform:translateY(-9px) scaleY(1.04);animation-timing-function:cubic-bezier(.6,0,.8,.3)}35%{transform:translateY(0) scaleY(.9)}36%{transform:translateY(0) scaleY(1)}38%{transform:translateY(0);animation-timing-function:cubic-bezier(.2,.7,.4,1)}40.5%{transform:translateY(-9px) scaleY(1.04);animation-timing-function:cubic-bezier(.6,0,.8,.3)}43%{transform:translateY(0) scaleY(.9)}44%,68%{transform:translateY(0) scaleY(1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}70.5%{transform:translateY(-9px) scaleY(1.04);animation-timing-function:cubic-bezier(.6,0,.8,.3)}73%{transform:translateY(0) scaleY(.9)}74%,76%{transform:translateY(0) scaleY(1);animation-timing-function:cubic-bezier(.2,.7,.4,1)}78.5%{transform:translateY(-9px) scaleY(1.04);animation-timing-function:cubic-bezier(.6,0,.8,.3)}81%{transform:translateY(0) scaleY(.9)}82%,100%{transform:translateY(0) scaleY(1)}}
+@keyframes rPeck{0%,16%,26%,36%,100%{transform:rotate(0deg)}21%,31%,41%{transform:rotate(38deg)}}
+@keyframes rTail{0%,46%,62%,100%{transform:rotate(0deg)}52%{transform:rotate(-16deg)}}
+/* scene 2 — toast */
+.pz-program .canopy{animation:rCanopy 5s ease-in-out infinite alternate}
+.pz-program .leaf{opacity:0;animation:rLeaf 7s ease-in-out infinite}
+.pz-program .armP2{transform:rotate(35deg);animation:rArmP2 4.8s var(--ease-io) .8s infinite}
+.pz-program .glassP2{transform:rotate(-35deg);animation:rGlassP2 4.8s var(--ease-io) .8s infinite}
+.pz-program .armP3{transform:rotate(-30deg);animation:rArmP3 4.8s var(--ease-io) .8s infinite}
+.pz-program .glassP3{transform:rotate(30deg);animation:rGlassP3 4.8s var(--ease-io) .8s infinite}
+.pz-program .slosh{animation:rSlosh 4.8s ease-out .8s infinite}
+.pz-program .clink{opacity:0;animation:rClink 4.8s var(--ease-out) .8s infinite}
+.pz-program .sipUp{transform:rotate(-16deg);animation:rSipUp 7.2s var(--ease-io) .8s infinite}
+.pz-program .sipArm{transform:rotate(-8.6deg);animation:rSipArm 7.2s var(--ease-io) .8s infinite}
+.pz-program .sipGlass{transform:rotate(24.6deg);animation:rSipGlass 7.2s ease-in-out .8s infinite}
+.pz-program .sipWine{animation:rSipWine 7.2s ease-in-out .8s infinite}
+.pz-program .sipHead{animation:rSipHead 7.2s ease-in-out .8s infinite}
+.pz-program .talk{animation:rTalk .9s ease-in-out infinite alternate}
+.pz-program .gesture{animation:rGesture 1.8s ease-in-out infinite alternate}
+@keyframes rGesture{0%{transform:rotate(-8deg)}40%{transform:rotate(10deg)}100%{transform:rotate(-2deg)}}
+.pz-program .laugh{animation:rLaugh 2.4s ease-in-out infinite}
+.pz-program .shake{animation:rShake 2.4s ease-in-out infinite}
+@keyframes rCanopy{from{transform:rotate(-1.3deg)}to{transform:rotate(1.3deg)}}
+@keyframes rLeaf{0%{opacity:0;transform:translate(0,0) rotate(0deg)}6%{opacity:1}25%{transform:translate(-22px,70px) rotate(80deg)}50%{transform:translate(26px,150px) rotate(190deg)}75%{transform:translate(-12px,230px) rotate(280deg)}92%{opacity:1}100%{opacity:0;transform:translate(14px,300px) rotate(360deg)}}
+@keyframes rArmP2{0%,6%{transform:rotate(35deg)}20%{transform:rotate(-29.7deg)}23%{transform:rotate(-25deg)}26%,42%{transform:rotate(-29.7deg)}58%,100%{transform:rotate(35deg)}}
+@keyframes rGlassP2{0%,6%{transform:rotate(-35deg)}20%{transform:rotate(29.7deg)}23%{transform:rotate(25deg)}26%,42%{transform:rotate(29.7deg)}58%,100%{transform:rotate(-35deg)}}
+@keyframes rArmP3{0%,6%{transform:rotate(-30deg)}20%{transform:rotate(19.1deg)}23%{transform:rotate(15deg)}26%,42%{transform:rotate(19.1deg)}58%,100%{transform:rotate(-30deg)}}
+@keyframes rGlassP3{0%,6%{transform:rotate(30deg)}20%{transform:rotate(-19.1deg)}23%{transform:rotate(-15deg)}26%,42%{transform:rotate(-19.1deg)}58%,100%{transform:rotate(30deg)}}
+@keyframes rSlosh{0%,4%{transform:rotate(0deg)}12%{transform:rotate(-9deg)}20%{transform:rotate(0deg)}22%{transform:rotate(14deg)}26%{transform:rotate(-10deg)}30%{transform:rotate(7deg)}34%{transform:rotate(-4deg)}38%{transform:rotate(2deg)}42%,52%{transform:rotate(0deg)}58%{transform:rotate(8deg)}64%{transform:rotate(-4deg)}70%,100%{transform:rotate(0deg)}}
+@keyframes rClink{0%,19%{opacity:0;transform:scale(.3)}22%{opacity:1;transform:scale(1.05)}32%,100%{opacity:0;transform:scale(1.35)}}
+@keyframes rSipUp{0%,34%{transform:rotate(-16deg)}50%,76%{transform:rotate(-48.8deg)}92%,100%{transform:rotate(-16deg)}}
+@keyframes rSipArm{0%,34%{transform:rotate(-8.6deg)}50%,76%{transform:rotate(-34deg)}92%,100%{transform:rotate(-8.6deg)}}
+@keyframes rSipGlass{0%,34%{transform:rotate(24.6deg)}50%{transform:rotate(70deg)}58%,74%{transform:rotate(22.8deg)}80%{transform:rotate(70deg)}92%,100%{transform:rotate(24.6deg)}}
+@keyframes rSipWine{0%,52%{transform:translateY(0) scaleY(1)}58%,74%{transform:translateY(-7px) scaleY(.8)}80%,100%{transform:translateY(0) scaleY(.92)}}
+@keyframes rSipHead{0%,52%{transform:rotate(0deg)}58%,74%{transform:rotate(-6deg)}82%,100%{transform:rotate(0deg)}}
+@keyframes rTalk{from{transform:rotate(-2deg)}to{transform:rotate(3deg)}}
+@keyframes rLaugh{0%,60%,100%{transform:rotate(0deg)}8%{transform:rotate(9deg)}16%{transform:rotate(3deg)}24%{transform:rotate(9deg)}32%{transform:rotate(3deg)}40%{transform:rotate(7deg)}50%{transform:rotate(1deg)}}
+@keyframes rShake{0%,60%,100%{transform:translateY(0)}8%,24%,40%{transform:translateY(-3px)}16%,32%,50%{transform:translateY(0)}}
+/* scene 3 — park */
+.pz-program .cloud{animation:rCloud 24s ease-in-out infinite alternate}
+.pz-program .lampglow{animation:rLamp 4s ease-in-out infinite}
+.pz-program .wag{animation:rWag .32s ease-in-out infinite alternate}
+.pz-program .sniff{animation:rSniff 6s var(--ease-io) .8s infinite}
+.pz-program .ear{animation:rEar 6s var(--ease-io) .95s infinite}
+.pz-program .pant{animation:rPant .26s ease-in-out infinite alternate}
+.pz-program .bounce{animation:rBounce 1.3s ease-in-out infinite alternate}
+.pz-program .lookUp{transform:rotate(-6deg);animation:rLook 6s ease-in-out .8s infinite}
+.pz-program .balloon{animation:rBalloon 3.4s ease-in-out infinite alternate}
+.pz-program .bobble{animation:rBobble 3.4s ease-in-out -.6s infinite alternate}
+.pz-program .flutter{animation:rFlutter 11s ease-in-out infinite}
+.pz-program .wingA{animation:rWing .18s ease-in-out infinite alternate}
+.pz-program .wingB{animation:rWing .18s ease-in-out -.06s infinite alternate}
+@keyframes rCloud{from{transform:translateX(-34px)}to{transform:translateX(34px)}}
+@keyframes rLamp{0%,100%{opacity:.75}50%{opacity:1}}
+@keyframes rWag{from{transform:rotate(-20deg)}to{transform:rotate(22deg)}}
+@keyframes rSniff{0%,18%{transform:rotate(-8deg)}30%{transform:rotate(26deg)}34%{transform:rotate(22deg)}38%{transform:rotate(27deg)}42%{transform:rotate(22deg)}48%{transform:rotate(27deg)}60%,100%{transform:rotate(-8deg)}}
+@keyframes rEar{0%,18%{transform:rotate(0deg)}30%{transform:rotate(16deg)}50%{transform:rotate(12deg)}62%{transform:rotate(-10deg)}70%{transform:rotate(4deg)}78%,100%{transform:rotate(0deg)}}
+@keyframes rPant{from{transform:scaleY(.6)}to{transform:scaleY(1.1)}}
+@keyframes rBounce{from{transform:scaleY(1)}to{transform:scaleY(.985)}}
+@keyframes rLook{0%,100%{transform:rotate(-6deg)}30%,55%{transform:rotate(-16deg)}68%,82%{transform:rotate(8deg)}}
+@keyframes rBalloon{from{transform:rotate(-6deg)}to{transform:rotate(5deg)}}
+@keyframes rBobble{from{transform:rotate(5deg)}to{transform:rotate(-6deg)}}
+@keyframes rFlutter{0%,100%{transform:translate(0,0)}18%{transform:translate(70px,-46px)}36%{transform:translate(130px,4px)}52%{transform:translate(60px,40px)}70%{transform:translate(-50px,-18px)}86%{transform:translate(-20px,-60px)}}
+@keyframes rWing{from{transform:scaleY(1)}to{transform:scaleY(.38)}}
+.pz-program.still *{animation:none !important}
+.pz-program.still .pc{transition:opacity .3s ease-out !important;transform:none !important}
+@media (prefers-reduced-motion:reduce){
+.pz-program .pz-art *{animation:none !important}
+.pz-program .pc{transform:none !important;transition:opacity .35s ease-out !important}
+}
+
+/* ---------------------------------------------------------------- přepisy pro samostatné použití */
+.pz-city,.pz-concert,.pz-program{height:100%;min-height:0}
+.pz-city .shade{background:radial-gradient(ellipse 62% 56% at 16% 22%,rgba(20,6,2,.66) 0%,rgba(20,6,2,0) 72%)}
+.pz-concert .shade{background:radial-gradient(ellipse 70% 80% at 10% 18%,rgba(22,4,36,.7) 0%,rgba(22,4,36,0) 70%)}
+.pz-program{background:radial-gradient(ellipse 70% 80% at 60% 45%,#edf1e5 0%,rgba(237,241,229,0) 70%),#e2e8d7}
+.pz-program .pz-art{position:absolute;inset:0;width:auto;height:auto;aspect-ratio:auto}
+.pz-program .pz-art svg,.pz-program .sc-slot{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}
+
+/* volitelné přepínací tečky u ProgramScene (prop `controls`) */
+.pz-dots{position:absolute;z-index:5;right:12px;bottom:10px;display:flex;gap:2px}
+.pz-dot{appearance:none;border:0;background:transparent;cursor:pointer;width:28px;height:28px;display:grid;place-items:center;-webkit-tap-highlight-color:transparent}
+.pz-dot span{width:7px;height:7px;border-radius:999px;background:rgba(47,74,44,.28);transition:width .3s cubic-bezier(.23,1,.32,1),background-color .2s ease}
+.pz-dot[aria-pressed="true"] span{width:20px;background:#2f4a2c}
+.pz-dot:focus-visible{outline:2px solid #2f4a2c;outline-offset:2px;border-radius:8px}
+@media (hover:hover) and (pointer:fine){.pz-dot:hover span{background:rgba(47,74,44,.5)}}
