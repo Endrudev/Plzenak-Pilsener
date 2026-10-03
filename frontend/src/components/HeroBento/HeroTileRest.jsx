@@ -1,44 +1,23 @@
 import { Link } from 'react-router-dom'
-import { Scene1, Scene2, Scene3, Bulbs, BULBS_V1, BULBS_V2, RaiseArm, BalloonIcon } from './RestScenes.jsx'
+import { LazyProgramScene } from '../scenes/LazyScenes.jsx'
+import HeroScene from './HeroScene.jsx'
+import programPoster from '../scenes/posters/program.webp'
+import { useHoverActive } from '../../lib/useHoverActive.js'
 import './HeroTileRest.css'
 
-// Tři výjevy (Scene1/2/3), girlanda žárovek (Bulbs) i přípitek/balónek
-// (RaiseArm/BalloonIcon) žijí teď v RestScenes.jsx — sdílené s velkým hero
-// pásem na /zbytek-programu (ZbytekProgramu.jsx), stejný vzor jako
-// MusicScene.jsx pro Hudba.
-
-// Doslovná rekonstrukce Zbytek programu dlaždice: NENÍ celotělová scéna
-// jako Hudba/TOP, ale malý "pohled" 222×200px v pravém horním rohu se
-// třemi večerními výjevy, co se prolínají (rozostření + mlha mezi nimi),
-// nad prvními dvěma girlanda žárovek. Text (nadpis, "Procházet vše" a
-// kategorie) leží mimo scénu, ne přes ni.
+// Bento dlaždice Zbytek programu: scéna ProgramScene z components/scenes/ vyplní
+// celou dlaždici a sama střídá trh, posezení a park. Text (nadpis, "Procházet
+// vše", kategorie) leží nad ní. Dlaždice je odkaz, takže bez ovládacích teček:
+// tlačítko uvnitř odkazu by byla neplatná struktura. Scéna se animuje jen pod
+// myší nebo s fokusem z klávesnice (viz useHoverActive), a protože je pak dlaždice
+// pod myší pořád, střídání scén se nesmí pozastavovat najetím (pauseOnHover).
 export default function HeroTileRest({ categories = [] }) {
+    const { active, handlers } = useHoverActive()
+
     return (
-        <Link to="/zbytek-programu" className="hero-tile hero-tile--rest">
-            <div className="ht-rest-bg" aria-hidden="true" />
-
-            <div className="vig" aria-hidden="true">
-                <div className="scn scn--v1">
-                    <Scene1 />
-                    <Bulbs list={BULBS_V1} />
-                </div>
-
-                <div className="scn scn--v2">
-                    <Scene2 />
-                    <Bulbs list={BULBS_V2} />
-                    <span className="raise">
-                        <RaiseArm />
-                    </span>
-                </div>
-
-                <div className="scn scn--v3">
-                    <Scene3 />
-                    <span className="balloon">
-                        <BalloonIcon />
-                    </span>
-                </div>
-
-                <span className="mist" />
+        <Link to="/zbytek-programu" className="hero-tile hero-tile--rest" {...handlers}>
+            <div className="hero-tile-scene">
+                <HeroScene poster={programPoster} position="50% 100%" active={active} Live={LazyProgramScene} liveProps={{ pauseOnHover: false }} />
             </div>
 
             <div className="hero-tile-overlay">

@@ -1,17 +1,22 @@
 import { Link } from 'react-router-dom'
 import { eventCountLabel } from '../../lib/events/pluralize.js'
-import MusicScene from './MusicScene.jsx'
+import { LazyConcertScene } from '../scenes/LazyScenes.jsx'
+import HeroScene from './HeroScene.jsx'
+import concertPoster from '../scenes/posters/concert.webp'
+import { useHoverActive } from '../../lib/useHoverActive.js'
 import './HeroTileMusic.css'
 
-// Dav + pódium teď žije v MusicScene.jsx (sdílené i s velkým hero pásem
-// na /hudba, viz Hudba.jsx) — tahle komponenta je jen tenký obal s
-// dlaždicovým pozadím/glow/overlay textem, stejný vzor jako HeroTileTop.jsx.
+// Bento dlaždice Hudba: tenký obal kolem scény ConcertScene z components/scenes/.
+// Pódium je ve scéně vpravo, proto focus="right" — v užší dlaždici se ořízne
+// zleva a zpěvák zůstane vidět. Scéna se animuje jen pod myší nebo s fokusem
+// z klávesnice, viz useHoverActive.
 export default function HeroTileMusic({ count = 0 }) {
+    const { active, handlers } = useHoverActive()
+
     return (
-        <Link to="/hudba" className="hero-tile hero-tile--music">
-            <span className="music-glow" aria-hidden="true" />
-            <div className="ht-music-scene" aria-hidden="true">
-                <MusicScene />
+        <Link to="/hudba" className="hero-tile hero-tile--music" {...handlers}>
+            <div className="hero-tile-scene">
+                <HeroScene poster={concertPoster} position="100% 100%" bleed shade="concert" active={active} Live={LazyConcertScene} liveProps={{ focus: 'right', shade: true }} />
             </div>
 
             <div className="hero-tile-overlay">

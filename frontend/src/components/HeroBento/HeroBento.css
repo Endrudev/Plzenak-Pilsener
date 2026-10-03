@@ -1,11 +1,12 @@
-/* Bento grid — 6 sloupců × 2 řádky, 640px výška (handoff). TOP akce = 4
-   sloupce × 2 řádky, Hudba a Zbytek = 2 sloupce × 1 řádek každá. */
+/* Bento grid podle příkladu v balíčku plzenak-scenes (Example.jsx, HomeBento):
+   dva sloupce 1.62fr / 1fr a dva řádky po 330px. TOP akce zabírá levý sloupec
+   přes oba řádky, Hudba a Zbytek programu jsou nad sebou vpravo. Velikost
+   karty určuje tahle mřížka, scéna uvnitř ji jen vyplní. */
 .hero-bento {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-template-rows: repeat(2, minmax(0, 1fr));
-    gap: var(--space-3);
-    height: 640px;
+    grid-template-columns: 1.62fr 1fr;
+    grid-template-rows: repeat(2, 330px);
+    gap: var(--space-4);
 }
 
 /* ---------- sdílená "chrome" pro všechny tři dlaždice ---------- */
@@ -13,8 +14,9 @@
     position: relative;
     display: block;
     overflow: hidden;
-    border-radius: var(--radius-tile);
+    border-radius: var(--radius-scene);
     text-decoration: none;
+    cursor: pointer;
     outline: none;
     box-shadow: var(--shadow-card);
     transition: box-shadow var(--dur-base) var(--ease-standard);
@@ -27,6 +29,14 @@
 
 .hero-tile:focus-visible {
     box-shadow: 0 0 0 3px var(--color-page), 0 0 0 6px var(--color-ink);
+}
+
+/* Scéna z components/scenes/ vyplní rodiče a sama je v běžném toku, takže
+   potřebuje vlastní absolutní vrstvu. Text .hero-tile-overlay (z-index: 2)
+   leží nad ní. */
+.hero-tile-scene {
+    position: absolute;
+    inset: 0;
 }
 
 /* Text sedí NAHOŘE, ne dole — ve zdroji je to obyčejný in-flow obsah (řádek
@@ -110,8 +120,9 @@
                 background-color var(--dur-fast) var(--ease-standard);
 }
 
-.hero-tile-arrow:hover,
-.hero-tile-arrow:focus-visible {
+/* Šipka není samostatný odkaz, reaguje na celou dlaždici. */
+.hero-tile:hover .hero-tile-arrow,
+.hero-tile:focus-visible .hero-tile-arrow {
     background: var(--color-primary-hover);
     transform: translateX(2px);
 }
