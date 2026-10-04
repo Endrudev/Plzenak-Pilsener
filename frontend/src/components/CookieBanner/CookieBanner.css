@@ -6,6 +6,9 @@
     z-index: 60;
     display: flex;
     justify-content: center;
+    /* Lišta se objevuje jednou za návštěvu, takže si zaslouží vjezd zespodu.
+       Přijde s odstupem, ať nesoupeří s načítající se stránkou. */
+    animation: fade-up var(--dur-slow) var(--ease-standard) 600ms backwards;
 }
 
 #cookie-banner-inner {
@@ -62,8 +65,10 @@
     font-weight: var(--fw-medium);
 }
 
-#cookie-banner-desc a:hover {
-    text-decoration: underline;
+@media (hover: hover) {
+    #cookie-banner-desc a:hover {
+        text-decoration: underline;
+    }
 }
 
 #cookie-banner-actions {
@@ -87,7 +92,8 @@
     padding: var(--space-3) var(--space-5);
     cursor: pointer;
     border: none;
-    transition: filter var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard);
+    transition: filter var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
 #cookie-banner-settings:active,
@@ -103,9 +109,11 @@
     align-self: center;
 }
 
-#cookie-banner-settings:hover {
-    color: var(--color-ink);
-    text-decoration: underline;
+@media (hover: hover) {
+    #cookie-banner-settings:hover {
+        color: var(--color-ink);
+        text-decoration: underline;
+    }
 }
 
 #cookie-banner-reject {
@@ -115,8 +123,10 @@
     color: var(--color-ink);
 }
 
-#cookie-banner-reject:hover {
-    background: var(--color-surface-soft);
+@media (hover: hover) {
+    #cookie-banner-reject:hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 #cookie-banner-accept {
@@ -125,8 +135,10 @@
     color: #fff;
 }
 
-#cookie-banner-accept:hover {
-    filter: brightness(1.08);
+@media (hover: hover) {
+    #cookie-banner-accept:hover {
+        filter: brightness(1.08);
+    }
 }
 
 #cookie-banner-settings:focus-visible,

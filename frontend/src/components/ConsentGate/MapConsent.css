@@ -51,7 +51,8 @@
     font-size: var(--fs-body);
     border: none;
     cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard);
+    transition: filter var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
 .map-consent-btn:active {
@@ -63,8 +64,10 @@
     color: #fff;
 }
 
-.map-consent-btn--primary:hover {
-    filter: brightness(1.08);
+@media (hover: hover) {
+    .map-consent-btn--primary:hover {
+        filter: brightness(1.08);
+    }
 }
 
 .map-consent-btn--secondary {
@@ -73,8 +76,10 @@
     color: var(--color-ink);
 }
 
-.map-consent-btn--secondary:hover {
-    background: var(--color-surface-soft);
+@media (hover: hover) {
+    .map-consent-btn--secondary:hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 .map-consent-always-btn {
@@ -88,10 +93,17 @@
     text-underline-offset: 2px;
     cursor: pointer;
     padding: 0;
+    transition: transform var(--dur-fast) var(--ease-standard);
 }
 
-.map-consent-always-btn:hover {
-    color: var(--color-ink);
+.map-consent-always-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    .map-consent-always-btn:hover {
+        color: var(--color-ink);
+    }
 }
 
 .map-consent-link {
@@ -102,9 +114,11 @@
     margin-top: var(--space-1);
 }
 
-.map-consent-link:hover {
-    text-decoration: underline;
-    color: var(--color-text-muted);
+@media (hover: hover) {
+    .map-consent-link:hover {
+        text-decoration: underline;
+        color: var(--color-text-muted);
+    }
 }
 
 .map-consent-btn:focus-visible,

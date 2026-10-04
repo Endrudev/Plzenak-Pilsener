@@ -9,6 +9,7 @@ import { downloadTextFile } from '../../lib/downloadTextFile.js'
 import { shareEvent } from '../../lib/events/shareEvent.js'
 import './EventDetail.css'
 import { imageBackground } from '../../lib/events/imageBackground.js'
+import EventDetailSkeleton from '../../components/EventDetailSkeleton/EventDetailSkeleton.jsx'
 
 export default function EventDetail() {
     const { id } = useParams()
@@ -54,11 +55,7 @@ export default function EventDetail() {
         }
     }
 
-    if (loading) return (
-        <div id="detail-not-found">
-            <p>Načítání…</p>
-        </div>
-    )
+    if (loading) return <EventDetailSkeleton />
 
     if (!event) return (
         <div id="detail-not-found">

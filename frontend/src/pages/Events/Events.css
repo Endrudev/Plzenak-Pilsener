@@ -162,8 +162,10 @@
   text-decoration: none;
 }
 
-#events-breadcrumb a:hover {
-  color: var(--color-primary);
+@media (hover: hover) {
+    #events-breadcrumb a:hover {
+      color: var(--color-primary);
+    }
 }
 
 #events-breadcrumb span {
@@ -207,7 +209,7 @@
   display: flex;
   align-items: center;
   height: 60px;
-  padding: 6px 6px 6px 22px;
+  padding: var(--space-1-5) var(--space-1-5) var(--space-1-5) var(--space-6);
   box-sizing: border-box;
   border-radius: var(--radius-pill);
   background: #fff;
@@ -256,7 +258,12 @@
   font-weight: var(--fw-bold);
   font-size: var(--fs-body);
   cursor: pointer;
-  transition: background-color var(--dur-fast) var(--ease-standard);
+  transition: background-color var(--dur-fast) var(--ease-standard),
+              transform var(--dur-fast) var(--ease-standard);
+}
+
+#events-search-bar-btn:active {
+    transform: scale(var(--scale-tap));
 }
 
 #events-search-bar-btn svg {
@@ -264,9 +271,14 @@
   height: 16px;
 }
 
-#events-search-bar-btn:hover,
 #events-search-bar-btn:focus-visible {
   background: var(--color-primary-hover);
+}
+
+@media (hover: hover) {
+    #events-search-bar-btn:hover {
+      background: var(--color-primary-hover);
+    }
 }
 
 #events-search-bar-btn:disabled {
@@ -301,12 +313,19 @@
   font-size: var(--fs-sm);
   color: var(--color-primary);
   cursor: pointer;
-  transition: color var(--dur-fast) var(--ease-standard);
+  transition: color var(--dur-fast) var(--ease-standard),
+              transform var(--dur-fast) var(--ease-standard);
 }
 
-#events-clear-btn:hover {
-  color: var(--color-primary-hover);
-  text-decoration: underline;
+#events-clear-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #events-clear-btn:hover {
+      color: var(--color-primary-hover);
+      text-decoration: underline;
+    }
 }
 
 .events-filter-group {
@@ -333,11 +352,11 @@
 .events-pill {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-pill);
-  padding: 7px var(--space-3);
+  padding: var(--space-2) var(--space-3);
   font-family: var(--font-sans);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
@@ -349,8 +368,10 @@
   animation: chip-in var(--dur-fast) var(--ease-standard);
 }
 
-.events-pill:hover {
-  background: var(--color-surface-soft);
+@media (hover: hover) {
+    .events-pill:hover {
+      background: var(--color-surface-soft);
+    }
 }
 
 /* 2.8 Tap */
@@ -364,8 +385,10 @@
   color: #fff;
 }
 
-.events-pill--active:hover {
-  background: var(--color-primary);
+@media (hover: hover) {
+    .events-pill--active:hover {
+      background: var(--color-primary);
+    }
 }
 
 .events-pill:disabled {
@@ -373,8 +396,10 @@
   cursor: not-allowed;
 }
 
-.events-pill:disabled:hover {
-  background: var(--color-surface);
+@media (hover: hover) {
+    .events-pill:disabled:hover {
+      background: var(--color-surface);
+    }
 }
 
 #events-view-toggle {
@@ -382,21 +407,26 @@
   align-self: flex-start;
   background: var(--color-surface-soft);
   border-radius: var(--radius-pill);
-  padding: 3px;
-  gap: 2px;
+  padding: var(--space-1);
+  gap: var(--space-0-5);
 }
 
 .events-view-toggle-btn {
   border: none;
   background: none;
   border-radius: var(--radius-pill);
-  padding: 6px var(--space-4);
+  padding: var(--space-1-5) var(--space-4);
   font-family: var(--font-sans);
   font-size: var(--fs-xs);
   font-weight: var(--fw-medium);
   color: var(--color-text-muted);
   cursor: pointer;
-  transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
+  transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard),
+              transform var(--dur-fast) var(--ease-standard);
+}
+
+.events-view-toggle-btn:active {
+    transform: scale(var(--scale-tap));
 }
 
 .events-view-toggle-btn--active {
@@ -457,13 +487,6 @@
   gap: var(--space-3);
 }
 
-#events-loading {
-  grid-column: 1 / -1;
-  text-align: center;
-  color: var(--color-text-muted);
-  font-family: var(--font-sans);
-  padding: var(--space-16) 0;
-}
 
 /* Stránkování má vlastní komponentu (Pagination.jsx/.css, Fáze 2) — styl
    si nese sama, tady stačí jen odsazení kolem ní. Scoped na #events-page,
@@ -526,4 +549,13 @@
   .events-list--grid {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+/* Dotyk: prst potřebuje cíl aspoň 44 px (--touch-min). Myší je prvek
+   menší a hustší, proto je pravidlo jen pro hrubý ukazatel. */
+@media (pointer: coarse) {
+    .events-pill,
+    .events-view-toggle-btn {
+        min-height: var(--touch-min);
+    }
 }

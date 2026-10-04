@@ -30,7 +30,7 @@
 
 .empty-state-btn {
     border-radius: var(--radius-btn-s);
-    padding: 13px 22px;
+    padding: var(--space-3) var(--space-6);
     font-family: var(--font-sans);
     font-weight: var(--fw-semibold);
     font-size: var(--fs-body);
@@ -38,7 +38,12 @@
     cursor: pointer;
     border: 1px solid transparent;
     transition: background-color var(--dur-fast) var(--ease-standard),
-                border-color var(--dur-fast) var(--ease-standard);
+                border-color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+.empty-state-btn:active {
+    transform: scale(var(--scale-tap));
 }
 
 .empty-state-btn--primary {
@@ -46,8 +51,10 @@
     color: #fff;
 }
 
-.empty-state-btn--primary:hover {
-    background: var(--color-primary-hover);
+@media (hover: hover) {
+    .empty-state-btn--primary:hover {
+        background: var(--color-primary-hover);
+    }
 }
 
 .empty-state-btn--secondary {
@@ -56,6 +63,8 @@
     color: var(--color-ink);
 }
 
-.empty-state-btn--secondary:hover {
-    background: var(--color-surface-soft);
+@media (hover: hover) {
+    .empty-state-btn--secondary:hover {
+        background: var(--color-surface-soft);
+    }
 }

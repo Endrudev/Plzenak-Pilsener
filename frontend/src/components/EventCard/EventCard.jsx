@@ -74,7 +74,12 @@ function GoArrow() {
 //       stránek, kde je pořadí smysluplné — žebříček)
 // why: krátký editorní důvod pro variant="featured" — appka to pole dnes nemá
 //      v datech, zobrazí se jen když ho volající předá
-export default function EventCard({ event, variant = 'grid', rank, why }) {
+// index: pořadí karty v seznamu. Když je zadané, karta při načtení vyjede
+//        s odstupem podle pořadí (třída .enter, viz index.css). Bez něj se
+//        nehýbe, třeba karta mimo seznam.
+export default function EventCard({ event, variant = 'grid', rank, why, index }) {
+    const enter = index == null ? '' : ' enter'
+    const enterStyle = index == null ? undefined : { '--i': index }
     // Plaketa se počítá z data, v databázi uložená není — viz lib/events/eventBadge.js
     const badge = eventBadge(event.date)
 
@@ -97,7 +102,7 @@ export default function EventCard({ event, variant = 'grid', rank, why }) {
     if (variant === 'list') {
         // Celý řádek je <a href> — žádné vnořené tlačítko uvnitř (handoff, přístupnost).
         return (
-            <Link to={`/events/${event.id}`} className="event-card event-card--list">
+            <Link to={`/events/${event.id}`} className={`event-card event-card--list${enter}`} style={enterStyle}>
                 <div
                     className={`event-image ${event.imageUrl ? '' : event.imgClass}`}
                     style={imageBackground(event.imageUrl)}
@@ -115,14 +120,14 @@ export default function EventCard({ event, variant = 'grid', rank, why }) {
 
     if (variant === 'featured' || variant === 'ranked') {
         return (
-            <div className={`event-card event-card--${variant}`}>
+            <div className={`event-card event-card--${variant}${enter}`} style={enterStyle}>
                 {image}
                 <div className="event-info">
                     <EventTags tags={event.tags} />
                     <h2 className="event-name">{event.name}</h2>
                     {variant === 'featured' && why && <p className="event-why">{why}</p>}
                     <EventMeta event={event} />
-                    <Link to={`/events/${event.id}`} className="event-btn">Zobrazit akci<GoArrow /></Link>
+                    <Link to={`/events/${event.id}`} className="event-btn" aria-label={`Zobrazit akci: ${event.name}`}>Zobrazit akci<GoArrow /></Link>
                 </div>
             </div>
         )
@@ -130,13 +135,13 @@ export default function EventCard({ event, variant = 'grid', rank, why }) {
 
     // grid — výchozí, karta podle handoffu (.card.paper-l)
     return (
-        <div className="event-card">
+        <div className={`event-card${enter}`} style={enterStyle}>
             {image}
             <div className="event-info">
                 <h2 className="event-name">{event.name}</h2>
                 <EventMeta event={event} />
                 <EventTags tags={event.tags} />
-                <Link to={`/events/${event.id}`} className="event-btn">Zobrazit akci<GoArrow /></Link>
+                <Link to={`/events/${event.id}`} className="event-btn" aria-label={`Zobrazit akci: ${event.name}`}>Zobrazit akci<GoArrow /></Link>
             </div>
         </div>
     )

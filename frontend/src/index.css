@@ -14,18 +14,16 @@
   --color-primary:       #E8720C;
   --color-primary-hover: #F58A2A;
   --sun:                 #F5A623;
-  --buy-yellow:          #FFC94D;
+  /* Badge vzdálenějšího data a akcent na tmavém. Do 2026-10-04 se token
+     používal ve třech souborech (var(--amber)), ale nikde nebyl definovaný,
+     takže badge „Zítra“ a „TOP akce“ neměly pozadí. */
+  --amber:               #EF9F27;
 
   /* ---------- BARVY · semantické stavy ---------- */
   --green-today:      #34A853;
   --green-today-ink:  #0E3D1C;
-  --status-buy-text:  #5A3A00;
   --badge-bg:         #FBEED4;
   --badge-ink:        #854F0B;
-  --color-success:     #2F6A24;
-  --color-success-bg:  #EAF5E4;
-  --color-danger-soft:    #B03A24;
-  --color-danger-soft-bg: #FDE4E0;
 
   /* ---------- BARVY · teplé neutrály (povrchy) ---------- */
   --color-page:         #FBF7F2;
@@ -36,7 +34,6 @@
 
   /* ---------- BARVY · ink / text ---------- */
   --color-ink:         #2A0F04;
-  --color-ink-hover:   #1D0B04;
   --color-text-muted:  #6E4528;
   --color-label:       #A8480A;
 
@@ -47,59 +44,81 @@
   /* ---------- BARVY · noc (hero, tmavé pásy) ---------- */
   --color-night:       #1D0B04;
   --color-night-2:     #2A1106;
+  --color-skyline-back: #4A2312;   /* zadní řada budov nad pásem Hledání: plná, bez oken, světlejší než přední */
   --color-footer:      #140702;   /* jen patička — nejtmavší tón appky */
   --color-window:      #FFE6BD;   /* rozsvícené okno na tmavé siluetě */
   --color-cream:       #FFF1DE;
   --color-cream-muted: #D9B996;
 
-  /* ---------- BARVY · dlaždice TOP akce (noční panorama, doslova ze zdroje) ---------- */
-  --color-top-bg-1:     #240D04;
-  --color-top-bg-2:     #5E2405;
-  --color-top-bg-3:     #8E3A06;
-  --color-top-mass-far:   #8A3906;
-  --color-top-mass-mid:   #B24C07;
-  --color-top-mass-near:  #D4640A;
-  --color-top-mass-front: #EC8A2C;
-  --color-top-detail:  #3A1604;   /* okna/detaily jako "díry" v siluetě */
-  --color-top-arch:    #2A0F04;   /* nejtmavší, přízemní oblouky/průchody */
+  /* ---------- BARVY · hvězdy a měsíc mimo scény (hero /events) ---------- */
   --color-top-moon:    #FFE3BF;
   --color-top-star:    #FFD9A8;
-  --color-top-bird:    #F4C99A;
-  --color-top-smoke:   #FFE9CF;
-  --color-top-lantern: #FFEFC8;
 
-  /* ---------- BARVY · kategorijní akcenty mimo jantarovou rodinu ---------- */
-  /* Přesné hodnoty z handoff zdroje (dlaždice Hudba v HeroBento) — 3stupňový
-     gradient pozadí + barvy papírové siluety davu/pódia/interpreta. */
-  --color-music-1:          #3A1446;
-  --color-music-2:          #5F2769;
-  --color-music-3:          #7B3480;
-  --color-music-tint:       #F1DDF2;
-  --color-music-fan-back:   #6E2E7A;
-  --color-music-fan-front:  #A866B3;
-  --color-music-stage:      #4A1B56;
-  --color-music-figure:     #F3DDF1;
-  --color-music-figure-alt: #E4C3E6;
-  --color-music-curtain:    #C58FCC;
-  --color-music-curtain-lt: #E6C2E8;
-
-  /* Dtto pro dlaždici Zbytek programu — tři večerní výjevy (stánek,
-     přípitek, dítě s balónkem). */
-  --color-calm-bg:          #E1E9D9;
+  /* ---------- BARVY · text a plochy nad scénami ----------
+     Samotné barvy scén žijí v scenes.css z balíčku plzenak-scenes, tady jsou
+     jen barvy textu a dlaždic, které leží přes scénu. Hodnoty původních
+     ručně kreslených scén (--color-top-*, --color-music-*, většina
+     --color-calm-*) se smazaly 2026-10-04, po výměně scén za balíček. */
+  --color-music-accent:     #A85CB3;   /* šipka dlaždice Hudba při najetí */
   --color-scene-program:    #e2e8d7;   /* pozadí ProgramScene z balíčku plzenak-scenes, dlaždice musí mít přesně tuhle barvu, aby splynul okraj zmenšené scény */
+  --color-calm-accent:      #4C7A55;   /* šipka dlaždice Zbytek programu */
+  --color-calm-accent-hover: #5E946A;
   --color-calm-text:        #213A26;
   --color-calm-text-soft:   #34553A;
-  --color-calm-line:        #8AA680;
-  --color-calm-ground:      #B3C8A8;
-  --color-calm-awning-a:    #DDE7D5;
-  --color-calm-awning-b:    #C6D5BC;
-  --color-calm-awning-trim: #A5BD9B;
-  --color-calm-figure:      #6A8C6D;
   --color-calm-figure-dk:   #3F5E45;
   --color-calm-lamp-glow:   #F4F1E4;
-  --color-calm-bulb:        #FFF3C9;
 
   --color-segment-bg:     #F3E8DA;
+
+  /* ---------- LANDING · dvě témata homepage (2026-10-04) ----------
+     Homepage má tmavé a světlé téma, přepíná se atributem data-lp-mode na <html>
+     (lib/landingTheme.js, přepínač v liště). Výchozí hodnoty --lp-* tady jsou
+     tmavé, světlé je přepis níž v souboru (html.theme-lp[data-lp-mode='light']).
+
+     --dk-* jsou tmavé hodnoty napevno. Čtou je věci, které jsou tmavé v obou
+     tématech: text na fotkách pod ztmavením (karty akcí) a mobilní menu. Kdyby
+     četly --lp-*, ve světlém tématu by na fotce stál tmavý text.
+
+     Žádné čistě černé a čistě bílé plochy, jediný akcent je brandová oranžová
+     (--color-primary), text na ní je tmavý inkoust (--lp-ink-on-accent), ne bílý. */
+  --dk-bg:            #0F0905;
+  --dk-surface:       #1B110B;
+  --dk-surface-hi:    #281910;
+  --dk-line:          rgba(255, 233, 210, 0.10);
+  --dk-line-strong:   rgba(255, 233, 210, 0.20);
+  --dk-text:          #F7F0E8;
+  --dk-muted:         #B8A592;
+
+  --lp-bg:            var(--dk-bg);
+  --lp-surface:       var(--dk-surface);
+  --lp-surface-hi:    var(--dk-surface-hi);
+  --lp-line:          var(--dk-line);
+  --lp-line-strong:   var(--dk-line-strong);
+  --lp-text:          var(--dk-text);
+  --lp-muted:         var(--dk-muted);
+  --lp-accent-text:   var(--color-primary);      /* oranžová jako TEXT na pozadí stránky */
+  --lp-ink-on-accent: #1A0B03;
+  --lp-section:       clamp(72px, 10vw, 144px);     /* svislá mezera mezi sekcemi */
+  --lp-fs-h2:         clamp(2rem, 1.2rem + 3vw, 3.5rem);    /* 32 → 56 px */
+  --lp-fs-mega:       clamp(2.25rem, 1rem + 4.4vw, 4.75rem); /* 36 → 76 px */
+
+  /* ---------- NAVIGACE · skleněná lišta (2026-10-04) ----------
+     Lišta je plovoucí „ostrov“ ze zamlženého skla. Na světlých stránkách je
+     bílá, na tmavé homepage (html.theme-lp) tmavá, a to jen přepsáním těchhle
+     proměnných, komponenta o tématu neví. --nav-bg-scrolled je hustší, aby se
+     lišta po odrolování od vrcholu stránky nepotkala s textem pod sebou. */
+  --nav-bg:           rgba(255, 255, 255, 0.90);   /* hustší sklo: pod lištou bývá tmavé hero a řídké sklo by zešedlo */
+  --nav-bg-scrolled:  rgba(255, 255, 255, 0.96);
+  --nav-panel:        rgba(255, 255, 255, 0.98);   /* rozbalovací panel kategorií, skoro plný, aby pod ním nic neprosvítalo */
+  --nav-line:         rgba(42, 15, 4, 0.08);
+  --nav-ink:          var(--color-ink);
+  --nav-muted:        var(--color-text-muted);
+  --nav-hover:        rgba(42, 15, 4, 0.06);
+  --nav-edge:         rgba(255, 255, 255, 0.55);
+  --nav-shadow:       0 14px 34px -18px rgba(90, 40, 10, 0.45);
+  --nav-h:            64px;
+  --nav-h-mobile:     56px;
+  --overlay-bg:       rgba(15, 9, 5, 0.88);
 
   /* ---------- GRADIENT ---------- */
   --hero-gradient:    linear-gradient(135deg, #EF9F27 0%, #E8720C 100%);
@@ -113,7 +132,6 @@
   --font-display: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
   --font-sans:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  --fw-regular:   400;
   --fw-medium:    500;
   --fw-semibold:  600;
   --fw-bold:      700;
@@ -123,47 +141,56 @@
      --fs-display-xl/-l a --fs-heading-1/-2 a --fs-card-title jsou nové,
      z handoff typografické tabulky (hodnoty jsou střed uvedeného rozsahu —
      přesné clamp() křivky se doladí až při stavbě konkrétních nadpisů). */
-  --fs-display-xl: 108px;
-  --fs-display-l:  78px;
-  --fs-heading-1:  52px;
-  --fs-heading-2:  35px;
+  --fs-display-l:  clamp(48px, 6.5vw, 78px);   /* nadpis stránky listingu */
+  --fs-heading-1:  clamp(36px, 4.2vw, 52px);   /* nadpis sekce na tmavém pásu */
+  --fs-heading-2:  clamp(28px, 2.8vw, 35px);
   --fs-card-title: 23px;
-  --fs-display: 44px;
-  --fs-h1:      32px;
-  --fs-h2:      24px;
+  --fs-display: clamp(32px, 4vw, 44px);
+  --fs-h1:      clamp(26px, 1.2vw + 20px, 32px);   /* nadpis detailu */
+  --fs-h2:      clamp(21px, 0.8vw + 17px, 24px);   /* nadpis sekce */
   --fs-h3:      18px;
+  --fs-h4:      20px;
   --fs-body-lg: 16px;
   --fs-body:    15px;
   --fs-sm:      13px;
   --fs-xs:      12px;
   --fs-2xs:     11px;
 
-  --lh-tight: 1.05;
-  --lh-snug:  1.25;
-  --lh-body:  1.6;
+  --lh-tight:   1.05;   /* velké nadpisy */
+  --lh-snug:    1.25;   /* nadpisy karet a sekcí */
+  --lh-body:    1.6;    /* souvislý text */
 
-  --tracking-display-xl: -0.045em;
   --tracking-display-l:  -0.04em;
   --tracking-heading:    -0.03em;
   --tracking-display: -0.01em;
   --tracking-label:    0.08em;
 
   /* ---------- SPACING · 8px grid ---------- */
-  --space-1:  4px;
-  --space-2:  8px;
-  --space-3:  12px;
-  --space-4:  16px;
-  --space-5:  20px;
-  --space-6:  24px;
-  --space-8:  32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
+  /* Základ je 4 px. Půlkroky (--space-*-5) jsou pro husté prvky: mezery mezi
+     štítky, ikonou a textem, padding pilulek. Cokoli mezi tokeny se zaokrouhlí
+     na nejbližší, hodnoty typu 22 nebo 26 px v systému nejsou. */
+  --space-0-5: 2px;
+  --space-1:   4px;
+  --space-1-5: 6px;
+  --space-2:   8px;
+  --space-2-5: 10px;
+  --space-3:   12px;
+  --space-3-5: 14px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+
+  /* Rytmus stránky: svislá mezera mezi sekcemi a boční odsazení rostou
+     plynule s oknem, ne po skocích na breakpointech. */
+  --section-y: clamp(var(--space-8), 5vw, var(--space-16));   /* 32 → 64 px */
+  --gutter:    clamp(var(--space-4), 3vw, var(--space-8));    /* 16 → 32 px */
+  --measure:   68ch;   /* šířka souvislého textu: víc už se hůř čte */
 
   --container:        1280px;   /* handoff: šířka obsahu 1280px, na 1440px okraje 80px */
-  --container-narrow: 720px;
-  --gutter-desktop:   80px;
-  --gutter-mobile:    16px;
   --touch-min:        44px;
 
   /* Skutečná výška #site-header se dopočítává za běhu (viz Header.jsx,
@@ -177,47 +204,40 @@
   --radius-field-soft: 16px;
   --radius-field: 18px;
   --radius-btn-s: 14px;
-  --radius-nav-link: 12px;   /* jen odkazy v #header-nav — handoff hodnota, mimo hlavní škálu */
   --radius-card:  22px;
-  --radius-tile:  24px;
-  --radius-panel: 27px;
   --radius-scene: 28px;      /* karty s ilustrací na homepage, hodnota z příkladu balíčku plzenak-scenes */
   --radius-pill:  999px;
-  --radius-nav:   0 0 24px 24px;
-  --radius-nav-mobile: 0 0 20px 20px;
 
   /* ---------- STÍNY ---------- */
-  --shadow-card:       0 6px 20px rgba(31, 27, 22, 0.10);
-  --shadow-card-hover: 0 10px 28px rgba(31, 27, 22, 0.14);
-  --shadow-pop:        0 12px 32px rgba(31, 27, 22, 0.18);
-  --shadow-inset:      inset 0 0 0 1px var(--color-line);
+  /* Vrstvené stíny v odstínu inkoustu (--color-ink, #2A0F04): těsný kontaktní
+     stín pod prvkem + široký rozptýlený pod ním. Jeden rozmazaný stín působí
+     plošně, dvě vrstvy dávají hloubku. Záporný spread drží rozptyl pod kartou. */
+  --shadow-card:       0 1px 2px rgba(42, 15, 4, 0.06), 0 10px 24px -10px rgba(90, 40, 10, 0.22);
+  --shadow-card-hover: 0 2px 4px rgba(42, 15, 4, 0.06), 0 18px 36px -12px rgba(90, 40, 10, 0.32);
+  --shadow-pop:        0 2px 6px rgba(42, 15, 4, 0.08), 0 20px 44px -14px rgba(90, 40, 10, 0.38);
   --focus-shadow:      0 0 0 3px rgba(232, 114, 12, 0.40);
   --shadow-paper:      0 1px 2px rgba(42, 15, 4, .06), 0 22px 44px -26px rgba(90, 40, 10, .45);
-  --shadow-nav:        0 16px 32px -20px rgba(90, 40, 10, .45);
-  --paper-layer:       drop-shadow(0 -3px 5px rgba(22, 5, 0, .55));
 
   /* ---------- MOTION ----------
      Sada B z motion specu (návrh Plzeňák). Nahradila původní konzervativnější
      hodnoty: base 180→220ms, slow 260→400ms, jiná křivka. Původní křivka
-     zůstává jako --ease-legacy, protože ji spec vyhrazuje pro dvě místa
-     (crossfade hero karuselu a šířku teček). --ease-out byl nepoužívaný,
-     v sadě B není a byl odstraněn. */
+     (--ease-legacy) patřila crossfade hero karuselu a tečkám, a protože je
+     hero bento bez karuselu, 2026-10-04 se smazala i s trváním karuselu. */
 
   /* trvání */
   --dur-fast:      120ms;
   --dur-base:      220ms;
   --dur-slow:      400ms;
-  --dur-crossfade: 800ms;   /* hero karusel, prolnutí fotek */
-  --dur-dot:       260ms;   /* šířka aktivní tečky karuselu */
 
   /* easing */
-  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-legacy:   cubic-bezier(0.2, 0, 0, 1);   /* jen crossfade + tečky */
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);      /* vstupy, hover, stisk: ease-out se silným náběhem */
+  --ease-drawer:   cubic-bezier(0.32, 0.72, 0, 1);      /* plynulé výjezdy a posuvy (landing) */
+  --ease-in-out:   cubic-bezier(0.77, 0, 0.175, 1);     /* pohyb, který zůstává na obrazovce (přesun, rozbalení) */
+  --ease-linear:   linear;                              /* nepřetržité smyčky (shimmer) */
   --ease-reduced:  linear;                       /* prefers-reduced-motion */
 
   /* delay a stagger — spotřebuje až JS vrstva (fade-up při scrollu) */
   --stagger-grid: 60ms;
-  --stagger-hero: 80ms;
   --delay-mount:  40ms;
   --stagger-max:  8;        /* dál už jen fade bez posunu */
 
@@ -225,25 +245,18 @@
   --loop-pulse:        2400ms;
   --loop-pulse-delay:  1600ms;
   --loop-shimmer:      1400ms;
-  --carousel-interval: 5500ms;
 
   /* geometrie transformů */
   --y-fade-up:        16px;   /* karty, sekce */
-  --y-fade-up-hero:   12px;   /* hero prvky */
   --lift-card:        -4px;
-  --scale-tile:       1.02;   /* hover dlaždice kategorie */
   --scale-tap:        0.98;
+  --scale-tap-tile:   0.985;  /* velké plochy (dlaždice) potřebují menší stisk */
+  --scale-popover:    0.97;   /* popover nikdy nenaskakuje z nuly ani ze 100 % */
+  --y-popover:        -4px;
   --scale-modal:      0.96;
   --scale-chip:       0.9;
   --scale-pulse:      1.04;
   --opacity-pulse:    0.88;
-  --parallax-factor:  0.18;   /* × výška hero → max 40px */
-  --hero-photo-scale: 1.06;
-  --hero-scrim:       0.50;
-
-  /* prahy scrollu — kondenzace filtrační lišty (hystereze, ať lišta neblikne) */
-  --dense-on:  200px;
-  --dense-off: 160px;
 }
 
 /* ---------- MOTION · globální pravidla ----------
@@ -277,14 +290,52 @@
   to   { opacity: 1; }
 }
 
+@keyframes overlay-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes modal-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(var(--scale-modal)); }
+}
+
 @keyframes chip-in {
   from { opacity: 0; transform: scale(var(--scale-chip)); }
   to   { opacity: 1; transform: scale(1); }
 }
 
+/* Popover roste z místa, kde je připnutý (transform-origin si nastaví
+   komponenta), ne ze středu. Čistý translateY bez scale působil jako
+   plovoucí panel, ne jako rozbalení tlačítka. */
 @keyframes popover-in {
-  from { opacity: 0; transform: translateY(-4px); }
+  from { opacity: 0; transform: translateY(var(--y-popover)) scale(var(--scale-popover)); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Sekce v <Reveal>: děti s .enter čekají na začátku, dokud se sekce neobjeví
+   v okně (katalog 2.3). Animace se jen pozastaví, takže zpoždění podle
+   pořadí zůstane zachované. Bez prefers-reduced-motion: no-preference se nic
+   nepozastavuje, obsah je vidět hned. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal:not(.reveal--in) .enter {
+    animation-play-state: paused;
+  }
+}
+
+/* Vstup bloku při načtení (katalog 2.1–2.4). Použití: class="enter" a
+   style={{ '--i': index }}. Zpoždění roste s pořadím, ale nejvýš do
+   --stagger-max, takže poslední prvky v dlouhém seznamu nečekají. */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(var(--y-fade-up)); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+.enter {
+  /* backwards, ne both: po skončení animace se nesmí držet koncový transform,
+     jinak přebíjí :hover a :active na stejném prvku (karta by se nezvedla). */
+  animation: fade-up var(--dur-slow) var(--ease-standard) backwards;
+  animation-delay: calc(var(--delay-mount) + min(var(--i, 0), var(--stagger-max)) * var(--stagger-grid));
 }
 
 /* Skeleton pro načítací stavy — druhá povolená výjimka (background-position).
@@ -297,7 +348,7 @@
     var(--color-surface-soft) 75%
   );
   background-size: 200% 100%;
-  animation: shimmer var(--loop-shimmer) var(--ease-standard) infinite;
+  animation: shimmer var(--loop-shimmer) var(--ease-linear) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -309,12 +360,98 @@
   }
 }
 
+/* Homepage přepíná celé pozadí (Home.jsx nastaví třídu na <html>), jinak by
+   za plovoucí hlavičkou a při přetažení stránky prosvítala krémová. */
+html.theme-lp,
+html.theme-lp body {
+  background: var(--lp-bg);
+}
+
+/* Světlé téma homepage. Základ je neutrální teplá off-white, ne krémová a ne
+   čistě bílá: karty jsou o stupeň světlejší než pozadí, text off-black. Oranžová
+   jako text je tmavší odstín (--color-label), protože #E8720C na světlém dává
+   kontrast jen kolem 3:1. */
+html.theme-lp[data-lp-mode='light'] {
+  --lp-bg:            #F6F3EF;
+  --lp-surface:       #FEFCFA;
+  --lp-surface-hi:    #ECE7E0;
+  --lp-line:          rgba(26, 17, 11, 0.09);
+  --lp-line-strong:   rgba(26, 17, 11, 0.18);
+  --lp-text:          #1A110B;
+  --lp-muted:         #66564A;
+  --lp-accent-text:   var(--color-label);
+}
+
+/* Tmavá homepage přepíná i skleněnou lištu (viz tokeny --nav-*). Ve světlém
+   tématu platí výchozí (světlé) hodnoty lišty z :root. */
+html.theme-lp:not([data-lp-mode='light']) {
+  --nav-bg:          rgba(27, 17, 11, 0.62);
+  --nav-bg-scrolled: rgba(27, 17, 11, 0.9);
+  --nav-panel:       rgba(27, 17, 11, 0.98);
+  --nav-line:        var(--lp-line);
+  --nav-ink:         var(--lp-text);
+  --nav-muted:       var(--lp-muted);
+  --nav-hover:       rgba(255, 233, 210, 0.08);
+  --nav-edge:        rgba(255, 233, 210, 0.10);
+  --nav-shadow:      0 14px 34px -14px rgba(0, 0, 0, 0.7);
+}
+
 html, body {
   margin: 0;
   min-height: 100%;
   font-family: var(--font-sans);
   background: var(--color-page);
   color: var(--color-ink);
+}
+
+/* ---------- ZÁKLAD · detaily, které se nevidí, dokud chybí ---------- */
+
+html {
+  /* Text na macOS jinak vychází o chlup tučnější než v návrhu. */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* iOS jinak po otočení telefonu zvětší písmo. */
+  -webkit-text-size-adjust: 100%;
+  /* Šedý záblesk při klepnutí na mobilu: stisk řeší vlastní :active. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Nadpisy se zalomí do vyrovnaných řádků (žádná sirotčí slova), odstavce
+   bez osiřelé poslední řádky. */
+h1, h2, h3, h4 { text-wrap: balance; }
+p, li, figcaption { text-wrap: pretty; }
+
+/* Čísla ve sloupcích, datech a počtech nesmí poskakovat při změně hodnoty. */
+.tnum, time, [data-tnum] { font-variant-numeric: tabular-nums; }
+
+/* Číselné údaje, které se mění nebo stojí ve sloupci: počty, stránkování,
+   admin tabulka. Jedna šířka číslic = nic neposkakuje. */
+.category-tile-count, .pagination-btn, .dashboard-pag-btn, #categories-count, table td, table th {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Klepnutí bez 300ms čekání na dvojklik a bez zoomu při rychlém dvojitém
+   klepnutí; netýká se posouvání. */
+a, button, summary, label, [role="button"], input, select, textarea {
+  touch-action: manipulation;
+}
+
+/* Fokus z klávesnice: jednotný výchozí prstenec pro všechno, co si vlastní
+   neřeší. :where() má nulovou specificitu, takže komponentní focus styly
+   vyhrají. Myší se prstenec neukazuje (jen :focus-visible). */
+:where(a, button, summary, [role="button"], [tabindex]):focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--sun);
+  color: var(--color-ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
 }
 
 #root {

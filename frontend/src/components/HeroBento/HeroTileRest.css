@@ -6,94 +6,41 @@
 }
 
 /* Scéna je hustá a nemá stínění jako ostatní dvě, takže text přes ni splýval.
-   Zmenší se na 80 % a přitiskne do pravého horního rohu: nadpis vlevo nahoře a
-   kategorie dole leží na čistém pozadí. Zmenšuje se skutečný rozměr boxu, ne
-   transform: scale. Scéna má animované vrstvy, které prohlížeč vykreslí v původní
-   velikosti, a transform je pak jen zmenší jako obrázek, což bylo viditelně
-   rozmazané (ostrost hran o pětinu nižší). Box je stejného poměru stran jako
-   dlaždice, takže se kresba ořízne stejně. Pozadí scény i dlaždice je stejná
-   barva, okraj zmenšené scény se proto nepozná. */
+   Zmenší se na 76 % a přitiskne do pravého dolního rohu (girlanda je pak pod nadpisem, ne v něm): nadpis vlevo nahoře a
+   šipka vpravo nahoře leží na čistém pozadí. Zmenšuje se skutečný rozměr boxu,
+   ne transform: scale. Scéna má animované vrstvy, které prohlížeč vykreslí v
+   původní velikosti, a transform je pak jen zmenší jako obrázek, což bylo
+   viditelně rozmazané (ostrost hran o pětinu nižší). Box je stejného poměru
+   stran jako dlaždice, takže se kresba ořízne stejně. Pozadí scény i dlaždice je
+   stejná barva, okraj zmenšené scény se proto nepozná. */
 .hero-tile--rest .hero-tile-scene {
-    inset: 0 0 auto auto;
-    width: 80%;
-    height: 80%;
+    inset: auto 0 0 auto;
+    width: 76%;
+    height: 76%;
 }
 
-/* ---------- text (mimo scénu, přes celou výšku dlaždice) ---------- */
-/* .hero-tile--rest .hero-tile-overlay (dvě třídy), ne jen .ht-rest-overlay
-   samotné — potřebuje přebít .hero-tile-overlay{justify-content:flex-start}
-   ze sdíleného HeroBento.css. Se stejnou specificitou (obě jedna třída) by
-   o vítězi rozhodovalo pořadí importu CSS souborů, což je křehké a přesně
-   tohle se pak rozbilo (kategorie se sesypaly nahoru k nadpisu místo dole). */
-.hero-tile--rest .hero-tile-overlay {
-    justify-content: space-between;
-    z-index: 2;
-}
-
-.ht-rest-top {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-}
-
+/* Jen nadpis. Šířka na 7 znaků ho láme na dva řádky, ať nezasahuje do šipky. */
 .hero-tile--rest .hero-tile-title {
     max-width: 7ch;
     color: var(--color-calm-text);
 }
 
-.ht-rest-browse {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    color: var(--color-calm-text-soft);
-    pointer-events: auto;
+/* Šipka ve zelené, při najetí světlejší. Selektor má o třídu víc než obecné
+   .hero-tile:hover v HeroBento.css (viz HeroTileMusic.css). */
+.hero-tile--rest .hero-tile-arrow {
+    background: var(--color-calm-accent);
 }
 
-.ht-rest-browse-go {
-    display: flex;
-    transition: transform var(--dur-fast) var(--ease-standard);
+.hero-bento .hero-tile--rest:focus-visible .hero-tile-arrow {
+    background: var(--color-calm-accent-hover);
 }
 
-.hero-tile--rest:hover .ht-rest-browse-go,
-.hero-tile--rest:focus-visible .ht-rest-browse-go {
-    transform: translateX(4px);
-}
-
-.ht-rest-cats {
-    display: flex;
-    gap: var(--space-2);
-    pointer-events: auto;
-}
-
-.ht-rest-cat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    width: 52px;
-}
-
-.ht-rest-cat-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-el);
-    background: rgba(255, 255, 255, .55);
-    color: var(--color-calm-text-soft);
-}
-
-.ht-rest-cat-label {
-    font-size: var(--fs-2xs);
-    font-weight: var(--fw-medium);
-    color: var(--color-calm-text-soft);
-    text-align: center;
+@media (hover: hover) {
+    .hero-bento .hero-tile--rest:hover .hero-tile-arrow {
+        background: var(--color-calm-accent-hover);
+    }
 }
 
 @media (max-width: 767px) {
     .hero-tile--rest .hero-tile-title { font-size: var(--fs-h3); }
-    .ht-rest-cat-label { display: none; }
 }

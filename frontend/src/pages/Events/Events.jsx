@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import EventCard from '../../components/EventCard/EventCard.jsx'
+import EventCardSkeleton from '../../components/EventCardSkeleton/EventCardSkeleton.jsx'
 import Pagination from '../../components/Pagination/Pagination.jsx'
 import EmptyState from '../../components/EmptyState/EmptyState.jsx'
 import BuildingSkyline from '../../components/NightSkyline/BuildingSkyline.jsx'
@@ -380,7 +381,7 @@ export default function Events() {
 
       <div id="events-list" className={view === 'list' ? 'events-list--list' : 'events-list--grid'}>
         {loading
-          ? <p id="events-loading">Načítání…</p>
+          ? <EventCardSkeleton />
           : allEvents.length === 0
             ? (
               <EmptyState
@@ -388,7 +389,7 @@ export default function Events() {
                 onReset={hasAppliedFilters ? clearFilters : undefined}
               />
             )
-            : allEvents.map(event => <EventCard key={event.id} event={event} variant={view} />)
+            : allEvents.map((event, i) => <EventCard key={event.id} event={event} variant={view} index={i} />)
         }
       </div>
 

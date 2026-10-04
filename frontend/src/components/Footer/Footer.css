@@ -20,6 +20,12 @@
     background: linear-gradient(to bottom, var(--color-page) 0%, var(--color-night-2) 72%, var(--color-footer) 100%);
 }
 
+/* Na tmavé homepage (html.theme-lp, viz Home.jsx) začíná pruh za siluetou barvou
+   tamní stránky, ne krémovou, jinak by nad tmavým obsahem svítil světlý pás. */
+html.theme-lp .footer-skyline {
+    background: linear-gradient(to bottom, var(--lp-bg) 0%, var(--color-night-2) 72%, var(--color-footer) 100%);
+}
+
 /* Jemný černý glow hned pod siluetou — vlastní vrstva, ne
    filter:drop-shadow na siluetě samotné. Stín z filteru potřebuje volný
    prostor kolem zdroje a #site-footer má overflow:hidden přesně na
@@ -42,11 +48,11 @@
     fill: var(--color-footer);
 }
 
-/* Zadní vrstva — tlumenější tón, ať čte jako dál/za hlavní řadou, ne jako
-   stejná budova navíc. */
+/* Zadní řada: plná, bez oken a v jiné (světlejší) barvě než přední, stejně
+   jako nad pásem Hledání na Home (viz `packed` v BuildingSkyline.jsx). */
 .footer-skyline .skyline-mass--back {
-    fill: var(--color-night-2);
-    opacity: 0.8;
+    fill: var(--color-skyline-back);
+    opacity: 1;
 }
 
 .footer-skyline .skyline-window {
@@ -104,7 +110,7 @@
 #footer-col-project a {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-1-5);
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     color: var(--color-cream);
@@ -117,12 +123,14 @@
     transition: color var(--dur-fast) var(--ease-standard);
 }
 
-#footer-col-app a:hover,
-#footer-col-legal a:hover,
-#footer-col-legal button:hover,
-#footer-col-project a:hover {
-    color: var(--color-primary-hover);
-    text-decoration: underline;
+@media (hover: hover) {
+    #footer-col-app a:hover,
+    #footer-col-legal a:hover,
+    #footer-col-legal button:hover,
+    #footer-col-project a:hover {
+        color: var(--color-primary-hover);
+        text-decoration: underline;
+    }
 }
 
 #footer-copy {

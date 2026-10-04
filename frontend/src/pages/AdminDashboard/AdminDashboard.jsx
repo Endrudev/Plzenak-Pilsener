@@ -134,7 +134,9 @@ export default function AdminDashboard() {
                 </div>
 
                 {loading ? (
-                    <p id="dashboard-loading">Načítání…</p>
+                    <div id="dashboard-loading" role="status" aria-label="Načítání akcí">
+                        {Array.from({ length: 6 }, (_, i) => <div key={i} className="dash-skel-row skeleton" />)}
+                    </div>
                 ) : loadError ? (
                     <div id="dashboard-empty" className="dashboard-empty--error">
                         <span id="dashboard-empty-icon">

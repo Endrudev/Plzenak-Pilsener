@@ -33,17 +33,17 @@ export default function CategoryHero({
             <div className="cat-hero-scene">{scene}</div>
 
             <div className="cat-hero-text">
-                <nav className="cat-hero-crumbs" aria-label="Drobečková navigace">
+                <nav className="cat-hero-crumbs enter" style={{ '--i': 0 }} aria-label="Drobečková navigace">
                     <a href="/">Plzeňák</a> / <a href="/events">Akce</a> / <span>{breadcrumbLabel}</span>
                 </nav>
-                <span className="cat-hero-eyebrow">
+                <span className="cat-hero-eyebrow enter" style={{ '--i': 1 }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.7 5.7 6.2.8-4.6 4.3 1.2 6.2L12 16.8l-5.5 3 1.2-6.2L3.1 9.3l6.2-.8z" /></svg>
                     {eyebrow}
                 </span>
-                <h1 className="cat-hero-title" style={{ fontSize: titleSize }}>{title}</h1>
-                <p className="cat-hero-lead">{lead}</p>
+                <h1 className="cat-hero-title enter" style={{ fontSize: titleSize, '--i': 2 }}>{title}</h1>
+                <p className="cat-hero-lead enter" style={{ '--i': 3 }}>{lead}</p>
                 {stats && (
-                    <div className="cat-hero-stats">
+                    <div className="cat-hero-stats enter" style={{ '--i': 4 }}>
                         {stats.map((s, i) => (
                             <span key={i}>
                                 {s.value && <strong>{s.value}</strong>} {s.label}

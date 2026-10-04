@@ -13,7 +13,7 @@
   position: relative;
   z-index: 1;
   margin-top: -48px;
-  width: calc(100% - 2 * var(--space-4));
+  width: calc(100% - 2 * var(--gutter));
   max-width: var(--container);
   margin-left: auto;
   margin-right: auto;
@@ -132,8 +132,8 @@
 
 .catfilter-when {
   display: flex;
-  gap: 4px;
-  padding: 4px;
+  gap: var(--space-1);
+  padding: var(--space-1);
   border-radius: var(--radius-pill);
   background: var(--color-surface-soft);
 }
@@ -148,11 +148,18 @@
   font-weight: var(--fw-semibold);
   color: var(--color-text-muted);
   cursor: pointer;
-  transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
+  transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard),
+              transform var(--dur-fast) var(--ease-standard);
 }
 
-.catfilter-when-btn:hover {
-  color: var(--color-ink);
+.catfilter-when-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    .catfilter-when-btn:hover {
+      color: var(--color-ink);
+    }
 }
 
 .catfilter-when-btn.is-on {
@@ -179,7 +186,7 @@
 
 .catfilter-count strong {
   font-family: var(--font-display);
-  font-size: var(--fs-h4, 20px);
+  font-size: var(--fs-h4);
   color: var(--color-ink);
 }
 
@@ -199,10 +206,17 @@
   color: var(--color-ink);
   text-decoration: underline;
   cursor: pointer;
+    transition: transform var(--dur-fast) var(--ease-standard);
 }
 
-.catfilter-reset:hover {
-  color: var(--color-text-muted);
+.catfilter-reset:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    .catfilter-reset:hover {
+      color: var(--color-text-muted);
+    }
 }
 
 .catfilter-reset:focus-visible {
@@ -222,3 +236,11 @@
   }
 }
 
+/* Dotyk: prst potřebuje cíl aspoň 44 px (--touch-min). Myší je prvek
+   menší a hustší, proto je pravidlo jen pro hrubý ukazatel. */
+@media (pointer: coarse) {
+    .catfilter-when-btn,
+    .catfilter-reset {
+        min-height: var(--touch-min);
+    }
+}

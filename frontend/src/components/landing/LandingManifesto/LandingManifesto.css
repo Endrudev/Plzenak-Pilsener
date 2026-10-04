@@ -1,0 +1,58 @@
+/* Manifest. Slova začínají zhasnutá a rozsvěcují se podle průchodu sekce
+   oknem (animation-timeline: view()). Zpoždění každého slova dává jeho pořadí
+   (--i), takže se věta čte zleva doprava, jak se odkrývá.
+
+   Bez @supports (starší prohlížeč) nebo s prefers-reduced-motion se nic
+   nepřipraví a věta je celá vidět. Zhasnutý stav je tedy jen vylepšení. */
+
+.lm-text {
+    margin: 0;
+    max-width: 22em;
+    font-size: var(--lp-fs-mega);
+    font-weight: var(--fw-extrabold);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-heading);
+    color: var(--lp-text);
+    text-wrap: balance;
+}
+
+.lm-word {
+    display: inline;
+}
+
+/* Kresba jako pilulka uprostřed věty. Výška odpovídá výšce písma, ať věta
+   neztratí řádkování. */
+.lm-pill {
+    display: inline-block;
+    width: 2.3em;
+    height: 0.82em;
+    margin: 0 0.1em;
+    vertical-align: -0.04em;
+    border-radius: var(--radius-pill);
+    background-size: cover;
+    background-position: center bottom;
+    border: 1px solid var(--lp-line-strong);
+}
+
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        .lm-text {
+            view-timeline: --lm-sentence block;
+        }
+
+        .lm-word,
+        .lm-pill {
+            opacity: 0.16;
+            animation: lm-on linear both;
+            animation-timeline: --lm-sentence;
+            /* Každé slovo má svůj úsek dráhy, posunutý podle pořadí. */
+            animation-range:
+                cover calc(8% + var(--i) * 1.6%)
+                cover calc(30% + var(--i) * 1.6%);
+        }
+    }
+}
+
+@keyframes lm-on {
+    to { opacity: 1; }
+}

@@ -21,7 +21,7 @@
    kraje do kraje obrazovky (moc široké) ani na vlastní jiný max-width
    (moc úzké oproti nim). */
 .catpage-grid {
-  width: calc(100% - 2 * var(--space-4));
+  width: calc(100% - 2 * var(--gutter));
   max-width: var(--container);
   margin-left: auto;
   margin-right: auto;
@@ -38,16 +38,8 @@
   grid-column: 1 / -1;
 }
 
-.catpage-loading {
-  grid-column: 1 / -1;
-  text-align: center;
-  color: var(--color-text-muted);
-  font-family: var(--font-sans);
-  padding: var(--space-16) 0;
-}
-
 .catpage .pagination {
-  width: calc(100% - 2 * var(--space-4));
+  width: calc(100% - 2 * var(--gutter));
   max-width: var(--container);
   margin-left: auto;
   margin-right: auto;

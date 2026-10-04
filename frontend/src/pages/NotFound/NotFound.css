@@ -123,8 +123,10 @@
     color: #fff;
 }
 
-#notfound-home-btn:hover {
-    filter: brightness(1.08);
+@media (hover: hover) {
+    #notfound-home-btn:hover {
+        filter: brightness(1.08);
+    }
 }
 
 #notfound-events-btn {
@@ -133,8 +135,10 @@
     color: #fff;
 }
 
-#notfound-events-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
+@media (hover: hover) {
+    #notfound-events-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+    }
 }
 
 #notfound-search {
@@ -185,11 +189,18 @@
     font-weight: var(--fw-semibold);
     font-size: var(--fs-sm);
     cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard);
+    transition: filter var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-#notfound-search button:hover {
-    filter: brightness(1.08);
+#notfound-search button:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #notfound-search button:hover {
+        filter: brightness(1.08);
+    }
 }
 
 #notfound-quicklinks {
@@ -204,7 +215,7 @@
 #notfound-quicklinks a {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-1-5);
     font-family: var(--font-sans);
     font-size: var(--fs-xs);
     font-weight: var(--fw-medium);
@@ -213,8 +224,10 @@
     transition: color var(--dur-fast) var(--ease-standard);
 }
 
-#notfound-quicklinks a:hover {
-    color: #fff;
+@media (hover: hover) {
+    #notfound-quicklinks a:hover {
+        color: #fff;
+    }
 }
 
 @media (min-width: 640px) {

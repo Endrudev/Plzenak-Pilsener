@@ -9,19 +9,23 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  width: calc(100% - 2 * var(--space-4));
+  width: calc(100% - 2 * var(--gutter));
   max-width: var(--container);
   margin-left: auto;
   margin-right: auto;
-  padding-bottom: var(--space-16);
+  /* Mezera nad blokem je rytmus stránky, ne odsazení dětí: blok dřív
+     přilepený těsně pod mřížku karet. */
+  margin-top: var(--section-y);
+  padding-bottom: var(--section-y);
 }
 
 .other-cats-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--fs-h1);
-  font-weight: var(--fw-extrabold);
-  letter-spacing: -0.02em;
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-heading);
   color: var(--color-ink);
 }
 
@@ -44,8 +48,10 @@
   transition: transform var(--dur-base, .3s) var(--ease-standard, ease);
 }
 
-.other-cats-card:hover {
-  transform: translateY(-4px);
+@media (hover: hover) {
+    .other-cats-card:hover {
+      transform: translateY(-4px);
+    }
 }
 
 .other-cats-card:focus-visible {
@@ -56,7 +62,7 @@
 .other-cats-text {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
   min-width: 0;
 }
 
@@ -78,9 +84,14 @@
   transition: transform var(--dur-fast) var(--ease-standard);
 }
 
-.other-cats-card:hover .other-cats-go,
 .other-cats-card:focus-visible .other-cats-go {
   transform: translateX(4px);
+}
+
+@media (hover: hover) {
+    .other-cats-card:hover .other-cats-go {
+      transform: translateX(4px);
+    }
 }
 
 @media (min-width: 640px) {

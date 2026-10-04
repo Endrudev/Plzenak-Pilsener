@@ -8,7 +8,7 @@ export default function Footer() {
     const { openSettings } = useConsent()
     return (
         <footer id="site-footer">
-            <BuildingSkyline className="footer-skyline" />
+            <BuildingSkyline className="footer-skyline" packed />
             <div className="footer-skyline-glow" aria-hidden="true" />
             <div id="footer-inner">
                 <div id="footer-brand">

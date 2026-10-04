@@ -1,12 +1,28 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './CookieSettings.css'
+
+// Zavření trvá o něco míň než otevření (--dur-fast vs --dur-base): odchod má být
+// svižný, uživatel už rozhodl. Číslo musí odpovídat --dur-fast v index.css.
+const EXIT_MS = 120
 
 const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
 export default function CookieSettings({ initialMaps, onSave, onRejectAll, onClose }) {
     const [mapsEnabled, setMapsEnabled] = useState(initialMaps)
+    const [closing, setClosing] = useState(false)
+    const closingRef = useRef(false)
     const dialogRef = useRef(null)
     const previouslyFocused = useRef(null)
+
+    // Okno se nesmí odmontovat hned, jinak by zmizelo bez animace. Nejdřív se
+    // přehraje odchod (třída --closing), a teprve potom se zavolá rodič, který
+    // komponentu odebere. Ref hlídá dvojí zavření (Escape + klik).
+    const leave = useCallback((action) => {
+        if (closingRef.current) return
+        closingRef.current = true
+        setClosing(true)
+        setTimeout(action, EXIT_MS)
+    }, [])
 
     useEffect(() => {
         previouslyFocused.current = document.activeElement
@@ -19,7 +35,7 @@ export default function CookieSettings({ initialMaps, onSave, onRejectAll, onClo
 
         function handleKeyDown(e) {
             if (e.key === 'Escape') {
-                onClose()
+                leave(onClose)
                 return
             }
             if (e.key !== 'Tab') return
@@ -45,23 +61,23 @@ export default function CookieSettings({ initialMaps, onSave, onRejectAll, onClo
             document.body.style.overflow = previousOverflow
             previouslyFocused.current?.focus?.()
         }
-    }, [onClose])
+    }, [onClose, leave])
 
     function handleOverlayClick(e) {
-        if (e.target === e.currentTarget) onClose()
+        if (e.target === e.currentTarget) leave(onClose)
     }
 
     function handleSave() {
-        onSave({ maps: mapsEnabled })
+        leave(() => onSave({ maps: mapsEnabled }))
     }
 
     function handleRejectAll() {
         setMapsEnabled(false)
-        onRejectAll()
+        leave(onRejectAll)
     }
 
     return (
-        <div id="cookie-settings-overlay" onClick={handleOverlayClick}>
+        <div id="cookie-settings-overlay" className={closing ? 'cookie-settings--closing' : undefined} onClick={handleOverlayClick}>
             <div
                 id="cookie-settings-modal"
                 role="dialog"
@@ -71,7 +87,7 @@ export default function CookieSettings({ initialMaps, onSave, onRejectAll, onClo
             >
                 <div id="cookie-settings-header">
                     <h2 id="cookie-settings-title">Nastavení cookies</h2>
-                    <button type="button" id="cookie-settings-close" onClick={onClose} aria-label="Zavřít">
+                    <button type="button" id="cookie-settings-close" onClick={() => leave(onClose)} aria-label="Zavřít">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                         </svg>

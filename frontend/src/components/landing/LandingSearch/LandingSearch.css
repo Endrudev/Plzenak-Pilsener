@@ -1,0 +1,169 @@
+/* Hledání: vlevo nadpis, vpravo formulář v dvojitém rámu. Na telefonu se
+   skládá pod sebe. */
+
+.ls-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    align-items: center;
+}
+
+@media (min-width: 1024px) {
+    .ls-grid {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        gap: var(--space-16);
+    }
+}
+
+/* ---------- dvojitý rám ---------- */
+.ls-bezel {
+    padding: var(--space-1-5);
+    border: 1px solid var(--lp-line);
+    border-radius: var(--radius-scene);
+    background: color-mix(in srgb, var(--lp-text) 4%, transparent);
+}
+
+/* Jádro: vlastní plocha a světlá hrana nahoře. Zaoblení je o odsazení rámu
+   menší (28 - 6 px), takže jsou oba oblouky soustředné. */
+.ls-core {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    border-radius: calc(var(--radius-scene) - var(--space-1-5));
+    background: var(--lp-surface);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--lp-text) 8%, transparent);
+}
+
+.ls-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.ls-label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--lp-muted);
+}
+
+.ls-input {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    height: 60px;
+    padding: 0 var(--space-5);
+    border: 1px solid var(--lp-line-strong);
+    border-radius: var(--radius-pill);
+    background: var(--lp-bg);
+    color: var(--lp-muted);
+    transition: border-color var(--dur-fast) var(--ease-standard),
+                box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+.ls-input:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-shadow);
+}
+
+.ls-input input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--lp-text);
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-medium);
+}
+
+/* Zástupný text má kontrast aspoň 4,5:1 vůči poli (--lp-muted na --lp-bg). */
+.ls-input input::placeholder {
+    color: var(--lp-muted);
+    opacity: 1;
+}
+
+.ls-selects {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+    .ls-selects {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.ls-submit {
+    align-self: flex-start;
+    margin-top: var(--space-2);
+}
+
+/* ---------- FilterSelect na tmavém ----------
+   Komponenta je v základu světlá (bílý spouštěč, bílý popover). Tady se jen
+   přebarví, nic se nemění v jejím chování ani v ostatních stránkách. */
+.ls .filter-dropdown {
+    width: 100%;
+}
+
+.ls .filter-dropdown-trigger {
+    background: var(--lp-bg);
+    border: 1px solid var(--lp-line-strong);
+    border-radius: var(--radius-pill);
+    height: 64px;
+    font-family: var(--font-display);
+}
+
+.ls .filter-dropdown-trigger--labeled {
+    padding: 0 var(--space-10) 0 var(--space-5);
+}
+
+.ls .filter-dropdown-eyebrow {
+    color: var(--lp-muted);
+}
+
+.ls .filter-dropdown-trigger--labeled .filter-dropdown-label {
+    color: var(--lp-text);
+}
+
+.ls .filter-dropdown-label--placeholder,
+.ls .filter-dropdown-trigger--labeled .filter-dropdown-label--placeholder {
+    color: var(--lp-text);
+}
+
+.ls .filter-dropdown-trigger--labeled .filter-dropdown-chevron,
+.ls .filter-dropdown-icon {
+    color: var(--lp-muted);
+}
+
+.ls .filter-dropdown-trigger--labeled .filter-dropdown-chevron {
+    right: var(--space-4);
+}
+
+@media (hover: hover) {
+    .ls .filter-dropdown-trigger:hover {
+        border-color: var(--lp-muted);
+    }
+}
+
+.ls .filter-dropdown-popover {
+    background: var(--lp-surface-hi);
+    border-color: var(--lp-line-strong);
+    border-radius: var(--radius-el);
+}
+
+.ls .filter-dropdown-option {
+    color: var(--lp-text);
+}
+
+.ls .filter-dropdown-option--active,
+.ls .filter-dropdown-option--selected {
+    background: color-mix(in srgb, var(--lp-text) 8%, transparent);
+}
+
+.ls .filter-dropdown-option-icon {
+    color: var(--lp-muted);
+}

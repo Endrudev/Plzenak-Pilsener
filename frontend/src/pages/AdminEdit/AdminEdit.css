@@ -47,12 +47,19 @@
     color: var(--color-text-muted);
     cursor: pointer;
     flex-shrink: 0;
-    transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
+    transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-#ae-close-btn:hover {
-    background: var(--color-surface-soft);
-    color: var(--color-ink);
+#ae-close-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #ae-close-btn:hover {
+        background: var(--color-surface-soft);
+        color: var(--color-ink);
+    }
 }
 
 /* ---- Body ---- */
@@ -66,7 +73,7 @@
 .ae-field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-1-5);
     min-width: 0;
 }
 
@@ -192,11 +199,18 @@ textarea.ae-input {
     color: var(--color-text-muted);
     cursor: pointer;
     padding: 0;
-    transition: color var(--dur-fast) var(--ease-standard);
+    transition: color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-#ae-cal-btn:hover {
-    color: var(--color-ink);
+#ae-cal-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #ae-cal-btn:hover {
+        color: var(--color-ink);
+    }
 }
 
 /* ---- Calendar popup ---- */
@@ -232,7 +246,7 @@ textarea.ae-input {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 4px;
+    padding: var(--space-1);
     display: flex;
     align-items: center;
     color: var(--color-text-muted);
@@ -240,14 +254,16 @@ textarea.ae-input {
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
-.ae-cal-nav:hover {
-    background: var(--color-surface-soft);
+@media (hover: hover) {
+    .ae-cal-nav:hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 #ae-cal-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
+    gap: var(--space-0-5);
 }
 
 .ae-cal-day-name {
@@ -256,22 +272,24 @@ textarea.ae-input {
     font-weight: var(--fw-semibold);
     color: var(--color-text-muted);
     text-align: center;
-    padding: 4px 0;
+    padding: var(--space-1) 0;
 }
 
 .ae-cal-day {
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     text-align: center;
-    padding: 6px 2px;
+    padding: var(--space-1-5) var(--space-0-5);
     border-radius: var(--radius-sm);
     cursor: pointer;
     color: var(--color-ink);
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
-.ae-cal-day:not(.ae-cal-empty):hover {
-    background: var(--color-surface-soft);
+@media (hover: hover) {
+    .ae-cal-day:not(.ae-cal-empty):hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 .ae-cal-empty {
@@ -334,7 +352,7 @@ textarea.ae-input {
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-pop);
     list-style: none;
-    margin: 6px 0 0;
+    margin: var(--space-1-5) 0 0;
     padding: var(--space-2);
     max-height: 220px;
     overflow-y: auto;
@@ -351,8 +369,10 @@ textarea.ae-input {
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
-.ae-address-suggestion:hover {
-    background: var(--color-surface-soft);
+@media (hover: hover) {
+    .ae-address-suggestion:hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 /* ---- Map preview ---- */
@@ -396,7 +416,7 @@ textarea.ae-input {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: var(--space-1-5);
     text-align: center;
     padding: var(--space-3);
     cursor: pointer;
@@ -406,9 +426,11 @@ textarea.ae-input {
     transition: background var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard);
 }
 
-.ae-img-dropzone:hover {
-    background: var(--color-page);
-    border-color: var(--color-text-muted);
+@media (hover: hover) {
+    .ae-img-dropzone:hover {
+        background: var(--color-page);
+        border-color: var(--color-text-muted);
+    }
 }
 
 .ae-img-dropzone img {
@@ -432,11 +454,18 @@ textarea.ae-input {
     color: #fff;
     cursor: pointer;
     backdrop-filter: blur(2px);
-    transition: background var(--dur-fast) var(--ease-standard);
+    transition: background var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-.ae-img-remove-btn:hover {
-    background: rgba(31, 27, 22, 0.85);
+.ae-img-remove-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    .ae-img-remove-btn:hover {
+        background: rgba(31, 27, 22, 0.85);
+    }
 }
 
 .ae-dropzone-label {
@@ -483,11 +512,18 @@ textarea.ae-input {
     color: var(--color-primary);
     cursor: pointer;
     box-sizing: border-box;
-    transition: background var(--dur-fast) var(--ease-standard);
+    transition: background var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-#ae-delete-btn:hover {
-    background: var(--badge-bg);
+#ae-delete-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #ae-delete-btn:hover {
+        background: var(--badge-bg);
+    }
 }
 
 #ae-footer-main-actions {
@@ -512,7 +548,13 @@ textarea.ae-input {
     font-size: var(--fs-body);
     cursor: pointer;
     box-sizing: border-box;
-    transition: background var(--dur-fast) var(--ease-standard), filter var(--dur-fast) var(--ease-standard);
+    transition: background var(--dur-fast) var(--ease-standard), filter var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+#ae-preview-btn:active,
+#ae-save-btn:active {
+    transform: scale(var(--scale-tap));
 }
 
 #ae-preview-btn {
@@ -521,8 +563,10 @@ textarea.ae-input {
     color: var(--color-ink);
 }
 
-#ae-preview-btn:hover {
-    background: var(--color-surface-soft);
+@media (hover: hover) {
+    #ae-preview-btn:hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 #ae-save-btn {
@@ -531,8 +575,10 @@ textarea.ae-input {
     color: #fff;
 }
 
-#ae-save-btn:hover {
-    filter: brightness(1.08);
+@media (hover: hover) {
+    #ae-save-btn:hover {
+        filter: brightness(1.08);
+    }
 }
 
 #ae-save-btn:disabled {
@@ -628,9 +674,16 @@ textarea.ae-input {
     font-size: var(--fs-body);
     color: var(--color-surface);
     cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard);
+    transition: filter var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-#ae-load-error button:hover {
-    filter: brightness(1.08);
+#ae-load-error button:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #ae-load-error button:hover {
+        filter: brightness(1.08);
+    }
 }

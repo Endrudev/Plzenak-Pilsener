@@ -1,0 +1,203 @@
+/* TOP akce: jedna velká karta + až dvě menší. Obrázek se při scrollu jemně
+   přibližuje (animation-timeline), aby se karta nezdála zamrzlá. Bez podpory
+   scroll-driven animací zůstane obrázek stát, nic se nerozbije. */
+
+.lf-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+    .lf-grid {
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+        gap: var(--space-5);
+    }
+
+    .lf-grid--solo {
+        grid-template-columns: 1fr;
+    }
+}
+
+.lf-side {
+    display: grid;
+    grid-auto-rows: 1fr;
+    gap: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+    .lf-side {
+        gap: var(--space-5);
+    }
+}
+
+.lf-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: var(--radius-scene);
+    background: var(--lp-surface);
+    color: #fff;
+    text-decoration: none;
+    transition: transform var(--dur-base) var(--ease-standard);
+}
+
+.lf-card--large {
+    min-height: clamp(360px, 52vw, 560px);
+    padding: var(--space-6);
+}
+
+.lf-card--small {
+    min-height: 220px;
+    padding: var(--space-5);
+}
+
+@media (min-width: 768px) {
+    .lf-card--large {
+        padding: var(--space-10);
+    }
+}
+
+.lf-media {
+    position: absolute;
+    inset: -4%;
+    z-index: -2;
+    background-size: cover;
+    background-position: center;
+    transition: transform 900ms var(--ease-drawer);
+}
+
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        .lf-media {
+            animation: lf-drift linear both;
+            animation-timeline: view();
+            animation-range: entry 0% exit 100%;
+        }
+    }
+}
+
+@keyframes lf-drift {
+    from { transform: scale(1.12) translateY(-3%); }
+    to   { transform: scale(1.02) translateY(3%); }
+}
+
+.lf-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(to top, rgba(15, 9, 5, 0.94) 0%, rgba(15, 9, 5, 0.6) 40%, rgba(15, 9, 5, 0.08) 75%);
+}
+
+.lf-flag {
+    position: absolute;
+    top: var(--space-5);
+    left: var(--space-5);
+    padding: var(--space-1-5) var(--space-4);
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+}
+
+@media (min-width: 768px) {
+    .lf-card--large .lf-flag {
+        top: var(--space-8);
+        left: var(--space-10);
+    }
+}
+
+.lf-body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 44rem;
+}
+
+.lf-card--small .lf-body {
+    padding-right: var(--space-12);
+}
+
+.lf-title {
+    font-size: var(--lp-fs-h2);
+    font-weight: var(--fw-extrabold);
+    line-height: 1.02;
+    letter-spacing: var(--tracking-heading);
+    text-wrap: balance;
+}
+
+.lf-card--small .lf-title {
+    font-size: var(--fs-h1);
+    line-height: var(--lh-snug);
+    letter-spacing: var(--tracking-heading);
+}
+
+.lf-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-5);
+    font-size: var(--fs-body-lg);
+    color: var(--dk-text);
+}
+
+.lf-when {
+    font-weight: var(--fw-bold);
+    font-variant-numeric: tabular-nums;
+}
+
+.lf-where {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    color: var(--dk-muted);
+}
+
+.lf-cta {
+    align-self: flex-start;
+    margin-top: var(--space-3);
+}
+
+.lf-go {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    transition: transform var(--dur-slow) var(--ease-drawer);
+}
+
+@media (hover: hover) {
+    .lf-card:hover .lf-media {
+        transform: scale(1.04);
+    }
+
+    .lf-card:hover .lp-btn {
+        background: var(--color-primary-hover);
+    }
+
+    .lf-card:hover .lp-btn-ic,
+    .lf-card:hover .lf-go {
+        transform: translate(2px, -1px) scale(1.08);
+    }
+}
+
+.lf-card:active {
+    transform: scale(var(--scale-tap-tile));
+}
+
+.lf-card:focus-visible {
+    outline: 2px solid var(--lp-text);
+    outline-offset: 3px;
+}

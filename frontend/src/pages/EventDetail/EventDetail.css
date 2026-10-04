@@ -36,13 +36,19 @@
     display: flex;
     justify-content: flex-end;
     gap: var(--space-2);
+    /* Stejná šířka a odsazení jako #detail-hero-content, ať tlačítka nesedí
+       na pravém okraji okna, ale na okraji obsahu. */
+    width: 100%;
+    max-width: var(--container);
+    margin: 0 auto;
+    box-sizing: border-box;
     padding: var(--space-4) var(--space-4) 0;
 }
 
 .detail-hero-action-btn {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-1-5);
     background: rgba(31, 27, 22, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.25);
     color: #fff;
@@ -53,11 +59,18 @@
     border-radius: var(--radius-el);
     cursor: pointer;
     backdrop-filter: blur(4px);
-    transition: background var(--dur-fast) var(--ease-standard);
+    transition: background var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-.detail-hero-action-btn:hover {
-    background: rgba(31, 27, 22, 0.75);
+.detail-hero-action-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    .detail-hero-action-btn:hover {
+        background: rgba(31, 27, 22, 0.75);
+    }
 }
 
 /* Tlačítka leží přes fotku/gradient hera — vlastní focus-visible místo
@@ -115,7 +128,7 @@
 #detail-hero-meta span {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-1-5);
 }
 
 /* ---------- Body layout ---------- */
@@ -145,7 +158,9 @@
     margin: 0 0 var(--space-3);
 }
 
+/* Souvislý text nemá být širší než --measure (≈ 68 znaků), jinak oko ztrácí řádek. */
 .detail-section p {
+    max-width: var(--measure);
     margin: 0 0 var(--space-3);
     font-family: var(--font-sans);
     font-size: var(--fs-body);
@@ -160,7 +175,7 @@
 #detail-website-link {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-1-5);
     margin-top: var(--space-2);
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
@@ -170,8 +185,10 @@
     word-break: break-all;
 }
 
-#detail-website-link:hover {
-    text-decoration: underline;
+@media (hover: hover) {
+    #detail-website-link:hover {
+        text-decoration: underline;
+    }
 }
 
 /* ---------- Mapa (placeholder bez souhlasu je components/ConsentGate/MapConsent.css) ---------- */
@@ -186,7 +203,7 @@
 #detail-location-line {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-1-5);
     margin: var(--space-3) 0 0;
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
@@ -238,16 +255,23 @@
     border-radius: var(--radius-el);
     box-shadow: var(--shadow-card);
     cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard);
+    transition: filter var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-#detail-buy-btn:hover {
-    filter: brightness(1.08);
+#detail-buy-btn:not(.detail-buy-btn--disabled):active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #detail-buy-btn:not(.detail-buy-btn--disabled):hover {
+        filter: brightness(1.08);
+    }
 }
 
 /* Akce bez event.url — dřív no-op odkaz na "#", teď viditelně vypnuté
    tlačítko s vysvětlením. */
-.detail-buy-btn--disabled {
+#detail-buy-btn.detail-buy-btn--disabled {
     background: var(--color-surface-soft);
     color: var(--color-text-muted);
     box-shadow: none;
@@ -264,7 +288,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: var(--space-1-5);
     background: var(--color-surface);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-el);
@@ -274,11 +298,18 @@
     font-weight: var(--fw-medium);
     color: var(--color-ink);
     cursor: pointer;
-    transition: background var(--dur-fast) var(--ease-standard);
+    transition: background var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-.detail-sidebar-action-btn:hover {
-    background: var(--color-surface-soft);
+.detail-sidebar-action-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    .detail-sidebar-action-btn:hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 .detail-sidebar-action-btn:focus-visible,
@@ -316,7 +347,7 @@
 #detail-mobile-cta-text {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--space-0-5);
     min-width: 0;
     flex: 1;
     font-family: var(--font-sans);
@@ -349,9 +380,16 @@
     border-radius: var(--radius-el);
     white-space: nowrap;
     cursor: pointer;
+    transition: transform var(--dur-fast) var(--ease-standard);
 }
 
-.detail-mobile-cta-btn--disabled {
+#detail-mobile-cta-btn:not(.detail-mobile-cta-btn--disabled):active {
+    transform: scale(var(--scale-tap));
+}
+
+/* S ID před třídou: samotné .detail-mobile-cta-btn--disabled prohrávalo se
+   specificitou nad #detail-mobile-cta-btn a nedostupné tlačítko bylo oranžové. */
+#detail-mobile-cta-btn.detail-mobile-cta-btn--disabled {
     background: var(--color-surface-soft);
     color: var(--color-text-muted);
     cursor: not-allowed;
@@ -379,11 +417,18 @@
     font-weight: var(--fw-semibold);
     font-size: var(--fs-body);
     cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard);
+    transition: filter var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-#detail-not-found button:hover {
-    filter: brightness(1.08);
+#detail-not-found button:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #detail-not-found button:hover {
+        filter: brightness(1.08);
+    }
 }
 
 /* ---------- Responsive ---------- */
