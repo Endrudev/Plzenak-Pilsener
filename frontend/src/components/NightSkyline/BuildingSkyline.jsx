@@ -12,7 +12,13 @@ const ROOFS = ['flat', 'flat', 'pediment', 'bell', 'stepped', 'parapet']
 
 // dense = pozadí za hlavní řadou: menší rozptyl šířky, skoro žádné velké
 // mezery, ať to za předním plánem čte jako plnější, hustší město.
-function buildSilhouette(seed, { minW = 26, maxW = 90, minH = 20, maxH = 66, dense = false } = {}) {
+//
+// packed = budovy stojí těsně vedle sebe, každá se dotýká obou sousedů (bez
+// mezery a bez překryvu, jen o půl pixelu přesah, aby mezi dvěma sousedními
+// obdélníky nezůstala při antialiasingu světlá ryska).
+const PACK_OVERLAP = 0.5
+
+function buildSilhouette(seed, { minW = 26, maxW = 90, minH = 20, maxH = 66, dense = false, packed = false } = {}) {
     const rand = seeded(seed)
     const buildings = []
     let x = -10
@@ -31,11 +37,13 @@ function buildSilhouette(seed, { minW = 26, maxW = 90, minH = 20, maxH = 66, den
         // širší kus oblohy — jak to na skutečné siluetě bývá. Zadní (husté)
         // řadě se ty velké mezery vůbec nepovolí.
         const gapRoll = rand()
-        const gap = dense
-            ? (gapRoll < 0.4 ? -(2 + rand() * 6) : rand() * 4)
-            : gapRoll < 0.2 ? -(4 + rand() * 10)   // mírný překryv
-                : gapRoll < 0.55 ? rand() * 6         // těsně vedle sebe
-                    : 8 + rand() * 26                     // širší mezera
+        const gap = packed
+            ? -PACK_OVERLAP
+            : dense
+                ? (gapRoll < 0.4 ? -(2 + rand() * 6) : rand() * 4)
+                : gapRoll < 0.2 ? -(4 + rand() * 10)   // mírný překryv
+                    : gapRoll < 0.55 ? rand() * 6         // těsně vedle sebe
+                        : 8 + rand() * 26                     // širší mezera
         x += w + gap
     }
     return buildings
@@ -113,9 +121,16 @@ function Building({ b, massClass, windows }) {
 // si podle něj definuje CSS toho, kdo komponentu použije (viz Footer.css,
 // Home.css). backSeed/frontSeed/winSeed drží dvě použití vizuálně odlišná
 // (jiné rozestavění budov), i když je generují úplně stejné funkce.
-export default function BuildingSkyline({ className = '', backSeed = 31, frontSeed = 7, winSeed = 23 }) {
-    const backBuildings = buildSilhouette(backSeed, { minW: 16, maxW: 46, minH: 16, maxH: 58, dense: true })
-    const frontBuildings = buildSilhouette(frontSeed)
+//
+// packed: obě řady jsou souvislé (budovy se dotýkají), zadní řada je jen plná
+// silueta bez oken a v jiné barvě (.skyline-mass--back si barvu bere z CSS).
+// Zadní řada je vyšší než přední (min. výška 34 proti 20), takže nad ní kouká
+// a čte se jako druhý plán, ne jako zdvojení první.
+export default function BuildingSkyline({ className = '', backSeed = 31, frontSeed = 7, winSeed = 23, packed = false }) {
+    const backBuildings = packed
+        ? buildSilhouette(backSeed, { minW: 22, maxW: 64, minH: 34, maxH: 66, packed: true })
+        : buildSilhouette(backSeed, { minW: 16, maxW: 46, minH: 16, maxH: 58, dense: true })
+    const frontBuildings = buildSilhouette(frontSeed, { packed })
     const winRand = seeded(winSeed)
 
     return (

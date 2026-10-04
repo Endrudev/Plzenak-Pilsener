@@ -1,0 +1,176 @@
+/* Bento kategorií. Mřížka 12 sloupců × 2 řádky na desktopu, 2 sloupce na
+   telefonu. grid-auto-flow: dense jako pojistka proti dírám; počty buněk jsou
+   spočítané tak, aby žádná nevznikla (viz komentář v LandingCategories.jsx). */
+
+.lc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 168px;
+    grid-auto-flow: dense;
+    gap: var(--space-3);
+}
+
+.lc-hudba,
+.lc-deti {
+    grid-column: span 2;
+}
+
+.lc-hudba {
+    grid-row: span 2;
+}
+
+@media (min-width: 768px) {
+    .lc-grid {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        grid-auto-rows: 200px;
+        gap: var(--space-4);
+    }
+
+    .lc-hudba  { grid-column: span 4; grid-row: span 2; }
+    .lc-gastro { grid-column: span 4; grid-row: span 1; }
+    .lc-kultura { grid-column: span 4; grid-row: span 1; }
+    .lc-sport  { grid-column: span 3; grid-row: span 1; }
+    .lc-pamatky { grid-column: span 3; grid-row: span 1; }
+    .lc-deti   { grid-column: span 2; grid-row: span 1; }
+}
+
+.lc-cell {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--space-5);
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: var(--radius-scene);
+    background: var(--lc-grad);
+    color: var(--lp-ink-on-accent);
+    text-decoration: none;
+    transition: transform var(--dur-base) var(--ease-standard);
+}
+
+/* Kresba scény za buňkou, ztmavená, ať text drží kontrast. */
+.lc-poster {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-size: cover;
+    background-position: right bottom;
+    transition: transform 900ms var(--ease-drawer);
+}
+
+.lc-hudba .lc-poster,
+.lc-pamatky .lc-poster {
+    background-position: center bottom;
+}
+
+.lc-hudba,
+.lc-pamatky {
+    color: #fff;
+    background: var(--lp-surface);
+}
+
+.lc-hudba::after,
+.lc-pamatky::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to top, rgba(15, 9, 5, 0.78) 0%, rgba(15, 9, 5, 0.18) 55%, rgba(15, 9, 5, 0.28) 100%);
+}
+
+/* Velká bledá ikona v rohu: z plochy dělá obrázek, ne prázdný gradient. */
+.lc-ghost {
+    position: absolute;
+    right: -24px;
+    bottom: -32px;
+    z-index: -1;
+    color: var(--lp-ink-on-accent);
+    opacity: 0.14;
+    transform: rotate(-10deg);
+    transition: transform 900ms var(--ease-drawer);
+    pointer-events: none;
+}
+
+.lc-hudba .lc-ghost,
+.lc-pamatky .lc-ghost {
+    display: none;
+}
+
+.lc-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.lc-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(26, 11, 3, 0.14);
+}
+
+.lc-hudba .lc-icon,
+.lc-pamatky .lc-icon {
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(8px);
+}
+
+.lc-go {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--lp-bg);
+    color: var(--lp-text);
+    transition: transform var(--dur-slow) var(--ease-drawer);
+}
+
+.lc-label {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-0-5);
+}
+
+.lc-name {
+    font-size: var(--fs-h1);
+    font-weight: var(--fw-extrabold);
+    line-height: 1;
+    letter-spacing: var(--tracking-heading);
+}
+
+.lc-hudba .lc-name {
+    font-size: var(--lp-fs-h2);
+}
+
+.lc-count {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    opacity: 0.78;
+}
+
+@media (hover: hover) {
+    .lc-cell:hover .lc-poster {
+        transform: scale(1.05);
+    }
+
+    .lc-cell:hover .lc-ghost {
+        transform: rotate(-4deg) scale(1.06);
+    }
+
+    .lc-cell:hover .lc-go {
+        transform: translate(2px, -2px) scale(1.08);
+    }
+}
+
+.lc-cell:active {
+    transform: scale(var(--scale-tap-tile));
+}
+
+.lc-cell:focus-visible {
+    outline: 2px solid var(--lp-text);
+    outline-offset: 3px;
+}

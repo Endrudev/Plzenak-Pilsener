@@ -2,6 +2,7 @@ import CategoryHero from '../../components/CategoryHero/CategoryHero.jsx'
 import { LazyConcertScene } from '../../components/scenes/LazyScenes.jsx'
 import CategoryFilterBar from '../../components/CategoryFilterBar/CategoryFilterBar.jsx'
 import EventCard from '../../components/EventCard/EventCard.jsx'
+import EventCardSkeleton from '../../components/EventCardSkeleton/EventCardSkeleton.jsx'
 import Pagination from '../../components/Pagination/Pagination.jsx'
 import EmptyState from '../../components/EmptyState/EmptyState.jsx'
 import OtherCategories from '../../components/OtherCategories/OtherCategories.jsx'
@@ -62,11 +63,11 @@ export default function Hudba() {
 
       <div className="catpage-grid">
         {loading
-          ? <p className="catpage-loading">Načítání…</p>
+          ? <EventCardSkeleton />
           : items.length === 0
             ? <EmptyState title="Žádné hudební akce zatím nejsou vyhlášené." />
             : items.map((event, i) => (
-              <EventCard key={event.id} event={event} variant={i === 0 ? 'featured' : 'grid'} />
+              <EventCard key={event.id} event={event} variant={i === 0 ? 'featured' : 'grid'} index={i} />
             ))
         }
       </div>

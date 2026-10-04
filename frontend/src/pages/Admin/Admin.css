@@ -51,7 +51,7 @@
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
     color: var(--color-text-muted);
-    margin: var(--space-3) 0 6px;
+    margin: var(--space-3) 0 var(--space-1-5);
 }
 
 .admin-input-wrapper {
@@ -108,11 +108,18 @@
     font-weight: var(--fw-semibold);
     font-size: var(--fs-body);
     cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard);
+    transition: filter var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-#admin-submit:hover {
-    filter: brightness(1.08);
+#admin-submit:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #admin-submit:hover {
+        filter: brightness(1.08);
+    }
 }
 
 #admin-submit:disabled {
@@ -130,8 +137,10 @@
     text-decoration: none;
 }
 
-#admin-forgot:hover {
-    text-decoration: underline;
+@media (hover: hover) {
+    #admin-forgot:hover {
+        text-decoration: underline;
+    }
 }
 
 #admin-divider {
@@ -156,11 +165,18 @@
     font-size: var(--fs-body);
     color: var(--color-ink);
     cursor: pointer;
-    transition: background var(--dur-fast) var(--ease-standard);
+    transition: background var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-#admin-back-btn:hover {
-    background: var(--color-surface-soft);
+#admin-back-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #admin-back-btn:hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 #admin-error {

@@ -45,13 +45,19 @@
 /* Padding nahoře = výška hlavičky + stejná 24px mezera jako ve zdroji
    (112px padding na 88px hlavičce), ne natvrdo 112px — --header-h se
    může lišit (font-loading, breakpoint), text pod ní musí sedět vždycky. */
+/* Text sedí na stejné svislici jako obsah karty s filtry pod ním: okraj
+   obsahu je max(16 px, polovina volného místa vedle 1280px kontejneru) plus
+   20 px vnitřního odsazení karty. Dřív měl text pevných 16 px od kraje okna
+   a na širokém monitoru ujížděl o 40 px doleva od všeho ostatního.
+   Procenta se tu počítají ze šířky hero, což je celé okno. */
 .cat-hero-text {
+    --cat-hero-inset: calc(max(var(--gutter), (100% - var(--container)) / 2) + var(--space-5));
     position: relative;
-    padding: calc(var(--header-h) + 24px) var(--space-4) 0;
+    padding: calc(var(--header-h) + 24px) var(--space-4) 0 var(--cat-hero-inset);
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    max-width: 560px;
+    max-width: calc(560px + var(--cat-hero-inset));
 }
 
 .cat-hero-crumbs {
@@ -65,8 +71,10 @@
     text-decoration: none;
 }
 
-.cat-hero-crumbs a:hover {
-    color: var(--color-primary);
+@media (hover: hover) {
+    .cat-hero-crumbs a:hover {
+        color: var(--color-primary);
+    }
 }
 
 .cat-hero-crumbs span {
@@ -76,9 +84,9 @@
 .cat-hero-eyebrow {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--space-1-5);
     align-self: flex-start;
-    padding: 7px 12px;
+    padding: var(--space-2) var(--space-3);
     border-radius: var(--radius-pill);
     background: var(--color-primary);
     color: var(--color-ink);
@@ -141,12 +149,6 @@
 .cat-hero--light .cat-hero-eyebrow {
     background: var(--color-calm-figure-dk);
     color: var(--color-calm-lamp-glow);
-}
-
-@media (min-width: 640px) {
-    .cat-hero-text {
-        padding-left: var(--space-8);
-    }
 }
 
 @media (max-width: 767px) {

@@ -2,6 +2,7 @@ import CategoryHero from '../../components/CategoryHero/CategoryHero.jsx'
 import { LazyCityScene } from '../../components/scenes/LazyScenes.jsx'
 import CategoryFilterBar from '../../components/CategoryFilterBar/CategoryFilterBar.jsx'
 import EventCard from '../../components/EventCard/EventCard.jsx'
+import EventCardSkeleton from '../../components/EventCardSkeleton/EventCardSkeleton.jsx'
 import Pagination from '../../components/Pagination/Pagination.jsx'
 import EmptyState from '../../components/EmptyState/EmptyState.jsx'
 import OtherCategories from '../../components/OtherCategories/OtherCategories.jsx'
@@ -60,7 +61,7 @@ export default function TopAkce() {
 
       <div className="catpage-grid">
         {loading
-          ? <p className="catpage-loading">Načítání…</p>
+          ? <EventCardSkeleton />
           : items.length === 0
             ? <EmptyState title="Žádné TOP akce zatím nejsou vyhlášené." />
             : items.map((event, i) => (
@@ -68,6 +69,7 @@ export default function TopAkce() {
                 key={event.id}
                 event={event}
                 variant={i === 0 ? 'featured' : 'grid'}
+                index={i}
                 rank={(page - 1) * PER_PAGE + i + 1}
               />
             ))

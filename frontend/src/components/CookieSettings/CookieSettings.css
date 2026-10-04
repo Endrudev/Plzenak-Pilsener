@@ -12,6 +12,16 @@
     animation: overlay-in var(--dur-base) var(--ease-standard);
 }
 
+/* Odchod: rychlejší než vstup, bez zpětného odrazu. forwards drží koncový
+   stav do chvíle, než rodič komponentu odmontuje. */
+#cookie-settings-overlay.cookie-settings--closing {
+    animation: overlay-out var(--dur-fast) var(--ease-standard) forwards;
+}
+
+#cookie-settings-overlay.cookie-settings--closing #cookie-settings-modal {
+    animation: modal-out var(--dur-fast) var(--ease-standard) forwards;
+}
+
 #cookie-settings-modal {
     width: 100%;
     max-width: 480px;
@@ -25,8 +35,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
-    /* 2.13 Modal — otevření scale 0.96 → 1.
-       Zavírací animace (fast) potřebuje odložené odmountování, tedy stav v JS. */
+    /* 2.13 Modal — otevření scale 0.96 → 1, zavření viz .cookie-settings--closing. */
     animation: modal-in var(--dur-base) var(--ease-standard);
 }
 
@@ -57,11 +66,18 @@
     border-radius: var(--radius-el);
     color: var(--color-text-muted);
     cursor: pointer;
-    transition: background var(--dur-fast) var(--ease-standard);
+    transition: background var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-#cookie-settings-close:hover {
-    background: var(--color-surface-soft);
+#cookie-settings-close:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #cookie-settings-close:hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 #cookie-settings-lede {
@@ -96,7 +112,7 @@
 }
 
 .cookie-settings-row-title {
-    margin: 0 0 2px;
+    margin: 0 0 var(--space-0-5);
     font-family: var(--font-sans);
     font-size: var(--fs-body);
     font-weight: var(--fw-semibold);
@@ -133,12 +149,17 @@
     border-radius: var(--radius-pill);
     background: var(--color-line);
     border: none;
-    padding: 3px;
+    padding: var(--space-1);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    transition: background var(--dur-fast) var(--ease-standard);
+    transition: background var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+.cookie-settings-toggle:active {
+    transform: scale(var(--scale-tap));
 }
 
 .cookie-settings-toggle-knob {
@@ -189,7 +210,8 @@
     padding: var(--space-3) var(--space-5);
     border: none;
     cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard);
+    transition: filter var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
 #cookie-settings-reject:active,
@@ -203,8 +225,10 @@
     color: var(--color-ink);
 }
 
-#cookie-settings-reject:hover {
-    background: var(--color-surface-soft);
+@media (hover: hover) {
+    #cookie-settings-reject:hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 #cookie-settings-save {
@@ -212,8 +236,10 @@
     color: #fff;
 }
 
-#cookie-settings-save:hover {
-    filter: brightness(1.08);
+@media (hover: hover) {
+    #cookie-settings-save:hover {
+        filter: brightness(1.08);
+    }
 }
 
 #cookie-settings-close:focus-visible,

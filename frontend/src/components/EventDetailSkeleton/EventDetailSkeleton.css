@@ -1,0 +1,45 @@
+/* Kostra detailu akce. Hero má výšku jako #detail-hero (EventDetail.css). */
+#detail-skel {
+    flex: 1;
+}
+
+.detail-skel-hero {
+    height: 340px;
+    border-radius: 0;
+}
+
+.detail-skel-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    width: calc(100% - 2 * var(--gutter));
+    max-width: var(--container);
+    margin: var(--space-6) auto var(--section-y);
+}
+
+.detail-skel-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.detail-skel-line {
+    height: 16px;
+    max-width: var(--measure);
+    border-radius: var(--radius-pill);
+}
+
+.detail-skel-line--h     { height: 28px; width: 30%; margin-bottom: var(--space-2); }
+.detail-skel-line--short { width: 60%; }
+
+.detail-skel-card {
+    height: 160px;
+    border-radius: var(--radius-card);
+}
+
+@media (min-width: 768px) {
+    .detail-skel-body {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: var(--space-8);
+    }
+}

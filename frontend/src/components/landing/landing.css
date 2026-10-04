@@ -1,0 +1,203 @@
+/* Sdílené styly landingu: rozvržení stránky, nadpisy, tlačítka a čipy.
+   Barvy a velikosti jsou tokeny z index.css (--lp-*), tady není žádný hex.
+
+   Tvary: jeden systém. Plochy a karty mají --radius-scene (28 px, stejně jako
+   hero dlaždice), jejich vnitřní jádro o odsazení menší (concentric), všechno
+   interaktivní malé (tlačítka, čipy, štítky) je plná pilulka. */
+
+.lp {
+    color: var(--lp-text);
+    font-family: var(--font-display);
+    overflow-x: clip;
+}
+
+.lp button,
+.lp input {
+    font-family: inherit;
+}
+
+.lp-wrap {
+    width: calc(100% - 2 * var(--gutter));
+    max-width: var(--container);
+    margin-inline: auto;
+}
+
+/* Každá sekce začíná vlastním svislým odstupem. Sekce jsou kapitoly, ne
+   řádky: mezera je záměrně velká. */
+.lp-section {
+    padding-top: var(--lp-section);
+}
+
+.lp-section:last-of-type {
+    padding-bottom: var(--lp-section);
+}
+
+/* ---------- nadpisy a perex ---------- */
+.lp-h2 {
+    margin: 0;
+    font-size: var(--lp-fs-h2);
+    font-weight: var(--fw-extrabold);
+    line-height: 1.02;
+    letter-spacing: var(--tracking-heading);
+    color: var(--lp-text);
+    text-wrap: balance;
+}
+
+.lp-lead {
+    margin: var(--space-4) 0 0;
+    max-width: 52ch;
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+    color: var(--lp-muted);
+}
+
+.lp-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+}
+
+/* ---------- tlačítko: pilulka s šipkou v kroužku ----------
+   Šipka nikdy nestojí holá vedle textu, má vlastní kruh přitisknutý k pravému
+   okraji. Při najetí se kruh posune a zvětší (vnitřní pnutí), při stisku se
+   celé tlačítko zmenší. */
+.lp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: 56px;
+    padding: var(--space-1-5) var(--space-1-5) var(--space-1-5) var(--space-6);
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform var(--dur-fast) var(--ease-standard),
+                background-color var(--dur-fast) var(--ease-standard);
+}
+
+.lp-btn-ic {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(26, 11, 3, 0.14);
+    transition: transform var(--dur-slow) var(--ease-drawer);
+}
+
+.lp-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    .lp-btn:hover {
+        background: var(--color-primary-hover);
+    }
+
+    .lp-btn:hover .lp-btn-ic {
+        transform: translate(2px, -1px) scale(1.06);
+    }
+}
+
+.lp-btn:focus-visible {
+    outline: 2px solid var(--lp-text);
+    outline-offset: 3px;
+}
+
+/* ---------- čip: přepínač období ---------- */
+.lp-chips {
+    display: inline-flex;
+    gap: var(--space-1-5);
+    padding: var(--space-1);
+    border: 1px solid var(--lp-line);
+    border-radius: var(--radius-pill);
+    background: var(--lp-surface);
+}
+
+.lp-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 40px;
+    padding: 0 var(--space-4);
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--lp-muted);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+.lp-chip:active {
+    transform: scale(var(--scale-tap));
+}
+
+.lp-chip[aria-pressed='true'] {
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+}
+
+@media (hover: hover) {
+    .lp-chip[aria-pressed='false']:hover {
+        color: var(--lp-text);
+        background: var(--lp-surface-hi);
+    }
+}
+
+.lp-chip:focus-visible {
+    outline: 2px solid var(--lp-text);
+    outline-offset: 2px;
+}
+
+.lp-chip-n {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    font-variant-numeric: tabular-nums;
+    opacity: 0.7;
+}
+
+/* ---------- odkaz se šipkou ---------- */
+.lp-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--touch-min);
+    color: var(--lp-text);
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-standard);
+}
+
+.lp-link svg {
+    transition: transform var(--dur-base) var(--ease-drawer);
+}
+
+@media (hover: hover) {
+    .lp-link:hover {
+        color: var(--lp-accent-text);
+    }
+
+    .lp-link:hover svg {
+        transform: translateX(4px);
+    }
+}
+
+/* ---------- skeleton na tmavém ---------- */
+.lp .skeleton {
+    background: linear-gradient(90deg, var(--lp-surface) 25%, var(--lp-surface-hi) 50%, var(--lp-surface) 75%);
+    background-size: 200% 100%;
+}

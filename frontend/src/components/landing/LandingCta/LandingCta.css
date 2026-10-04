@@ -1,0 +1,40 @@
+/* Závěrečný panel. Jediná ozdoba je tlumená oranžová záře za nadpisem, vlastní
+   vrstva uvnitř panelu (nic ji neořízne). */
+
+.lcta-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-8);
+    padding: clamp(var(--space-8), 6vw, var(--space-16));
+    border: 1px solid var(--lp-line);
+    border-radius: var(--radius-scene);
+    background: var(--lp-surface);
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.lcta-panel::before {
+    content: '';
+    position: absolute;
+    right: -10%;
+    bottom: -60%;
+    width: 70%;
+    aspect-ratio: 1;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(232, 114, 12, 0.34), rgba(232, 114, 12, 0));
+    pointer-events: none;
+}
+
+.lcta-title {
+    margin: 0;
+    max-width: 14em;
+    font-size: var(--lp-fs-mega);
+    font-weight: var(--fw-extrabold);
+    line-height: 1.02;
+    letter-spacing: var(--tracking-heading);
+    color: var(--lp-text);
+    text-wrap: balance;
+}

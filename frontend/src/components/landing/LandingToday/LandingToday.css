@@ -1,0 +1,232 @@
+/* Karusel „Kam dnes večer?". Posouvá se nativně (scroll-snap), šipky jen volají
+   scrollBy. Vodorovný přesah na okraj okna je záměrný: poslední karta je vidět
+   zpoloviny a říká, že je kam jet. */
+
+.lt-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.lt-arrows {
+    display: none;
+    gap: var(--space-2);
+}
+
+@media (hover: hover) and (min-width: 768px) {
+    .lt-arrows {
+        display: flex;
+    }
+}
+
+.lt-arrow {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--lp-line-strong);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--lp-text);
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+.lt-arrow:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    .lt-arrow:hover {
+        background: var(--lp-surface-hi);
+    }
+}
+
+.lt-arrow:focus-visible {
+    outline: 2px solid var(--lp-text);
+    outline-offset: 2px;
+}
+
+/* ---------- dráha ---------- */
+.lt-bleed {
+    margin-top: 0;
+}
+
+.lt-track {
+    display: flex;
+    gap: var(--space-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: max(var(--gutter), calc((100% - var(--container)) / 2));
+    padding: var(--space-2) max(var(--gutter), calc((100% - var(--container)) / 2)) var(--space-6);
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+}
+
+.lt-track::-webkit-scrollbar {
+    display: none;
+}
+
+/* ---------- karta ---------- */
+.lt-card {
+    position: relative;
+    flex: 0 0 clamp(248px, 72vw, 320px);
+    aspect-ratio: 4 / 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--space-5);
+    border-radius: var(--radius-scene);
+    overflow: hidden;
+    isolation: isolate;
+    scroll-snap-align: start;
+    color: #fff;
+    text-decoration: none;
+    background: var(--lp-surface);
+    transition: transform var(--dur-base) var(--ease-standard);
+}
+
+.lt-card--skeleton {
+    pointer-events: none;
+}
+
+.lt-media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-size: cover;
+    background-position: center;
+    transition: transform 700ms var(--ease-drawer);
+}
+
+/* Ztmavení dole pod názvem: text je vždy čitelný, i na světlé fotce. */
+.lt-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to top, rgba(15, 9, 5, 0.92) 0%, rgba(15, 9, 5, 0.55) 38%, rgba(15, 9, 5, 0) 68%);
+}
+
+.lt-date {
+    position: absolute;
+    top: var(--space-4);
+    left: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 56px;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-el);
+    background: rgba(15, 9, 5, 0.62);
+    border: 1px solid var(--dk-line-strong);
+    line-height: 1;
+}
+
+.lt-date b {
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-extrabold);
+    letter-spacing: var(--tracking-heading);
+    font-variant-numeric: tabular-nums;
+}
+
+.lt-date i {
+    margin-top: var(--space-0-5);
+    font-size: var(--fs-xs);
+    font-style: normal;
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--dk-muted);
+}
+
+.lt-flag {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    padding: var(--space-1-5) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+}
+
+.lt-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-right: var(--space-12);
+}
+
+.lt-title {
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-snug);
+    letter-spacing: var(--tracking-heading);
+    text-wrap: balance;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.lt-where {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    font-size: var(--fs-sm);
+    color: var(--dk-muted);
+}
+
+.lt-go {
+    position: absolute;
+    right: var(--space-4);
+    bottom: var(--space-4);
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    transition: transform var(--dur-slow) var(--ease-drawer);
+}
+
+@media (hover: hover) {
+    .lt-card:hover .lt-media {
+        transform: scale(1.06);
+    }
+
+    .lt-card:hover .lt-go {
+        transform: translate(2px, -2px) scale(1.08);
+    }
+}
+
+.lt-card:active {
+    transform: scale(var(--scale-tap-tile));
+}
+
+.lt-card:focus-visible {
+    outline: 2px solid var(--lp-text);
+    outline-offset: 3px;
+}
+
+/* ---------- prázdný stav ---------- */
+.lt-empty {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-8);
+    border: 1px dashed var(--lp-line-strong);
+    border-radius: var(--radius-scene);
+    color: var(--lp-muted);
+    font-size: var(--fs-body-lg);
+}
+
+.lt-empty p {
+    margin: 0;
+}

@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { eventCountLabel } from '../../lib/events/pluralize.js'
 import { LazyConcertScene } from '../scenes/LazyScenes.jsx'
 import HeroScene from './HeroScene.jsx'
 import concertPoster from '../scenes/posters/concert.webp'
@@ -10,7 +9,7 @@ import './HeroTileMusic.css'
 // Pódium je ve scéně vpravo, proto focus="right" — v užší dlaždici se ořízne
 // zleva a zpěvák zůstane vidět. Scéna se animuje jen pod myší nebo s fokusem
 // z klávesnice, viz useHoverActive.
-export default function HeroTileMusic({ count = 0 }) {
+export default function HeroTileMusic() {
     const { active, handlers } = useHoverActive()
 
     return (
@@ -21,7 +20,6 @@ export default function HeroTileMusic({ count = 0 }) {
 
             <div className="hero-tile-overlay">
                 <h2 className="hero-tile-title hero-tile-title--md">Hudba</h2>
-                <p className="hero-tile-lead">{eventCountLabel(count)} tento měsíc</p>
             </div>
 
             <span className="hero-tile-arrow hero-tile-arrow--ghost" aria-hidden="true">

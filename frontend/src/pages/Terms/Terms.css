@@ -36,8 +36,10 @@
     transition: color var(--dur-fast) var(--ease-standard);
 }
 
-#terms-breadcrumb a:hover {
-    color: var(--color-ink);
+@media (hover: hover) {
+    #terms-breadcrumb a:hover {
+        color: var(--color-ink);
+    }
 }
 
 #terms-breadcrumb span {
@@ -133,8 +135,10 @@
     transition: color var(--dur-fast) var(--ease-standard);
 }
 
-.legal-toc-link:hover {
-    color: var(--color-primary);
+@media (hover: hover) {
+    .legal-toc-link:hover {
+        color: var(--color-primary);
+    }
 }
 
 /* ---------- Sekce prózy ---------- */
@@ -190,8 +194,10 @@
     text-decoration: none;
 }
 
-.legal-link:hover {
-    text-decoration: underline;
+@media (hover: hover) {
+    .legal-link:hover {
+        text-decoration: underline;
+    }
 }
 
 /* ---------- Callout ---------- */

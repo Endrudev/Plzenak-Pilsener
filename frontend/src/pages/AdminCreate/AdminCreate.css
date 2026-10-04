@@ -47,12 +47,19 @@
     color: var(--color-text-muted);
     cursor: pointer;
     flex-shrink: 0;
-    transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
+    transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-#create-close-btn:hover {
-    background: var(--color-surface-soft);
-    color: var(--color-ink);
+#create-close-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #create-close-btn:hover {
+        background: var(--color-surface-soft);
+        color: var(--color-ink);
+    }
 }
 
 /* ---- Body ---- */
@@ -66,7 +73,7 @@
 .create-field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-1-5);
     min-width: 0;
 }
 
@@ -192,11 +199,18 @@ textarea.ac-input {
     color: var(--color-text-muted);
     cursor: pointer;
     padding: 0;
-    transition: color var(--dur-fast) var(--ease-standard);
+    transition: color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
 }
 
-#ac-cal-btn:hover {
-    color: var(--color-ink);
+#ac-cal-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #ac-cal-btn:hover {
+        color: var(--color-ink);
+    }
 }
 
 /* ---- Calendar popup ---- */
@@ -232,7 +246,7 @@ textarea.ac-input {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 4px;
+    padding: var(--space-1);
     display: flex;
     align-items: center;
     color: var(--color-text-muted);
@@ -240,14 +254,16 @@ textarea.ac-input {
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
-.ac-cal-nav:hover {
-    background: var(--color-surface-soft);
+@media (hover: hover) {
+    .ac-cal-nav:hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 #ac-cal-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
+    gap: var(--space-0-5);
 }
 
 .ac-cal-day-name {
@@ -256,22 +272,24 @@ textarea.ac-input {
     font-weight: var(--fw-semibold);
     color: var(--color-text-muted);
     text-align: center;
-    padding: 4px 0;
+    padding: var(--space-1) 0;
 }
 
 .ac-cal-day {
     font-family: var(--font-sans);
     font-size: var(--fs-sm);
     text-align: center;
-    padding: 6px 2px;
+    padding: var(--space-1-5) var(--space-0-5);
     border-radius: var(--radius-sm);
     cursor: pointer;
     color: var(--color-ink);
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
-.ac-cal-day:not(.ac-cal-empty):hover {
-    background: var(--color-surface-soft);
+@media (hover: hover) {
+    .ac-cal-day:not(.ac-cal-empty):hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 .ac-cal-empty {
@@ -334,7 +352,7 @@ textarea.ac-input {
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-pop);
     list-style: none;
-    margin: 6px 0 0;
+    margin: var(--space-1-5) 0 0;
     padding: var(--space-2);
     max-height: 220px;
     overflow-y: auto;
@@ -351,8 +369,10 @@ textarea.ac-input {
     transition: background var(--dur-fast) var(--ease-standard);
 }
 
-.ac-address-suggestion:hover {
-    background: var(--color-surface-soft);
+@media (hover: hover) {
+    .ac-address-suggestion:hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 /* ---- Map preview ---- */
@@ -395,7 +415,7 @@ textarea.ac-input {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: var(--space-1-5);
     text-align: center;
     padding: var(--space-3);
     cursor: pointer;
@@ -405,9 +425,11 @@ textarea.ac-input {
     transition: background var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard);
 }
 
-.create-img-dropzone:hover {
-    background: var(--color-page);
-    border-color: var(--color-text-muted);
+@media (hover: hover) {
+    .create-img-dropzone:hover {
+        background: var(--color-page);
+        border-color: var(--color-text-muted);
+    }
 }
 
 .create-img-dropzone img {
@@ -458,7 +480,13 @@ textarea.ac-input {
     font-size: var(--fs-body);
     cursor: pointer;
     box-sizing: border-box;
-    transition: background var(--dur-fast) var(--ease-standard), filter var(--dur-fast) var(--ease-standard);
+    transition: background var(--dur-fast) var(--ease-standard), filter var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+#create-preview-btn:active,
+#create-save-btn:active {
+    transform: scale(var(--scale-tap));
 }
 
 #create-preview-btn {
@@ -467,8 +495,10 @@ textarea.ac-input {
     color: var(--color-ink);
 }
 
-#create-preview-btn:hover {
-    background: var(--color-surface-soft);
+@media (hover: hover) {
+    #create-preview-btn:hover {
+        background: var(--color-surface-soft);
+    }
 }
 
 #create-save-btn {
@@ -477,8 +507,10 @@ textarea.ac-input {
     color: #fff;
 }
 
-#create-save-btn:hover {
-    filter: brightness(1.08);
+@media (hover: hover) {
+    #create-save-btn:hover {
+        filter: brightness(1.08);
+    }
 }
 
 #create-save-btn:disabled {

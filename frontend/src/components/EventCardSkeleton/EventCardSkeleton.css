@@ -1,0 +1,44 @@
+/* Skeleton karty akce. Rozměry kopírují .event-card (EventCard.css): obrázek
+   160 px (196 px od 1024 px), padding 20/22/22, mezera mezi bloky --space-3. */
+.event-skel {
+    pointer-events: none;
+    box-shadow: var(--shadow-card);
+}
+
+.event-skel-image {
+    height: 160px;
+    border-radius: 0;
+}
+
+.event-skel-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+.event-skel-line {
+    border-radius: var(--radius-pill);
+}
+
+.event-skel-line--title      { height: 24px; width: 72%; }
+.event-skel-line--meta       { height: 14px; width: 48%; }
+.event-skel-line--meta-short { height: 14px; width: 36%; }
+.event-skel-line--tag        { height: 20px; width: 28%; }
+.event-skel-line--btn        { height: 50px; width: 100%; margin-top: var(--space-1); }
+
+@media (min-width: 1024px) {
+    .event-skel-image {
+        height: 196px;
+    }
+}
+
+/* Text pro čtečky obrazovky, vizuálně skrytý. */
+.event-skel-status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}

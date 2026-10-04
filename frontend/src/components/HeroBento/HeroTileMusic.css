@@ -4,17 +4,21 @@
     color: #fff;
 }
 
-.hero-tile--music .hero-tile-lead {
-    font-size: var(--fs-body);
-    color: var(--color-music-tint);
-}
-
+/* Šipka dlaždice se při najetí rozsvítí v barvě té dlaždice (TOP oranžově,
+   Hudba fialově, Zbytek programu zeleně), ne všude oranžově. Selektor má o
+   třídu víc než obecné .hero-tile:hover v HeroBento.css, aby o vítězi
+   nerozhodovalo pořadí importu souborů. */
 .hero-tile--music .hero-tile-arrow {
     background: rgba(255, 255, 255, .14);
 }
 
-.hero-tile--music:hover .hero-tile-arrow,
-.hero-tile--music:focus-visible .hero-tile-arrow {
-    background: rgba(255, 255, 255, .24);
+.hero-bento .hero-tile--music:focus-visible .hero-tile-arrow {
+    background: var(--color-music-accent);
+}
+
+@media (hover: hover) {
+    .hero-bento .hero-tile--music:hover .hero-tile-arrow {
+        background: var(--color-music-accent);
+    }
 }
 
