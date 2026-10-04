@@ -1,469 +1,616 @@
-/* ===== EVENT DETAIL PAGE — mobile first ===== */
+/* Detail akce. Barvy jsou tokeny --lp-* (světlé výchozí, tmavé přepínačem v liště).
+   Hero leží na fotce pod tmavým ztmavením, proto jeho text čte --dk-* (tmavé
+   hodnoty napevno), ne --lp-*: ve světlém tématu by jinak byl na fotce tmavý text.
+   Sdílené tlačítko, odkaz a nadpis sekce jsou v components/landing/landing.css. */
 
-#detail-page {
-    background: var(--color-page);
-    display: flex;
-    flex-direction: column;
+.ed {
+    flex: 1;
+    background: var(--lp-bg);
+    padding-bottom: var(--lp-section);
 }
 
-/* ---------- Hero ---------- */
-#detail-hero {
+/* ---------- hero: fotka akce přes celou šířku ----------
+   Zajíždí pod plovoucí lištu (záporný okraj o --header-h), stejně jako obloha
+   na Akcích. Spodní rohy jsou zaoblené stejně jako karty. */
+.ed-hero {
     position: relative;
-    overflow: hidden;
-    min-height: 280px;
-    background-size: cover;
-    background-position: center;
-    background-color: var(--photo-backdrop);
+    isolation: isolate;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    align-items: flex-end;
+    min-height: clamp(400px, 64vh, 560px);
+    margin-top: calc(-1 * var(--header-h));
+    padding: calc(var(--header-h) + var(--space-6)) 0 calc(var(--space-12) + var(--space-8));
+    border-radius: 0 0 var(--radius-scene) var(--radius-scene);
+    overflow: hidden;
+    background: var(--dk-bg);
+    color: var(--dk-text);
 }
 
-#detail-hero.detail-hero--fallback {
-    background-image: var(--hero-gradient);
-}
-
-#detail-hero::before {
-    content: '';
+.ed-media {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(31, 27, 22, 0.90) 0%, rgba(31, 27, 22, 0.55) 45%, rgba(31, 27, 22, 0.15) 100%);
+    z-index: -2;
+    background-size: cover;
+    background-position: center;
 }
 
-#detail-hero-actions {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--space-2);
-    /* Stejná šířka a odsazení jako #detail-hero-content, ať tlačítka nesedí
-       na pravém okraji okna, ale na okraji obsahu. */
-    width: 100%;
-    max-width: var(--container);
-    margin: 0 auto;
-    box-sizing: border-box;
-    padding: var(--space-4) var(--space-4) 0;
+.ed-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        linear-gradient(to top, rgba(15, 9, 5, 0.94) 0%, rgba(15, 9, 5, 0.6) 40%, rgba(15, 9, 5, 0.18) 78%),
+        linear-gradient(to bottom, rgba(15, 9, 5, 0.55) 0%, rgba(15, 9, 5, 0) 30%);
 }
 
-.detail-hero-action-btn {
+.ed-hero-in {
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-10);
+    align-self: stretch;
+}
+
+.ed-crumbs {
+    font-size: var(--fs-sm);
+    color: var(--dk-muted);
+}
+
+.ed-crumbs a {
+    display: inline-flex;
     align-items: center;
-    gap: var(--space-1-5);
-    background: rgba(31, 27, 22, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: #fff;
-    font-family: var(--font-sans);
-    font-size: var(--fs-xs);
-    font-weight: var(--fw-medium);
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-el);
-    cursor: pointer;
-    backdrop-filter: blur(4px);
-    transition: background var(--dur-fast) var(--ease-standard),
-                transform var(--dur-fast) var(--ease-standard);
-}
-
-.detail-hero-action-btn:active {
-    transform: scale(var(--scale-tap));
+    min-height: var(--touch-min);
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-standard);
 }
 
 @media (hover: hover) {
-    .detail-hero-action-btn:hover {
-        background: rgba(31, 27, 22, 0.75);
+    .ed-crumbs a:hover {
+        color: var(--color-primary);
     }
 }
 
-/* Tlačítka leží přes fotku/gradient hera — vlastní focus-visible místo
-   spoléhání na výchozí obrys prohlížeče, ať je vidět spolehlivě na
-   jakémkoliv pozadí fotky (přístupnostní průchod, Fáze 7). */
-.detail-hero-action-btn:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-shadow);
+.ed-crumbs a:focus-visible {
+    outline: 2px solid var(--dk-text);
+    outline-offset: 2px;
+    border-radius: var(--radius-pill);
 }
 
-#detail-hero-content {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: var(--container);
-    margin: 0 auto;
-    box-sizing: border-box;
-    padding: var(--space-6) var(--space-4) var(--space-5);
-    color: #fff;
+.ed-hero-main {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-2);
-}
-
-#detail-hero-badges {
-    display: flex;
-    gap: var(--space-2);
-    flex-wrap: wrap;
-}
-
-/* .event-badge je v EventCard.css position:absolute (pro kartu) — v hero potřebujeme normální tok */
-#detail-hero-badges .event-badge {
-    position: static;
-}
-
-#detail-title {
-    font-family: var(--font-display);
-    font-size: var(--fs-h1);
-    font-weight: var(--fw-semibold);
-    margin: 0;
-    line-height: var(--lh-tight);
-    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
-}
-
-#detail-hero-meta {
-    display: flex;
-    flex-wrap: wrap;
     gap: var(--space-4);
-    font-family: var(--font-sans);
-    font-size: var(--fs-sm);
-    color: rgba(255, 255, 255, 0.92);
+    max-width: 880px;
 }
 
-#detail-hero-meta span {
+.ed-flags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.ed-flag {
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+}
+
+.ed-flag--soft {
+    background: rgba(15, 9, 5, 0.62);
+    border: 1px solid var(--dk-line-strong);
+    color: var(--dk-text);
+}
+
+.ed-title {
+    margin: 0;
+    font-size: var(--lp-fs-h2);
+    font-weight: var(--fw-extrabold);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tracking-heading);
+    color: var(--dk-text);
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+}
+
+.ed-meta {
     display: flex;
     align-items: center;
+    gap: var(--space-4);
+}
+
+.ed-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+    padding: var(--space-2) var(--space-3);
+    border-radius: calc(var(--radius-scene) - var(--space-4));
+    background: rgba(15, 9, 5, 0.62);
+    border: 1px solid var(--dk-line-strong);
+    line-height: 1;
+}
+
+.ed-date b {
+    font-size: var(--fs-h1);
+    font-weight: var(--fw-extrabold);
+    letter-spacing: var(--tracking-heading);
+    font-variant-numeric: tabular-nums;
+}
+
+.ed-date i {
+    margin-top: var(--space-1);
+    font-size: var(--fs-xs);
+    font-style: normal;
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+    color: var(--dk-muted);
+}
+
+.ed-meta-text {
+    display: flex;
+    flex-direction: column;
     gap: var(--space-1-5);
+    min-width: 0;
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-medium);
+    color: var(--dk-text);
 }
 
-/* ---------- Body layout ---------- */
-#detail-body {
-    width: 100%;
-    max-width: var(--container);
-    margin: 0 auto;
-    box-sizing: border-box;
-    padding: var(--space-6) var(--space-4) var(--space-16);
+.ed-meta-line {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
+    align-items: center;
+    gap: var(--space-2);
 }
 
-#detail-main {
+.ed-meta-line svg {
+    flex-shrink: 0;
+    color: var(--color-primary);
+}
+
+/* ---------- tělo: obsah a karta se vstupenkou ---------- */
+.ed-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-10);
+}
+
+/* Na telefonu karta stojí hned pod fotkou a zajíždí do ní, aby tlačítko Koupit
+   bylo vidět bez rolování. Pořadí v DOM je obsah a pak karta, vizuálně obráceně. */
+.ed-aside {
+    order: -1;
+    margin-top: calc(-1 * var(--space-8));
+    position: relative;
+    z-index: 1;
+}
+
+.ed-main {
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
+    gap: var(--space-10);
     min-width: 0;
 }
 
-.detail-section h2 {
-    font-family: var(--font-display);
-    font-size: var(--fs-h2);
-    font-weight: var(--fw-semibold);
-    color: var(--color-ink);
-    margin: 0 0 var(--space-3);
+/* karta jako deska v tácu: vnější rám, uvnitř jádro se soustředným zaoblením */
+.ed-card {
+    padding: var(--space-1-5);
+    border: 1px solid var(--lp-line);
+    border-radius: var(--radius-scene);
+    background: var(--lp-bg);
+    box-shadow: var(--shadow-pop);
 }
 
-/* Souvislý text nemá být širší než --measure (≈ 68 znaků), jinak oko ztrácí řádek. */
-.detail-section p {
-    max-width: var(--measure);
-    margin: 0 0 var(--space-3);
-    font-family: var(--font-sans);
-    font-size: var(--fs-body);
-    line-height: var(--lh-body);
-    color: var(--color-text-muted);
-}
-
-.detail-section p:last-of-type {
-    margin-bottom: 0;
-}
-
-#detail-website-link {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1-5);
-    margin-top: var(--space-2);
-    font-family: var(--font-sans);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    color: var(--color-primary);
-    text-decoration: none;
-    word-break: break-all;
-}
-
-@media (hover: hover) {
-    #detail-website-link:hover {
-        text-decoration: underline;
-    }
-}
-
-/* ---------- Mapa (placeholder bez souhlasu je components/ConsentGate/MapConsent.css) ---------- */
-#detail-map-frame {
-    display: block;
-    width: 100%;
-    height: 320px;
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
-}
-
-#detail-location-line {
-    display: flex;
-    align-items: center;
-    gap: var(--space-1-5);
-    margin: var(--space-3) 0 0;
-    font-family: var(--font-sans);
-    font-size: var(--fs-sm);
-    color: var(--color-text-muted);
-}
-
-/* ---------- Sidebar ---------- */
-#detail-sidebar {
+.ed-core {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
-}
-
-.detail-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-card);
+    gap: var(--space-5);
     padding: var(--space-5);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
+    border-radius: calc(var(--radius-scene) - var(--space-1-5));
+    background: var(--lp-surface);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--lp-text) 8%, transparent);
 }
 
-#detail-ticket-label {
-    font-family: var(--font-sans);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    color: var(--color-text-muted);
-}
-
-/* border/width/cursor reset — dřív tenhle prvek byl vždycky <a> (bez
-   defaultního rámečku prohlížeče), teď je to <button> ve variantě bez
-   event.url (viz EventDetail.jsx), takže potřebuje vlastní reset. */
-#detail-buy-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
+.ed-buy {
+    box-sizing: border-box;
     width: 100%;
-    border: none;
-    background: var(--color-primary);
-    color: #fff;
-    text-decoration: none;
-    font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
-    font-size: var(--fs-body);
-    padding: var(--space-3) var(--space-5);
-    border-radius: var(--radius-el);
-    box-shadow: var(--shadow-card);
-    cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard),
-                transform var(--dur-fast) var(--ease-standard);
+    justify-content: space-between;
 }
 
-#detail-buy-btn:not(.detail-buy-btn--disabled):active {
-    transform: scale(var(--scale-tap));
-}
-
-@media (hover: hover) {
-    #detail-buy-btn:not(.detail-buy-btn--disabled):hover {
-        filter: brightness(1.08);
-    }
-}
-
-/* Akce bez event.url — dřív no-op odkaz na "#", teď viditelně vypnuté
-   tlačítko s vysvětlením. */
-#detail-buy-btn.detail-buy-btn--disabled {
-    background: var(--color-surface-soft);
-    color: var(--color-text-muted);
-    box-shadow: none;
+.ed-buy--off {
+    justify-content: center;
+    padding: 0 var(--space-6);
+    background: var(--lp-surface-hi);
+    color: var(--lp-muted);
     cursor: not-allowed;
 }
 
-#detail-sidebar-actions {
+.ed-buy--off:active {
+    transform: none;
+}
+
+@media (hover: hover) {
+    .ed-buy--off:hover {
+        background: var(--lp-surface-hi);
+    }
+}
+
+/* ---------- fakta ---------- */
+.ed-facts {
     display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.ed-fact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--lp-line);
+}
+
+.ed-fact dt {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--lp-muted);
+}
+
+.ed-fact dt svg {
+    flex-shrink: 0;
+    color: var(--lp-accent-text);
+}
+
+.ed-fact dd {
+    margin: 0;
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-snug);
+    color: var(--lp-text);
+    overflow-wrap: anywhere;
+}
+
+.ed-tags {
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--space-2);
 }
 
-.detail-sidebar-action-btn {
-    flex: 1;
-    display: flex;
+.ed-tag {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: var(--space-1-5);
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-el);
-    padding: var(--space-2) var(--space-3);
-    font-family: var(--font-sans);
-    font-size: var(--fs-xs);
-    font-weight: var(--fw-medium);
-    color: var(--color-ink);
-    cursor: pointer;
-    transition: background var(--dur-fast) var(--ease-standard),
+    min-height: 40px;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--lp-line-strong);
+    border-radius: var(--radius-pill);
+    color: var(--lp-text);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    transition: background-color var(--dur-fast) var(--ease-standard),
                 transform var(--dur-fast) var(--ease-standard);
 }
 
-.detail-sidebar-action-btn:active {
+.ed-tag:active {
     transform: scale(var(--scale-tap));
 }
 
 @media (hover: hover) {
-    .detail-sidebar-action-btn:hover {
-        background: var(--color-surface-soft);
+    .ed-tag:hover {
+        background: var(--lp-surface-hi);
     }
 }
 
-.detail-sidebar-action-btn:focus-visible,
-#detail-buy-btn:focus-visible,
-#detail-mobile-cta-btn:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-shadow);
+.ed-tag:focus-visible {
+    outline: 2px solid var(--lp-text);
+    outline-offset: 2px;
 }
 
-/* ---------- Sticky "Koupit vstupenky" lišta na mobilu ---------- */
-/* Vlastní interpretace (handoff ji jen doporučuje, viz implementační
-   plán) — jen do 1024px, na desktopu má stejnou roli sticky karta v
-   postranním panelu (#detail-sidebar), viz media query dole. Spodní
-   padding na #detail-body ať lišta nikdy nepřekryje poslední kus
-   obsahu/patičku. */
-#detail-body {
-    padding-bottom: calc(var(--space-16) + 76px);
+/* ---------- Do kalendáře, Sdílet ---------- */
+.ed-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
 }
 
-#detail-mobile-cta {
+.ed-act {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: 48px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--lp-line-strong);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--lp-text);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+.ed-act:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    .ed-act:hover {
+        background: var(--lp-surface-hi);
+    }
+}
+
+.ed-act:focus-visible {
+    outline: 2px solid var(--lp-text);
+    outline-offset: 2px;
+}
+
+/* ---------- popis a mapa ---------- */
+.ed-h2 {
+    margin: 0 0 var(--space-4);
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-extrabold);
+    line-height: var(--lh-snug);
+    letter-spacing: var(--tracking-heading);
+    color: var(--lp-text);
+}
+
+/* Souvislý text nemá být širší než --measure, jinak oko ztrácí řádek. */
+.ed-p {
+    max-width: var(--measure);
+    margin: 0 0 var(--space-4);
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+    color: var(--lp-muted);
+}
+
+.ed-p:last-of-type {
+    margin-bottom: 0;
+}
+
+.ed-map {
+    display: block;
+    width: 100%;
+    height: 340px;
+    border: 1px solid var(--lp-line);
+    border-radius: var(--radius-scene);
+    background: var(--lp-surface);
+}
+
+/* Souhlas s mapou je sdílená komponenta se světlými tokeny, tady ji přebarvuju na
+   téma stránky a sjednocuju tvary (plocha 28 px, tlačítka pilulky). */
+.ed .map-consent {
+    border-color: var(--lp-line);
+    border-radius: var(--radius-scene);
+    background: var(--lp-surface);
+}
+
+.ed .map-consent-icon,
+.ed .map-consent-text,
+.ed .map-consent-always-btn,
+.ed .map-consent-link {
+    color: var(--lp-muted);
+}
+
+.ed .map-consent-title {
+    color: var(--lp-text);
+}
+
+.ed .map-consent-btn {
+    border-radius: var(--radius-pill);
+}
+
+.ed .map-consent-btn--primary {
+    color: var(--lp-ink-on-accent);
+}
+
+@media (hover: hover) {
+    .ed .map-consent-always-btn:hover {
+        color: var(--lp-text);
+    }
+}
+
+.ed-place {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: var(--space-4) 0 0;
+    font-size: var(--fs-body);
+    color: var(--lp-muted);
+}
+
+.ed-place svg {
+    flex-shrink: 0;
+    color: var(--lp-accent-text);
+}
+
+/* ---------- podobné akce ---------- */
+.ed-related {
+    padding-top: var(--lp-section);
+}
+
+.ed-related-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+    .ed-related-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .ed-related-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--space-5);
+    }
+}
+
+/* ---------- lišta s tlačítkem na telefonu a tabletu ----------
+   Je skrytá, dokud je vidět tlačítko v kartě. Vyjíždí jen transformem a
+   průhledností. Spodní padding stránky ať lišta nikdy nepřekryje patičku. */
+.ed-bar {
     position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: var(--space-3);
     z-index: 20;
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
-    background: var(--color-surface);
-    border-top: 1px solid var(--color-line);
-    box-shadow: 0 -8px 24px -12px rgba(31, 27, 22, 0.25);
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+    border: 1px solid var(--lp-line-strong);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--lp-surface) 88%, transparent);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-pop);
+    transition: transform var(--dur-slow) var(--ease-drawer),
+                opacity var(--dur-base) var(--ease-standard);
 }
 
-#detail-mobile-cta-text {
+.ed-bar[data-hidden] {
+    transform: translateY(calc(100% + var(--space-6)));
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ed-bar-text {
     display: flex;
     flex-direction: column;
     gap: var(--space-0-5);
     min-width: 0;
     flex: 1;
-    font-family: var(--font-sans);
     font-size: var(--fs-xs);
-    color: var(--color-text-muted);
+    color: var(--lp-muted);
 }
 
-#detail-mobile-cta-text strong {
-    color: var(--color-ink);
-    font-weight: var(--fw-semibold);
-    font-size: var(--fs-sm);
-    white-space: nowrap;
+.ed-bar-text strong {
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    color: var(--lp-text);
 }
 
-#detail-mobile-cta-btn {
+.ed-bar-btn {
+    display: inline-flex;
     flex-shrink: 0;
-    display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
+    min-height: 48px;
+    padding: 0 var(--space-5);
+    border: 0;
+    border-radius: var(--radius-pill);
     background: var(--color-primary);
-    color: #fff;
-    text-decoration: none;
-    font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
+    color: var(--lp-ink-on-accent);
     font-size: var(--fs-sm);
-    padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-el);
+    font-weight: var(--fw-bold);
     white-space: nowrap;
+    text-decoration: none;
     cursor: pointer;
     transition: transform var(--dur-fast) var(--ease-standard);
 }
 
-#detail-mobile-cta-btn:not(.detail-mobile-cta-btn--disabled):active {
+.ed-bar-btn:active {
     transform: scale(var(--scale-tap));
 }
 
-/* S ID před třídou: samotné .detail-mobile-cta-btn--disabled prohrávalo se
-   specificitou nad #detail-mobile-cta-btn a nedostupné tlačítko bylo oranžové. */
-#detail-mobile-cta-btn.detail-mobile-cta-btn--disabled {
-    background: var(--color-surface-soft);
-    color: var(--color-text-muted);
+.ed-bar-btn--off {
+    background: var(--lp-surface-hi);
+    color: var(--lp-muted);
     cursor: not-allowed;
 }
 
-/* ---------- Not found ---------- */
-#detail-not-found {
+.ed-bar-btn--off:active {
+    transform: none;
+}
+
+.ed-bar-btn:focus-visible {
+    outline: 2px solid var(--lp-text);
+    outline-offset: 2px;
+}
+
+@media (max-width: 1023px) {
+    .ed {
+        padding-bottom: calc(var(--lp-section) + 80px);
+    }
+}
+
+/* ---------- akce nenalezena ---------- */
+.ed--missing {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 40vh;
-    gap: var(--space-4);
-    font-family: var(--font-sans);
-    color: var(--color-text-muted);
+    min-height: 60vh;
 }
 
-#detail-not-found button {
-    background: var(--color-primary);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-el);
-    padding: var(--space-3) var(--space-5);
-    font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
-    font-size: var(--fs-body);
-    cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard),
-                transform var(--dur-fast) var(--ease-standard);
+.ed-missing {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-5);
+    max-width: 560px;
 }
 
-#detail-not-found button:active {
-    transform: scale(var(--scale-tap));
+.ed-missing-title {
+    margin: 0;
+    font-size: var(--lp-fs-h2);
+    font-weight: var(--fw-extrabold);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tracking-heading);
+    color: var(--lp-text);
 }
 
-@media (hover: hover) {
-    #detail-not-found button:hover {
-        filter: brightness(1.08);
-    }
+.ed-missing-text {
+    margin: 0;
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+    color: var(--lp-muted);
 }
 
-/* ---------- Responsive ---------- */
-@media (min-width: 640px) {
-    #detail-hero {
-        min-height: 340px;
-    }
-
-    #detail-title {
-        font-size: var(--fs-display);
-    }
-}
-
+/* ---------- desktop ---------- */
 @media (min-width: 1024px) {
-    #detail-body {
-        flex-direction: row;
-        align-items: flex-start;
-        padding-bottom: var(--space-16);
+    .ed-body {
+        grid-template-columns: minmax(0, 1fr) 380px;
+        gap: var(--space-12);
+        align-items: start;
     }
 
-    /* Od 1024px přebírá roli "vždycky viditelné cesty ke koupi" sticky
-       karta v postranním panelu (#detail-sidebar níž) — sticky lišta dole
-       by byla druhá, matoucí cesta ke stejné akci vedle sebe. */
-    #detail-mobile-cta {
+    /* Karta zajíždí do fotky vpravo a při rolování zůstává u horního okraje.
+       V DOM stojí za obsahem, mřížka ji vizuálně dává doprava. */
+    .ed-aside {
+        order: 0;
+        grid-column: 2;
+        grid-row: 1;
+        margin-top: calc(-1 * var(--space-16));
+        position: sticky;
+        top: calc(var(--header-h) + var(--space-4));
+    }
+
+    .ed-main {
+        grid-column: 1;
+        grid-row: 1;
+        padding-top: var(--space-12);
+    }
+
+    .ed-bar {
         display: none;
     }
+}
 
-    #detail-main {
-        flex: 2;
-    }
-
-    #detail-sidebar {
-        flex: 1;
-        position: sticky;
-        top: calc(65px + var(--space-6));
-        max-width: 320px;
+@media (prefers-reduced-motion: reduce) {
+    .ed-bar {
+        transition: opacity var(--dur-fast) linear;
     }
 }

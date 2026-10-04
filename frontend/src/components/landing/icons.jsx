@@ -47,6 +47,47 @@ export function PinIcon({ size = 16 }) {
     )
 }
 
+export function CloseIcon({ size = 16 }) {
+    return (
+        <svg width={size} height={size} {...base}>
+            <line x1="6" y1="6" x2="18" y2="18" />
+            <line x1="18" y1="6" x2="6" y2="18" />
+        </svg>
+    )
+}
+
+export function CalendarIcon({ size = 18 }) {
+    return (
+        <svg width={size} height={size} {...base}>
+            <rect x="3" y="4.5" width="18" height="17" rx="3" />
+            <line x1="16" y1="2.5" x2="16" y2="6.5" />
+            <line x1="8" y1="2.5" x2="8" y2="6.5" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+    )
+}
+
+export function ShareIcon({ size = 18 }) {
+    return (
+        <svg width={size} height={size} {...base}>
+            <circle cx="18" cy="5" r="2.6" />
+            <circle cx="6" cy="12" r="2.6" />
+            <circle cx="18" cy="19" r="2.6" />
+            <line x1="8.3" y1="10.8" x2="15.7" y2="6.2" />
+            <line x1="8.3" y1="13.2" x2="15.7" y2="17.8" />
+        </svg>
+    )
+}
+
+export function TicketIcon({ size = 18 }) {
+    return (
+        <svg width={size} height={size} {...base}>
+            <path d="M3 9a3 3 0 0 0 0 6v2.5A1.5 1.5 0 0 0 4.5 19h15a1.5 1.5 0 0 0 1.5-1.5V15a3 3 0 0 1 0-6V6.5A1.5 1.5 0 0 0 19.5 5h-15A1.5 1.5 0 0 0 3 6.5z" />
+            <line x1="14" y1="5.5" x2="14" y2="18.5" strokeDasharray="2 3" />
+        </svg>
+    )
+}
+
 export function SearchIcon({ size = 20 }) {
     return (
         <svg width={size} height={size} {...base}>

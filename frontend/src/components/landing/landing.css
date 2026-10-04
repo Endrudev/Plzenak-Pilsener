@@ -201,3 +201,78 @@
     background: linear-gradient(90deg, var(--lp-surface) 25%, var(--lp-surface-hi) 50%, var(--lp-surface) 75%);
     background-size: 200% 100%;
 }
+
+/* ---------- FilterSelect v tématu landingu (.lp-fs) ----------
+   Komponenta je v základu světlá (bílý spouštěč, bílý popover). V kořeni s
+   třídou .lp-fs se přebarví podle --lp-* (tmavé i světlé téma), nic se nemění v
+   jejím chování ani na ostatních stránkách. Používá hledání na homepage a
+   ovládání stránky Akce. */
+.lp-fs .filter-dropdown {
+    width: 100%;
+}
+
+.lp-fs .filter-dropdown-trigger {
+    background: var(--lp-bg);
+    border: 1px solid var(--lp-line-strong);
+    border-radius: var(--radius-pill);
+    height: 64px;
+    font-family: var(--font-display);
+}
+
+.lp-fs .filter-dropdown-trigger--labeled {
+    padding: 0 var(--space-10) 0 var(--space-5);
+}
+
+/* Kompaktní varianta bez popisku (řazení na stránce Akce): text spouštěče a
+   hodnoty musí sledovat téma, jinak je v tmavém tématu tmavý na tmavém. */
+.lp-fs .filter-dropdown-trigger,
+.lp-fs .filter-dropdown-label {
+    color: var(--lp-text);
+}
+
+.lp-fs .filter-dropdown-eyebrow {
+    color: var(--lp-muted);
+}
+
+.lp-fs .filter-dropdown-trigger--labeled .filter-dropdown-label {
+    color: var(--lp-text);
+}
+
+.lp-fs .filter-dropdown-label--placeholder,
+.lp-fs .filter-dropdown-trigger--labeled .filter-dropdown-label--placeholder {
+    color: var(--lp-text);
+}
+
+.lp-fs .filter-dropdown-trigger--labeled .filter-dropdown-chevron,
+.lp-fs .filter-dropdown-icon {
+    color: var(--lp-muted);
+}
+
+.lp-fs .filter-dropdown-trigger--labeled .filter-dropdown-chevron {
+    right: var(--space-4);
+}
+
+@media (hover: hover) {
+    .lp-fs .filter-dropdown-trigger:hover {
+        border-color: var(--lp-muted);
+    }
+}
+
+.lp-fs .filter-dropdown-popover {
+    background: var(--lp-surface-hi);
+    border-color: var(--lp-line-strong);
+    border-radius: var(--radius-el);
+}
+
+.lp-fs .filter-dropdown-option {
+    color: var(--lp-text);
+}
+
+.lp-fs .filter-dropdown-option--active,
+.lp-fs .filter-dropdown-option--selected {
+    background: color-mix(in srgb, var(--lp-text) 8%, transparent);
+}
+
+.lp-fs .filter-dropdown-option-icon {
+    color: var(--lp-muted);
+}

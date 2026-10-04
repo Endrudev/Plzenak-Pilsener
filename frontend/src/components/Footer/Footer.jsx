@@ -9,7 +9,7 @@ export default function Footer() {
     return (
         <footer id="site-footer">
             <BuildingSkyline className="footer-skyline" packed />
-            <div className="footer-skyline-glow" aria-hidden="true" />
+            <div id="footer-body">
             <div id="footer-inner">
                 <div id="footer-brand">
                     <PlzenakLogo size={26} tone="inverse" />
@@ -54,6 +54,7 @@ export default function Footer() {
                 </nav>
 
                 <p id="footer-copy">© Plzeňák 2026</p>
+            </div>
             </div>
         </footer>
     )

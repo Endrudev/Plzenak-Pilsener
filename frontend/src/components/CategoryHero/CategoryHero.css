@@ -1,74 +1,54 @@
-/* Rám hero pásu na TOP akce/Hudba/Zbytek programu — vizuální scéna
-   (CityScene/ConcertScene/ProgramScene z components/scenes/) jde dovnitř
-   přes `scene` prop, tahle komponenta drží jen rozměr/pozadí/text.
+/* Hero pás kategorií. Scéna z balíčku plzenak-scenes vyplní rodiče a sama je v
+   běžném toku, proto leží ve vlastní absolutní vrstvě; text nad ní je v toku
+   za ní.
 
-   V handoffu (*.dc.html) je hlavička `position:absolute`, plave NAD
-   heroem, který sám sahá až k y=0 — takže hlavička reálně "sedí na"
-   scéně (hvězdy/dav/panorama pokračují i pod ní), ne že by byl hero
-   jen barevně napodobený pruh za užší lištou. Náš #site-header je
-   naopak `position:sticky` (musí zůstat viditelný při scrollu na
-   VŠECH stránkách, ne jen tady) — normální flow prvek, co zabírá svůj
-   vlastní řádek a hero by posouval dolů.
-
-   Řešení: hero dostane záporný margin-top přesně o výšku hlavičky
-   (--header-h, měří se za běhu v Header.jsx) — vizuálně tím "vyleze"
-   nahoru pod ni, header (z-index:30, viz Header.css) ji překryje, a
-   protože header je užší než viewport, ve žebrech okolo něj je vidět
-   hero přímo, ne jen barevná napodobenina. Žádný samostatný "backdrop"
-   div navíc netřeba. */
-/* Výška 708px (460px na telefonu) zůstává z původního handoffu. Scéna je kreslená
-   na 16:9 a vyplní šířku okna, takže se ořízne shora: na široké obrazovce zůstane
-   vidět jen spodní část. Podrobnosti a možnosti v 02 Frontend/Hero scény ve vaultu.
-   --cat-hero-overlap platí jen pro liftScene: o tolik zasahuje karta s filtry
-   (CategoryFilterBar.css, margin-top: -48px) do spodku hero. */
+   Pás zajíždí pod plovoucí lištu (záporný okraj o --header-h, který měří
+   Header.jsx), stejně jako obloha na Akcích. Výška 708 px (460 px na telefonu)
+   zůstává z původního návrhu: scéna je kreslená na 16:9 a vyplní šířku okna,
+   takže se ořízne shora, viz vault 02 Frontend/Hero scény.
+   --cat-hero-overlap platí jen pro liftScene: o tolik zasahuje karta s
+   ovládáním (CategoryPage.css) do spodku pásu. Spodní rohy mají stejné
+   zaoblení jako karty. */
 .cat-hero {
-    --cat-hero-overlap: 48px;
+    --cat-hero-overlap: var(--space-12);
     position: relative;
     height: 708px;
     margin-top: calc(-1 * var(--header-h));
+    border-radius: 0 0 var(--radius-scene) var(--radius-scene);
     overflow: hidden;
 }
 
-/* Scéna z balíčku plzenak-scenes vyplní rodiče a sama je v běžném toku,
-   takže potřebuje vlastní absolutní vrstvu — text .cat-hero-text pak leží
-   nad ní (je position: relative a v DOM až za ní). */
 .cat-hero-scene {
     position: absolute;
     inset: 0;
 }
 
-/* Scéna nad kartou s filtry, pruh pod ní vyplní pozadí hero. */
 .cat-hero--lift-scene .cat-hero-scene {
     bottom: var(--cat-hero-overlap);
 }
 
-/* Padding nahoře = výška hlavičky + stejná 24px mezera jako ve zdroji
-   (112px padding na 88px hlavičce), ne natvrdo 112px — --header-h se
-   může lišit (font-loading, breakpoint), text pod ní musí sedět vždycky. */
-/* Text sedí na stejné svislici jako obsah karty s filtry pod ním: okraj
-   obsahu je max(16 px, polovina volného místa vedle 1280px kontejneru) plus
-   20 px vnitřního odsazení karty. Dřív měl text pevných 16 px od kraje okna
-   a na širokém monitoru ujížděl o 40 px doleva od všeho ostatního.
-   Procenta se tu počítají ze šířky hero, což je celé okno. */
-.cat-hero-text {
-    --cat-hero-inset: calc(max(var(--gutter), (100% - var(--container)) / 2) + var(--space-5));
+/* Text sedí na stejné svislici jako ostatní obsah (.lp-wrap), pod lištou. */
+.cat-hero-in {
     position: relative;
-    padding: calc(var(--header-h) + 24px) var(--space-4) 0 var(--cat-hero-inset);
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
-    max-width: calc(560px + var(--cat-hero-inset));
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-top: calc(var(--header-h) + var(--space-6));
 }
 
 .cat-hero-crumbs {
-    font-family: var(--font-sans);
     font-size: var(--fs-sm);
-    color: var(--color-cream-muted);
+    color: var(--dk-muted);
 }
 
 .cat-hero-crumbs a {
-    color: var(--color-cream-muted);
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-min);
+    color: inherit;
     text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-standard);
 }
 
 @media (hover: hover) {
@@ -77,78 +57,48 @@
     }
 }
 
-.cat-hero-crumbs span {
-    color: var(--color-cream);
+.cat-hero-crumbs a:focus-visible {
+    outline: 2px solid var(--dk-text);
+    outline-offset: 2px;
+    border-radius: var(--radius-pill);
 }
 
-.cat-hero-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1-5);
-    align-self: flex-start;
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-pill);
-    background: var(--color-primary);
-    color: var(--color-ink);
-    font-family: var(--font-sans);
-    font-size: var(--fs-xs);
-    font-weight: var(--fw-bold);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
+.cat-hero-crumbs span {
+    color: var(--dk-text);
 }
 
 .cat-hero-title {
     margin: 0;
-    font-family: var(--font-display);
-    line-height: 0.9;
+    max-width: 12ch;
+    font-size: var(--lp-fs-mega);
     font-weight: var(--fw-extrabold);
-    letter-spacing: -0.045em;
-    color: var(--color-cream);
+    line-height: 0.95;
+    letter-spacing: var(--tracking-heading);
+    color: var(--dk-text);
+    text-wrap: balance;
 }
 
 .cat-hero-lead {
     margin: 0;
-    font-family: var(--font-sans);
+    max-width: 30ch;
     font-size: var(--fs-body-lg);
     line-height: var(--lh-body);
-    color: var(--color-cream-muted);
+    color: var(--dk-muted);
 }
 
-.cat-hero-stats {
-    display: flex;
-    gap: var(--space-6);
-    font-family: var(--font-sans);
-    font-size: var(--fs-sm);
-    color: var(--color-cream-muted);
-}
-
-.cat-hero-stats strong {
-    font-family: var(--font-display);
-    font-size: var(--fs-h3);
-    color: var(--color-cream);
-}
-
-/* ---------- světlá varianta (Zbytek programu — denní scéna, ne noční
-   jako TOP akce/Hudba) — stejné sémantické role (tlumený text/nadpis/
-   eyebrow), jen jiné barvy, doslova ze zdroje. Používá existující
-   --color-calm-* tokeny (Zbytek.jsx sdílí paletu s HeroTileRest), ať
-   nevznikají nové jednorázové tokeny pro jednu stránku. ---------- */
+/* ---------- denní scéna (Zbytek programu): tmavý text na světlém ---------- */
 .cat-hero--light .cat-hero-crumbs,
-.cat-hero--light .cat-hero-crumbs a,
-.cat-hero--light .cat-hero-lead,
-.cat-hero--light .cat-hero-stats {
+.cat-hero--light .cat-hero-lead {
     color: var(--color-calm-text-soft);
 }
 
 .cat-hero--light .cat-hero-crumbs span,
-.cat-hero--light .cat-hero-title,
-.cat-hero--light .cat-hero-stats strong {
+.cat-hero--light .cat-hero-title {
     color: var(--color-calm-text);
 }
 
-.cat-hero--light .cat-hero-eyebrow {
-    background: var(--color-calm-figure-dk);
-    color: var(--color-calm-lamp-glow);
+.cat-hero--light .cat-hero-crumbs a:focus-visible {
+    outline-color: var(--color-calm-text);
 }
 
 @media (max-width: 767px) {
@@ -157,6 +107,6 @@
     }
 
     .cat-hero-title {
-        font-size: var(--fs-display-l) !important;
+        font-size: var(--fs-display-l);
     }
 }

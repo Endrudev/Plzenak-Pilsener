@@ -1,0 +1,107 @@
+/* Noční obloha stránky Akce. Hodnoty gradientu, hvězd, měsíce a záře jsou ze
+   zdrojového návrhu a nemění se. Hlavička je position: sticky a v toku, takže se
+   pás záporným okrajem o výšku hlavičky (--header-h, měří Header.jsx) vytáhne pod
+   ni. Hlavička plave nad oblohou, ne nad prázdnem. */
+
+.es {
+    position: relative;
+    height: 280px;
+    margin-top: calc(-1 * var(--header-h));
+    overflow: hidden;
+    background: linear-gradient(to bottom, #120502 0%, #241006 38%, #4A1D06 72%, #7A3208 100%);
+}
+
+.es-sky {
+    position: absolute;
+    inset: 0;
+    display: block;
+}
+
+.es-star {
+    position: absolute;
+    display: block;
+    color: var(--color-top-star);
+    opacity: 0.85;
+    animation: es-twinkle 3.2s ease-in-out infinite;
+}
+
+.es-star.q1 { animation-duration: 2.4s; animation-delay: -0.8s; }
+.es-star.q2 { animation-duration: 4.1s; animation-delay: -2.1s; }
+.es-star.q3 { animation-duration: 2.9s; animation-delay: -1.4s; }
+
+@keyframes es-twinkle {
+    0%, 100% { opacity: 0.85; transform: scale(1); }
+    50%      { opacity: 0.25; transform: scale(0.6); }
+}
+
+.es-shoot {
+    position: absolute;
+    display: block;
+    width: 110px;
+    height: 2px;
+    border-radius: 1px;
+    transform-origin: 100% 50%;
+    background: linear-gradient(to left, #FFF4E2, rgba(255, 236, 204, 0));
+    opacity: 0;
+    animation: es-shoot 9s linear infinite;
+}
+
+.es-shoot.s2 {
+    animation-duration: 14s;
+    animation-delay: -9s;
+}
+
+@keyframes es-shoot {
+    0%, 86% { opacity: 0; transform: rotate(-24deg) translateX(0) scaleX(0.3); }
+    88%     { opacity: 1; transform: rotate(-24deg) translateX(-40px) scaleX(1); }
+    95%     { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(0.6); }
+    100%    { opacity: 0; transform: rotate(-24deg) translateX(-190px) scaleX(0.3); }
+}
+
+.es-moon {
+    position: absolute;
+}
+
+/* Teplá záře při zemi: obyčejný radiální gradient, ne SVG, ať se z kruhu při
+   roztažení neudělá elipsa. */
+.es-glow {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 230px;
+    background: radial-gradient(70% 100% at 50% 100%, rgba(240, 128, 30, 0.4), rgba(240, 128, 30, 0) 70%);
+}
+
+/* Silueta střech: při výšce 110 px je přirozená šířka 1760 px, na užším okně se
+   ukáže prostřední výřez ve skutečné velikosti místo stlačení. */
+.es-skyline {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    display: block;
+    width: max(100%, 1760px);
+    transform: translateX(-50%);
+    height: 110px;
+}
+
+.es-skyline .skyline-mass {
+    fill: var(--color-night);
+}
+
+.es-skyline .skyline-mass--back {
+    fill: var(--color-night-2);
+    opacity: 0.75;
+}
+
+.es-skyline .skyline-window {
+    fill: var(--color-window);
+    opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .es-star,
+    .es-shoot {
+        animation: none !important;
+    }
+}

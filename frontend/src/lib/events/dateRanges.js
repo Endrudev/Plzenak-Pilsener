@@ -1,6 +1,6 @@
 import { parseCzechDate } from './eventBadge.js'
 
-// Pomocné funkce pro landing: rozdělení akcí na „dnes", „víkend" a „týden" a
+// Pomocné funkce pro landing: rozdělení akcí na „dnes", „zítra" a „víkend" a
 // rozklad data na části pro velké číslo dne na kartě.
 //
 // Všechno bere `today` jako parametr, ne new Date() uvnitř, ze stejného
@@ -12,8 +12,8 @@ const WEEKDAYS = ['ne', 'po', 'út', 'st', 'čt', 'pá', 'so']
 
 export const RANGES = [
     { value: 'dnes', label: 'Dnes' },
+    { value: 'zitra', label: 'Zítra' },
     { value: 'vikend', label: 'Víkend' },
-    { value: 'tyden', label: 'Týden' },
 ]
 
 function startOfDay(date) {
@@ -35,7 +35,7 @@ export function inRange(value, range, today = new Date()) {
     if (diff === null || diff < 0) return false
 
     if (range === 'dnes') return diff === 0
-    if (range === 'tyden') return diff <= 6
+    if (range === 'zitra') return diff === 1
     if (range === 'vikend') {
         const weekday = parseCzechDate(value).getDay()
         return diff <= 6 && (weekday === 6 || weekday === 0)

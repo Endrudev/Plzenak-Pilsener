@@ -1,22 +1,15 @@
-/* Hledání: vlevo nadpis, vpravo formulář v dvojitém rámu. Na telefonu se
-   skládá pod sebe. */
+/* Hledání: jediný vycentrovaný formulář v dvojitém rámu. Text vlevo od něj
+   zmizel, formulář mluví sám za sebe (popisky polí a zástupný text stačí). */
 
-.ls-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-8);
-    align-items: center;
-}
-
-@media (min-width: 1024px) {
-    .ls-grid {
-        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-        gap: var(--space-16);
-    }
+.ls-wrap {
+    display: flex;
+    justify-content: center;
 }
 
 /* ---------- dvojitý rám ---------- */
 .ls-bezel {
+    width: 100%;
+    max-width: 880px;
     padding: var(--space-1-5);
     border: 1px solid var(--lp-line);
     border-radius: var(--radius-scene);
@@ -98,72 +91,6 @@
 }
 
 .ls-submit {
-    align-self: flex-start;
+    align-self: center;
     margin-top: var(--space-2);
-}
-
-/* ---------- FilterSelect na tmavém ----------
-   Komponenta je v základu světlá (bílý spouštěč, bílý popover). Tady se jen
-   přebarví, nic se nemění v jejím chování ani v ostatních stránkách. */
-.ls .filter-dropdown {
-    width: 100%;
-}
-
-.ls .filter-dropdown-trigger {
-    background: var(--lp-bg);
-    border: 1px solid var(--lp-line-strong);
-    border-radius: var(--radius-pill);
-    height: 64px;
-    font-family: var(--font-display);
-}
-
-.ls .filter-dropdown-trigger--labeled {
-    padding: 0 var(--space-10) 0 var(--space-5);
-}
-
-.ls .filter-dropdown-eyebrow {
-    color: var(--lp-muted);
-}
-
-.ls .filter-dropdown-trigger--labeled .filter-dropdown-label {
-    color: var(--lp-text);
-}
-
-.ls .filter-dropdown-label--placeholder,
-.ls .filter-dropdown-trigger--labeled .filter-dropdown-label--placeholder {
-    color: var(--lp-text);
-}
-
-.ls .filter-dropdown-trigger--labeled .filter-dropdown-chevron,
-.ls .filter-dropdown-icon {
-    color: var(--lp-muted);
-}
-
-.ls .filter-dropdown-trigger--labeled .filter-dropdown-chevron {
-    right: var(--space-4);
-}
-
-@media (hover: hover) {
-    .ls .filter-dropdown-trigger:hover {
-        border-color: var(--lp-muted);
-    }
-}
-
-.ls .filter-dropdown-popover {
-    background: var(--lp-surface-hi);
-    border-color: var(--lp-line-strong);
-    border-radius: var(--radius-el);
-}
-
-.ls .filter-dropdown-option {
-    color: var(--lp-text);
-}
-
-.ls .filter-dropdown-option--active,
-.ls .filter-dropdown-option--selected {
-    background: color-mix(in srgb, var(--lp-text) 8%, transparent);
-}
-
-.ls .filter-dropdown-option-icon {
-    color: var(--lp-muted);
 }

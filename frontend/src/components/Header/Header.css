@@ -176,25 +176,54 @@
     }
 }
 
-#nav-category-top {
+/* Dvě hlavní cesty nahoře: TOP akce (oranžová) a Hudba (fialová). */
+#nav-category-features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+}
+
+.nav-category-feature {
     display: flex;
     align-items: center;
     gap: var(--space-3);
     padding: var(--space-3) var(--space-4);
     border-radius: calc(var(--radius-scene) - var(--space-2));
+    text-decoration: none;
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+.nav-category-feature:active {
+    transform: scale(var(--scale-tap));
+}
+
+.nav-category-feature:focus-visible {
+    outline: 2px solid var(--nav-ink);
+    outline-offset: -2px;
+}
+
+.nav-category-feature--top {
     background: var(--color-primary);
     color: var(--lp-ink-on-accent);
-    text-decoration: none;
-    transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+.nav-category-feature--music {
+    background: var(--color-music-bg);
+    color: var(--color-music-ink);
 }
 
 @media (hover: hover) {
-    #nav-category-top:hover {
+    .nav-category-feature--top:hover {
         background: var(--color-primary-hover);
+    }
+
+    .nav-category-feature--music:hover {
+        background: var(--color-music-bg-hover);
     }
 }
 
-#nav-category-top-icon {
+.nav-category-feature-icon {
     display: grid;
     place-items: center;
     flex-shrink: 0;
@@ -204,19 +233,23 @@
     background: rgba(26, 11, 3, 0.14);
 }
 
-#nav-category-top-text {
+.nav-category-feature--music .nav-category-feature-icon {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.nav-category-feature-text {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: var(--space-0-5);
 }
 
-#nav-category-top-text strong {
+.nav-category-feature-text strong {
     font-size: var(--fs-body);
     font-weight: var(--fw-bold);
 }
 
-#nav-category-top-text span:last-child {
+.nav-category-feature-text span:last-child {
     font-size: var(--fs-xs);
     opacity: 0.8;
 }

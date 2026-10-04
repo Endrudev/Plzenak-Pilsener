@@ -1,44 +1,33 @@
+/* Patička je průhledná, tmavé je až tělo pod siluetou (#footer-body). Budovy tak
+   stojí přímo na pozadí stránky, bez tmavého přechodu za sebou. */
 #site-footer {
-    background: var(--color-footer);
     color: var(--color-cream-muted);
-    padding: 0 var(--space-5) var(--space-8);
     position: relative;
     overflow: hidden;
 }
 
-/* Silueta střech nahoře — přesná cesta ze zdrojového návrhu (viz Footer.jsx).
-   Pruh má vlastní přechod ze světlé (stránka nad patičkou) do tmavé
-   (--color-footer), siluety budov sedí dole, kde se s pevným pozadím
-   patičky spojí beze švu. Zdrojový návrh nechává siluetu přesahovat nad
-   patičku (negativní margin do předchozí sekce) — tady je radši
-   samostatná a kontejnovaná, protože se Footer používá na každé stránce
-   a nespoléhá se na to, co je zrovna nad ním. */
+#footer-body {
+    /* -1 px: přesah přes šev, ať mezi siluetou a tělem nezůstane vlasová ryska */
+    margin-top: -1px;
+    padding: 0 var(--space-5) var(--space-8);
+    background: var(--color-footer);
+}
+
+/* Silueta střech nahoře. Siluety budov sedí na pozadí stránky, kde se spodek
+   přední řady (barva patičky) napojí na #footer-body bez švu. */
 .footer-skyline {
     display: block;
-    width: 100%;
+    /* Responzivní: silueta se nikdy nestlačí do šířky. SVG má poměr 1440 × 90
+       a roztahuje se bez zachování poměru, takže na telefonu (390 px) by byly
+       budovy 3,7krát užší, než mají být. Proto má nejméně 1440 px a je
+       vycentrovaná: úzké okno ukáže prostřední výřez ve skutečné velikosti,
+       široké ji natáhne na celou šířku. Pozadí nemá: nad budovami je vidět
+       pozadí stránky, ne tmavý přechod. */
+    position: relative;
+    left: 50%;
+    width: max(100%, 1440px);
+    transform: translateX(-50%);
     height: 90px;
-    background: linear-gradient(to bottom, var(--color-page) 0%, var(--color-night-2) 72%, var(--color-footer) 100%);
-}
-
-/* Na tmavé homepage (html.theme-lp, viz Home.jsx) začíná pruh za siluetou barvou
-   tamní stránky, ne krémovou, jinak by nad tmavým obsahem svítil světlý pás. */
-html.theme-lp .footer-skyline {
-    background: linear-gradient(to bottom, var(--lp-bg) 0%, var(--color-night-2) 72%, var(--color-footer) 100%);
-}
-
-/* Jemný černý glow hned pod siluetou — vlastní vrstva, ne
-   filter:drop-shadow na siluetě samotné. Stín z filteru potřebuje volný
-   prostor kolem zdroje a #site-footer má overflow:hidden přesně na
-   hranici siluety, takže se ořízl dřív, než byl vůbec vidět. Tahle
-   vrstva leží celá uvnitř #site-footer pod siluetou, nic ji neořízne.
-   Gradient KONČÍ průhledně (na švu se zbytkem patičky) — když končil
-   rovnou tmavý (.35 černá na 100 %), byl šev vidět jako barevný skok. */
-.footer-skyline-glow {
-    display: block;
-    height: 30px;
-    margin-top: -30px;
-    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, .35) 55%, transparent 100%);
-    pointer-events: none;
 }
 
 /* Třídy .skyline-mass/--back/.skyline-window jsou sdílené (viz

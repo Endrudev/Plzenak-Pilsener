@@ -59,6 +59,9 @@
      jen barvy textu a dlaždic, které leží přes scénu. Hodnoty původních
      ručně kreslených scén (--color-top-*, --color-music-*, většina
      --color-calm-*) se smazaly 2026-10-04, po výměně scén za balíček. */
+  --color-music-bg:         #5E2A6E;   /* tlačítko Hudba v rozbalovacím menu kategorií */
+  --color-music-bg-hover:   #6F3681;
+  --color-music-ink:        #FFFFFF;
   --color-music-accent:     #A85CB3;   /* šipka dlaždice Hudba při najetí */
   --color-scene-program:    #e2e8d7;   /* pozadí ProgramScene z balíčku plzenak-scenes, dlaždice musí mít přesně tuhle barvu, aby splynul okraj zmenšené scény */
   --color-calm-accent:      #4C7A55;   /* šipka dlaždice Zbytek programu */

@@ -1,74 +1,26 @@
-/* Stránka Akce: rámec a výsledky. Obloha je v components/EventsSky, ovládání v
-   components/events/EventsControls, karty a řádky v components/events/. Barvy
-   jsou tokeny --lp-* (světlé výchozí, tmavé přepínačem v liště). */
+/* Šablona stránek kategorií: rámec a výsledky. Hero je v CategoryHero, ovládání
+   v CategoryControls, karty v events/EventPoster. Barvy jsou tokeny --lp-*
+   (světlé výchozí, tmavé přepínačem v liště). */
 
-#events-page {
+.cp {
     flex: 1;
     background: var(--lp-bg);
     padding-bottom: var(--lp-section);
 }
 
-/* ---------- tmavý pás s titulkem ----------
-   Je tmavý v obou tématech: navazuje na noční oblohu a na budovy, jejichž přední
-   řada má přesně --color-night. Spodní padding je místo, o které do pásu zajíždí
-   ovládací panel. */
-.ev-hero {
-    padding: var(--space-6) 0 calc(var(--space-12) + var(--space-10));
-    background: var(--color-night);
-    color: var(--color-cream);
-}
-
-.ev-crumbs {
-    font-size: var(--fs-sm);
-    color: var(--color-cream-muted);
-}
-
-.ev-crumbs a {
-    color: inherit;
-    text-decoration: none;
-}
-
-@media (hover: hover) {
-    .ev-crumbs a:hover {
-        color: var(--color-primary);
-    }
-}
-
-.ev-crumbs span {
-    color: var(--color-cream);
-}
-
-.ev-title {
-    margin: var(--space-4) 0 0;
-    font-size: var(--fs-display-l);
-    font-weight: var(--fw-extrabold);
-    line-height: 0.98;
-    letter-spacing: var(--tracking-heading);
-    color: var(--color-cream);
-    text-wrap: balance;
-}
-
-.ev-lead {
-    margin: var(--space-4) 0 0;
-    max-width: 48ch;
-    font-size: var(--fs-body-lg);
-    line-height: var(--lh-body);
-    color: var(--color-cream-muted);
-}
-
-/* ---------- ovládání zajíždí do pásu ---------- */
-.ev-controls {
+/* ---------- ovládání zajíždí do hera ---------- */
+.cp-controls {
     position: relative;
     z-index: 1;
     margin-top: calc(-1 * var(--space-12));
 }
 
 /* ---------- výsledky ---------- */
-.ev-results {
+.cp-results {
     padding-top: var(--space-10);
 }
 
-.ev-bar {
+.cp-bar {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
@@ -77,14 +29,14 @@
     margin-bottom: var(--space-6);
 }
 
-.ev-count-block {
+.cp-count-block {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
     gap: var(--space-3);
 }
 
-.ev-count {
+.cp-count {
     margin: 0;
     min-width: 6ch;
     font-size: var(--fs-heading-2);
@@ -95,27 +47,27 @@
     color: var(--lp-text);
 }
 
-.ev-count-note {
+.cp-count-note {
     font-size: var(--fs-body-lg);
     color: var(--lp-muted);
 }
 
-.ev-tools {
+.cp-tools {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-3);
 }
 
-.ev-sort {
+.cp-sort {
     min-width: 200px;
 }
 
-.ev-sort .filter-dropdown {
+.cp-sort .filter-dropdown {
     width: 100%;
 }
 
-.ev-clear {
+.cp-clear {
     display: inline-flex;
     align-items: center;
     gap: var(--space-1-5);
@@ -133,49 +85,43 @@
                 transform var(--dur-fast) var(--ease-standard);
 }
 
-.ev-clear:active {
+.cp-clear:active {
     transform: scale(var(--scale-tap));
 }
 
 @media (hover: hover) {
-    .ev-clear:hover {
+    .cp-clear:hover {
         color: var(--lp-accent-text);
     }
 }
 
-.ev-clear:focus-visible {
+.cp-clear:focus-visible {
     outline: 2px solid var(--lp-text);
     outline-offset: 2px;
 }
 
-/* ---------- mřížka a seznam ---------- */
-.ev-grid {
+/* ---------- mřížka ---------- */
+.cp-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-4);
 }
 
 @media (min-width: 640px) {
-    .ev-grid {
+    .cp-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (min-width: 1024px) {
-    .ev-grid {
+    .cp-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: var(--space-5);
     }
 }
 
-.ev-list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-3);
-}
-
 /* ---------- prázdný stav ---------- */
-.ev-empty {
+.cp-empty {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -186,7 +132,7 @@
     color: var(--lp-muted);
 }
 
-.ev-empty p {
+.cp-empty p {
     margin: 0;
     font-size: var(--fs-h2);
     font-weight: var(--fw-bold);

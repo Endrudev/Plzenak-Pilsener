@@ -7,13 +7,13 @@ import { eventBadge } from '../../../lib/events/eventBadge.js'
 import { eventVisual } from '../../../lib/events/eventVisual.js'
 import './LandingToday.css'
 
-// Sekce hned pod hero dlaždicemi: co se děje dnes, o víkendu a během týdne.
+// Sekce hned pod hero dlaždicemi: co se děje dnes, zítra a o víkendu.
 // Odpovídá na první otázku návštěvníka („kam dnes večer?") dřív, než se
 // zeptá, a bez hledání. Přepínač období filtruje v prohlížeči nad už
 // načtenými akcemi, žádný další požadavek.
 //
 // Období, ve kterém nic není, se nepřednastaví: výchozí je první neprázdné
-// (dnes, pak víkend, pak týden), ať člověk nevidí prázdno jako první dojem.
+// (dnes, pak zítra, pak víkend), ať člověk nevidí prázdno jako první dojem.
 export default function LandingToday({ events, loading }) {
     const today = useMemo(() => new Date(), [])
     const future = useMemo(() => upcoming(events, today), [events, today])
@@ -23,7 +23,7 @@ export default function LandingToday({ events, loading }) {
     ), [future, today])
 
     const [picked, setPicked] = useState(null)
-    const range = picked ?? (RANGES.find(r => counts[r.value] > 0)?.value ?? 'tyden')
+    const range = picked ?? (RANGES.find(r => counts[r.value] > 0)?.value ?? 'vikend')
     const items = useMemo(() => future.filter(e => inRange(e.date, range, today)), [future, range, today])
 
     const trackRef = useRef(null)
@@ -31,8 +31,8 @@ export default function LandingToday({ events, loading }) {
         const track = trackRef.current
         if (!track) return
         const card = track.querySelector('.lt-card')
-        const step = card ? card.getBoundingClientRect().width + 16 : 300
-        track.scrollBy({ left: direction * step * 2, behavior: 'smooth' })
+        const step = card ? card.getBoundingClientRect().width + 12 : 244
+        track.scrollBy({ left: direction * step * 3, behavior: 'smooth' })
     }
 
     return (
@@ -41,7 +41,7 @@ export default function LandingToday({ events, loading }) {
                 <div className="lp-head enter" style={{ '--i': 0 }}>
                     <div>
                         <h2 id="lt-h" className="lp-h2">Kam dnes večer?</h2>
-                        <p className="lp-lead">Co se děje dnes, o víkendu a v nejbližších dnech.</p>
+                        <p className="lp-lead">Co se děje dnes, zítra a o víkendu.</p>
                     </div>
 
                     <div className="lt-controls">
@@ -104,7 +104,9 @@ export default function LandingToday({ events, loading }) {
                                             <i>{parts.month}</i>
                                         </span>
                                     )}
-                                    {badge && <span className="lt-flag">{badge.text}</span>}
+                                    {/* Štítek Dnes / Zítra jen ve Víkendu: tam odlišuje dnešní a zítřejší akci od
+                                zbytku. V Dnes a Zítra by jen opakoval vybraný čip. */}
+                                    {badge && range === 'vikend' && <span className="lt-flag">{badge.text}</span>}
 
                                     <span className="lt-body">
                                         <span className="lt-title">{event.name}</span>

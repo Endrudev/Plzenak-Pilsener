@@ -2,8 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
 import { CATEGORIES } from '../../lib/filters/categories.jsx'
-import { setMode, useLandingMode } from '../../lib/landingTheme.js'
+import { setMode, useLandingMode, usesLandingTheme } from '../../lib/landingTheme.js'
 import './Header.css'
+
+// Hudba má v rozbalovacím menu vlastní místo nahoře vedle TOP akcí, v seznamu
+// kategorií dole proto chybí.
+const hudba = CATEGORIES.find(cat => cat.slug === 'hudba')
 
 const FOCUSABLE = 'a[href], button:not([disabled])'
 
@@ -56,11 +60,12 @@ function Header() {
     const menuBtnRef = useRef(null)
     const wasOpen = useRef(false)
 
-    // Přepínač tmavého a světlého tématu existuje jen na homepage, jinde je web
-    // světlý a není co přepínat. Lišta i logo se barví podle zvoleného režimu.
-    const onHome = pathname === '/'
+    // Přepínač tmavého a světlého tématu existuje jen na stránkách, které téma mají
+    // (homepage a Akce), jinde je web světlý a není co přepínat. Lišta i logo se
+    // barví podle zvoleného režimu.
+    const themed = usesLandingTheme(pathname)
     const mode = useLandingMode()
-    const dark = onHome && mode === 'dark'
+    const dark = themed && mode === 'dark'
 
     // Zavřít menu při změně stránky (klik na odkaz uvnitř).
     useEffect(() => { setMenuOpen(false) }, [pathname])
@@ -154,19 +159,29 @@ function Header() {
                                 </svg>
                             </button>
                             <div id="nav-category-menu">
-                                <Link to="/top-akce" id="nav-category-top">
-                                    <span id="nav-category-top-icon"><StarIcon size={17} /></span>
-                                    <span id="nav-category-top-text">
-                                        <strong>TOP akce: to nejlepší z Plzně</strong>
-                                        <span>Aktuální výběr</span>
-                                    </span>
-                                    <ArrowRight />
-                                </Link>
+                                <div id="nav-category-features">
+                                    <Link to="/top-akce" className="nav-category-feature nav-category-feature--top">
+                                        <span className="nav-category-feature-icon"><StarIcon size={17} /></span>
+                                        <span className="nav-category-feature-text">
+                                            <strong>TOP akce: to nejlepší z Plzně</strong>
+                                            <span>Aktuální výběr</span>
+                                        </span>
+                                        <ArrowRight />
+                                    </Link>
+                                    <Link to="/hudba" className="nav-category-feature nav-category-feature--music">
+                                        <span className="nav-category-feature-icon">{hudba?.icon(17)}</span>
+                                        <span className="nav-category-feature-text">
+                                            <strong>Hudba</strong>
+                                            <span>Koncerty, kluby a festivaly</span>
+                                        </span>
+                                        <ArrowRight />
+                                    </Link>
+                                </div>
                                 <div id="nav-category-list-header">
                                     <span>Všechny kategorie</span>
                                 </div>
                                 <div id="nav-category-grid">
-                                    {CATEGORIES.map(cat => (
+                                    {CATEGORIES.filter(cat => cat.slug !== 'hudba').map(cat => (
                                         <Link key={cat.slug} to={`/events?kategorie=${encodeURIComponent(cat.name)}`} className="nav-category-item">
                                             <span className="nav-category-icon">{cat.icon(18)}</span>
                                             <span className="nav-category-label">{cat.name}</span>
@@ -182,7 +197,7 @@ function Header() {
                     </nav>
 
                     <div id="header-actions">
-                        {onHome && (
+                        {themed && (
                             <button
                                 type="button"
                                 id="header-theme-btn"
