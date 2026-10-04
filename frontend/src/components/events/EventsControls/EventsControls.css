@@ -1,0 +1,120 @@
+/* Ovládací panel seznamu akcí. Plocha se zvedá z tmavého hera (záporný okraj
+   v Events.css) a stojí jako deska v tácu: vnější rám, uvnitř jádro se soustředným
+   zaoblením. Barvy jsou tokeny --lp-*, takže panel sleduje světlé i tmavé téma.
+   Dolaďování FilterSelectu na --lp-* je ve sdíleném landing.css (.lp-fs). */
+
+.ec {
+    width: 100%;
+    padding: var(--space-1-5);
+    border: 1px solid var(--lp-line);
+    border-radius: var(--radius-scene);
+    background: var(--lp-bg);
+    box-shadow: var(--shadow-pop);
+}
+
+.ec-core {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    border-radius: calc(var(--radius-scene) - var(--space-1-5));
+    background: var(--lp-surface);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--lp-text) 8%, transparent);
+}
+
+@media (min-width: 768px) {
+    .ec-core {
+        padding: var(--space-6);
+    }
+}
+
+/* ---------- hledání ---------- */
+.ec-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+    .ec-row {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+.ec-input {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    height: 60px;
+    padding: 0 var(--space-5);
+    border: 1px solid var(--lp-line-strong);
+    border-radius: var(--radius-pill);
+    background: var(--lp-bg);
+    color: var(--lp-muted);
+    transition: border-color var(--dur-fast) var(--ease-standard),
+                box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+.ec-input:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-shadow);
+}
+
+.ec-input input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--lp-text);
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-medium);
+}
+
+.ec-input input::placeholder {
+    color: var(--lp-muted);
+    opacity: 1;
+}
+
+.ec-submit:disabled {
+    opacity: 0.7;
+    cursor: progress;
+}
+
+/* ---------- Kdy a Kde ---------- */
+.ec-selects {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+    .ec-selects {
+        grid-template-columns: repeat(2, minmax(0, 340px));
+    }
+}
+
+/* ---------- čipy kategorií ---------- */
+.ec-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.ec-chip {
+    border: 1px solid var(--lp-line-strong);
+    background: transparent;
+}
+
+.ec-chip[aria-pressed='true'] {
+    border-color: var(--color-primary);
+}
+
+.ec-chip-ic {
+    display: inline-flex;
+}

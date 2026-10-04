@@ -1,45 +1,94 @@
 import { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { getEventById } from '../../lib/eventsApi.js'
+import { Link, useParams, useNavigate } from 'react-router-dom'
+import { getEventById, getEvents } from '../../lib/eventsApi.js'
 import { eventBadge } from '../../lib/events/eventBadge.js'
+import { dayParts } from '../../lib/events/dateRanges.js'
+import { eventVisual } from '../../lib/events/eventVisual.js'
+import { CATEGORIES } from '../../lib/filters/categories.jsx'
+import { initMode } from '../../lib/landingTheme.js'
 import { useConsent } from '../../lib/consent/ConsentContext.jsx'
-import MapConsent from '../../components/ConsentGate/MapConsent.jsx'
 import { buildIcsFile } from '../../lib/events/buildIcsFile.js'
 import { downloadTextFile } from '../../lib/downloadTextFile.js'
 import { shareEvent } from '../../lib/events/shareEvent.js'
-import './EventDetail.css'
-import { imageBackground } from '../../lib/events/imageBackground.js'
+import MapConsent from '../../components/ConsentGate/MapConsent.jsx'
 import EventDetailSkeleton from '../../components/EventDetailSkeleton/EventDetailSkeleton.jsx'
+import EventPoster from '../../components/events/EventPoster/EventPoster.jsx'
+import { ArrowRight, ArrowUpRight, CalendarIcon, PinIcon, ShareIcon, TicketIcon } from '../../components/landing/icons.jsx'
+import '../../components/landing/landing.css'
+import './EventDetail.css'
 
+// Detail akce, postavený od nuly 2026-10-04 ve stejném jazyce jako homepage a
+// Akce: téma přes tokeny --lp-* (světlé výchozí, tmavé přepínačem v liště),
+// fotografie akce jako tmavý hero, vedle obsahu lepivá karta se vstupenkou.
+//
+// Obsah (popis, mapa se souhlasem, kalendář, sdílení, odkaz na vstupenky) je
+// stejný jako dřív. Změnilo se rozvržení a vzhled, ne co stránka umí.
 export default function EventDetail() {
     const { id } = useParams()
     const navigate = useNavigate()
     const [event, setEvent] = useState(null)
-    const { consent, acceptAll } = useConsent()
     const [loading, setLoading] = useState(true)
+    const [related, setRelated] = useState([])
+    const { consent, acceptAll } = useConsent()
     const [mapLoadedOnce, setMapLoadedOnce] = useState(false)
-    // Krátká textová zpětná vazba na "Sdílet" tlačítkách (appka nemá
-    // globální toast systém) — platí pro obě dvojice tlačítek najednou
-    // (v hero i v postranním panelu), sdílejí jeden stav.
+    // Krátká textová zpětná vazba na tlačítku „Sdílet“ (appka nemá globální toast).
     const [shareFeedback, setShareFeedback] = useState(null)
     const shareFeedbackTimeout = useRef(null)
+    // Spodní lišta na telefonu se skrývá, dokud je vidět hlavní tlačítko v kartě.
+    const buyRef = useRef(null)
+    const [buyVisible, setBuyVisible] = useState(true)
+    const today = useRef(new Date()).current
+
+    // Téma stránky je celostránkové, stejně jako na homepage a v Akcích.
+    useEffect(() => {
+        document.documentElement.classList.add('theme-lp')
+        initMode()
+        return () => document.documentElement.classList.remove('theme-lp')
+    }, [])
 
     useEffect(() => {
+        setLoading(true)
         setMapLoadedOnce(false)
+        setRelated([])
+        // Odkaz z „Podobných akcí“ vede na jiný detail ve stejné komponentě, router
+        // sám scroll nevrací.
+        window.scrollTo(0, 0)
         getEventById(id)
             .then(data => setEvent(data))
             .catch(() => setEvent(null))
             .finally(() => setLoading(false))
     }, [id])
 
+    // Podobné akce: stejná kategorie jako tahle akce, bez ní samotné. Selhání se
+    // tiše přeskočí, je to doplněk, ne obsah stránky.
+    useEffect(() => {
+        if (!event) return undefined
+        const category = CATEGORIES.find(c => event.tags?.includes(c.name))
+        let cancelled = false
+        getEvents({ kategorie: category?.name ?? '', perPage: 4 })
+            .then(data => {
+                if (cancelled) return
+                setRelated(data.items.filter(e => String(e.id) !== String(event.id)).slice(0, 3))
+            })
+            .catch(() => {})
+        return () => { cancelled = true }
+    }, [event])
+
     useEffect(() => () => clearTimeout(shareFeedbackTimeout.current), [])
+
+    useEffect(() => {
+        const el = buyRef.current
+        if (!el || !('IntersectionObserver' in window)) return undefined
+        const io = new IntersectionObserver(([entry]) => setBuyVisible(entry.isIntersecting))
+        io.observe(el)
+        return () => io.disconnect()
+    }, [event, loading])
 
     function handleAddToCalendar() {
         if (!event) return
         const ics = buildIcsFile(event)
-        // event.date u nás vždycky sedí na 'DD.MM.YYYY' (backend to
-        // vynucuje přes TO_DATE), takže tenhle guard je jen obrana proti
-        // datům, co by tenhle tvar neměla — normálně nenastane.
+        // event.date vždycky sedí na 'DD.MM.YYYY' (backend to vynucuje přes
+        // TO_DATE), takže tenhle guard je jen obrana proti jinému tvaru.
         if (!ics) return
         downloadTextFile(ics.filename, ics.content, 'text/calendar;charset=utf-8')
     }
@@ -58,96 +107,92 @@ export default function EventDetail() {
     if (loading) return <EventDetailSkeleton />
 
     if (!event) return (
-        <div id="detail-not-found">
-            <p>Akce nenalezena.</p>
-            <button onClick={() => navigate('/events')}>Zpět na akce</button>
+        <div id="detail-page" className="lp ed ed--missing">
+            <div className="lp-wrap ed-missing">
+                <h1 className="ed-missing-title">Akce nenalezena</h1>
+                <p className="ed-missing-text">Odkaz už neplatí, nebo akce proběhla a byla smazána.</p>
+                <button type="button" className="lp-btn" onClick={() => navigate('/events')}>
+                    Zpět na akce
+                    <span className="lp-btn-ic"><ArrowRight size={18} /></span>
+                </button>
+            </div>
         </div>
     )
 
-    // Až za guardem — do té chvíle je `event` null. Plaketa se počítá z data,
+    // Až za guardem: do té chvíle je `event` null. Plaketa se počítá z data,
     // v databázi uložená není (viz lib/events/eventBadge.js).
-    const badge = eventBadge(event.date)
+    const badge = eventBadge(event.date, today)
+    const parts = dayParts(event.date)
+    const isTop = event.tags?.includes('TOP akce')
+    const tags = (event.tags ?? []).filter(tag => tag !== 'TOP akce')
+    const hasDescription = event.description?.length > 0
+
+    const buyButton = event.url ? (
+        <a href={event.url} className="lp-btn ed-buy" target="_blank" rel="noreferrer" ref={buyRef}>
+            Koupit vstupenky
+            <span className="lp-btn-ic"><ArrowUpRight size={18} /></span>
+        </a>
+    ) : (
+        // Bez event.url není kam odkázat. Skutečný <button disabled>, ne <span
+        // aria-disabled>: nativně vypadne z tab pořadí a čtečka ho ohlásí jako vypnuté.
+        <button type="button" className="lp-btn ed-buy ed-buy--off" disabled ref={buyRef}>
+            Prodej zatím není online
+        </button>
+    )
 
     return (
-        <div id="detail-page">
+        <div id="detail-page" className="lp ed">
 
-            <section
-                id="detail-hero"
-                className={event.imageUrl ? '' : 'detail-hero--fallback'}
-                style={imageBackground(event.imageUrl)}
-            >
-                <div id="detail-hero-actions">
-                    <button type="button" className="detail-hero-action-btn" onClick={handleAddToCalendar}>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                        Do kalendáře
-                    </button>
-                    <button type="button" className="detail-hero-action-btn" onClick={handleShare}>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
-                            <line x1="8.6" y1="10.5" x2="15.4" y2="6.5" /><line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
-                        </svg>
-                        {shareFeedback ?? 'Sdílet'}
-                    </button>
-                </div>
+            <header className="ed-hero">
+                <span className="ed-media" style={eventVisual(event)} aria-hidden="true" />
+                <span className="ed-scrim" aria-hidden="true" />
 
-                <div id="detail-hero-content">
-                    <div id="detail-hero-badges">
-                        {badge && (
-                            <span className={`event-badge badge-${badge.type}`}>{badge.text}</span>
+                <div className="lp-wrap ed-hero-in">
+                    <nav className="ed-crumbs enter" style={{ '--i': 0 }} aria-label="Drobečková navigace">
+                        <Link to="/">Plzeňák</Link> / <Link to="/events">Akce</Link>
+                    </nav>
+
+                    <div className="ed-hero-main">
+                        {(isTop || badge) && (
+                            <div className="ed-flags enter" style={{ '--i': 1 }}>
+                                {isTop && <span className="ed-flag">TOP akce</span>}
+                                {badge && <span className="ed-flag ed-flag--soft">{badge.text}</span>}
+                            </div>
                         )}
-                        {event.tags?.[0] && <span className="event-tag">{event.tags[0]}</span>}
-                    </div>
-                    <h1 id="detail-title">{event.name}</h1>
-                    <div id="detail-hero-meta">
-                        {event.date && (
-                            <span>
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-                                </svg>
-                                {event.date}
-                            </span>
-                        )}
-                        {event.location && (
-                            <span>
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
-                                </svg>
-                                {event.location}
-                            </span>
-                        )}
-                    </div>
-                </div>
-            </section>
+                        <h1 className="ed-title enter" style={{ '--i': 2 }}>{event.name}</h1>
 
-            <div id="detail-body">
-                <div id="detail-main">
-
-                    {event.description?.length > 0 && (
-                        <section className="detail-section">
-                            <h2>O akci</h2>
-                            {event.description.map((para, i) => (
-                                <p key={i}>{para}</p>
-                            ))}
-                            {event.url && (
-                                <a href={event.url} target="_blank" rel="noreferrer" id="detail-website-link">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                                        <circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" />
-                                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                                    </svg>
-                                    {event.url}
-                                </a>
+                        <div className="ed-meta enter" style={{ '--i': 3 }}>
+                            {parts && (
+                                <span className="ed-date" aria-hidden="true">
+                                    <b>{parts.day}</b>
+                                    <i>{parts.month}</i>
+                                </span>
                             )}
+                            <span className="ed-meta-text">
+                                {event.date && <span className="ed-meta-line"><CalendarIcon size={16} />{parts ? `${parts.weekday} ` : ''}{event.date}</span>}
+                                {event.location && <span className="ed-meta-line"><PinIcon size={16} />{event.location}</span>}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div className="lp-wrap ed-body">
+                <div className="ed-main">
+                    {hasDescription && (
+                        <section className="ed-section enter" style={{ '--i': 4 }} aria-labelledby="ed-about">
+                            <h2 id="ed-about" className="ed-h2">O akci</h2>
+                            {event.description.map((para, i) => (
+                                <p key={i} className="ed-p">{para}</p>
+                            ))}
                         </section>
                     )}
 
                     {event.mapSrc && (
-                        <section className="detail-section">
-                            <h2>Kde to je</h2>
+                        <section className="ed-section enter" style={{ '--i': 5 }} aria-labelledby="ed-where">
+                            <h2 id="ed-where" className="ed-h2">Kde to je</h2>
                             {consent?.maps || mapLoadedOnce ? (
-                                <iframe id="detail-map-frame" src={event.mapSrc} title={`Mapa – ${event.location}`} loading="lazy" />
+                                <iframe className="ed-map" src={event.mapSrc} title={`Mapa: ${event.location}`} loading="lazy" />
                             ) : (
                                 <MapConsent
                                     variant="detail"
@@ -156,89 +201,97 @@ export default function EventDetail() {
                                 />
                             )}
                             {event.location && (
-                                <p id="detail-location-line">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
-                                    </svg>
-                                    {event.location}
-                                </p>
+                                <p className="ed-place"><PinIcon size={16} />{event.location}</p>
                             )}
                         </section>
                     )}
-
                 </div>
 
-                <aside id="detail-sidebar">
-                    <div className="detail-card">
-                        <span id="detail-ticket-label">Vstupenka</span>
-                        {event.url ? (
-                            <a
-                                href={event.url}
-                                id="detail-buy-btn"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />
-                                </svg>
-                                Koupit vstupenky
-                            </a>
-                        ) : (
-                            // Bez event.url není kam odkázat — dřív tu byl
-                            // no-op odkaz na "#", teď je tlačítko viditelně
-                            // deaktivované s vysvětlením, ne tichá slepá
-                            // cesta. Skutečný <button disabled>, ne <span
-                            // aria-disabled> — nativně vypadne z tab pořadí
-                            // a čtečka obrazovky ho spolehlivě ohlásí jako
-                            // vypnuté, žádná ruční ARIA plomba navíc.
-                            <button type="button" id="detail-buy-btn" className="detail-buy-btn--disabled" disabled>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />
-                                </svg>
-                                Prodej zatím není online
-                            </button>
-                        )}
-                        <div id="detail-sidebar-actions">
-                            <button type="button" className="detail-sidebar-action-btn" onClick={handleAddToCalendar}>
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-                                </svg>
-                                Kalendář
-                            </button>
-                            <button type="button" className="detail-sidebar-action-btn" onClick={handleShare}>
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
-                                    <line x1="8.6" y1="10.5" x2="15.4" y2="6.5" /><line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
-                                </svg>
-                                {shareFeedback ?? 'Sdílet'}
-                            </button>
+                <aside className="ed-aside enter" style={{ '--i': 4 }} aria-label="Vstupenky a informace">
+                    <div className="ed-card">
+                        <div className="ed-core">
+                            {buyButton}
+
+                            <dl className="ed-facts">
+                                {event.date && (
+                                    <div className="ed-fact">
+                                        <dt><CalendarIcon size={16} />Kdy</dt>
+                                        <dd>{parts ? `${parts.weekday} ` : ''}{event.date}</dd>
+                                    </div>
+                                )}
+                                {event.location && (
+                                    <div className="ed-fact">
+                                        <dt><PinIcon size={16} />Kde</dt>
+                                        <dd>{event.location}</dd>
+                                    </div>
+                                )}
+                                {tags.length > 0 && (
+                                    <div className="ed-fact">
+                                        <dt><TicketIcon size={16} />Druh</dt>
+                                        <dd className="ed-tags">
+                                            {tags.map(tag => (
+                                                <Link
+                                                    key={tag}
+                                                    to={`/events?kategorie=${encodeURIComponent(tag)}`}
+                                                    className="ed-tag"
+                                                >
+                                                    {tag}
+                                                </Link>
+                                            ))}
+                                        </dd>
+                                    </div>
+                                )}
+                            </dl>
+
+                            <div className="ed-actions">
+                                <button type="button" className="ed-act" onClick={handleAddToCalendar}>
+                                    <CalendarIcon size={18} />
+                                    Do kalendáře
+                                </button>
+                                <button type="button" className="ed-act" onClick={handleShare}>
+                                    <ShareIcon size={18} />
+                                    {shareFeedback ?? 'Sdílet'}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </aside>
             </div>
 
-            {/* Sticky lišta na mobilu — handoff ji sám označuje jako
-                doporučení, ne hotový návrh (viz implementační plán, Fáze 6),
-                tohle je vlastní interpretace. Nad ní zůstává i karta v
-                postranním panelu (na desktopu není sticky lišta vidět vůbec,
-                viz media query), ať se chování na mobilu/desktopu nerozjíždí
-                na dvě různé cesty k nákupu. */}
-            <div id="detail-mobile-cta">
-                <div id="detail-mobile-cta-text">
+            {related.length > 0 && (
+                <section className="lp-wrap ed-related" aria-labelledby="ed-related-h">
+                    <div className="lp-head">
+                        <h2 id="ed-related-h" className="lp-h2">Podobné akce</h2>
+                        <Link to="/events" className="lp-link">
+                            Všechny akce
+                            <ArrowRight size={18} />
+                        </Link>
+                    </div>
+                    <div className="ed-related-grid">
+                        {related.map((item, i) => (
+                            <EventPoster key={item.id} event={item} index={i} today={today} />
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {/* Lišta s tlačítkem na telefonu a tabletu. Na desktopu stejnou roli
+                má lepivá karta vedle obsahu. Skrytá, dokud je vidět tlačítko v kartě. */}
+            <div className="ed-bar" data-hidden={buyVisible || undefined} inert={buyVisible ? '' : undefined}>
+                <div className="ed-bar-text">
                     <strong>{event.name}</strong>
                     {event.date && <span>{event.date}</span>}
                 </div>
                 {event.url ? (
-                    <a href={event.url} target="_blank" rel="noreferrer" id="detail-mobile-cta-btn">
+                    <a href={event.url} target="_blank" rel="noreferrer" className="ed-bar-btn">
                         Koupit vstupenky
                     </a>
                 ) : (
-                    <button type="button" id="detail-mobile-cta-btn" className="detail-mobile-cta-btn--disabled" disabled>
+                    <button type="button" className="ed-bar-btn ed-bar-btn--off" disabled>
                         Prodej zatím není online
                     </button>
                 )}
             </div>
-
         </div>
     )
 }

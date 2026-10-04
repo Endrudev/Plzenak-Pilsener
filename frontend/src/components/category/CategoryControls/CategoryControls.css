@@ -1,0 +1,25 @@
+/* Ovládání kategorií. Deska, vyhledávací pole a čipy typu jsou sdílené s Akcemi
+   (events/EventsControls/EventsControls.css), tady je jen řádek filtrů. */
+
+.cc-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-5);
+}
+
+/* přepínač období je na desce o stupeň níž než pole, ať se neslévá s jádrem */
+.cc-filters .lp-chips {
+    background: var(--lp-bg);
+}
+
+/* Na úzkém telefonu se čtyři čipy období do desky nevejdou, zúží se jim odsazení. */
+@media (max-width: 479px) {
+    .cc-filters .lp-chips {
+        max-width: 100%;
+    }
+
+    .cc-filters .lp-chip {
+        padding: 0 var(--space-3);
+    }
+}

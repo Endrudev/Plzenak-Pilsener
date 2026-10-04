@@ -29,6 +29,15 @@ function readStored() {
     }
 }
 
+// Stránky, které mají tmavé i světlé téma a v liště přepínač: homepage, Akce,
+// detail akce (/events/:id) a stránky kategorií. Ostatní stránky jsou světlé a
+// téma nemají.
+const THEMED_PATHS = ['/', '/events', '/top-akce', '/hudba', '/zbytek-programu']
+
+export function usesLandingTheme(pathname) {
+    return THEMED_PATHS.includes(pathname) || pathname.startsWith('/events/')
+}
+
 export function currentMode() {
     const attr = typeof document !== 'undefined' ? document.documentElement.dataset.lpMode : null
     return isMode(attr) ? attr : resolveMode(readStored())

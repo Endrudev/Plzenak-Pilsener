@@ -1,45 +1,63 @@
-/* Kostra detailu akce. Hero má výšku jako #detail-hero (EventDetail.css). */
+/* Kostra detailu akce. Hero má stejnou výšku, okraj a zaoblení jako .ed-hero
+   (EventDetail.css). Je tmavý v obou tématech, stejně jako skutečný hero. */
 #detail-skel {
     flex: 1;
+    background: var(--lp-bg);
+    padding-bottom: var(--lp-section);
 }
 
-.detail-skel-hero {
-    height: 340px;
-    border-radius: 0;
+.eds-hero {
+    min-height: clamp(400px, 64vh, 560px);
+    margin-top: calc(-1 * var(--header-h));
+    border-radius: 0 0 var(--radius-scene) var(--radius-scene);
+    background: var(--dk-surface);
 }
 
-.detail-skel-body {
+.eds-body {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-6);
-    width: calc(100% - 2 * var(--gutter));
-    max-width: var(--container);
-    margin: var(--space-6) auto var(--section-y);
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-10);
 }
 
-.detail-skel-main {
+.eds-card {
+    order: -1;
+    height: 260px;
+    margin-top: calc(-1 * var(--space-8));
+    border-radius: var(--radius-scene);
+}
+
+.eds-main {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
 }
 
-.detail-skel-line {
-    height: 16px;
+.eds-line {
+    height: 18px;
     max-width: var(--measure);
     border-radius: var(--radius-pill);
 }
 
-.detail-skel-line--h     { height: 28px; width: 30%; margin-bottom: var(--space-2); }
-.detail-skel-line--short { width: 60%; }
+.eds-line--h     { height: 32px; width: 30%; margin-bottom: var(--space-2); }
+.eds-line--short { width: 60%; }
 
-.detail-skel-card {
-    height: 160px;
-    border-radius: var(--radius-card);
-}
+@media (min-width: 1024px) {
+    .eds-body {
+        grid-template-columns: minmax(0, 1fr) 380px;
+        gap: var(--space-12);
+        align-items: start;
+    }
 
-@media (min-width: 768px) {
-    .detail-skel-body {
-        grid-template-columns: minmax(0, 1fr) 320px;
-        gap: var(--space-8);
+    .eds-card {
+        order: 0;
+        grid-column: 2;
+        grid-row: 1;
+        margin-top: calc(-1 * var(--space-16));
+    }
+
+    .eds-main {
+        grid-column: 1;
+        grid-row: 1;
+        padding-top: var(--space-12);
     }
 }

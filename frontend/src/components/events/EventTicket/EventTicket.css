@@ -1,0 +1,162 @@
+/* Řádek akce v seznamu. Plochy a text sledují téma (--lp-*), žádná fotka. */
+
+.et {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    min-height: 112px;
+    padding: var(--space-3) var(--space-5) var(--space-3) var(--space-3);
+    border-radius: var(--radius-scene);
+    background: var(--lp-surface);
+    color: var(--lp-text);
+    text-decoration: none;
+    transition: background-color var(--dur-base) var(--ease-standard),
+                transform var(--dur-base) var(--ease-standard);
+}
+
+.et--skeleton {
+    pointer-events: none;
+}
+
+.et-date {
+    flex: 0 0 84px;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-0-5);
+    border-radius: calc(var(--radius-scene) - var(--space-3));
+    background: var(--lp-surface-hi);
+    line-height: 1;
+}
+
+.et-date b {
+    font-size: var(--fs-display);
+    font-weight: var(--fw-extrabold);
+    letter-spacing: var(--tracking-heading);
+    font-variant-numeric: tabular-nums;
+    color: var(--lp-accent-text);
+}
+
+.et-date i,
+.et-date em {
+    font-size: var(--fs-xs);
+    font-style: normal;
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+}
+
+.et-date i { color: var(--lp-text); }
+.et-date em { color: var(--lp-muted); }
+
+.et-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    padding-right: var(--space-10);
+}
+
+.et-title {
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-snug);
+    letter-spacing: var(--tracking-heading);
+    text-wrap: balance;
+}
+
+.et-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
+    font-size: var(--fs-sm);
+    color: var(--lp-muted);
+}
+
+.et-where {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.et-badge {
+    padding: var(--space-0-5) var(--space-2-5);
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+}
+
+.et-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1-5);
+}
+
+.et-tag {
+    padding: var(--space-0-5) var(--space-3);
+    border: 1px solid var(--lp-line-strong);
+    border-radius: var(--radius-pill);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    color: var(--lp-muted);
+}
+
+.et-go {
+    position: absolute;
+    top: 50%;
+    right: var(--space-4);
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-top: -22px;
+    border: 1px solid var(--lp-line-strong);
+    border-radius: 50%;
+    color: var(--lp-text);
+    transition: background-color var(--dur-base) var(--ease-standard),
+                color var(--dur-base) var(--ease-standard),
+                transform var(--dur-slow) var(--ease-drawer);
+}
+
+@media (hover: hover) {
+    .et:hover {
+        background: var(--lp-surface-hi);
+    }
+
+    .et:hover .et-go {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: var(--lp-ink-on-accent);
+        transform: translate(2px, -2px);
+    }
+}
+
+.et:active {
+    transform: scale(var(--scale-tap));
+}
+
+.et:focus-visible {
+    outline: 2px solid var(--lp-text);
+    outline-offset: 3px;
+}
+
+@media (max-width: 479px) {
+    .et-date {
+        flex-basis: 68px;
+    }
+
+    .et-body {
+        padding-right: 0;
+    }
+
+    .et-go {
+        display: none;
+    }
+}

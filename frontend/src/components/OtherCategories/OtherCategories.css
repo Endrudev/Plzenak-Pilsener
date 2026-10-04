@@ -1,102 +1,85 @@
-/* "Nic tě nezaujalo? Zkus jinou cestu" — dva bannery na zbylé kategorijní
-   stránky, doslova podle handoffu (#dalsi-h sekce, .alt karty). Sdílené
-   všemi třemi dedikovanými stránkami (TopAkce/Hudba/ZbytekProgramu.jsx),
-   liší se jen který pár karet se zobrazí (OtherCategories.jsx `exclude`). */
-/* Šířka je STEJNÝ vzorec jako #site-header (Header.css) —
-   viz komentář v CategoryFilterBar.css, proč jeden vzorec pro celou
-   stránku, ne vlastní max-width/padding kombinace na každém bloku. */
-.other-cats {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  width: calc(100% - 2 * var(--gutter));
-  max-width: var(--container);
-  margin-left: auto;
-  margin-right: auto;
-  /* Mezera nad blokem je rytmus stránky, ne odsazení dětí: blok dřív
-     přilepený těsně pod mřížku karet. */
-  margin-top: var(--section-y);
-  padding-bottom: var(--section-y);
+/* Odkazy na zbylé kategorie. Plocha je jedna karta s vnitřním jádrem (rám a jádro
+   mají soustředné zaoblení), kruh se šipkou se při najetí posune. */
+
+.oc {
+    padding-top: var(--lp-section);
 }
 
-.other-cats-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--fs-h2);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-snug);
-  letter-spacing: var(--tracking-heading);
-  color: var(--color-ink);
+.oc-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    margin-top: var(--space-8);
 }
 
-.other-cats-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-4);
-}
-
-.other-cats-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  min-height: 120px;
-  padding: var(--space-6) var(--space-6);
-  box-sizing: border-box;
-  border-radius: var(--radius-card);
-  text-decoration: none;
-  transition: transform var(--dur-base, .3s) var(--ease-standard, ease);
-}
-
-@media (hover: hover) {
-    .other-cats-card:hover {
-      transform: translateY(-4px);
+@media (min-width: 768px) {
+    .oc-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-.other-cats-card:focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 3px;
+.oc-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    min-height: 140px;
+    padding: var(--space-6);
+    border: 1px solid var(--lp-line);
+    border-radius: var(--radius-scene);
+    background: var(--lp-surface);
+    color: var(--lp-text);
+    text-decoration: none;
+    transition: transform var(--dur-base) var(--ease-standard),
+                background-color var(--dur-fast) var(--ease-standard);
 }
 
-.other-cats-text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  min-width: 0;
+.oc-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    min-width: 0;
 }
 
-.other-cats-card-title {
-  font-family: var(--font-display);
-  font-size: var(--fs-heading-2);
-  font-weight: var(--fw-extrabold);
-  letter-spacing: -0.02em;
+.oc-title {
+    font-size: var(--fs-h1);
+    font-weight: var(--fw-extrabold);
+    line-height: var(--lh-snug);
+    letter-spacing: var(--tracking-heading);
 }
 
-.other-cats-card-subtitle {
-  font-family: var(--font-sans);
-  font-size: var(--fs-sm);
+.oc-sub {
+    font-size: var(--fs-body);
+    color: var(--lp-muted);
 }
 
-.other-cats-go {
-  display: flex;
-  flex-shrink: 0;
-  transition: transform var(--dur-fast) var(--ease-standard);
-}
-
-.other-cats-card:focus-visible .other-cats-go {
-  transform: translateX(4px);
+.oc-go {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    transition: transform var(--dur-slow) var(--ease-drawer);
 }
 
 @media (hover: hover) {
-    .other-cats-card:hover .other-cats-go {
-      transform: translateX(4px);
+    .oc-card:hover {
+        background: var(--lp-surface-hi);
+    }
+
+    .oc-card:hover .oc-go {
+        transform: translate(2px, -2px) scale(1.08);
     }
 }
 
-@media (min-width: 640px) {
-  .other-cats-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.oc-card:active {
+    transform: scale(var(--scale-tap-tile));
 }
 
+.oc-card:focus-visible {
+    outline: 2px solid var(--lp-text);
+    outline-offset: 3px;
+}
