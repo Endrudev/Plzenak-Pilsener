@@ -23,10 +23,16 @@ describe('inRange', () => {
         expect(inRange('8.10.2026', 'dnes', TODAY)).toBe(false)
     })
 
-    it('týden bere dnešek a dalších šest dní, ne sedmý ani proběhlé', () => {
-        expect(inRange('13.10.2026', 'tyden', TODAY)).toBe(true)
-        expect(inRange('14.10.2026', 'tyden', TODAY)).toBe(false)
-        expect(inRange('6.10.2026', 'tyden', TODAY)).toBe(false)
+    it('zítra bere jen zítřejší akci, ne dnešní ani pozítří', () => {
+        expect(inRange('8.10.2026', 'zitra', TODAY)).toBe(true)
+        expect(inRange('7.10.2026', 'zitra', TODAY)).toBe(false)
+        expect(inRange('9.10.2026', 'zitra', TODAY)).toBe(false)
+    })
+
+    it('zítra a víkend se mohou překrývat (v pátek je zítra sobota)', () => {
+        const friday = new Date(2026, 9, 9, 18, 0)
+        expect(inRange('10.10.2026', 'zitra', friday)).toBe(true)
+        expect(inRange('10.10.2026', 'vikend', friday)).toBe(true)
     })
 
     it('víkend bere sobotu a neděli v nejbližších sedmi dnech', () => {

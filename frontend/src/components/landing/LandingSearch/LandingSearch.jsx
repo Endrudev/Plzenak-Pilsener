@@ -27,19 +27,16 @@ export default function LandingSearch({ locations }) {
     }
 
     return (
-        <Reveal as="section" className="lp-section ls" aria-labelledby="ls-h">
-            <div className="lp-wrap ls-grid">
-                <div className="ls-copy">
-                    <h2 id="ls-h" className="lp-h2 enter" style={{ '--i': 0 }}>Hledáš něco konkrétního?</h2>
-                    <p className="lp-lead enter" style={{ '--i': 1 }}>
-                        Napiš interpreta nebo místo. Zbytek upřesníš datem a kategorií.
-                    </p>
-                </div>
+        <Reveal as="section" className="lp-section ls lp-fs" aria-labelledby="ls-h">
+            {/* Nadpis sekce je jen pro čtečku a pro strukturu stránky, vizuálně
+                tu stojí samotný formulář uprostřed. */}
+            <h2 id="ls-h" className="visually-hidden">Hledání akcí</h2>
 
+            <div className="lp-wrap ls-wrap">
                 {/* Dvojitý rám: vnější plocha jako podnos, vnitřní jádro jako deska,
                     která na něm leží. Vnitřní zaoblení je o odsazení menší, ať jsou
                     křivky soustředné. */}
-                <form className="ls-bezel enter" style={{ '--i': 2 }} onSubmit={handleSubmit}>
+                <form className="ls-bezel enter" style={{ '--i': 0 }} onSubmit={handleSubmit}>
                     <div className="ls-core">
                         <label className="ls-field" htmlFor="ls-q">
                             <span className="ls-label">Co hledáš</span>

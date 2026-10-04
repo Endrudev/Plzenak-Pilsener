@@ -56,7 +56,7 @@
 
 .lt-track {
     display: flex;
-    gap: var(--space-4);
+    gap: var(--space-3);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: max(var(--gutter), calc((100% - var(--container)) / 2));
@@ -72,12 +72,14 @@
 /* ---------- karta ---------- */
 .lt-card {
     position: relative;
-    flex: 0 0 clamp(248px, 72vw, 320px);
-    aspect-ratio: 4 / 5;
+    /* Menší karta: ve 1280px kontejneru se vejde pět a půl, na telefonu dvě a půl.
+       Poloviční poslední karta říká, že je kam jet. */
+    flex: 0 0 clamp(168px, 46vw, 224px);
+    aspect-ratio: 3 / 4;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: var(--space-5);
+    padding: var(--space-4);
     border-radius: var(--radius-scene);
     overflow: hidden;
     isolation: isolate;
@@ -111,21 +113,21 @@
 
 .lt-date {
     position: absolute;
-    top: var(--space-4);
-    left: var(--space-4);
+    top: var(--space-3);
+    left: var(--space-3);
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 56px;
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-el);
+    min-width: 46px;
+    padding: var(--space-1-5) var(--space-2-5);
+    border-radius: calc(var(--radius-scene) - var(--space-3));
     background: rgba(15, 9, 5, 0.62);
     border: 1px solid var(--dk-line-strong);
     line-height: 1;
 }
 
 .lt-date b {
-    font-size: var(--fs-h2);
+    font-size: var(--fs-h3);
     font-weight: var(--fw-extrabold);
     letter-spacing: var(--tracking-heading);
     font-variant-numeric: tabular-nums;
@@ -133,7 +135,7 @@
 
 .lt-date i {
     margin-top: var(--space-0-5);
-    font-size: var(--fs-xs);
+    font-size: var(--fs-2xs);
     font-style: normal;
     font-weight: var(--fw-semibold);
     text-transform: uppercase;
@@ -143,9 +145,9 @@
 
 .lt-flag {
     position: absolute;
-    top: var(--space-4);
-    right: var(--space-4);
-    padding: var(--space-1-5) var(--space-3);
+    top: var(--space-3);
+    right: var(--space-3);
+    padding: var(--space-1) var(--space-2-5);
     border-radius: var(--radius-pill);
     background: var(--color-primary);
     color: var(--lp-ink-on-accent);
@@ -156,38 +158,40 @@
 .lt-body {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    padding-right: var(--space-12);
+    gap: var(--space-1);
+    padding-right: var(--space-10);
 }
 
 .lt-title {
-    font-size: var(--fs-h2);
+    font-size: var(--fs-body-lg);
     font-weight: var(--fw-bold);
     line-height: var(--lh-snug);
     letter-spacing: var(--tracking-heading);
     text-wrap: balance;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
 .lt-where {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1-5);
-    font-size: var(--fs-sm);
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--fs-xs);
     color: var(--dk-muted);
 }
 
 .lt-go {
     position: absolute;
-    right: var(--space-4);
-    bottom: var(--space-4);
+    right: var(--space-3);
+    bottom: var(--space-3);
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: var(--color-primary);
     color: var(--lp-ink-on-accent);
