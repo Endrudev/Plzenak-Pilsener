@@ -1,272 +1,272 @@
-#cookie-settings-overlay {
+/* Nastavení cookies: modální okno. Vždy tmavé (--dk-*), stejně jako lišta, ať je
+   stejné na všech stránkách bez ohledu na téma. Dvojitý rám: vnější okraj a jádro
+   se soustředným zaoblením. Přepínač se hýbe jen transformem. */
+
+.cs-overlay {
     position: fixed;
     inset: 0;
     z-index: 70;
-    background: rgba(31, 27, 22, 0.55);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--space-4);
     box-sizing: border-box;
-    /* 2.13 Modal — ztmavení pozadí nabíhá spolu s oknem */
-    animation: overlay-in var(--dur-base) var(--ease-standard);
+    padding: var(--space-4);
+    background: rgba(10, 5, 2, 0.62);
+    animation: cs-fade-in var(--dur-base) var(--ease-standard);
 }
 
-/* Odchod: rychlejší než vstup, bez zpětného odrazu. forwards drží koncový
-   stav do chvíle, než rodič komponentu odmontuje. */
-#cookie-settings-overlay.cookie-settings--closing {
-    animation: overlay-out var(--dur-fast) var(--ease-standard) forwards;
+.cs-overlay--closing {
+    animation: cs-fade-out var(--dur-fast) var(--ease-standard) forwards;
 }
 
-#cookie-settings-overlay.cookie-settings--closing #cookie-settings-modal {
-    animation: modal-out var(--dur-fast) var(--ease-standard) forwards;
-}
+@keyframes cs-fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cs-fade-out { from { opacity: 1; } to { opacity: 0; } }
 
-#cookie-settings-modal {
+.cs-card {
     width: 100%;
-    max-width: 480px;
-    max-height: 90vh;
+    max-width: 520px;
+    max-height: calc(100dvh - 2 * var(--space-4));
     overflow-y: auto;
     box-sizing: border-box;
-    background: var(--color-surface);
-    border-radius: var(--radius-card);
+    padding: var(--space-1-5);
+    border: 1px solid var(--dk-line-strong);
+    border-radius: var(--radius-scene);
+    background: color-mix(in srgb, var(--dk-bg) 78%, transparent);
     box-shadow: var(--shadow-pop);
-    padding: var(--space-6);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    /* 2.13 Modal — otevření scale 0.96 → 1, zavření viz .cookie-settings--closing. */
-    animation: modal-in var(--dur-base) var(--ease-standard);
+    /* Nikdy od scale(0): okno vyroste z 0.96 a z průhlednosti, uprostřed obrazovky. */
+    animation: cs-modal-in var(--dur-slow) var(--ease-drawer);
 }
 
-#cookie-settings-header {
+.cs-overlay--closing .cs-card {
+    animation: cs-modal-out var(--dur-fast) var(--ease-standard) forwards;
+}
+
+@keyframes cs-modal-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes cs-modal-out {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(0.97); }
+}
+
+.cs-core {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    border-radius: calc(var(--radius-scene) - var(--space-1-5));
+    background: var(--dk-surface);
+    box-shadow: inset 0 1px 0 rgba(255, 233, 210, 0.08);
+    color: var(--dk-text);
+}
+
+.cs-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: var(--space-4);
 }
 
-#cookie-settings-title {
+.cs-title {
     margin: 0;
-    font-family: var(--font-display);
-    font-size: var(--fs-h3);
-    font-weight: var(--fw-semibold);
-    color: var(--color-ink);
+    font-size: var(--fs-h1);
+    font-weight: var(--fw-extrabold);
+    line-height: var(--lh-snug);
+    letter-spacing: var(--tracking-heading);
+    color: var(--dk-text);
 }
 
-#cookie-settings-close {
+.cs-lede {
+    margin: var(--space-2) 0 0;
+    font-size: var(--fs-body);
+    line-height: var(--lh-snug);
+    color: var(--dk-muted);
+}
+
+.cs-close {
+    display: grid;
     flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-el);
-    color: var(--color-text-muted);
+    place-items: center;
+    width: var(--touch-min);
+    height: var(--touch-min);
+    border: 1px solid var(--dk-line-strong);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--dk-text);
     cursor: pointer;
-    transition: background var(--dur-fast) var(--ease-standard),
+    transition: background-color var(--dur-fast) var(--ease-standard),
                 transform var(--dur-fast) var(--ease-standard);
 }
 
-#cookie-settings-close:active {
+.cs-close:active {
     transform: scale(var(--scale-tap));
 }
 
 @media (hover: hover) {
-    #cookie-settings-close:hover {
-        background: var(--color-surface-soft);
+    .cs-close:hover {
+        background: rgba(255, 233, 210, 0.08);
     }
 }
 
-#cookie-settings-lede {
-    margin: calc(-1 * var(--space-2)) 0 0;
-    font-family: var(--font-sans);
-    font-size: var(--fs-sm);
-    line-height: var(--lh-snug);
-    color: var(--color-text-muted);
+.cs-close:focus-visible,
+.cs-switch:focus-visible,
+.cs-btn:focus-visible {
+    outline: 2px solid var(--dk-text);
+    outline-offset: 2px;
 }
 
-#cookie-settings-list {
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-el);
-    overflow: hidden;
+/* ---------- kategorie ---------- */
+.cs-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
 }
 
-.cookie-settings-row {
+.cs-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-4);
-    padding: var(--space-4);
-    background: var(--color-surface);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--dk-line);
+    border-radius: calc(var(--radius-scene) - var(--space-1-5) - var(--space-4));
+    background: rgba(255, 233, 210, 0.03);
 }
 
-.cookie-settings-row + .cookie-settings-row {
-    border-top: 1px solid var(--color-line);
+.cs-row-text {
+    min-width: 0;
 }
 
-.cookie-settings-row--locked {
-    background: var(--color-surface-soft);
+.cs-row-title {
+    margin: 0 0 var(--space-1);
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-bold);
+    color: var(--dk-text);
 }
 
-.cookie-settings-row-title {
-    margin: 0 0 var(--space-0-5);
-    font-family: var(--font-sans);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    color: var(--color-ink);
-}
-
-.cookie-settings-row-desc {
+.cs-row-desc {
     margin: 0;
-    font-family: var(--font-sans);
-    font-size: var(--fs-xs);
+    font-size: var(--fs-sm);
     line-height: var(--lh-snug);
-    color: var(--color-text-muted);
+    color: var(--dk-muted);
 }
 
-.cookie-settings-toggle-wrap {
+.cs-always {
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-}
-
-.cookie-settings-locked-label {
-    font-family: var(--font-sans);
-    font-size: var(--fs-2xs);
-    font-weight: var(--fw-medium);
-    color: var(--color-text-muted);
+    padding: var(--space-1-5) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    color: var(--color-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
     white-space: nowrap;
 }
 
-.cookie-settings-toggle {
+/* ---------- přepínač: 56 x 32, knoflík jede transformem ---------- */
+.cs-switch {
+    position: relative;
     flex-shrink: 0;
-    width: 42px;
-    height: 24px;
+    width: 56px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--dk-line-strong);
     border-radius: var(--radius-pill);
-    background: var(--color-line);
-    border: none;
-    padding: var(--space-1);
+    background: rgba(255, 233, 210, 0.1);
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    transition: background var(--dur-fast) var(--ease-standard),
+    transition: background-color var(--dur-base) var(--ease-standard),
+                border-color var(--dur-base) var(--ease-standard),
                 transform var(--dur-fast) var(--ease-standard);
 }
 
-.cookie-settings-toggle:active {
+.cs-switch:active {
     transform: scale(var(--scale-tap));
 }
 
-.cookie-settings-toggle-knob {
-    width: 18px;
-    height: 18px;
+.cs-knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    background: var(--color-surface);
-    box-shadow: 0 1px 3px rgba(31, 27, 22, 0.25);
-    transition: transform var(--dur-fast) var(--ease-standard);
+    background: var(--dk-text);
+    transition: transform var(--dur-base) var(--ease-drawer);
 }
 
-.cookie-settings-toggle--on {
+.cs-switch--on {
     background: var(--color-primary);
+    border-color: var(--color-primary);
 }
 
-.cookie-settings-toggle--on .cookie-settings-toggle-knob {
-    transform: translateX(18px);
+.cs-switch--on .cs-knob {
+    transform: translateX(24px);
+    background: var(--lp-ink-on-accent);
 }
 
-.cookie-settings-toggle--locked {
-    background: var(--color-line);
-    cursor: default;
-    opacity: 0.8;
+/* ---------- tlačítka: stejně velká ---------- */
+.cs-footer {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
 }
 
-.cookie-settings-toggle--locked .cookie-settings-toggle-knob {
-    transform: translateX(18px);
-}
-
-.cookie-settings-toggle:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-shadow);
-}
-
-#cookie-settings-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--space-3);
-    margin-top: var(--space-2);
-}
-
-#cookie-settings-reject,
-#cookie-settings-save {
-    border-radius: var(--radius-el);
-    font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
+.cs-btn {
+    min-height: 52px;
+    padding: 0 var(--space-5);
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    font-family: inherit;
     font-size: var(--fs-body);
-    padding: var(--space-3) var(--space-5);
-    border: none;
+    font-weight: var(--fw-bold);
     cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard),
+    transition: background-color var(--dur-fast) var(--ease-standard),
                 transform var(--dur-fast) var(--ease-standard);
 }
 
-#cookie-settings-reject:active,
-#cookie-settings-save:active {
-    transform: scale(0.98);
+.cs-btn:active {
+    transform: scale(var(--scale-tap));
 }
 
-#cookie-settings-reject {
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    color: var(--color-ink);
+.cs-btn--ghost {
+    background: transparent;
+    border-color: var(--dk-line-strong);
+    color: var(--dk-text);
 }
 
-@media (hover: hover) {
-    #cookie-settings-reject:hover {
-        background: var(--color-surface-soft);
-    }
-}
-
-#cookie-settings-save {
+.cs-btn--accent {
     background: var(--color-primary);
-    color: #fff;
+    color: var(--lp-ink-on-accent);
 }
 
 @media (hover: hover) {
-    #cookie-settings-save:hover {
-        filter: brightness(1.08);
+    .cs-btn--ghost:hover {
+        background: rgba(255, 233, 210, 0.08);
+    }
+
+    .cs-btn--accent:hover {
+        background: var(--color-primary-hover);
     }
 }
 
-#cookie-settings-close:focus-visible,
-#cookie-settings-reject:focus-visible,
-#cookie-settings-save:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-shadow);
+@media (max-width: 479px) {
+    .cs-core {
+        padding: var(--space-5);
+    }
+
+    .cs-row {
+        padding: var(--space-4);
+    }
 }
 
-@media (max-width: 480px) {
-    .cookie-settings-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-2);
+@media (prefers-reduced-motion: reduce) {
+    .cs-card,
+    .cs-overlay--closing .cs-card {
+        animation-duration: var(--dur-fast);
     }
 
-    .cookie-settings-toggle-wrap {
-        align-self: flex-end;
-    }
-
-    #cookie-settings-footer {
-        flex-direction: column-reverse;
-    }
-
-    #cookie-settings-reject,
-    #cookie-settings-save {
-        width: 100%;
-        text-align: center;
+    .cs-knob {
+        transition-duration: 0ms;
     }
 }

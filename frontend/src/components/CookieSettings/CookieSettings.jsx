@@ -7,6 +7,9 @@ const EXIT_MS = 120
 
 const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
+// Nastavení cookies, přestavěné 2026-10-05: tmavá karta s dvojitým rámem (vždy
+// tmavá, stejně jako lišta), kategorie jako karty a nový přepínač. Chování
+// (focus trap, Escape, klik na pozadí, odchod s animací) zůstalo.
 export default function CookieSettings({ initialMaps, onSave, onRejectAll, onClose }) {
     const [mapsEnabled, setMapsEnabled] = useState(initialMaps)
     const [closing, setClosing] = useState(false)
@@ -77,69 +80,62 @@ export default function CookieSettings({ initialMaps, onSave, onRejectAll, onClo
     }
 
     return (
-        <div id="cookie-settings-overlay" className={closing ? 'cookie-settings--closing' : undefined} onClick={handleOverlayClick}>
+        <div id="cookie-settings-overlay" className={closing ? 'cs-overlay cs-overlay--closing' : 'cs-overlay'} onClick={handleOverlayClick}>
             <div
-                id="cookie-settings-modal"
+                className="cs-card"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="cookie-settings-title"
                 ref={dialogRef}
             >
-                <div id="cookie-settings-header">
-                    <h2 id="cookie-settings-title">Nastavení cookies</h2>
-                    <button type="button" id="cookie-settings-close" onClick={() => leave(onClose)} aria-label="Zavřít">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                        </svg>
-                    </button>
-                </div>
-
-                <p id="cookie-settings-lede">Vyber, co smíme používat. Volbu můžeš kdykoli změnit odkazem v patičce.</p>
-
-                <div id="cookie-settings-list">
-                    <div className="cookie-settings-row cookie-settings-row--locked">
-                        <div className="cookie-settings-row-text">
-                            <p className="cookie-settings-row-title">Nezbytné</p>
-                            <p className="cookie-settings-row-desc">Přihlášení, bezpečnost, uložené filtry. Nelze vypnout.</p>
+                <div className="cs-core">
+                    <div className="cs-header">
+                        <div>
+                            <h2 id="cookie-settings-title" className="cs-title">Nastavení cookies</h2>
+                            <p className="cs-lede">Vyber, co smíme používat. Volbu můžeš kdykoli změnit odkazem v patičce.</p>
                         </div>
-                        <div className="cookie-settings-toggle-wrap">
-                            <span className="cookie-settings-locked-label">Vždy zapnuto</span>
+                        <button type="button" className="cs-close" onClick={() => leave(onClose)} aria-label="Zavřít">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div className="cs-list">
+                        <div className="cs-row cs-row--locked">
+                            <div className="cs-row-text">
+                                <p className="cs-row-title">Nezbytné</p>
+                                <p className="cs-row-desc">Přihlášení, bezpečnost, uložené filtry. Bez nich web nefunguje, proto nejdou vypnout.</p>
+                            </div>
+                            <span className="cs-always">Vždy zapnuto</span>
+                        </div>
+
+                        <div className="cs-row">
+                            <div className="cs-row-text">
+                                <p className="cs-row-title" id="cs-maps-label">Mapy a vložený obsah</p>
+                                <p className="cs-row-desc">OpenStreetMap na detailu akce, videa a widgety pořadatelů.</p>
+                            </div>
                             <button
                                 type="button"
-                                className="cookie-settings-toggle cookie-settings-toggle--locked"
+                                className={`cs-switch${mapsEnabled ? ' cs-switch--on' : ''}`}
                                 role="switch"
-                                aria-checked="true"
-                                disabled
+                                aria-checked={mapsEnabled}
+                                aria-labelledby="cs-maps-label"
+                                onClick={() => setMapsEnabled(v => !v)}
                             >
-                                <span className="cookie-settings-toggle-knob" />
+                                <span className="cs-knob" />
                             </button>
                         </div>
                     </div>
 
-                    <div className="cookie-settings-row">
-                        <div className="cookie-settings-row-text">
-                            <p className="cookie-settings-row-title">Mapy a vložený obsah</p>
-                            <p className="cookie-settings-row-desc">OpenStreetMap na detailu akce, videa a widgety pořadatelů.</p>
-                        </div>
-                        <button
-                            type="button"
-                            className={`cookie-settings-toggle${mapsEnabled ? ' cookie-settings-toggle--on' : ''}`}
-                            role="switch"
-                            aria-checked={mapsEnabled}
-                            onClick={() => setMapsEnabled(v => !v)}
-                        >
-                            <span className="cookie-settings-toggle-knob" />
+                    <div className="cs-footer">
+                        <button type="button" className="cs-btn cs-btn--ghost" onClick={handleRejectAll}>
+                            Odmítnout vše
+                        </button>
+                        <button type="button" className="cs-btn cs-btn--accent" onClick={handleSave}>
+                            Uložit volbu
                         </button>
                     </div>
-                </div>
-
-                <div id="cookie-settings-footer">
-                    <button type="button" id="cookie-settings-reject" onClick={handleRejectAll}>
-                        Odmítnout vše
-                    </button>
-                    <button type="button" id="cookie-settings-save" onClick={handleSave}>
-                        Uložit volbu
-                    </button>
                 </div>
             </div>
         </div>
