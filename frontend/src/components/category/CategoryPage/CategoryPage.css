@@ -8,11 +8,10 @@
     padding-bottom: var(--lp-section);
 }
 
-/* ---------- ovládání zajíždí do hera ---------- */
+/* ---------- ovládání: deska zajíždí do hera (.lp-sheet-lift) ---------- */
 .cp-controls {
     position: relative;
     z-index: 1;
-    margin-top: calc(-1 * var(--space-12));
 }
 
 /* ---------- výsledky ---------- */

@@ -6,15 +6,12 @@
    Header.jsx), stejně jako obloha na Akcích. Výška 708 px (460 px na telefonu)
    zůstává z původního návrhu: scéna je kreslená na 16:9 a vyplní šířku okna,
    takže se ořízne shora, viz vault 02 Frontend/Hero scény.
-   --cat-hero-overlap platí jen pro liftScene: o tolik zasahuje karta s
-   ovládáním (CategoryPage.css) do spodku pásu. Spodní rohy mají stejné
-   zaoblení jako karty. */
+   Spodek pásu je rovný, zaoblené rohy dělá světlé pozadí stránky (.lp-sheet v
+   landing.css), které do pásu zajíždí. */
 .cat-hero {
-    --cat-hero-overlap: var(--space-12);
     position: relative;
     height: 708px;
     margin-top: calc(-1 * var(--header-h));
-    border-radius: 0 0 var(--radius-scene) var(--radius-scene);
     overflow: hidden;
 }
 
@@ -23,8 +20,11 @@
     inset: 0;
 }
 
-.cat-hero--lift-scene .cat-hero-scene {
-    bottom: var(--cat-hero-overlap);
+/* Scéna je o --cat-hero-shift vyšší než pás a spodek ořízne pás (viz EventsHero:
+   hlavy lamp ve městě jsou asi 6,25 vw nad spodkem scény, deska s ovládáním 56 px
+   nad spodkem pásu). */
+.cat-hero--shift .cat-hero-scene {
+    bottom: calc(-1 * max(0px, calc(6.25vw - 48px)));
 }
 
 /* Text sedí na stejné svislici jako ostatní obsah (.lp-wrap), pod lištou. */

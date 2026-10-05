@@ -177,6 +177,7 @@ export default function EventDetail() {
                 </div>
             </header>
 
+            <div className="lp-sheet">
             <div className="lp-wrap ed-body">
                 <div className="ed-main">
                     {hasDescription && (
@@ -274,6 +275,7 @@ export default function EventDetail() {
                     </div>
                 </section>
             )}
+            </div>
 
             {/* Lišta s tlačítkem na telefonu a tabletu. Na desktopu stejnou roli
                 má lepivá karta vedle obsahu. Skrytá, dokud je vidět tlačítko v kartě. */}
