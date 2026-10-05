@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
-import BuildingSkyline from '../NightSkyline/BuildingSkyline.jsx'
+import DuskSkyline from '../NightSkyline/DuskSkyline.jsx'
 import './Footer.css'
 import { useConsent } from '../../lib/consent/ConsentContext.jsx'
 
@@ -8,7 +8,9 @@ export default function Footer() {
     const { openSettings } = useConsent()
     return (
         <footer id="site-footer">
-            <BuildingSkyline className="footer-skyline" packed />
+            <div className="footer-sky" aria-hidden="true">
+                <DuskSkyline className="footer-skyline" />
+            </div>
             <div id="footer-body">
             <div id="footer-inner">
                 <div id="footer-brand">

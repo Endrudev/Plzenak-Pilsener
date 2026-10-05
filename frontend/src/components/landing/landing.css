@@ -276,3 +276,23 @@
 .lp-fs .filter-dropdown-option-icon {
     color: var(--lp-muted);
 }
+
+/* ---------- list: světlé pozadí stránky zajíždí do hera ----------
+   Hero má rovný spodek a zaoblené rohy jsou na světlém pozadí stránky, které se
+   přes něj přehrne o poloměr zaoblení. Obsah pod hero (ovládání, výsledky, tělo
+   detailu) leží uvnitř listu. `.lp-sheet-lift` vytáhne desku s ovládáním o tentýž
+   poloměr nad okraj listu, takže její horní hrana leží na rovině, kterou si hero
+   určí (u měst v rovině lamp). */
+.lp-sheet {
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-1 * var(--radius-scene));
+    border-radius: var(--radius-scene) var(--radius-scene) 0 0;
+    background: var(--lp-bg);
+}
+
+.lp-sheet-lift {
+    position: relative;
+    top: calc(-1 * var(--radius-scene));
+    margin-bottom: calc(-1 * var(--radius-scene));
+}

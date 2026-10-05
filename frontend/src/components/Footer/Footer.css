@@ -1,5 +1,7 @@
-/* Patička je průhledná, tmavé je až tělo pod siluetou (#footer-body). Budovy tak
-   stojí přímo na pozadí stránky, bez tmavého přechodu za sebou. */
+/* Patička: nahoře tři řady střech (DuskSkyline), pod nimi tmavé tělo (#footer-body).
+   Řady jdou odspodu od tmavé po světlou: přední má barvu těla, takže s ním splývá,
+   zadní je nejsvětlejší a nahoře se rozplývá do pozadí stránky. Pás nemá vlastní
+   pozadí ani zaoblení, střechy stojí přímo na stránce. */
 #site-footer {
     color: var(--color-cream-muted);
     position: relative;
@@ -7,46 +9,57 @@
 }
 
 #footer-body {
-    /* -1 px: přesah přes šev, ať mezi siluetou a tělem nezůstane vlasová ryska */
+    /* -1 px: přesah přes šev, ať mezi pásem a tělem nezůstane vlasová ryska */
     margin-top: -1px;
     padding: 0 var(--space-5) var(--space-8);
     background: var(--color-footer);
 }
 
-/* Silueta střech nahoře. Siluety budov sedí na pozadí stránky, kde se spodek
-   přední řady (barva patičky) napojí na #footer-body bez švu. */
-.footer-skyline {
-    display: block;
-    /* Responzivní: silueta se nikdy nestlačí do šířky. SVG má poměr 1440 × 90
-       a roztahuje se bez zachování poměru, takže na telefonu (390 px) by byly
-       budovy 3,7krát užší, než mají být. Proto má nejméně 1440 px a je
-       vycentrovaná: úzké okno ukáže prostřední výřez ve skutečné velikosti,
-       široké ji natáhne na celou šířku. Pozadí nemá: nad budovami je vidět
-       pozadí stránky, ne tmavý přechod. */
+.footer-sky {
     position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+/* Kresba má pevnou velikost v pixelech a je vystředěná: úzké okno ukáže prostřední
+   výřez, široké víc města. Nic se nenatahuje do šířky. */
+.footer-skyline {
+    position: absolute;
     left: 50%;
-    width: max(100%, 1440px);
+    bottom: 0;
+    display: block;
+    max-width: none;
     transform: translateX(-50%);
-    height: 90px;
 }
 
-/* Třídy .skyline-mass/--back/.skyline-window jsou sdílené (viz
-   BuildingSkyline.jsx, používá je i sekce Hledání na Home.jsx) — barvy si
-   každé použití nastavuje samo, scoped přes vlastní className na <svg>. */
-.footer-skyline .skyline-mass {
-    fill: var(--color-footer);
+/* zadní řada se vyplňuje přechodem v DuskSkyline (atribut fill) */
+.dusk-mid   { fill: var(--dusk-mid); }
+.dusk-front { fill: var(--dusk-front); }
+
+.dusk-win rect { fill: var(--color-window); }
+.dusk-win--back rect { opacity: 0.4; }
+.dusk-win--mid rect { opacity: 0.75; }
+.dusk-win--front rect { opacity: 0.95; }
+
+/* část oken pomalu pohasíná a zase se rozsvěcí, jen průhledností */
+.dusk-win--mid rect:nth-child(6n),
+.dusk-win--front rect:nth-child(7n) {
+    animation: dusk-window 7s ease-in-out infinite;
 }
 
-/* Zadní řada: plná, bez oken a v jiné (světlejší) barvě než přední, stejně
-   jako nad pásem Hledání na Home (viz `packed` v BuildingSkyline.jsx). */
-.footer-skyline .skyline-mass--back {
-    fill: var(--color-skyline-back);
-    opacity: 1;
+.dusk-win--front rect:nth-child(5n) {
+    animation: dusk-window 9s ease-in-out -4s infinite;
 }
 
-.footer-skyline .skyline-window {
-    fill: var(--color-window);
-    opacity: 0.85;
+@keyframes dusk-window {
+    0%, 100% { opacity: 0.95; }
+    50%      { opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dusk-win rect {
+        animation: none !important;
+    }
 }
 
 #footer-inner {

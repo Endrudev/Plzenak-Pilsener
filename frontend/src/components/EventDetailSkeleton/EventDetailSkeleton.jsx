@@ -7,6 +7,7 @@ export default function EventDetailSkeleton() {
     return (
         <div id="detail-skel" className="lp" role="status" aria-label="Načítání akce">
             <div className="eds-hero" />
+            <div className="lp-sheet">
             <div className="lp-wrap eds-body">
                 <div className="eds-card skeleton" />
                 <div className="eds-main">
@@ -15,6 +16,7 @@ export default function EventDetailSkeleton() {
                     <div className="eds-line skeleton" />
                     <div className="eds-line eds-line--short skeleton" />
                 </div>
+            </div>
             </div>
         </div>
     )

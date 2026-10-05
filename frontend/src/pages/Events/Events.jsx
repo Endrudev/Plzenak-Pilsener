@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import EventsSky from '../../components/EventsSky/EventsSky.jsx'
+import { useSearchParams } from 'react-router-dom'
+import EventsHero from '../../components/EventsHero/EventsHero.jsx'
 import EventsControls from '../../components/events/EventsControls/EventsControls.jsx'
 import EventPoster from '../../components/events/EventPoster/EventPoster.jsx'
 import EventTicket from '../../components/events/EventTicket/EventTicket.jsx'
@@ -14,8 +14,8 @@ import { initMode } from '../../lib/landingTheme.js'
 import '../../components/landing/landing.css'
 import './Events.css'
 
-// Stránka Akce, postavená od nuly 2026-10-04. Z původní zůstala jen animovaná noční
-// obloha (EventsSky). Všechno ostatní je nové a drží se stejného jazyka jako
+// Stránka Akce, postavená od nuly 2026-10-04. Hero (EventsHero) byl 2026-10-05
+// rozšířený o vrstvy, dominanty a kartu s nejbližší akcí. Všechno ostatní je nové a drží se stejného jazyka jako
 // homepage: téma přes tokeny --lp-*, světlé výchozí, tmavé přepínačem v liště.
 //
 // Stav seznamu žije jen v URL (q, kategorie, misto, datum, top, razeni), takže
@@ -92,23 +92,22 @@ export default function Events() {
 
     const totalPages = Math.max(1, Math.ceil(total / PER_PAGE))
 
+    // Tlačítko v hero odroluje k ovládání a dá fokus do hledání. Plynule, ledaže má
+    // člověk zapnuté omezení pohybu.
+    function focusSearch() {
+        const input = document.getElementById('ec-q')
+        if (!input) return
+        const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        input.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'center' })
+        input.focus({ preventScroll: true })
+    }
+
     return (
         <div id="events-page" className="lp ev">
-            <EventsSky />
+            <EventsHero onSearch={focusSearch} />
 
-            {/* Tmavý pás pod oblohou: barva je přesně barva přední řady budov, aby
-                silueta plynule přešla do titulku. Tmavý je v obou tématech. */}
-            <header className="ev-hero">
-                <div className="lp-wrap">
-                    <nav className="ev-crumbs" aria-label="Drobečková navigace">
-                        <Link to="/">Plzeňák</Link> / <span>Akce</span>
-                    </nav>
-                    <h1 className="ev-title">Akce v Plzni</h1>
-                    <p className="ev-lead">Koncerty, divadlo, trhy i akce pro děti. Najdi, co tě dnes večer zajímá.</p>
-                </div>
-            </header>
-
-            <div className="lp-wrap ev-controls">
+            <div className="lp-sheet">
+            <div className="lp-wrap ev-controls lp-sheet-lift">
                 <EventsControls applied={applied} locations={locations} loading={loading} onChange={update} />
             </div>
 
@@ -180,6 +179,7 @@ export default function Events() {
 
                 <EventsPager page={page} totalPages={totalPages} onChange={setPage} />
             </section>
+            </div>
         </div>
     )
 }

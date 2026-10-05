@@ -28,9 +28,9 @@ export default function LandingSearch({ locations }) {
 
     return (
         <Reveal as="section" className="lp-section ls lp-fs" aria-labelledby="ls-h">
-            {/* Nadpis sekce je jen pro čtečku a pro strukturu stránky, vizuálně
-                tu stojí samotný formulář uprostřed. */}
-            <h2 id="ls-h" className="visually-hidden">Hledání akcí</h2>
+            <div className="lp-wrap ls-head">
+                <h2 id="ls-h" className="lp-h2 ls-title">Hledáš něco konkrétního?</h2>
+            </div>
 
             <div className="lp-wrap ls-wrap">
                 {/* Dvojitý rám: vnější plocha jako podnos, vnitřní jádro jako deska,

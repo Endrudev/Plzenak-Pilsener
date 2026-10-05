@@ -20,7 +20,6 @@
     min-height: clamp(400px, 64vh, 560px);
     margin-top: calc(-1 * var(--header-h));
     padding: calc(var(--header-h) + var(--space-6)) 0 calc(var(--space-12) + var(--space-8));
-    border-radius: 0 0 var(--radius-scene) var(--radius-scene);
     overflow: hidden;
     background: var(--dk-bg);
     color: var(--dk-text);
@@ -184,7 +183,8 @@
    bylo vidět bez rolování. Pořadí v DOM je obsah a pak karta, vizuálně obráceně. */
 .ed-aside {
     order: -1;
-    margin-top: calc(-1 * var(--space-8));
+    /* list (.lp-sheet) je o poloměr zaoblení výš než dřív tělo, proto karta zajíždí jen o zbytek */
+    margin-top: calc(-1 * (var(--space-8) - var(--radius-scene)));
     position: relative;
     z-index: 1;
 }
@@ -593,7 +593,7 @@
         order: 0;
         grid-column: 2;
         grid-row: 1;
-        margin-top: calc(-1 * var(--space-16));
+        margin-top: calc(-1 * (var(--space-16) - var(--radius-scene)));
         position: sticky;
         top: calc(var(--header-h) + var(--space-4));
     }

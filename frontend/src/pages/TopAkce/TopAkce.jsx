@@ -15,7 +15,7 @@ export default function TopAkce() {
             fixed={FIXED}
             hero={{
                 background: '#401909',
-                liftScene: true,
+                sceneShift: true,
                 scene: <LazyCityScene shade label="Noční Plzeň z papíru" />,
                 breadcrumbLabel: 'TOP akce',
                 title: 'TOP akce',

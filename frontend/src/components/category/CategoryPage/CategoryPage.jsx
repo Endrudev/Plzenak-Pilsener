@@ -57,7 +57,8 @@ export default function CategoryPage({
         <div className="lp cp">
             <CategoryHero {...hero} />
 
-            <div className="lp-wrap cp-controls">
+            <div className="lp-sheet">
+            <div className="lp-wrap cp-controls lp-sheet-lift">
                 <CategoryControls
                     q={q}
                     kdy={kdy}
@@ -138,6 +139,7 @@ export default function CategoryPage({
             </section>
 
             <OtherCategories exclude={exclude} />
+            </div>
         </div>
     )
 }

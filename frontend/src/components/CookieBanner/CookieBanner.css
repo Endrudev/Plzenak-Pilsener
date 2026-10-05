@@ -1,178 +1,209 @@
+/* Souhlasová lišta. Tmavá karta v rohu, vždy tmavá (--dk-*): stránky bez tématu
+   (zásady, podmínky) a stránky se světlým tématem pak mají stejnou lištu.
+   Karta je dvojitý rám: vnější okraj, uvnitř jádro se soustředným zaoblením.
+   Pohyb je jen transform a opacity. */
+
 #cookie-banner {
     position: fixed;
-    left: var(--space-4);
-    right: var(--space-4);
-    bottom: var(--space-4);
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: var(--space-3);
     z-index: 60;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     /* Lišta se objevuje jednou za návštěvu, takže si zaslouží vjezd zespodu.
        Přijde s odstupem, ať nesoupeří s načítající se stránkou. */
-    animation: fade-up var(--dur-slow) var(--ease-standard) 600ms backwards;
+    animation: ck-in var(--dur-slow) var(--ease-drawer) 600ms backwards;
+    pointer-events: none;
 }
 
-#cookie-banner-inner {
+#cookie-banner.ck-banner--leaving {
+    animation: ck-out var(--dur-fast) var(--ease-standard) forwards;
+}
+
+@keyframes ck-in {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes ck-out {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(12px); }
+}
+
+.ck-card {
     width: 100%;
-    max-width: var(--container);
+    max-width: 440px;
     box-sizing: border-box;
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
+    padding: var(--space-1-5);
+    border: 1px solid var(--dk-line-strong);
+    border-radius: var(--radius-scene);
+    background: color-mix(in srgb, var(--dk-bg) 78%, transparent);
     box-shadow: var(--shadow-pop);
-    padding: var(--space-5);
+    pointer-events: auto;
+}
+
+.ck-core {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
+    padding: var(--space-5);
+    border-radius: calc(var(--radius-scene) - var(--space-1-5));
+    background: var(--dk-surface);
+    box-shadow: inset 0 1px 0 rgba(255, 233, 210, 0.08);
+    color: var(--dk-text);
 }
 
-#cookie-banner-content {
+.ck-head {
     display: flex;
     align-items: flex-start;
     gap: var(--space-3);
 }
 
-#cookie-banner-icon {
+.ck-icon {
+    display: grid;
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-pill);
-    background: var(--badge-bg);
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-primary) 18%, transparent);
     color: var(--color-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-#cookie-banner-title {
+.ck-text {
+    min-width: 0;
+}
+
+.ck-title {
     margin: 0 0 var(--space-1);
-    font-family: var(--font-sans);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    color: var(--color-ink);
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-heading);
+    color: var(--dk-text);
 }
 
-#cookie-banner-desc {
+.ck-desc {
     margin: 0;
-    font-family: var(--font-sans);
     font-size: var(--fs-sm);
     line-height: var(--lh-snug);
-    color: var(--color-text-muted);
+    color: var(--dk-muted);
 }
 
-#cookie-banner-desc a {
+.ck-desc a {
     color: var(--color-primary);
+    font-weight: var(--fw-semibold);
     text-decoration: none;
-    font-weight: var(--fw-medium);
 }
 
 @media (hover: hover) {
-    #cookie-banner-desc a:hover {
+    .ck-desc a:hover {
         text-decoration: underline;
     }
 }
 
-#cookie-banner-actions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
+.ck-desc a:focus-visible {
+    outline: 2px solid var(--dk-text);
+    outline-offset: 2px;
+    border-radius: var(--radius-pill);
 }
 
-#cookie-banner-actions-row {
-    display: flex;
-    gap: var(--space-3);
+/* ---------- tlačítka: Odmítnout a Přijmout stejně velká ---------- */
+.ck-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
 }
 
-#cookie-banner-settings,
-#cookie-banner-reject,
-#cookie-banner-accept {
-    border-radius: var(--radius-el);
-    font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
+.ck-btn {
+    min-height: 48px;
+    padding: 0 var(--space-5);
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    font-family: inherit;
     font-size: var(--fs-body);
-    padding: var(--space-3) var(--space-5);
+    font-weight: var(--fw-bold);
     cursor: pointer;
-    border: none;
-    transition: filter var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard),
+    transition: background-color var(--dur-fast) var(--ease-standard),
                 transform var(--dur-fast) var(--ease-standard);
 }
 
-#cookie-banner-settings:active,
-#cookie-banner-reject:active,
-#cookie-banner-accept:active {
-    transform: scale(0.98);
+.ck-btn:active {
+    transform: scale(var(--scale-tap));
 }
 
-#cookie-banner-settings {
-    background: none;
-    color: var(--color-text-muted);
-    padding: var(--space-1) var(--space-2);
-    align-self: center;
+.ck-btn--ghost {
+    background: transparent;
+    border-color: var(--dk-line-strong);
+    color: var(--dk-text);
 }
 
-@media (hover: hover) {
-    #cookie-banner-settings:hover {
-        color: var(--color-ink);
-        text-decoration: underline;
-    }
-}
-
-#cookie-banner-reject {
-    flex: 1;
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    color: var(--color-ink);
-}
-
-@media (hover: hover) {
-    #cookie-banner-reject:hover {
-        background: var(--color-surface-soft);
-    }
-}
-
-#cookie-banner-accept {
-    flex: 1;
+.ck-btn--accent {
     background: var(--color-primary);
-    color: #fff;
+    color: var(--lp-ink-on-accent);
 }
 
 @media (hover: hover) {
-    #cookie-banner-accept:hover {
-        filter: brightness(1.08);
+    .ck-btn--ghost:hover {
+        background: rgba(255, 233, 210, 0.08);
+    }
+
+    .ck-btn--accent:hover {
+        background: var(--color-primary-hover);
     }
 }
 
-#cookie-banner-settings:focus-visible,
-#cookie-banner-reject:focus-visible,
-#cookie-banner-accept:focus-visible,
-#cookie-banner-desc a:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-shadow);
+.ck-btn:focus-visible,
+.ck-link:focus-visible {
+    outline: 2px solid var(--dk-text);
+    outline-offset: 2px;
 }
 
-@media (min-width: 1024px) {
-    #cookie-banner-inner {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        padding: var(--space-4) var(--space-5);
+.ck-link {
+    align-self: center;
+    min-height: var(--touch-min);
+    padding: 0 var(--space-4);
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--dk-muted);
+    font-family: inherit;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+.ck-link:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    .ck-link:hover {
+        color: var(--dk-text);
+    }
+}
+
+/* Na telefonu je lišta přes šířku u spodku a kompaktnější. */
+@media (max-width: 479px) {
+    .ck-core {
+        padding: var(--space-4);
+        gap: var(--space-3);
     }
 
-    #cookie-banner-content {
-        align-items: center;
+    .ck-icon {
+        width: 40px;
+        height: 40px;
     }
+}
 
-    #cookie-banner-actions {
-        flex-direction: row;
-        align-items: center;
-        flex-shrink: 0;
-    }
-
-    #cookie-banner-settings {
-        order: -1;
-    }
-
-    #cookie-banner-reject,
-    #cookie-banner-accept {
-        flex: none;
+@media (prefers-reduced-motion: reduce) {
+    #cookie-banner,
+    #cookie-banner.ck-banner--leaving {
+        animation-duration: var(--dur-fast);
+        animation-delay: 0ms;
     }
 }

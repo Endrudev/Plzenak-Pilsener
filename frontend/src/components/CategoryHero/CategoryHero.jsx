@@ -9,19 +9,20 @@ import './CategoryHero.css'
 // `theme="light"` je denní scéna (Zbytek programu), text je tmavý. Ostatní jsou
 // noční, text je krémový (--dk-*), ve světlém i tmavém tématu stránky stejně.
 //
-// `liftScene`: karta s ovládáním zajíždí do spodních 48 px pásu. Když je na dně
-// scény něco důležitého (tramvaj v CityScene), zvedne se scéna nad kartu a pruh
-// pod ní vyplní `background`, který má mít barvu země ve scéně.
+// `sceneShift`: scéna je o kousek vyšší než pás a spodek se ořízne, aby horní hrana
+// desky s ovládáním ležela v rovině hlav lamp (jen CityScene u TOP akcí).
+//
+// Spodek pásu je rovný, zaoblené rohy dělá světlé pozadí stránky (.lp-sheet).
 export default function CategoryHero({
     background,
     theme = 'dark',
-    liftScene = false,
+    sceneShift = false,
     scene,
     breadcrumbLabel,
     title,
     lead,
 }) {
-    const cls = `cat-hero${theme === 'light' ? ' cat-hero--light' : ''}${liftScene ? ' cat-hero--lift-scene' : ''}`
+    const cls = `cat-hero${theme === 'light' ? ' cat-hero--light' : ''}${sceneShift ? ' cat-hero--shift' : ''}`
 
     return (
         <header className={cls} style={{ background }}>

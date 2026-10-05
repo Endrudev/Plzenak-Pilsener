@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
 import { CATEGORIES } from '../../lib/filters/categories.jsx'
 import { setMode, useLandingMode, usesLandingTheme } from '../../lib/landingTheme.js'
+import { SearchIcon } from '../landing/icons.jsx'
 import './Header.css'
 
 // Hudba má v rozbalovacím menu vlastní místo nahoře vedle TOP akcí, v seznamu
@@ -54,6 +55,11 @@ function Header() {
     const { pathname } = useLocation()
     const [menuOpen, setMenuOpen] = useState(false)
     const [scrolled, setScrolled] = useState(false)
+    // Panel kategorií se otevírá přes :hover a :focus-within. Po klepnutí na odkaz v něm
+    // by zůstal otevřený (myš je pořád nad ním a fokus v odkazu), proto ho `catDismissed`
+    // po klepnutí vypne. Zase se povolí, až kurzor vstoupí na tlačítko znovu nebo na něj
+    // přijde fokus z klávesnice.
+    const [catDismissed, setCatDismissed] = useState(false)
     const headerRef = useRef(null)
     const sentinelRef = useRef(null)
     const overlayRef = useRef(null)
@@ -150,48 +156,78 @@ function Header() {
 
                     <nav id="header-nav" aria-label="Hlavní navigace">
                         <Link to="/" className={linkClass('/')}>Domů</Link>
-                        <Link to="/events" className={linkClass('/events')}>Akce</Link>
-                        <div id="nav-category-wrapper">
-                            <button type="button" id="nav-category-trigger" className="nav-link" aria-haspopup="true">
+                        <Link to="/events" className={`${linkClass('/events')} nav-link--search`}>
+                            <span className="nav-search-ic"><SearchIcon size={15} /></span>
+                            Akce
+                        </Link>
+                        <div
+                            id="nav-category-wrapper"
+                            data-dismissed={catDismissed || undefined}
+                            onMouseEnter={() => setCatDismissed(false)}
+                            onMouseLeave={() => setCatDismissed(false)}
+                        >
+                            <button
+                                type="button"
+                                id="nav-category-trigger"
+                                className="nav-link"
+                                aria-haspopup="true"
+                                onFocus={() => setCatDismissed(false)}
+                            >
                                 Kategorie
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <polyline points="6 9 12 15 18 9" />
                                 </svg>
                             </button>
-                            <div id="nav-category-menu">
-                                <div id="nav-category-features">
-                                    <Link to="/top-akce" className="nav-category-feature nav-category-feature--top">
-                                        <span className="nav-category-feature-icon"><StarIcon size={17} /></span>
-                                        <span className="nav-category-feature-text">
-                                            <strong>TOP akce: to nejlepší z Plzně</strong>
-                                            <span>Aktuální výběr</span>
-                                        </span>
-                                        <ArrowRight />
+                            <div
+                                id="nav-category-menu"
+                                onClickCapture={e => {
+                                    if (!e.target.closest('a')) return
+                                    setCatDismissed(true)
+                                    document.activeElement?.blur?.()
+                                }}
+                            >
+                                <div className="ncm-core">
+                                    <div className="ncm-grid">
+                                        <div className="ncm-features">
+                                            <Link to="/top-akce" className="ncm-tile ncm-tile--top ncm-rise" style={{ '--i': 0 }}>
+                                                <span className="ncm-tile-ic"><StarIcon size={20} /></span>
+                                                <span className="ncm-tile-text">
+                                                    <strong>TOP akce</strong>
+                                                    <span>To nejlepší z Plzně</span>
+                                                </span>
+                                                <span className="ncm-tile-go" aria-hidden="true"><ArrowRight size={16} /></span>
+                                            </Link>
+                                            <Link to="/hudba" className="ncm-tile ncm-tile--music ncm-rise" style={{ '--i': 1 }}>
+                                                <span className="ncm-tile-ic">{hudba?.icon(20)}</span>
+                                                <span className="ncm-tile-text">
+                                                    <strong>Hudba</strong>
+                                                    <span>Koncerty, kluby, festivaly</span>
+                                                </span>
+                                                <span className="ncm-tile-go" aria-hidden="true"><ArrowRight size={16} /></span>
+                                            </Link>
+                                        </div>
+
+                                        <div className="ncm-cats">
+                                            {CATEGORIES.filter(cat => cat.slug !== 'hudba').map((cat, i) => (
+                                                <Link
+                                                    key={cat.slug}
+                                                    to={`/events?kategorie=${encodeURIComponent(cat.name)}`}
+                                                    className="ncm-cat ncm-rise"
+                                                    style={{ '--i': i + 2 }}
+                                                >
+                                                    <span className="ncm-cat-ic">{cat.icon(18)}</span>
+                                                    <span className="ncm-cat-label">{cat.name}</span>
+                                                    <ArrowRight size={14} />
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <Link to="/events" className="ncm-all ncm-rise" style={{ '--i': 7 }}>
+                                        Všechny akce
+                                        <span className="ncm-all-ic"><ArrowRight size={16} /></span>
                                     </Link>
-                                    <Link to="/hudba" className="nav-category-feature nav-category-feature--music">
-                                        <span className="nav-category-feature-icon">{hudba?.icon(17)}</span>
-                                        <span className="nav-category-feature-text">
-                                            <strong>Hudba</strong>
-                                            <span>Koncerty, kluby a festivaly</span>
-                                        </span>
-                                        <ArrowRight />
-                                    </Link>
                                 </div>
-                                <div id="nav-category-list-header">
-                                    <span>Všechny kategorie</span>
-                                </div>
-                                <div id="nav-category-grid">
-                                    {CATEGORIES.filter(cat => cat.slug !== 'hudba').map(cat => (
-                                        <Link key={cat.slug} to={`/events?kategorie=${encodeURIComponent(cat.name)}`} className="nav-category-item">
-                                            <span className="nav-category-icon">{cat.icon(18)}</span>
-                                            <span className="nav-category-label">{cat.name}</span>
-                                        </Link>
-                                    ))}
-                                </div>
-                                <Link to="/events" id="nav-category-all">
-                                    Všechny akce
-                                    <ArrowRight size={14} />
-                                </Link>
                             </div>
                         </div>
                     </nav>
@@ -241,7 +277,10 @@ function Header() {
             >
                 <nav id="header-overlay-nav" aria-label="Hlavní navigace">
                     <Link to="/" className={linkClass('/')} style={{ '--i': 0 }}>Domů</Link>
-                    <Link to="/events" className={linkClass('/events')} style={{ '--i': 1 }}>Akce</Link>
+                    <Link to="/events" className={`${linkClass('/events')} nav-link--search`} style={{ '--i': 1 }}>
+                        Akce
+                        <SearchIcon size={28} />
+                    </Link>
                     <Link to="/top-akce" className={linkClass('/top-akce')} style={{ '--i': 2 }}>TOP akce</Link>
                 </nav>
 

@@ -46,6 +46,9 @@
   --color-night-2:     #2A1106;
   --color-skyline-back: #4A2312;   /* zadní řada budov nad pásem Hledání: plná, bez oken, světlejší než přední */
   --color-footer:      #140702;   /* jen patička — nejtmavší tón appky */
+  --dusk-back:         #9A4A2A;   /* patička: zadní řada střech, nejsvětlejší, nahoře se rozplývá do stránky */
+  --dusk-mid:          #4C2012;   /* prostřední řada */
+  --dusk-front:        var(--color-footer);   /* přední řada má barvu těla patičky */
   --color-window:      #FFE6BD;   /* rozsvícené okno na tmavé siluetě */
   --color-cream:       #FFF1DE;
   --color-cream-muted: #D9B996;
@@ -112,7 +115,7 @@
      lišta po odrolování od vrcholu stránky nepotkala s textem pod sebou. */
   --nav-bg:           rgba(255, 255, 255, 0.90);   /* hustší sklo: pod lištou bývá tmavé hero a řídké sklo by zešedlo */
   --nav-bg-scrolled:  rgba(255, 255, 255, 0.96);
-  --nav-panel:        rgba(255, 255, 255, 0.98);   /* rozbalovací panel kategorií, skoro plný, aby pod ním nic neprosvítalo */
+  --nav-panel:        #FFFFFF;   /* rozbalovací panel kategorií, plný, aby pod ním nic neprosvítalo */
   --nav-line:         rgba(42, 15, 4, 0.08);
   --nav-ink:          var(--color-ink);
   --nav-muted:        var(--color-text-muted);
@@ -390,7 +393,7 @@ html.theme-lp[data-lp-mode='light'] {
 html.theme-lp:not([data-lp-mode='light']) {
   --nav-bg:          rgba(27, 17, 11, 0.62);
   --nav-bg-scrolled: rgba(27, 17, 11, 0.9);
-  --nav-panel:       rgba(27, 17, 11, 0.98);
+  --nav-panel:       #1B110B;
   --nav-line:        var(--lp-line);
   --nav-ink:         var(--lp-text);
   --nav-muted:       var(--lp-muted);

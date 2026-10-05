@@ -1,4 +1,4 @@
-/* Stránka Akce: rámec a výsledky. Obloha je v components/EventsSky, ovládání v
+/* Stránka Akce: rámec a výsledky. Obloha je v components/EventsHero, ovládání v
    components/events/EventsControls, karty a řádky v components/events/. Barvy
    jsou tokeny --lp-* (světlé výchozí, tmavé přepínačem v liště). */
 
@@ -8,59 +8,10 @@
     padding-bottom: var(--lp-section);
 }
 
-/* ---------- tmavý pás s titulkem ----------
-   Je tmavý v obou tématech: navazuje na noční oblohu a na budovy, jejichž přední
-   řada má přesně --color-night. Spodní padding je místo, o které do pásu zajíždí
-   ovládací panel. */
-.ev-hero {
-    padding: var(--space-6) 0 calc(var(--space-12) + var(--space-10));
-    background: var(--color-night);
-    color: var(--color-cream);
-}
-
-.ev-crumbs {
-    font-size: var(--fs-sm);
-    color: var(--color-cream-muted);
-}
-
-.ev-crumbs a {
-    color: inherit;
-    text-decoration: none;
-}
-
-@media (hover: hover) {
-    .ev-crumbs a:hover {
-        color: var(--color-primary);
-    }
-}
-
-.ev-crumbs span {
-    color: var(--color-cream);
-}
-
-.ev-title {
-    margin: var(--space-4) 0 0;
-    font-size: var(--fs-display-l);
-    font-weight: var(--fw-extrabold);
-    line-height: 0.98;
-    letter-spacing: var(--tracking-heading);
-    color: var(--color-cream);
-    text-wrap: balance;
-}
-
-.ev-lead {
-    margin: var(--space-4) 0 0;
-    max-width: 48ch;
-    font-size: var(--fs-body-lg);
-    line-height: var(--lh-body);
-    color: var(--color-cream-muted);
-}
-
-/* ---------- ovládání zajíždí do pásu ---------- */
+/* ---------- ovládání: deska zajíždí do hera (.lp-sheet-lift) ---------- */
 .ev-controls {
     position: relative;
     z-index: 1;
-    margin-top: calc(-1 * var(--space-12));
 }
 
 /* ---------- výsledky ---------- */

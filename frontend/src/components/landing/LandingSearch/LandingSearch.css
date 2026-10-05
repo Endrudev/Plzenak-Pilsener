@@ -1,5 +1,15 @@
-/* Hledání: jediný vycentrovaný formulář v dvojitém rámu. Text vlevo od něj
-   zmizel, formulář mluví sám za sebe (popisky polí a zástupný text stačí). */
+/* Hledání: vycentrovaný nadpis a pod ním jediný formulář v dvojitém rámu. Text
+   vlevo od formuláře zmizel, nadpis je nad ním (od 2026-10-05 viditelný). */
+
+.ls-head {
+    margin-bottom: var(--space-8);
+    text-align: center;
+}
+
+.ls-head .ls-title {
+    margin-inline: auto;
+    max-width: 20ch;
+}
 
 .ls-wrap {
     display: flex;

@@ -1,0 +1,248 @@
+/* Hero stránky Akce: noční Plzeň z papíru (CityScene) jako pozadí, text a karta
+   nejbližší akce nad ní. Scéna leží v celé ploše hera. Spodek hera je rovný, zaoblené
+   rohy dělá světlé pozadí stránky (.lp-sheet), které do hera zajíždí.
+
+   Hlavička je position: sticky a v toku, proto se hero záporným okrajem o výšku
+   hlavičky (--header-h, měří Header.jsx) vytáhne pod ni: hlavička plave nad
+   scénou, ne nad prázdnem. */
+
+.eh {
+    position: relative;
+    isolation: isolate;
+    margin-top: calc(-1 * var(--header-h));
+    overflow: hidden;
+    background: #401909;
+    color: var(--color-cream);
+}
+
+.eh-scene {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+}
+
+/* Scéna je o --eh-shift vyšší než hero a spodek ořízne hero. Posun je spočítaný tak,
+   aby horní hrana desky s ovládáním (o dva poloměry nad spodkem hera) ležela v rovině
+   hlav lamp na ulici: hlavy lamp jsou asi 6,25 vw nad spodkem scény, deska je 56 px
+   nad spodkem hera. Tramvaj je pod deskou schovaná. Na úzkém okně je posun nulový,
+   lampy jsou pak pod listem. */
+.eh-scene-in {
+    --eh-shift: max(0px, calc(6.25vw - 48px));
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: calc(100% + var(--eh-shift));
+}
+
+/* ---------- text ---------- */
+.eh-in {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    /* text nahoře v obloze nad střechami, karta dole nad ulicí */
+    grid-template-rows: 1fr auto;
+    gap: var(--space-8);
+    box-sizing: border-box;
+    min-height: 720px;
+    padding-top: calc(var(--header-h) + var(--space-8));
+    /* deska s ovládáním zajíždí 56 px do hera, karta nejbližší akce stojí nad ní */
+    padding-bottom: calc(var(--space-16) + var(--space-8));
+}
+
+@media (min-width: 900px) {
+    .eh-in {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: 1fr;
+        gap: var(--space-10);
+        min-height: 780px;
+    }
+
+    .eh-next {
+        align-self: end;
+    }
+}
+
+.eh-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+}
+
+.eh-crumbs {
+    font-size: var(--fs-sm);
+    color: var(--color-cream-muted);
+}
+
+.eh-crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--touch-min);
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-standard);
+}
+
+@media (hover: hover) {
+    .eh-crumbs a:hover {
+        color: var(--color-primary);
+    }
+}
+
+.eh-crumbs a:focus-visible {
+    outline: 2px solid var(--color-cream);
+    outline-offset: 2px;
+    border-radius: var(--radius-pill);
+}
+
+.eh-crumbs span {
+    color: var(--color-cream);
+}
+
+.eh-title {
+    margin: 0;
+    font-size: var(--lp-fs-mega);
+    font-weight: var(--fw-extrabold);
+    line-height: 0.98;
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-cream);
+    text-wrap: balance;
+}
+
+.eh-title em {
+    font-style: normal;
+    color: var(--color-primary);
+}
+
+.eh-lead {
+    margin: 0;
+    max-width: 38ch;
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+    color: var(--color-cream-muted);
+}
+
+.eh-cta {
+    margin-top: var(--space-2);
+}
+
+/* ---------- karta s nejbližší akcí: rám a jádro se soustředným zaoblením ---------- */
+.eh-next {
+    display: block;
+    width: min(100%, 380px);
+    padding: var(--space-1-5);
+    border: 1px solid var(--dk-line-strong);
+    border-radius: var(--radius-scene);
+    background: rgba(15, 9, 5, 0.5);
+    color: var(--dk-text);
+    text-decoration: none;
+    transition: transform var(--dur-base) var(--ease-standard);
+}
+
+.eh-next-core {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border-radius: calc(var(--radius-scene) - var(--space-1-5));
+    background: rgba(15, 9, 5, 0.74);
+    box-shadow: inset 0 1px 0 rgba(255, 233, 210, 0.1);
+}
+
+.eh-next-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 56px;
+    padding: var(--space-2) var(--space-3);
+    border-radius: calc(var(--radius-scene) - var(--space-1-5) - var(--space-4));
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    line-height: 1;
+}
+
+.eh-next-date b {
+    font-size: var(--fs-h1);
+    font-weight: var(--fw-extrabold);
+    letter-spacing: var(--tracking-heading);
+    font-variant-numeric: tabular-nums;
+}
+
+.eh-next-date i {
+    margin-top: var(--space-1);
+    font-size: var(--fs-xs);
+    font-style: normal;
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+}
+
+.eh-next-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.eh-next-title {
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-snug);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.eh-next-where {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--fs-sm);
+    color: var(--dk-muted);
+}
+
+.eh-next-where svg {
+    vertical-align: -2px;
+    margin-right: var(--space-1);
+}
+
+.eh-next-go {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 233, 210, 0.12);
+    color: var(--dk-text);
+    transition: transform var(--dur-slow) var(--ease-drawer),
+                background-color var(--dur-fast) var(--ease-standard);
+}
+
+@media (hover: hover) {
+    .eh-next:hover .eh-next-go {
+        transform: translate(2px, -2px) scale(1.08);
+        background: var(--color-primary);
+        color: var(--lp-ink-on-accent);
+    }
+}
+
+.eh-next:active {
+    transform: scale(var(--scale-tap-tile));
+}
+
+.eh-next:focus-visible {
+    outline: 2px solid var(--color-cream);
+    outline-offset: 3px;
+}
+
+/* ---------- úzké obrazovky: karta přes celou šířku ---------- */
+@media (max-width: 639px) {
+    .eh-next {
+        width: 100%;
+    }
+}

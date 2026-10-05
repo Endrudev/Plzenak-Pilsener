@@ -117,6 +117,39 @@
     color: var(--nav-ink);
 }
 
+/* Akce je hlavní cesta k hledání, proto má před popiskem lupu v kroužku (stejný
+   tvar jako ikony kategorií v panelu). Při najetí se kroužek vyplní oranžovou. */
+.nav-link--search {
+    padding-left: var(--space-2);
+}
+
+.nav-search-ic {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    color: var(--color-primary);
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-base) var(--ease-drawer);
+}
+
+.nav-link--search.nav-link--active .nav-search-ic {
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+}
+
+@media (hover: hover) {
+    .nav-link--search:hover .nav-search-ic {
+        background: var(--color-primary);
+        color: var(--lp-ink-on-accent);
+        transform: scale(1.08);
+    }
+}
+
 /* ---------- kategorie: rozbalovací panel ---------- */
 #nav-category-wrapper {
     position: relative;
@@ -130,16 +163,19 @@
     transform: rotate(180deg);
 }
 
+/* Panel kategorií: dvojitý rám (vnější plocha a vnitřní jádro se soustředným
+   zaoblením). Vlevo dvě velké cesty (TOP akce, Hudba), vpravo ostatní kategorie,
+   dole tlačítko Všechny akce. Při otevření položky vyjíždějí postupně, jen
+   transformem a průhledností. Panel roste z místa tlačítka (transform-origin). */
 #nav-category-menu {
     display: none;
     position: absolute;
     top: calc(100% + var(--space-3-5));
     left: 50%;
-    width: 400px;
-    margin-left: -200px;
-    padding: var(--space-2);
+    width: 640px;
+    margin-left: -320px;
+    padding: var(--space-1-5);
     border: 1px solid var(--nav-line);
-    /* Soustředné: 28 px panel, 8 px odsazení, 20 px položky. */
     border-radius: var(--radius-scene);
     background: var(--nav-panel);
     -webkit-backdrop-filter: blur(24px) saturate(160%);
@@ -176,158 +212,267 @@
     }
 }
 
-/* Dvě hlavní cesty nahoře: TOP akce (oranžová) a Hudba (fialová). */
-#nav-category-features {
+/* Po klepnutí na odkaz v panelu se panel zavře, i když je myš pořád nad ním. */
+#nav-category-wrapper[data-dismissed] #nav-category-menu {
+    display: none !important;
+}
+
+.ncm-core {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1-5);
-}
-
-.nav-category-feature {
-    display: flex;
-    align-items: center;
     gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
-    border-radius: calc(var(--radius-scene) - var(--space-2));
+    padding: var(--space-3);
+    border-radius: calc(var(--radius-scene) - var(--space-1-5));
+    background: var(--nav-hover);
+    box-shadow: inset 0 1px 0 var(--nav-edge);
+}
+
+.ncm-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: var(--space-3);
+}
+
+/* postupný vjezd položek při otevření (display none -> block spustí animaci znovu) */
+.ncm-rise {
+    animation: ncm-rise var(--dur-slow) var(--ease-drawer) backwards;
+    animation-delay: calc(var(--i, 0) * 35ms + 40ms);
+}
+
+@keyframes ncm-rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- dvě hlavní cesty ---------- */
+.ncm-features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.ncm-tile {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: 120px;
+    padding: var(--space-4);
+    border-radius: calc(var(--radius-scene) - var(--space-1-5) - var(--space-3));
+    overflow: hidden;
+    isolation: isolate;
     text-decoration: none;
-    transition: background-color var(--dur-fast) var(--ease-standard),
-                transform var(--dur-fast) var(--ease-standard);
+    transition: transform var(--dur-fast) var(--ease-standard);
 }
 
-.nav-category-feature:active {
-    transform: scale(var(--scale-tap));
+/* měkký odlesk v rohu, ať plocha není plochá */
+.ncm-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(120% 90% at 100% 0%, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 60%);
 }
 
-.nav-category-feature:focus-visible {
-    outline: 2px solid var(--nav-ink);
-    outline-offset: -2px;
-}
-
-.nav-category-feature--top {
+.ncm-tile--top {
     background: var(--color-primary);
     color: var(--lp-ink-on-accent);
 }
 
-.nav-category-feature--music {
+.ncm-tile--music {
     background: var(--color-music-bg);
     color: var(--color-music-ink);
 }
 
-@media (hover: hover) {
-    .nav-category-feature--top:hover {
-        background: var(--color-primary-hover);
-    }
-
-    .nav-category-feature--music:hover {
-        background: var(--color-music-bg-hover);
-    }
+.ncm-tile:active {
+    transform: scale(var(--scale-tap));
 }
 
-.nav-category-feature-icon {
+.ncm-tile:focus-visible,
+.ncm-cat:focus-visible,
+.ncm-all:focus-visible {
+    outline: 2px solid var(--nav-ink);
+    outline-offset: 2px;
+}
+
+.ncm-tile-ic {
     display: grid;
     place-items: center;
-    flex-shrink: 0;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: rgba(26, 11, 3, 0.14);
 }
 
-.nav-category-feature--music .nav-category-feature-icon {
-    background: rgba(255, 255, 255, 0.16);
+.ncm-tile--music .ncm-tile-ic {
+    background: rgba(255, 255, 255, 0.18);
 }
 
-.nav-category-feature-text {
-    flex: 1;
+.ncm-tile-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-0-5);
+    padding-right: var(--space-10);
+}
+
+.ncm-tile-text strong {
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-extrabold);
+    line-height: var(--lh-snug);
+    letter-spacing: var(--tracking-heading);
+}
+
+.ncm-tile-text span {
+    font-size: var(--fs-xs);
+    opacity: 0.82;
+}
+
+.ncm-tile-go {
+    position: absolute;
+    right: var(--space-3);
+    bottom: var(--space-3);
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(26, 11, 3, 0.14);
+    transition: transform var(--dur-slow) var(--ease-drawer);
+}
+
+.ncm-tile--music .ncm-tile-go {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+@media (hover: hover) {
+    .ncm-tile--top:hover {
+        background: var(--color-primary-hover);
+    }
+
+    .ncm-tile--music:hover {
+        background: var(--color-music-bg-hover);
+    }
+
+    .ncm-tile:hover .ncm-tile-go {
+        transform: translate(2px, -2px) scale(1.08);
+    }
+}
+
+/* ---------- ostatní kategorie ---------- */
+.ncm-cats {
     display: flex;
     flex-direction: column;
     gap: var(--space-0-5);
 }
 
-.nav-category-feature-text strong {
-    font-size: var(--fs-body);
-    font-weight: var(--fw-bold);
-}
-
-.nav-category-feature-text span:last-child {
-    font-size: var(--fs-xs);
-    opacity: 0.8;
-}
-
-#nav-category-list-header {
-    padding: var(--space-4) var(--space-3) var(--space-2);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--nav-muted);
-}
-
-#nav-category-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-0-5);
-}
-
-.nav-category-item {
+.ncm-cat {
     display: flex;
+    flex: 1;
     align-items: center;
     gap: var(--space-3);
-    padding: var(--space-2);
-    border-radius: calc(var(--radius-scene) - var(--space-2));
+    padding: 0 var(--space-3) 0 var(--space-2);
+    border-radius: var(--radius-pill);
     color: var(--nav-ink);
     text-decoration: none;
     transition: background-color var(--dur-fast) var(--ease-standard),
                 transform var(--dur-fast) var(--ease-standard);
 }
 
-.nav-category-item:active {
+.ncm-cat:active {
     transform: scale(var(--scale-tap));
 }
 
-@media (hover: hover) {
-    .nav-category-item:hover {
-        background: var(--nav-hover);
-    }
-}
-
-.nav-category-item:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: -2px;
-}
-
-.nav-category-icon {
+.ncm-cat-ic {
     display: grid;
     place-items: center;
     flex-shrink: 0;
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--nav-hover);
+    background: var(--nav-panel);
     color: var(--color-primary);
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                color var(--dur-fast) var(--ease-standard);
 }
 
-.nav-category-label {
+.ncm-cat-label {
     flex: 1;
     font-size: var(--fs-body);
     font-weight: var(--fw-semibold);
 }
 
-#nav-category-all {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: var(--space-1-5);
-    margin-top: var(--space-2);
-    padding: var(--space-3) var(--space-3) var(--space-2);
-    border-top: 1px solid var(--nav-line);
-    color: var(--nav-ink);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    text-decoration: none;
+/* šipka se objeví až při najetí, jinak by seznam působil přeplněně */
+.ncm-cat > svg {
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity var(--dur-fast) var(--ease-standard),
+                transform var(--dur-base) var(--ease-drawer);
 }
 
 @media (hover: hover) {
-    #nav-category-all:hover {
-        color: var(--color-primary);
+    .ncm-cat:hover {
+        background: var(--nav-panel);
+    }
+
+    .ncm-cat:hover .ncm-cat-ic {
+        background: var(--color-primary);
+        color: var(--lp-ink-on-accent);
+    }
+
+    .ncm-cat:hover > svg {
+        opacity: 0.7;
+        transform: translateX(0);
+    }
+}
+
+.ncm-cat:focus-visible > svg {
+    opacity: 0.7;
+    transform: translateX(0);
+}
+
+/* ---------- Všechny akce: pilulka s šipkou v kroužku ---------- */
+.ncm-all {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 52px;
+    padding: var(--space-1) var(--space-1) var(--space-1) var(--space-5);
+    border: 1px solid var(--nav-line);
+    border-radius: var(--radius-pill);
+    background: var(--nav-panel);
+    color: var(--nav-ink);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-bold);
+    text-decoration: none;
+    transition: transform var(--dur-fast) var(--ease-standard);
+}
+
+.ncm-all:active {
+    transform: scale(var(--scale-tap));
+}
+
+.ncm-all-ic {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    transition: transform var(--dur-slow) var(--ease-drawer);
+}
+
+@media (hover: hover) {
+    .ncm-all:hover .ncm-all-ic {
+        transform: translate(2px, -1px) scale(1.06);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ncm-rise {
+        animation: none;
     }
 }
 
@@ -519,6 +664,19 @@
     font-weight: var(--fw-extrabold);
     line-height: 1.05;
     letter-spacing: var(--tracking-heading);
+}
+
+/* V menu přes celou obrazovku je lupa vedle velkého slova oranžová, bez kroužku. */
+#header-overlay-nav .nav-link--search {
+    gap: var(--space-3);
+    padding-left: 0;
+}
+
+#header-overlay-nav .nav-link--search svg {
+    flex-shrink: 0;
+    width: 0.62em;
+    height: 0.62em;
+    color: var(--color-primary);
 }
 
 #header-overlay-nav .nav-link--active {
