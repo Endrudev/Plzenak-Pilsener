@@ -10,6 +10,11 @@
 }
 
 /* ---------- sdílená "chrome" pro všechny tři dlaždice ---------- */
+.hero-tile--top,
+.hero-tile--music {
+    background: var(--color-night);
+}
+
 .hero-tile {
     position: relative;
     display: block;
@@ -20,7 +25,7 @@
     outline: none;
     box-shadow: var(--shadow-card);
     transition: box-shadow var(--dur-base) var(--ease-standard),
-                transform var(--dur-fast) var(--ease-standard);
+                transform var(--dur-slow) var(--ease-drawer);
 }
 
 @media (hover: hover) {
@@ -33,6 +38,7 @@
    široká poskočila o víc než 10 px. */
 .hero-tile:active {
     transform: scale(var(--scale-tap-tile));
+    transition-duration: var(--dur-base), var(--dur-fast);
 }
 
 .hero-tile:focus-visible {
@@ -91,28 +97,28 @@
     top: var(--space-5);
     right: var(--space-5);
     z-index: 3;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     background: var(--color-primary);
     color: #fff;
-    transition: transform var(--dur-fast) var(--ease-standard),
+    transition: transform var(--dur-slow) var(--ease-drawer),
                 background-color var(--dur-fast) var(--ease-standard);
 }
 
 /* Šipka není samostatný odkaz, reaguje na celou dlaždici. */
 .hero-tile:focus-visible .hero-tile-arrow {
     background: var(--color-primary-hover);
-    transform: translateX(2px);
+    transform: translate(2px, -2px) scale(1.08);
 }
 
 @media (hover: hover) {
     .hero-tile:hover .hero-tile-arrow {
         background: var(--color-primary-hover);
-        transform: translateX(2px);
+        transform: translate(2px, -2px) scale(1.08);
     }
 }
 
@@ -131,4 +137,137 @@
     .hero-tile--top { height: 440px; }
     .hero-tile--music,
     .hero-tile--rest { height: 232px; }
+}
+
+/* ======================================================================
+   Polish 2026-10-06: rám, zdvih a úvodní choreografie
+   ====================================================================== */
+
+/* Jemný rám a světlá hrana nahoře: z ploché karty dělá předmět. Leží nad scénou. */
+.hero-tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+}
+
+.hero-tile--rest::after {
+    box-shadow: inset 0 0 0 1px rgba(33, 58, 38, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+/* Název: slova jsou v masce, ať je jde při načtení odkrýt zdola. Okraj dole nechává místo
+   pro tahy pod řádkem (p, y), jinak by je maska uřízla. */
+.ht-w {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding: 0 0.05em 0.16em;
+    margin: 0 -0.05em -0.16em;
+}
+
+.ht-w > span {
+    display: inline-block;
+}
+
+.hero-tile-title {
+    text-shadow: 0 2px 18px rgba(20, 6, 2, 0.35);
+}
+
+.hero-tile--rest .hero-tile-title {
+    text-shadow: none;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .hero-tile:hover {
+        transform: translateY(-4px);
+    }
+
+}
+
+/* ---------- úvodní choreografie (jen první návštěva v relaci, viz HeroBento.jsx) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+    .is-intro .hero-tile {
+        animation: ht-in 1000ms var(--ease-drawer) backwards;
+        animation-delay: calc(var(--i) * 120ms + 100ms);
+    }
+
+    /* kresba se z přiblížení usadí na místo */
+    .is-intro .hero-poster {
+        animation: ht-settle 1900ms var(--ease-drawer) backwards;
+        animation-delay: calc(var(--i) * 120ms + 100ms);
+    }
+
+    .is-intro .ht-w > span {
+        animation: ht-word 900ms var(--ease-drawer) backwards;
+        animation-delay: calc(var(--i) * 120ms + 380ms + var(--w) * 90ms);
+    }
+
+    .is-intro .hero-tile-arrow {
+        animation: ht-pop 700ms var(--ease-drawer) backwards;
+        animation-delay: calc(var(--i) * 120ms + 760ms);
+    }
+
+    /* lesk přejede přes dlaždici jednou, po usazení */
+    .is-intro .hero-tile::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 6;
+        pointer-events: none;
+        background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.26) 50%, transparent 62%);
+        transform: translateX(120%);
+        animation: ht-sheen 1500ms var(--ease-drawer) backwards;
+        animation-delay: calc(var(--i) * 140ms + 950ms);
+    }
+}
+
+@keyframes ht-in {
+    from { opacity: 0; transform: translateY(32px) scale(0.965); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes ht-settle {
+    from { transform: scale(1.09); }
+    to   { transform: scale(1); }
+}
+
+@keyframes ht-word {
+    from { transform: translateY(108%); }
+    to   { transform: translateY(0); }
+}
+
+@keyframes ht-pop {
+    from { opacity: 0; transform: scale(0.4) rotate(-45deg); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes ht-sheen {
+    from { transform: translateX(-120%); }
+    to   { transform: translateX(120%); }
+}
+
+/* ---------- video dlaždice (TOP akce, Hudba), viz HeroVideo.jsx ---------- */
+.hero-video-wrap {
+    position: absolute;
+    inset: 0;
+}
+
+.hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+    transition: opacity 280ms var(--ease-standard);
+}
+
+/* Prolne se přes poster, až video skutečně běží, a zůstane i po zastavení na posledním snímku. */
+.hero-video.is-shown {
+    opacity: 1;
 }

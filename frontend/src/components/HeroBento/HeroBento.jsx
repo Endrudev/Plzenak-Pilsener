@@ -9,11 +9,18 @@ import './HeroBento.css'
 // (TOP), "chci konkrétně hudbu" (Hudba), "ukaž mi zbytek, rozhodnu se
 // sám" (Zbytek programu). Nahrazuje dřívější statický fotokarusel, co
 // uměl zobrazit jen první akci a neměl fungující šipky/tečky.
+//
+// Úvodní choreografie (tři dlaždice vyjedou za sebou, nadpisy se odkryjí po slovech, přeběhne
+// lesk) běží při každém načtení homepage. Dřív běžela jen při první návštěvě v relaci, ale
+// autor ji chce vidět pokaždé. Při prefers-reduced-motion se nespouští (viz HeroBento.css).
+// Třída is-intro je proto trvalá, animace se spustí samy při vykreslení dlaždic.
+
 export default function HeroBento() {
-    useEffect(() => { preloadScenes() }, [])
+    // Město a koncert se přehrávají z videa, předem se stahuje jen živá scéna Zbytku programu.
+    useEffect(() => { preloadScenes(['program']) }, [])
 
     return (
-        <div className="hero-bento">
+        <div className="hero-bento is-intro">
             <HeroTileTop />
             <HeroTileMusic />
             <HeroTileRest />
