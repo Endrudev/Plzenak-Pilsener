@@ -46,6 +46,13 @@
   --color-night-2:     #2A1106;
   --color-skyline-back: #4A2312;   /* zadní řada budov nad pásem Hledání: plná, bez oken, světlejší než přední */
   --color-footer:      #140702;   /* jen patička — nejtmavší tón appky */
+  /* Dlaždice kategorií na homepage: jedna jantarová plocha, 2026-10-05 */
+  --tile-a:            #F7B040;
+  --tile-b:            #EE8E1E;
+  --tile-c:            #DD6E10;
+  --tile-glow:         #FFD27A;   /* měkké skvrny přes plochu, jen barva */
+  --tile-hot:          #FF9A2E;
+  --tile-deep:         #C85A08;
   --dusk-back:         #9A4A2A;   /* patička: zadní řada střech, nejsvětlejší, nahoře se rozplývá do stránky */
   --dusk-mid:          #4C2012;   /* prostřední řada */
   --dusk-front:        var(--color-footer);   /* přední řada má barvu těla patičky */

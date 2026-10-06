@@ -20,18 +20,54 @@
     display: inline;
 }
 
-/* Kresba jako pilulka uprostřed věty. Výška odpovídá výšce písma, ať věta
-   neztratí řádkování. */
-.lm-pill {
-    display: inline-block;
-    width: 2.3em;
-    height: 0.82em;
-    margin: 0 0.1em;
-    vertical-align: -0.04em;
-    border-radius: var(--radius-pill);
-    background-size: cover;
-    background-position: center bottom;
-    border: 1px solid var(--lp-line-strong);
+/* Střídající se slovo: všechna slova v jedné buňce mřížky, každé má svou fázi cyklu. */
+.lm-rot {
+    display: inline-grid;
+    color: var(--lp-accent-text);
+}
+
+.lm-kind {
+    grid-area: 1 / 1;
+    white-space: nowrap;
+    opacity: 0;
+}
+
+/* První slovo je vidět hned, ať obal nezůstane prázdný, než se rozběhne animace. */
+.lm-kind:first-child {
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .lm-kind {
+        animation: lm-kind var(--cycle) var(--ease-drawer) var(--d) infinite backwards;
+    }
+}
+
+/* Každé slovo má sedminu cyklu: vyjede zdola, chvíli stojí, odjede nahoru. Animace
+   nese jen průhlednost a posun, ne rozměr. */
+@keyframes lm-kind {
+    0%      { opacity: 0; transform: translateY(0.45em); }
+    2.2%    { opacity: 1; transform: translateY(0); }
+    11.4%   { opacity: 1; transform: translateY(0); }
+    14.3%   { opacity: 0; transform: translateY(-0.45em); }
+    100%    { opacity: 0; transform: translateY(-0.45em); }
+}
+
+/* S omezeným pohybem jsou slova výčet vedle sebe. */
+@media (prefers-reduced-motion: reduce) {
+    .lm-rot {
+        display: inline;
+    }
+
+    .lm-kind {
+        display: inline;
+        opacity: 1;
+        white-space: normal;
+    }
+
+    .lm-kind:not(:last-child)::after {
+        content: ', ';
+    }
 }
 
 @supports (animation-timeline: view()) {
@@ -40,8 +76,7 @@
             view-timeline: --lm-sentence block;
         }
 
-        .lm-word,
-        .lm-pill {
+        .lm-word {
             opacity: 0.16;
             animation: lm-on linear both;
             animation-timeline: --lm-sentence;
