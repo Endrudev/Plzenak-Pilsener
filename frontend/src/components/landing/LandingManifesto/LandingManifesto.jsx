@@ -1,39 +1,42 @@
 import Reveal from '../../Reveal/Reveal.jsx'
-import cityPoster from '../../scenes/posters/city.webp'
-import concertPoster from '../../scenes/posters/concert.webp'
-import programPoster from '../../scenes/posters/program.webp'
 import './LandingManifesto.css'
 
-// Jedna věta jako výstup: slova se rozsvěcují postupně, jak sekce projíždí oknem,
-// a mezi nimi stojí kresby z hero dlaždic jako pilulky. Pohyb má jediný důvod,
-// vést oko po větě (čte se tak, jak se odkrývá). Bez podpory scroll-driven
-// animací (viz LandingManifesto.css) je celá věta vidět hned.
-const WORDS = [
-    { t: 'Plzeň' }, { t: 'žije' }, { t: 'celý' }, { t: 'rok.' },
-    { pill: cityPoster },
-    { t: 'Koncerty,' },
-    { pill: concertPoster },
-    { t: 'trhy' }, { t: 'a' },
-    { pill: programPoster },
-    { t: 'všechno' }, { t: 'mezi' }, { t: 'tím' }, { t: 'najdeš' }, { t: 'na' }, { t: 'jednom' }, { t: 'místě.' },
-]
+// Jedna věta jako výstup: slova se rozsvěcují postupně, jak sekce projíždí oknem, a
+// uprostřed se v oranžové střídá druh akcí (koncerty, trhy, divadlo…). Pohyb má dva
+// důvody: rozsvěcení vede oko po větě, střídání slova ukazuje, že Plzeň žije v mnoha
+// podobách. Pilulky mezi slovy se 2026-10-05 odebraly, střídající se slovo je jejich
+// náhrada (návrh 2). Bez podpory scroll-driven animací a s prefers-reduced-motion je
+// celá věta vidět hned a střídající se slova stojí vedle sebe jako výčet.
+const BEFORE = ['Plzeň', 'žije', 'celý', 'rok.', 'Na', 'jednom', 'místě', 'najdeš']
+
+// Všechny tvary jsou čtvrtý pád (shodný s prvním), takže se hodí za „najdeš“. Střídající
+// se slovo stojí na konci věty, aby za krátkým slovem nezůstávala mezera uprostřed.
+export const KINDS = ['koncerty', 'trhy', 'divadlo', 'sport', 'památky', 'dobré jídlo', 'akce pro děti']
+
+// Jedno slovo je vidět 2,6 s, celý cyklus je tedy KINDS.length * 2,6 s.
+const STEP = 2.6
 
 export default function LandingManifesto() {
+    const cycle = KINDS.length * STEP
+
     return (
         <Reveal as="section" className="lp-section lm" aria-labelledby="lm-h">
             <div className="lp-wrap">
-                {/* Čtečka dostane větu vcelku, vizuální rozdělení na slova je aria-hidden. */}
+                {/* Čtečka dostane větu vcelku s výčtem, střídání slov je aria-hidden. */}
                 <h2 id="lm-h" className="visually-hidden">
-                    Plzeň žije celý rok. Koncerty, trhy a všechno mezi tím najdeš na jednom místě.
+                    Plzeň žije celý rok. Na jednom místě najdeš koncerty, trhy, divadlo, sport, památky, dobré jídlo i akce pro děti.
                 </h2>
                 <p className="lm-text" aria-hidden="true">
-                    {WORDS.map((w, i) => (
-                        w.pill ? (
-                            <span key={i} className="lm-pill" style={{ '--i': i, backgroundImage: `url("${w.pill}")` }} />
-                        ) : (
-                            <span key={i} className="lm-word" style={{ '--i': i }}>{w.t} </span>
-                        )
+                    {BEFORE.map((w, i) => (
+                        <span key={w + i} className="lm-word" style={{ '--i': i }}>{w} </span>
                     ))}
+                    {/* Všechna slova leží přes sebe v jedné buňce mřížky, takže obal má šířku
+                        nejširšího a věta při střídání neposkakuje. */}
+                    <span className="lm-word lm-rot" style={{ '--i': BEFORE.length, '--cycle': `${cycle}s` }}>
+                        {KINDS.map((k, i) => (
+                            <span key={k} className="lm-kind" style={{ '--d': `${i * STEP}s` }}>{k}</span>
+                        ))}
+                    </span>
                 </p>
             </div>
         </Reveal>
