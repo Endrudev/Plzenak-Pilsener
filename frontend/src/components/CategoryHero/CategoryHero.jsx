@@ -1,4 +1,6 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import HeroVideo from '../HeroBento/HeroVideo.jsx'
 import './CategoryHero.css'
 
 // Hero pás stránek TOP akce, Hudba a Zbytek programu. Zachovaná je jedna věc:
@@ -12,21 +14,32 @@ import './CategoryHero.css'
 // `sceneShift`: scéna je o kousek vyšší než pás a spodek se ořízne, aby horní hrana
 // desky s ovládáním ležela v rovině hlav lamp (jen CityScene u TOP akcí).
 //
+// `video` ({ webm, mp4, poster, position }): scéna se přehrává ze smyčkového videa místo
+// živého SVG (tisíce prvků, stovky animací). `scene` zůstává jako zdroj, ze kterého se video
+// renderuje: adresa s ?hero-live vynutí živou scénu (scripts/render-hero-videos.mjs).
+//
 // Spodek pásu je rovný, zaoblené rohy dělá světlé pozadí stránky (.lp-sheet).
 export default function CategoryHero({
     background,
     theme = 'dark',
     sceneShift = false,
     scene,
+    video,
     breadcrumbLabel,
     title,
     lead,
 }) {
     const cls = `cat-hero${theme === 'light' ? ' cat-hero--light' : ''}${sceneShift ? ' cat-hero--shift' : ''}`
 
+    const forceLive = useMemo(() => new URLSearchParams(window.location.search).has('hero-live'), [])
+
     return (
         <header className={cls} style={{ background }}>
-            <div className="cat-hero-scene">{scene}</div>
+            <div className="cat-hero-scene">
+                {video && !(forceLive && scene)
+                    ? <HeroVideo autoplay poster={video.poster} position={video.position} webm={video.webm} mp4={video.mp4} />
+                    : scene}
+            </div>
 
             <div className="lp-wrap cat-hero-in">
                 <nav className="cat-hero-crumbs enter" style={{ '--i': 0 }} aria-label="Drobečková navigace">

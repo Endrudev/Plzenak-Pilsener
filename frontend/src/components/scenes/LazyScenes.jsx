@@ -18,8 +18,9 @@ const ProgramScene = lazy(loadProgram)
 // po vykreslení, takže při prvním najetí na dlaždici už chunk čeká v cache a
 // scéna se přimontuje bez čekání na síť. import() se deduplikuje, takže
 // následné lazy() načtení použije stejný modul.
-export function preloadScenes() {
-    const run = () => { loadCity(); loadConcert(); loadProgram() }
+export function preloadScenes(names = ['city', 'concert', 'program']) {
+    const loaders = { city: loadCity, concert: loadConcert, program: loadProgram }
+    const run = () => names.forEach(n => loaders[n]?.())
     if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout: 4000 })
     else setTimeout(run, 1500)
 }
