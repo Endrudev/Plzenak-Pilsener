@@ -1,5 +1,7 @@
 import CategoryPage from '../../components/category/CategoryPage/CategoryPage.jsx'
 import { LazyConcertScene } from '../../components/scenes/LazyScenes.jsx'
+import concertHeroPoster from '../../components/scenes/posters/concert-hero.webp'
+import concertHeroMp4 from '../../components/scenes/videos/concert-hero.mp4'
 import { useMediaQuery } from '../../lib/useMediaQuery.js'
 
 // Pevný filtr: kategorie Hudba. Vzhled a chování drží sdílená šablona.
@@ -19,6 +21,7 @@ export default function Hudba() {
             fixed={FIXED}
             hero={{
                 background: '#140602',
+                video: { mp4: concertHeroMp4, poster: concertHeroPoster, position: narrow ? '85% 50%' : '50% 50%' },
                 scene: <LazyConcertScene focus={narrow ? 'right' : 'center'} shade label="Koncert z papíru" />,
                 breadcrumbLabel: 'Hudba',
                 title: 'Hudba',

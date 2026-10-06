@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useMediaQuery } from '../../lib/useMediaQuery.js'
+import './HeroScene.css'
 
 // Ilustrace dlaždice jako smyčkové video (od 2026-10-06). Dřív se při najetí přimontovala živá
 // SVG scéna se sedmi tisíci prvků a stovkami CSS animací, která pod kurzorem stála hlavní
@@ -19,18 +20,22 @@ import { useMediaQuery } from '../../lib/useMediaQuery.js'
 // Video nese celý záběr scény v rozměru dlaždice (viz scripts/render-hero-videos.mjs), takže
 // sedí na poster stejně jako dřív živá scéna. Ztmavení pod nadpisem (shade) zůstává zvlášť nad
 // oběma, protože závisí na rozměru dlaždice.
-export default function HeroVideo({ poster, position, bleed = false, shade, active, webm, mp4 }) {
+//
+// `autoplay` (hero stránek kategorií): video není vázané na hover, běží pořád, dokud je hero
+// aspoň z čtvrtiny vidět, a při úspoře dat zůstane poster.
+export default function HeroVideo({ poster, position, bleed = false, shade, active = false, autoplay = false, webm, mp4 }) {
     const ref = useRef(null)
     const wrapRef = useRef(null)
     const [shown, setShown] = useState(false)
     const [prefetch, setPrefetch] = useState(false)
+    const saveData = typeof navigator !== 'undefined' && !!navigator.connection?.saveData
     const [visible, setVisible] = useState(false)
     const reduced = useMediaQuery('(prefers-reduced-motion: reduce)')
     const canHover = useMediaQuery('(hover: hover)')
 
     // Stažení po nečinnosti: najetí hned po načtení nečeká na síť, ale video nesoutěží se stránkou.
     useEffect(() => {
-        if (reduced || navigator.connection?.saveData) return undefined
+        if (reduced || saveData) return undefined
         const run = () => setPrefetch(true)
         const id = 'requestIdleCallback' in window
             ? window.requestIdleCallback(run, { timeout: 4000 })
@@ -44,13 +49,13 @@ export default function HeroVideo({ poster, position, bleed = false, shade, acti
     // Viditelnost jen pro zařízení bez hoveru.
     useEffect(() => {
         const el = wrapRef.current
-        if (!el || canHover || !('IntersectionObserver' in window)) return undefined
-        const io = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.5 })
+        if (!el || (canHover && !autoplay) || !('IntersectionObserver' in window)) return undefined
+        const io = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: autoplay ? 0.25 : 0.5 })
         io.observe(el)
         return () => io.disconnect()
-    }, [canHover])
+    }, [canHover, autoplay])
 
-    const wantsPlay = !reduced && (canHover ? active : visible)
+    const wantsPlay = !reduced && !(autoplay && saveData) && (autoplay ? visible : canHover ? active : visible)
 
     useEffect(() => {
         const v = ref.current
@@ -84,7 +89,7 @@ export default function HeroVideo({ poster, position, bleed = false, shade, acti
                 disablePictureInPicture
                 aria-hidden="true"
                 tabIndex={-1}
-                preload={!reduced && (prefetch || active) ? 'auto' : 'none'}
+                preload={!reduced && (prefetch || active || (autoplay && !saveData)) ? 'auto' : 'none'}
                 onPlaying={() => setShown(true)}
                 style={{ objectPosition: position }}
             >
