@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { LazyCityScene } from '../scenes/LazyScenes.jsx'
+import HeroVideo from '../HeroBento/HeroVideo.jsx'
+import cityHeroPoster from '../scenes/posters/city-hero.webp'
+import cityHeroMp4 from '../scenes/videos/city-hero.mp4'
 import { ArrowRight, ArrowUpRight, PinIcon } from '../landing/icons.jsx'
 import { getEvents } from '../../lib/eventsApi.js'
 import { dayParts } from '../../lib/events/dateRanges.js'
 import { eventBadge } from '../../lib/events/eventBadge.js'
 import './EventsHero.css'
 
-// Hero stránky Akce: noční Plzeň z papíru (CityScene z balíčku plzenak-scenes, tatáž
-// scéna jako v dlaždici a na stránce TOP akce), text a karta s nejbližší akcí.
+// Hero stránky Akce: noční Plzeň z papíru jako smyčkové video (od 2026-10-07 tatáž
+// `city-hero` jako na stránce TOP akce, vyrenderovaná z CityScene, viz HeroVideo.jsx), text a karta s nejbližší akcí.
 //
 // Scéna sama kreslí hvězdy, padající hvězdy, katedrálu, synagogu, radnici, vodárnu,
 // pivovar, rozsvěcující se okna, tramvaj a kouř z komínů, proto tu není žádná
@@ -60,7 +62,8 @@ export default function EventsHero({ onSearch }) {
         <header className="eh">
             <div className="eh-scene">
                 <div className="eh-scene-in">
-                    <LazyCityScene shade label="Noční Plzeň z papíru" />
+                    {/* ukotvení dole: spodek scény (lampy) musí sedět na desku s ovládáním, viz --eh-shift */}
+                    <HeroVideo autoplay poster={cityHeroPoster} position="50% 100%" mp4={cityHeroMp4} />
                 </div>
             </div>
 

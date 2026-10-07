@@ -18,7 +18,7 @@ export default function TopAkce() {
             hero={{
                 background: '#401909',
                 sceneShift: true,
-                video: { mp4: cityHeroMp4, poster: cityHeroPoster, position: '50% 0%' },
+                video: { mp4: cityHeroMp4, poster: cityHeroPoster, position: '50% 100%' },
                 scene: <LazyCityScene shade label="Noční Plzeň z papíru" />,
                 breadcrumbLabel: 'TOP akce',
                 title: 'TOP akce',
