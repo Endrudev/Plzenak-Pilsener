@@ -46,8 +46,8 @@ const TMP = process.env.FRAMES_DIR || path.join(process.env.TEMP || '.', 'hero-f
 const JOBS = [
     { kind: 'tile', cls: 'top', name: 'city', loop: 36, fps: 60 },
     { kind: 'tile', cls: 'music', name: 'concert', loop: 24, fps: 60 },
-    { kind: 'cat', page: '/top-akce', name: 'city-hero', loop: 36, fps: 60, crf: 28 },
-    { kind: 'cat', page: '/hudba', name: 'concert-hero', loop: 24, fps: 60, crf: 31 },
+    { kind: 'cat', page: '/top-akce', name: 'city-hero', loop: 36, fps: 60, crf: 20 },
+    { kind: 'cat', page: '/hudba', name: 'concert-hero', loop: 24, fps: 60, crf: 23 },
 ]
 
 const HIDE = `
@@ -149,7 +149,7 @@ for (const base of JOBS) {
 
     const input = ['-y', '-framerate', String(job.fps), '-i', path.join(dir, 'f_%04d.jpg')]
     const vf = ['-vf', 'scale=trunc(iw/2)*2:trunc(ih/2)*2', '-an']
-    execFileSync('ffmpeg', [...input, ...vf, '-c:v', 'libx264', '-preset', 'slow', '-crf', String(job.crf || 27), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', path.join(OUT, `${job.name}.mp4`)], { stdio: 'ignore' })
+    execFileSync('ffmpeg', [...input, ...vf, '-c:v', 'libx264', '-preset', 'slow', '-tune', 'animation', '-crf', String(job.crf || 27), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', path.join(OUT, `${job.name}.mp4`)], { stdio: 'ignore' })
     // Hero kategorií je jen MP4: WebM vycházel dvakrát větší a H.264 umí všechno.
     if (!cat) execFileSync('ffmpeg', [...input, ...vf, '-c:v', 'libvpx-vp9', '-crf', '36', '-b:v', '0', '-row-mt', '1', '-pix_fmt', 'yuv420p', path.join(OUT, `${job.name}.webm`)], { stdio: 'ignore' })
     for (const ext of cat ? ['mp4'] : ['mp4', 'webm']) {
@@ -160,7 +160,8 @@ for (const base of JOBS) {
         mkdirSync(POSTERS, { recursive: true })
         execFileSync('ffmpeg', ['-y', '-i', path.join(dir, 'f_0000.jpg'), '-quality', '82', path.join(POSTERS, `${job.name}.webp`)], { stdio: 'ignore' })
     }
-    rmSync(dir, { recursive: true, force: true })
+    // KEEP_FRAMES=1: snímky zůstanou na disku, aby šlo zkoušet jiné nastavení kódování bez nového renderu.
+    if (!process.env.KEEP_FRAMES) rmSync(dir, { recursive: true, force: true })
 }
 
 await browser.close()
