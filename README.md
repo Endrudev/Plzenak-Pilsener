@@ -228,7 +228,7 @@ Aplikace běží lokálně a je funkční — psaní i čtení akcí, administra
 | # | Krok | Stav |
 |:--:|---|---|
 | 1 | **CI pipeline** (GitHub Actions — dva joby, běží na každém PR i po merge) | ✅ hotovo |
-| 2 | **Unit testy** (Vitest) — pokrytá souhlasová vrstva, zbytek se dopisuje | 🔨 rozpracováno |
+| 2 | **Unit testy** — Vitest ve frontendu, `node --test` v backendu | ✅ hotovo (backendové testy zatím mimo CI) |
 | 3 | **Nasazení** — Dockerfile pro backend, Nginx pro frontend, `docker-compose.yml` | ✅ hotovo, celý stack běží v Compose |
 | 4 | **End-to-end ověření** celého toku (login, CRUD, veřejné čtení) v Compose prostředí | ✅ ověřeno přes API, ruční proklik zbývá |
 
@@ -238,7 +238,6 @@ Pipeline hlídá u frontendu instalaci z lockfilu, testy a produkční build (v�
 
 Vedu si je otevřeně, jsou to rozhodnutí a dluhy, ne přehlédnutí:
 
-- **Fonty se tahají z Google Fonts** — request s IP uživatele odchází bez souhlasu, stejný problém, jaký už je u mapy ošetřený. Před launchem je potřeba je hostovat lokálně.
 - **`POST /events` a upload obrázku jsou dvě nezávislá volání** bez atomicity; při selhání druhého se akce uklidí v `catch`, ale správně to není.
 - **Kategorie Hudba / Památky / Pro děti** zatím nejdou vybrat ve formuláři administrace.
 - **`events.date` je `text`, ne `date`** — viz poznámka u [schématu](#databáze).
