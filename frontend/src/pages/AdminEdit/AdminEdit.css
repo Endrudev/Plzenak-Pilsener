@@ -407,7 +407,7 @@ textarea.ae-input {
 
 .ae-img-dropzone {
     position: relative;
-    flex: 1;
+    flex: 0 1 calc((100% - var(--space-4)) / 2);
     aspect-ratio: 4 / 3;
     border: 1.5px dashed var(--color-line);
     border-radius: var(--radius-el);
