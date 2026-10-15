@@ -15,6 +15,7 @@ import EventDetailSkeleton from '../../components/EventDetailSkeleton/EventDetai
 import EventPoster from '../../components/events/EventPoster/EventPoster.jsx'
 import { ArrowRight, ArrowUpRight, CalendarIcon, PinIcon, ShareIcon, TicketIcon } from '../../components/landing/icons.jsx'
 import '../../components/landing/landing.css'
+import LearningNote from '../../components/LearningNote/LearningNote.jsx'
 import './EventDetail.css'
 
 // Detail akce, postavený od nuly 2026-10-04 ve stejném jazyce jako homepage a
@@ -275,6 +276,8 @@ export default function EventDetail() {
                     </div>
                 </section>
             )}
+
+            <LearningNote variant="detail" />
             </div>
 
             {/* Lišta s tlačítkem na telefonu a tabletu. Na desktopu stejnou roli

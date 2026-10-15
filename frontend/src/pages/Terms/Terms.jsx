@@ -36,7 +36,13 @@ export default function Terms() {
                         <h2>1. Co je Plzeňák</h2>
                         <p>
                             Plzeňák je nekomerční přehled kulturních, sportovních a gastro akcí v Plzni. Provozuje
-                            ho Plzeňák z. s. se sídlem v Plzni.
+                            ho fyzická osoba jako osobní učební projekt.
+                        </p>
+                        <p>
+                            Je to učební projekt juniorního vývojáře. Nemá žádný zisk, neprodává reklamu ani
+                            jiné služby, nikdo za něj neplatí a není nijak propagovaný ani určený ke škálování.
+                            Informace na webu proto neber jako profesionální službu a údaje o akcích si ověř
+                            u pořadatele.
                         </p>
                         <p>
                             Web je informační rozcestník. Nejsme pořadatel žádné z uvedených akcí, neprodáváme

@@ -12,6 +12,7 @@ import { SORT_OPTIONS } from '../../lib/filters/sortOptions.js'
 import { eventCountLabel } from '../../lib/events/pluralize.js'
 import { initMode } from '../../lib/landingTheme.js'
 import '../../components/landing/landing.css'
+import LearningNote from '../../components/LearningNote/LearningNote.jsx'
 import './Events.css'
 
 // Stránka Akce, postavená od nuly 2026-10-04. Hero (EventsHero) byl 2026-10-05
@@ -179,6 +180,8 @@ export default function Events() {
 
                 <EventsPager page={page} totalPages={totalPages} onChange={setPage} />
             </section>
+
+            <LearningNote variant="list" />
             </div>
         </div>
     )
