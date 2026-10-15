@@ -10,11 +10,14 @@ const events = require('./src/routes/events')
 const app = express()
 const PORT = process.env.PORT || 3001
 
-// Za Nginxem vidí backend jako zdrojovou adresu Nginx, ne návštěvníka. Číslo 1 říká
-// "věř jedné proxy": req.ip je pak poslední adresa v X-Forwarded-For, kterou připsal
-// Nginx. Víc proxy před backendem (např. TLS terminátor před Nginxem) = víc skoků.
-// Hodnota true by věřila i adresám od klienta a limiter by šel obejít podvrženou hlavičkou.
-app.set('trust proxy', 1)
+// Před backendem stojí dvě proxy: Caddy (TLS) a za ním Nginx. Backend vidí jako zdrojovou
+// adresu Nginx, ne návštěvníka. Číslo 2 říká "věř dvěma proxy": Caddy zapíše do
+// X-Forwarded-For adresu návštěvníka, Nginx k ní připíše adresu Caddy, a req.ip je pak
+// první adresa, které už nevěříme, tedy návštěvník. Počet skoků se musí rovnat počtu proxy
+// před backendem: o jednu méně by všichni návštěvníci sdíleli adresu Caddy (a rate limit
+// přihlášení by byl společný), o jednu víc by šel limiter obejít podvrženou hlavičkou.
+// Hodnota true by věřila i adresám od klienta.
+app.set('trust proxy', 2)
 
 app.use(cors({origin: process.env.FRONTEND_URL}))
 app.use(express.json())

@@ -1,0 +1,8 @@
+plzenak.eu {
+    encode zstd gzip
+    reverse_proxy frontend:80
+}
+
+www.plzenak.eu {
+    redir https://plzenak.eu{uri} permanent
+}
