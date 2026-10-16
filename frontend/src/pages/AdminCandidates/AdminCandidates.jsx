@@ -10,6 +10,8 @@ import './AdminCandidates.css'
 // až po schválení tady: schválení vytvoří akci a stáhne obrázek do R2. Texty návrhu se tu
 // neupravují, opravy se dělají ve stávající stránce Upravit akce.
 
+const BATCH = 10
+
 const TABS = [
     { value: 'pending', label: 'Čekající' },
     { value: 'approved', label: 'Schválené' },
@@ -71,16 +73,18 @@ export default function AdminCandidates() {
         setSelected(allSelected ? new Set() : new Set(items.map(item => item.id)))
     }
 
-    // Schválení po dávkách po 50 (limit backendu). Výsledek je za každý návrh zvlášť,
-    // takže jedno selhání neshodí ostatní a stránka řekne přesně, co se povedlo.
+    // Schválení po dávkách po 10, ne po 50 (limit backendu). U každého návrhu se stahuje obrázek
+    // ze zdroje a Nginx čeká na odpověď nejvýš 60 s: deset obrázků se do limitu vejde i při
+    // pomalém zdroji, padesát ne. Výsledek je za každý návrh zvlášť, takže jedno selhání
+    // neshodí ostatní a stránka řekne přesně, co se povedlo.
     async function approve(ids) {
         if (ids.length === 0 || busy) return
         setBusy(true)
         setNotice(null)
         const results = []
         try {
-            for (let i = 0; i < ids.length; i += 50) {
-                const data = await approveCandidates(ids.slice(i, i + 50))
+            for (let i = 0; i < ids.length; i += BATCH) {
+                const data = await approveCandidates(ids.slice(i, i + BATCH))
                 results.push(...data.results)
             }
         } catch (e) {
