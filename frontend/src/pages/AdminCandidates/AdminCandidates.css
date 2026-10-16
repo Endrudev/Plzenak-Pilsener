@@ -1,0 +1,317 @@
+/* Stránka Návrhy akcí v administraci. Kostra (horní lišta, obsah, prázdný stav) je sdílená
+   s AdminDashboard.css, tady je jen to, co patří seznamu návrhů. Jen tokeny, žádné pevné
+   barvy a rozměry. */
+
+.cand-back {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: none;
+    border: none;
+    border-radius: var(--radius-el);
+    padding: var(--space-2) var(--space-3);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+.cand-back:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    .cand-back:hover {
+        background: var(--color-surface-soft);
+        color: var(--color-ink);
+    }
+}
+
+.cand-title {
+    margin: 0 0 var(--space-1);
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-semibold);
+    color: var(--color-ink);
+}
+
+.cand-lead {
+    margin: 0 0 var(--space-5);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+}
+
+/* ---- záložky stavu ---- */
+.cand-tabs {
+    display: inline-flex;
+    gap: var(--space-1);
+    padding: var(--space-1);
+    margin-bottom: var(--space-5);
+    background: var(--color-surface-soft);
+    border-radius: var(--radius-el);
+}
+
+.cand-tab {
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-el);
+    padding: var(--space-2) var(--space-4);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
+}
+
+.cand-tab[aria-pressed='true'] {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    box-shadow: var(--shadow-card);
+}
+
+/* ---- zpráva o výsledku ---- */
+.cand-notice {
+    margin-bottom: var(--space-5);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-el);
+    border: 1px solid var(--color-line);
+    background: var(--color-surface-soft);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    color: var(--color-ink);
+}
+
+.cand-notice--error {
+    background: var(--badge-bg);
+    color: var(--badge-ink);
+    border-color: transparent;
+}
+
+.cand-notice ul {
+    margin: var(--space-2) 0 0;
+    padding-left: var(--space-5);
+}
+
+/* ---- hromadné ovládání ---- */
+.cand-bulk {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-4);
+}
+
+.cand-check {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    color: var(--color-ink);
+    cursor: pointer;
+}
+
+.cand-check input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+}
+
+/* ---- seznam ---- */
+.cand-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.cand-skel {
+    height: 120px;
+    border-radius: var(--radius-card);
+}
+
+.cand-card {
+    display: grid;
+    grid-template-columns: auto 88px minmax(0, 1fr);
+    grid-template-areas:
+        'check thumb body'
+        'actions actions actions';
+    gap: var(--space-3) var(--space-4);
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+}
+
+/* Bez zaškrtávátka (schválené a zamítnuté) se sloupec s ním nerezervuje. */
+.cand-card:not(:has(.cand-check--card)) {
+    grid-template-columns: 88px minmax(0, 1fr);
+    grid-template-areas:
+        'thumb body'
+        'actions actions';
+}
+
+.cand-check--card {
+    grid-area: check;
+    align-self: start;
+    padding-top: var(--space-1);
+}
+
+.cand-thumb {
+    grid-area: thumb;
+    width: 88px;
+    height: 88px;
+    object-fit: cover;
+    border-radius: var(--radius-el);
+    background: var(--color-surface-soft);
+}
+
+.cand-body {
+    grid-area: body;
+    min-width: 0;
+}
+
+.cand-name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-snug);
+    color: var(--color-ink);
+}
+
+.cand-name a {
+    color: inherit;
+    text-decoration: none;
+}
+
+@media (hover: hover) {
+    .cand-name a:hover {
+        color: var(--color-primary);
+    }
+}
+
+.cand-meta {
+    margin: var(--space-1) 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.cand-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    margin: var(--space-2) 0 0;
+}
+
+.cand-tag {
+    padding: var(--space-0-5) var(--space-2);
+    border-radius: var(--radius-pill);
+    background: var(--badge-bg);
+    color: var(--badge-ink);
+    font-family: var(--font-sans);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-semibold);
+}
+
+.cand-desc {
+    margin: var(--space-2) 0 0;
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-body);
+    color: var(--color-text-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cand-actions {
+    grid-area: actions;
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.cand-btn {
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    border-radius: var(--radius-el);
+    padding: var(--space-2) var(--space-4);
+    min-height: var(--touch-min);
+    font-family: var(--font-sans);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: filter var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+.cand-btn:active:not(:disabled) {
+    transform: scale(var(--scale-tap));
+}
+
+.cand-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.cand-btn--primary {
+    background: var(--color-primary);
+    border-color: transparent;
+    color: #fff;
+}
+
+@media (hover: hover) {
+    .cand-btn:hover:not(:disabled) {
+        background: var(--color-surface-soft);
+    }
+
+    .cand-btn--primary:hover:not(:disabled) {
+        background: var(--color-primary);
+        filter: brightness(1.08);
+    }
+}
+
+.cand-btn:focus-visible,
+.cand-tab:focus-visible,
+.cand-check input:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Na širším okně akce stojí vedle textu, ne pod ním. */
+@media (min-width: 720px) {
+    .cand-card {
+        grid-template-columns: auto 120px minmax(0, 1fr) auto;
+        grid-template-areas: 'check thumb body actions';
+        align-items: start;
+    }
+
+    .cand-card:not(:has(.cand-check--card)) {
+        grid-template-columns: 120px minmax(0, 1fr) auto;
+        grid-template-areas: 'thumb body actions';
+    }
+
+    .cand-thumb {
+        width: 120px;
+        height: 90px;
+    }
+
+    .cand-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

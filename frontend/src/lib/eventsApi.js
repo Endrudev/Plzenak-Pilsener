@@ -94,3 +94,41 @@ export async function uploadEventImage(id, image){
     }
     return data
 }
+
+// --- Fronta návrhů akcí (GET/POST /api/candidates), jen pro přihlášeného administrátora ---
+
+// Odpověď nemusí být JSON (proxy před backendem vrací při chybě HTML nebo prázdné tělo),
+// a `response.json()` by pak selhalo nesrozumitelným "Unexpected end of JSON input".
+// Tady se chyba vždycky přeloží do věty, kterou lze ukázat uživateli.
+async function candidatesRequest(path, options = {}){
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/candidates${path}`, {
+        ...options,
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            ...(options.body ? {'Content-Type': 'application/json'} : {}),
+        },
+    })
+    let data = null
+    try{
+        data = await response.json()
+    }catch{
+        data = null
+    }
+    if (!response.ok){
+        throw new Error(data?.error || `Server vrátil chybu ${response.status}.`)
+    }
+    return data
+}
+
+export async function getCandidates(status = 'pending'){
+    return candidatesRequest(`?status=${encodeURIComponent(status)}`)
+}
+
+// ids: pole id návrhů (1 až 50). Vrací { results: [{ ok, id, eventId, imageSaved, imageError } | { ok: false, id, error }] }
+export async function approveCandidates(ids){
+    return candidatesRequest('/approve', {method: 'POST', body: JSON.stringify({ids})})
+}
+
+export async function rejectCandidate(id){
+    return candidatesRequest(`/${id}/reject`, {method: 'POST'})
+}
