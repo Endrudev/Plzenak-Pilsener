@@ -25,7 +25,7 @@ export default function Terms() {
                             <circle cx="12" cy="12" r="9" />
                             <path d="M12 7v5l3.5 2" />
                         </svg>
-                        <span>Naposledy upraveno 15. 8. 2026</span>
+                        <span>Naposledy upraveno 16. 10. 2026</span>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@ export default function Terms() {
                         <p>
                             Účet existuje jen pro správce, kteří akce vkládají. Přístupové údaje jsou osobní,
                             nepředávej je dál a při podezření na zneužití nám dej vědět na{' '}
-                            <a className="legal-link" href="mailto:ochranaudaju@plzenak.cz">ochranaudaju@plzenak.cz</a>.
+                            <a className="legal-link" href="mailto:ochranaudaju@plzenak.eu">ochranaudaju@plzenak.eu</a>.
                         </p>
                     </section>
 
@@ -140,7 +140,7 @@ export default function Terms() {
                         <h3>Něco ti tu nesedí?</h3>
                         <p>
                             Napiš nám na{' '}
-                            <a className="legal-link" href="mailto:ochranaudaju@plzenak.cz">ochranaudaju@plzenak.cz</a>
+                            <a className="legal-link" href="mailto:ochranaudaju@plzenak.eu">ochranaudaju@plzenak.eu</a>
                             {' '}— chybu v údajích o akci opravíme, na dotaz k podmínkám odpovíme.
                         </p>
                     </div>
