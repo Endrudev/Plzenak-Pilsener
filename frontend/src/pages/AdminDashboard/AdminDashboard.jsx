@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getEvents, deleteEvent } from '../../lib/eventsApi.js'
+import { getEvents, deleteEvent, getCandidates } from '../../lib/eventsApi.js'
 import { useAuthGuard } from '../../lib/useAuthGuard.js'
 import PlzenakLogo from '../../components/PlzenakLogo/PlzenakLogo.jsx'
 import './AdminDashboard.css'
@@ -15,8 +15,16 @@ export default function AdminDashboard() {
     const [loadError, setLoadError] = useState(null)
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1)
+    // Počet návrhů čekajících na schválení. Jen doplněk tlačítka: když se nenačte, tlačítko
+    // se ukáže bez čísla a nic dalšího se nerozbije.
+    const [pendingCount, setPendingCount] = useState(null)
 
     useEffect(() => { fetchEvents() }, [])
+    useEffect(() => {
+        getCandidates('pending')
+            .then(data => setPendingCount(data.items.length))
+            .catch(() => setPendingCount(null))
+    }, [])
 
     async function handleSignOut() {
         navigate('/admin')
@@ -118,6 +126,10 @@ export default function AdminDashboard() {
                             <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                         </svg>
                         Vytvořit akci
+                    </button>
+                    <button id="candidates-btn" onClick={() => navigate('/admin/candidates')}>
+                        Návrhy akcí
+                        {pendingCount > 0 && <span id="candidates-count">{pendingCount}</span>}
                     </button>
                     <div id="dash-search-wrapper">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
