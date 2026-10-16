@@ -6,6 +6,7 @@ const path = require('path')
 dotenv.config({path: path.join(__dirname, '.env')})
 const authRouter = require('./src/routes/auth')
 const events = require('./src/routes/events')
+const candidates = require('./src/routes/candidates')
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -20,6 +21,11 @@ const PORT = process.env.PORT || 3001
 app.set('trust proxy', 2)
 
 app.use(cors({origin: process.env.FRONTEND_URL}))
+
+// Dávka návrhů akcí je větší než výchozích 100 kB, které pustí globální express.json níž.
+// Tahle cesta si proto čte tělo sama a musí být PŘED ním, jinak by dávku odmítl dřív.
+app.use('/api/candidates', express.json({limit: '1mb'}), candidates)
+
 app.use(express.json())
 
 app.use('/api/auth', authRouter)
