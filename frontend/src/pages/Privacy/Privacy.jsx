@@ -35,13 +35,14 @@ export default function Privacy() {
                     <section id="kdo-je-spravce" className="legal-section">
                         <h2>1. Kdo je správce</h2>
                         <p>
-                            Správcem osobních údajů je fyzická osoba, autor projektu Plzeňák — přehledu kulturních,
-                            sportovních a gastro akcí v Plzni. Plzeňák je nekomerční učební projekt bez zisku, není
-                            nijak propagovaný ani určený ke škálování.
+                            Správcem osobních údajů je <strong>Ondřej Štindl</strong>, fyzická osoba, autor projektu
+                            Plzeňák — přehledu kulturních, sportovních a gastro akcí v Plzni. Adresu ti na požádání
+                            sdělíme na kontaktním e-mailu. Plzeňák je nekomerční učební projekt bez zisku, není nijak
+                            propagovaný ani určený ke škálování.
                         </p>
                         <p>
                             Ve všem, co se týká zpracování údajů, se na nás můžeš obrátit na{' '}
-                            <a className="legal-link" href="mailto:ochranaudaju@plzenak.eu">ochranaudaju@plzenak.eu</a>.
+                            <a className="legal-link" href="mailto:kontakt@plzenak.eu">kontakt@plzenak.eu</a>.
                             Neurčili jsme pověřence pro ochranu osobních údajů, protože nezpracováváme údaje ve velkém
                             rozsahu ani systematicky nemonitorujeme veřejná místa.
                         </p>
@@ -55,9 +56,9 @@ export default function Privacy() {
                         </p>
                         <ul>
                             <li>
-                                <strong>Technické záznamy serveru</strong> — při každé návštěvě webový server zapíše
-                                tvou IP adresu, čas požadavku, adresu stránky a údaj o prohlížeči. Vznikají samy
-                                provozem webu.
+                                <strong>Technické záznamy serveru</strong> — webový server nezapisuje záznamy o
+                                jednotlivých návštěvách, přístupové logy jsou vypnuté. Zapisují se jen chybová hlášení
+                                serveru a aplikace, která mohou výjimečně obsahovat IP adresu.
                             </li>
                             <li>
                                 <strong>Omezení pokusů o přihlášení</strong> — server si na 15 minut v paměti
@@ -119,11 +120,11 @@ export default function Privacy() {
                             </li>
                             <li>
                                 <strong>Cloudflare</strong> — správa domény (DNS), úložiště obrázků akcí na adrese
-                                cdn.plzenak.eu (R2), uložení záloh databáze a přeposílání e-mailů zaslaných na adresu
-                                pro ochranu údajů. Při načtení obrázku akce vidí Cloudflare tvou IP adresu.
+                                cdn.plzenak.eu (R2), uložení záloh databáze a přeposílání e-mailů zaslaných na kontaktní
+                                adresu. Při načtení obrázku akce vidí Cloudflare tvou IP adresu.
                             </li>
                             <li>
-                                <strong>Google (Gmail)</strong> — e-maily poslané na adresu pro ochranu údajů se
+                                <strong>Google (Gmail)</strong> — e-maily poslané na kontaktní adresu se
                                 přeposílají do schránky provozovatele.
                             </li>
                             <li>
@@ -153,8 +154,8 @@ export default function Privacy() {
                         <h2>5. Jak dlouho údaje uchováváme</h2>
                         <ul>
                             <li>
-                                <strong>Technické záznamy serveru</strong> — jen krátce, v řádu týdnů, po kterých se
-                                automaticky přepíšou novými.
+                                <strong>Chybová hlášení serveru</strong> — ukládá se jen omezené množství nejnovějších
+                                záznamů, které se průběžně přepisují novými.
                             </li>
                             <li>
                                 <strong>Omezení pokusů o přihlášení</strong> — 15 minut, jen v paměti serveru.
@@ -194,7 +195,7 @@ export default function Privacy() {
                         </p>
                         <p>
                             Stačí napsat na{' '}
-                            <a className="legal-link" href="mailto:ochranaudaju@plzenak.eu">ochranaudaju@plzenak.eu</a>
+                            <a className="legal-link" href="mailto:kontakt@plzenak.eu">kontakt@plzenak.eu</a>
                             ; vyřídíme to do 30 dnů. Pokud budeš mít pocit, že s tvými údaji zacházíme špatně, můžeš
                             se obrátit na Úřad pro ochranu osobních údajů, Pplk. Sochora 27, 170 00 Praha 7.
                         </p>
@@ -213,7 +214,7 @@ export default function Privacy() {
                         <h3>Máš dotaz k tomuto dokumentu?</h3>
                         <p>
                             Napiš nám na{' '}
-                            <a className="legal-link" href="mailto:ochranaudaju@plzenak.eu">ochranaudaju@plzenak.eu</a>
+                            <a className="legal-link" href="mailto:kontakt@plzenak.eu">kontakt@plzenak.eu</a>
                             {' '}— odpovídáme do 30 dnů, jak vyžaduje GDPR.
                         </p>
                     </div>

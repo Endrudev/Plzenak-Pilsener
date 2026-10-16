@@ -36,7 +36,7 @@ export default function Terms() {
                         <h2>1. Co je Plzeňák</h2>
                         <p>
                             Plzeňák je nekomerční přehled kulturních, sportovních a gastro akcí v Plzni. Provozuje
-                            ho fyzická osoba jako osobní učební projekt.
+                            ho Ondřej Štindl jako osobní učební projekt.
                         </p>
                         <p>
                             Je to učební projekt juniorního vývojáře. Nemá žádný zisk, neprodává reklamu ani
@@ -58,7 +58,7 @@ export default function Terms() {
                         <p>
                             Účet existuje jen pro správce, kteří akce vkládají. Přístupové údaje jsou osobní,
                             nepředávej je dál a při podezření na zneužití nám dej vědět na{' '}
-                            <a className="legal-link" href="mailto:ochranaudaju@plzenak.eu">ochranaudaju@plzenak.eu</a>.
+                            <a className="legal-link" href="mailto:kontakt@plzenak.eu">kontakt@plzenak.eu</a>.
                         </p>
                     </section>
 
@@ -140,7 +140,7 @@ export default function Terms() {
                         <h3>Něco ti tu nesedí?</h3>
                         <p>
                             Napiš nám na{' '}
-                            <a className="legal-link" href="mailto:ochranaudaju@plzenak.eu">ochranaudaju@plzenak.eu</a>
+                            <a className="legal-link" href="mailto:kontakt@plzenak.eu">kontakt@plzenak.eu</a>
                             {' '}— chybu v údajích o akci opravíme, na dotaz k podmínkám odpovíme.
                         </p>
                     </div>
