@@ -7,13 +7,18 @@ import { seeded, pediment, bellGable, steppedGable } from './cityscape.js'
 // dotýkají a střechy jsou převážně sedlové, doplněné štíty schodovitými a
 // zvonovitými, komíny a vikýři. Kresba vychází z reference autora (2026-10-05).
 //
-// Kreslí se do pevného plátna VIEW_W x HEIGHT bez natahování: svg má skutečnou
-// velikost v pixelech a rodič ho vystředí a ořízne, takže na telefonu je vidět
-// prostřední výřez a na širokém monitoru se nic neroztáhne do šířky. Barvy řad a
-// oken jsou tokeny, definuje je CSS (Footer.css), tvar generují seedy.
+// Město se nakreslí jednou do plátna VIEW_W x HEIGHT (<g id="dusk-city"> v defs) a
+// svg ho bez natahování opakuje vedle sebe přes <use>, TILES kopií se středem
+// uprostřed. Rodič svg vystředí a ořízne, takže na telefonu je vidět prostřední
+// výřez a na širokém monitoru (4K, ultrawide) město pokračuje až k okrajům, i když
+// je okno širší než jedno plátno. Opakování přes <use> nezvětšuje DOM o stovky oken.
+// Barvy řad a oken jsou tokeny, definuje je CSS (Footer.css), tvar generují seedy.
 
 const VIEW_W = 2400
 const HEIGHT = 200
+// 5 plátek = 12 000 px, to pokryje i 8K; krajní se na běžném okně schovají v ořezu
+const SIDE_TILES = 2
+const TILES = SIDE_TILES * 2 + 1
 const OVERLAP = 0.5
 
 const ROOF_POOL = ['gable', 'gable', 'gable', 'gable', 'flat', 'stepped', 'bell', 'parapet']
@@ -102,20 +107,25 @@ function Windows({ list, className }) {
 
 export default function DuskSkyline({ className = '' }) {
     return (
-        <svg className={className} width={VIEW_W} height={HEIGHT} viewBox={`0 0 ${VIEW_W} ${HEIGHT}`} aria-hidden="true">
+        <svg className={className} width={VIEW_W * TILES} height={HEIGHT} viewBox={`${-VIEW_W * SIDE_TILES} 0 ${VIEW_W * TILES} ${HEIGHT}`} aria-hidden="true">
             <defs>
                 <linearGradient id="dusk-back-fade" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0" style={{ stopColor: 'var(--dusk-back)', stopOpacity: 0 }} />
                     <stop offset="0.55" style={{ stopColor: 'var(--dusk-back)', stopOpacity: 0.8 }} />
                     <stop offset="1" style={{ stopColor: 'var(--dusk-back)', stopOpacity: 1 }} />
                 </linearGradient>
+                <g id="dusk-city">
+                    <path className="dusk-back" d={layerPath(BACK)} fill="url(#dusk-back-fade)" />
+                    <Windows list={BACK_WIN} className="dusk-win dusk-win--back" />
+                    <path className="dusk-mid" d={layerPath(MID)} />
+                    <Windows list={MID_WIN} className="dusk-win dusk-win--mid" />
+                    <path className="dusk-front" d={layerPath(FRONT)} />
+                    <Windows list={FRONT_WIN} className="dusk-win dusk-win--front" />
+                </g>
             </defs>
-            <path className="dusk-back" d={layerPath(BACK)} fill="url(#dusk-back-fade)" />
-            <Windows list={BACK_WIN} className="dusk-win dusk-win--back" />
-            <path className="dusk-mid" d={layerPath(MID)} />
-            <Windows list={MID_WIN} className="dusk-win dusk-win--mid" />
-            <path className="dusk-front" d={layerPath(FRONT)} />
-            <Windows list={FRONT_WIN} className="dusk-win dusk-win--front" />
+            {Array.from({ length: TILES }, (_, i) => (
+                <use key={i} href="#dusk-city" x={(i - SIDE_TILES) * VIEW_W} />
+            ))}
         </svg>
     )
 }
