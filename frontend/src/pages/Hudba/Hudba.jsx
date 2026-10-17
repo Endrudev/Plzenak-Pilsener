@@ -24,9 +24,7 @@ export default function Hudba() {
                 video: { mp4: concertHeroMp4, poster: concertHeroPoster, position: narrow ? '85% 50%' : '50% 50%' },
                 scene: <LazyConcertScene focus={narrow ? 'right' : 'center'} shade label="Koncert z papíru" />,
                 breadcrumbLabel: 'Hudba',
-                title: 'Hudba',
-                lead: 'Koncerty, kluby a festivaly. Od komorního jazzu přes varhany v katedrále po noc s DJem.',
-            }}
+                title: 'Hudba',            }}
             searchPlaceholder="Interpret nebo koncert"
             searchLabel="Hledat interpreta nebo koncert"
             countNote="v kategorii Hudba"

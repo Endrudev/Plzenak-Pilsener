@@ -75,9 +75,6 @@ export default function EventsHero({ onSearch }) {
                     <h1 className="eh-title enter" style={{ '--i': 1 }}>
                         Akce v <em>Plzni</em>
                     </h1>
-                    <p className="eh-lead enter" style={{ '--i': 2 }}>
-                        Koncerty, divadlo, trhy i akce pro děti. Najdi, co tě dnes večer zajímá.
-                    </p>
                     <button type="button" className="lp-btn eh-cta enter" style={{ '--i': 3 }} onClick={onSearch}>
                         Hledat
                         <span className="lp-btn-ic"><ArrowRight /></span>

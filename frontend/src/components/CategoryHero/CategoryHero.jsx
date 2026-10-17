@@ -6,7 +6,7 @@ import './CategoryHero.css'
 // Hero pás stránek TOP akce, Hudba a Zbytek programu. Zachovaná je jedna věc:
 // animovaná papírová scéna (CityScene, ConcertScene, ProgramScene), která se
 // předává přes `scene` a leží v celé ploše pásu. Text nad ní je nový, bez
-// štítku nad nadpisem a bez řádku se statistikou (počet akcí je u výsledků).
+// štítku nad nadpisem, bez perexu a bez řádku se statistikou (počet akcí je u výsledků).
 //
 // `theme="light"` je denní scéna (Zbytek programu), text je tmavý. Ostatní jsou
 // noční, text je krémový (--dk-*), ve světlém i tmavém tématu stránky stejně.
@@ -27,7 +27,6 @@ export default function CategoryHero({
     video,
     breadcrumbLabel,
     title,
-    lead,
 }) {
     const cls = `cat-hero${theme === 'light' ? ' cat-hero--light' : ''}${sceneShift ? ' cat-hero--shift' : ''}`
 
@@ -45,9 +44,7 @@ export default function CategoryHero({
                 <nav className="cat-hero-crumbs enter" style={{ '--i': 0 }} aria-label="Drobečková navigace">
                     <Link to="/">Plzeňák</Link> / <Link to="/events">Akce</Link> / <span>{breadcrumbLabel}</span>
                 </nav>
-                <h1 className="cat-hero-title enter" style={{ '--i': 1 }}>{title}</h1>
-                <p className="cat-hero-lead enter" style={{ '--i': 2 }}>{lead}</p>
-            </div>
+                <h1 className="cat-hero-title enter" style={{ '--i': 1 }}>{title}</h1>            </div>
         </header>
     )
 }
