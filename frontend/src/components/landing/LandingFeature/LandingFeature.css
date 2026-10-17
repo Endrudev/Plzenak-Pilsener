@@ -4,7 +4,7 @@
 
 .lf-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-4);
 }
 
@@ -15,7 +15,7 @@
     }
 
     .lf-grid--solo {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -156,6 +156,8 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-1-5);
+    min-width: 0;
+    overflow-wrap: anywhere;
     color: var(--dk-muted);
 }
 
