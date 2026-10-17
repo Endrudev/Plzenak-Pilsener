@@ -23,3 +23,26 @@
         padding: 0 var(--space-3);
     }
 }
+
+/* Ani to ale nestačí na běžných telefonech (360–390 px): poslední čip by
+   přečníval přes rámeček. Čipy se roztáhnou na šířku desky a zúží odsazení. */
+@media (max-width: 399px) {
+    .cc-filters .lp-chips {
+        display: flex;
+        width: 100%;
+        gap: 0;
+    }
+
+    .cc-filters .lp-chip {
+        flex: 1 1 auto;
+        justify-content: center;
+        padding: 0 var(--space-2);
+    }
+}
+
+/* Na nejužším telefonu (320 px) musí zmenšit i písmo. */
+@media (max-width: 359px) {
+    .cc-filters .lp-chip {
+        font-size: var(--fs-sm);
+    }
+}
