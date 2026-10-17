@@ -78,17 +78,8 @@
     text-wrap: balance;
 }
 
-.cat-hero-lead {
-    margin: 0;
-    max-width: 30ch;
-    font-size: var(--fs-body-lg);
-    line-height: var(--lh-body);
-    color: var(--dk-muted);
-}
-
 /* ---------- denní scéna (Zbytek programu): tmavý text na světlém ---------- */
-.cat-hero--light .cat-hero-crumbs,
-.cat-hero--light .cat-hero-lead {
+.cat-hero--light .cat-hero-crumbs {
     color: var(--color-calm-text-soft);
 }
 

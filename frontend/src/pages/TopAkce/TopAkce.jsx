@@ -21,9 +21,7 @@ export default function TopAkce() {
                 video: { mp4: cityHeroMp4, poster: cityHeroPoster, position: '50% 100%' },
                 scene: <LazyCityScene shade label="Noční Plzeň z papíru" />,
                 breadcrumbLabel: 'TOP akce',
-                title: 'TOP akce',
-                lead: 'To nejlepší, co se v Plzni chystá. Každý týden ručně vybíráme akce, které stojí za to.',
-            }}
+                title: 'TOP akce',            }}
             typeOptions={TYPE_OPTIONS}
             searchPlaceholder="Hledat mezi TOP akcemi"
             searchLabel="Hledat mezi TOP akcemi"
