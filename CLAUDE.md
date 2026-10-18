@@ -92,7 +92,7 @@ npm run migrate   # apply pending SQL migrations (schema_migrations tracking)
 npm run seed      # create admin account from ADMIN_EMAIL/ADMIN_PASSWORD in .env
 ```
 
-No linter on either side. Vitest is set up in `frontend/` only; `backend/` has no test runner yet. For manual development PostgreSQL runs as a standalone Docker container. The whole stack also runs from `docker-compose.yml` in the repo root: `doppler run --project plzenak --config dev -- docker compose up -d --build` (secrets come from Doppler, there is no root `.env`; details in `04 DevOps/Nasazení a CI.md`). **Never run `docker compose config` or `doppler secrets download` through Doppler — they print secret values.**
+No linter on either side. Vitest is set up in `frontend/` only; `backend/` has no test runner yet. For manual development PostgreSQL runs as a standalone Docker container. The whole stack also runs from `docker-compose.yml` in the repo root: `doppler run --project plzenak --config dev -- docker compose up -d --build` (secrets come from Doppler, there is no root `.env`; details in `04 DevOps/Nasazení a CI.md`). Since 2026-10-15 the stack has Caddy in front of Nginx bound to `plzenak.eu`, so locally `docker compose up` no longer serves `http://localhost`; local development stays on the two `npm run dev` servers. **Never run `docker compose config` or `doppler secrets download` through Doppler — they print secret values.**
 
 ## Git workflow and CI
 
@@ -113,11 +113,13 @@ Enough to know where to look. **Details live in the vault pages listed above** �
 
 React 18 SPA (`frontend/`) built with Vite, talking to a Node.js/Express + PostgreSQL API (`backend/`), with event images in Cloudflare R2. Supabase is fully removed. Routing via react-router-dom v7.
 
-- **Routing** — `<Layout>` in `App.jsx` suppresses `Header`, `Footer` **and the cookie banner** on all `/admin*` routes. `<Route path="*">` must stay last. *Known bug: the header's "Mapa" button links to `/mapa`, which is not a route.*
+- **Routing** — `<Layout>` in `App.jsx` suppresses `Header`, `Footer` **and the cookie banner** on all `/admin*` routes. `<Route path="*">` must stay last.
 - **Backend** — Express + `pg`, no ORM, raw parametrized SQL by design. `dotenv.config()` must run before anything reading `process.env`. `GET /locations` must stay above `GET /:id`. Auth is JWT, no sessions, `authMiddleware` attached per-route.
 - **Data mapping** — DB columns are `snake_case`, API/frontend `camelCase`; mapping happens on the backend (`mapEvent`/`mapEventReverse`). Every page fetches through `frontend/src/lib/eventsApi.js`.
 - **Images** — `imageUrl` (R2) takes precedence over `imgClass` (CSS gradient) everywhere. Never build a `url()` by hand — always `lib/imageBackground.js`.
-- **Consent** — `localStorage` key `plzenak-consent`, versioned by `CONSENT_VERSION`; missing/invalid/outdated = undecided. No analytics category, deliberately. Fonts still load from Google Fonts before consent — an open launch blocker.
+- **Consent** — `localStorage` key `plzenak-consent`, versioned by `CONSENT_VERSION`; missing/invalid/outdated = undecided. No analytics category, deliberately. Fonts are self-hosted since 2026-10-09 (a test forbids third-party font links).
+- **Production** — AWS EC2 (Stockholm) behind Caddy (HTTPS) → Nginx → backend at `https://plzenak.eu`; Cloudflare for DNS, R2 and e-mail routing. **Deploys are manual**: on the server `git pull` then `doppler run -- docker compose up -d --build` (merging to `main` deploys nothing). Secrets from Doppler config `prd`. Details: `04 DevOps/Nasazení a CI.md`.
+- **Event import** — new events can arrive through a review queue (`event_candidates`, `/api/candidates`, admin page `/admin/candidates`): an importer with a narrow token posts proposals, an admin approves them, approval copies the image from `akce.plzen.eu` into R2. Details: `03 Backend/API.md`.
 
 ### Component conventions
 

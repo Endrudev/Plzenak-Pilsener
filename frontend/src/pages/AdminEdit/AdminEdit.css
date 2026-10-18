@@ -687,3 +687,33 @@ textarea.ae-input {
         filter: brightness(1.08);
     }
 }
+
+/* ---- Zaškrtávátko TOP akce pod kategorií ---- */
+.ae-check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-medium);
+    color: var(--color-ink);
+    cursor: pointer;
+}
+
+.ae-check input {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin: 2px 0 0;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+}
+
+.ae-check small {
+    display: block;
+    margin-top: var(--space-1);
+    font-size: var(--fs-sm);
+    font-weight: normal;
+    color: var(--color-text-muted);
+}

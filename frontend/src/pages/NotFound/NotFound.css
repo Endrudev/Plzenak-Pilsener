@@ -1,237 +1,190 @@
-#notfound-page {
-    position: relative;
-    flex: 1;
-    overflow: hidden;
-    background: var(--color-ink);
+/* Stránka 404. Kostra (hero pod lištou, list stránky) je sdílená se stránkami kategorií
+   (CategoryHero.css, landing.css), tady je jen to, co patří jen jí. Hero je vždy noční,
+   proto texty čtou tmavé konstanty --dk-*, které platí ve světlém i tmavém tématu stejně.
+   Jen tokeny, žádné pevné barvy a rozměry. */
+
+/* ---------- hero: obsah pod nadpisem ---------- */
+.nf-lead {
+    margin: 0;
+    max-width: 36ch;
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+    color: var(--dk-muted);
+    text-wrap: pretty;
+}
+
+.nf-tools {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: var(--space-8) var(--space-4);
-    box-sizing: border-box;
-    gap: var(--space-2);
+    gap: var(--space-4);
+    width: 100%;
+    max-width: 580px;
+    margin-top: var(--space-2);
 }
 
-#notfound-page::before,
-#notfound-page::after {
+/* Ztmavení přes obrázek scény, aby text a hledání četly i přes zářící věž a měsíc.
+   Na širokém okně tmaví zleva (tam stojí text), na telefonu shora, protože text zabírá
+   celou šířku. Barva je tmavá konstanta --dk-bg, takže platí ve světlém i tmavém tématu. */
+.nf .cat-hero-scene::after {
     content: '';
     position: absolute;
-    border-radius: 50%;
+    inset: 0;
     pointer-events: none;
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--dk-bg) 88%, transparent) 0%,
+        color-mix(in srgb, var(--dk-bg) 62%, transparent) 55%,
+        transparent 100%
+    );
 }
 
-#notfound-page::before {
-    width: 480px;
-    height: 480px;
-    top: -160px;
-    left: -140px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
-}
-
-#notfound-page::after {
-    width: 420px;
-    height: 420px;
-    bottom: -160px;
-    right: -120px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
-}
-
-#notfound-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 420px;
-    height: 420px;
-    transform: translate(-50%, -62%);
-    background: radial-gradient(circle, rgba(232, 114, 12, 0.35) 0%, rgba(232, 114, 12, 0.10) 45%, transparent 72%);
-    pointer-events: none;
-}
-
-#notfound-digits {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    color: var(--color-primary);
-    font-family: var(--font-display);
-    font-weight: var(--fw-semibold);
-    font-size: clamp(72px, 16vw, 120px);
-    line-height: 1;
-}
-
-#notfound-pin {
-    filter: drop-shadow(0 4px 18px rgba(232, 114, 12, 0.55));
-}
-
-#notfound-eyebrow {
-    position: relative;
-    margin: var(--space-3) 0 0;
-    font-family: var(--font-sans);
-    font-size: var(--fs-2xs);
-    font-weight: var(--fw-semibold);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.55);
-}
-
-#notfound-title {
-    position: relative;
-    margin: var(--space-1) 0 0;
-    font-family: var(--font-display);
-    font-size: var(--fs-h1);
-    font-weight: var(--fw-semibold);
-    color: #fff;
-}
-
-#notfound-desc {
-    position: relative;
-    max-width: 460px;
-    margin: 0;
-    font-family: var(--font-sans);
-    font-size: var(--fs-body);
-    line-height: var(--lh-body);
-    color: rgba(255, 255, 255, 0.62);
-}
-
-#notfound-actions {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-3);
-    margin-top: var(--space-4);
-}
-
-#notfound-home-btn,
-#notfound-events-btn {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-5);
-    border-radius: var(--radius-el);
-    font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
-    font-size: var(--fs-body);
-    text-decoration: none;
-    transition: filter var(--dur-fast) var(--ease-standard), background var(--dur-fast) var(--ease-standard);
-}
-
-#notfound-home-btn {
-    background: var(--color-primary);
-    color: #fff;
-}
-
-@media (hover: hover) {
-    #notfound-home-btn:hover {
-        filter: brightness(1.08);
+@media (min-width: 900px) {
+    .nf .cat-hero-scene::after {
+        background: linear-gradient(
+            90deg,
+            color-mix(in srgb, var(--dk-bg) 80%, transparent) 0%,
+            color-mix(in srgb, var(--dk-bg) 42%, transparent) 42%,
+            transparent 72%
+        );
     }
 }
 
-#notfound-events-btn {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    color: #fff;
+/* ---------- hledání ---------- */
+.nf-search {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
 }
 
-@media (hover: hover) {
-    #notfound-events-btn:hover {
-        background: rgba(255, 255, 255, 0.12);
+@media (min-width: 560px) {
+    .nf-search {
+        flex-direction: row;
+        align-items: center;
     }
 }
 
-#notfound-search {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    width: 100%;
-    max-width: 460px;
-    height: 50px;
-    margin-top: var(--space-5);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: var(--radius-el);
-    padding: 0 var(--space-2) 0 var(--space-4);
-    color: var(--amber);
-    box-sizing: border-box;
-}
-
-#notfound-search:focus-within {
-    border-color: var(--color-primary);
-}
-
-#notfound-search input {
+.nf-search-field {
     flex: 1;
     min-width: 0;
-    border: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    height: 56px;
+    padding: 0 var(--space-5);
+    border: 1px solid var(--dk-line-strong);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--dk-bg) 72%, transparent);
+    color: var(--dk-muted);
+    transition: border-color var(--dur-fast) var(--ease-standard),
+                box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+.nf-search-field:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-shadow);
+}
+
+.nf-search-field input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
     outline: none;
     background: transparent;
-    font-family: var(--font-sans);
-    font-size: var(--fs-body);
-    color: #fff;
+    color: var(--dk-text);
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-medium);
 }
 
-#notfound-search input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+.nf-search-field input::placeholder {
+    color: var(--dk-muted);
+    opacity: 1;
 }
 
-#notfound-search button {
-    flex-shrink: 0;
-    height: 38px;
+/* Na telefonu tlačítko přes celou šířku, text vlevo a kruh se šipkou u okraje
+   (stejně jako Hledat u filtrů akcí). Od 560 px zpět na šířku obsahu. */
+.nf-search-btn {
+    width: 100%;
+    justify-content: space-between;
+}
+
+@media (min-width: 560px) {
+    .nf-search-btn {
+        width: auto;
+        justify-content: flex-start;
+    }
+}
+
+/* ---------- rychlé odkazy ---------- */
+.nf-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nf-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
     padding: 0 var(--space-4);
-    background: var(--color-primary);
-    border: none;
-    border-radius: var(--radius-sm);
-    color: #fff;
-    font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
+    border: 1px solid var(--dk-line-strong);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--dk-bg) 55%, transparent);
+    color: var(--dk-text);
     font-size: var(--fs-sm);
-    cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard),
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                border-color var(--dur-fast) var(--ease-standard),
+                color var(--dur-fast) var(--ease-standard),
                 transform var(--dur-fast) var(--ease-standard);
 }
 
-#notfound-search button:active {
+.nf-link:active {
     transform: scale(var(--scale-tap));
 }
 
 @media (hover: hover) {
-    #notfound-search button:hover {
-        filter: brightness(1.08);
+    .nf-link:hover {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: var(--lp-ink-on-accent);
     }
 }
 
-#notfound-quicklinks {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-5);
-    margin-top: var(--space-3);
+.nf-link:focus-visible {
+    outline: 2px solid var(--dk-text);
+    outline-offset: 3px;
 }
 
-#notfound-quicklinks a {
-    display: flex;
-    align-items: center;
-    gap: var(--space-1-5);
-    font-family: var(--font-sans);
-    font-size: var(--fs-xs);
-    font-weight: var(--fw-medium);
-    color: rgba(255, 255, 255, 0.55);
-    text-decoration: none;
-    transition: color var(--dur-fast) var(--ease-standard);
+/* ---------- list stránky: nejbližší akce ---------- */
+.nf-more {
+    padding-block: var(--space-12) var(--space-16);
 }
 
-@media (hover: hover) {
-    #notfound-quicklinks a:hover {
-        color: #fff;
-    }
+.nf-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
 }
 
 @media (min-width: 640px) {
-    #notfound-actions {
-        flex-wrap: nowrap;
+    .nf-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+}
+
+@media (min-width: 1024px) {
+    .nf-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.nf-home {
+    display: flex;
+    justify-content: center;
 }

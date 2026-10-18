@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createEvent, uploadEventImage, deleteEvent } from '../../lib/eventsApi.js'
 import { useAuthGuard } from '../../lib/useAuthGuard.js'
+import { CATEGORIES } from '../../lib/filters/categories.jsx'
+import { splitTags, joinTags } from '../../lib/events/eventTags.js'
 import './AdminCreate.css'
 
 //Deklarace polí pro překlad měsíců a dnů pro kalendářový popup.
@@ -52,6 +54,7 @@ export default function AdminCreate() {
     const [description, setDescription] = useState('')
     const [url, setUrl] = useState('')
     const [category, setCategory] = useState('')
+    const [top, setTop] = useState(false)
     const [locationName, setLocationName] = useState('')
     const [saving, setSaving] = useState(false)
     const [images, setImages] = useState([null, null])
@@ -159,7 +162,7 @@ export default function AdminCreate() {
                 date:        inputVal || null,
                 dateShort:   inputVal ? inputVal.slice(0, inputVal.lastIndexOf('.')) : null,
                 location:    locationName || null,
-                tags:        category ? [category] : [],
+                tags:        joinTags({ category, top }),
                 imgClass:    'event-image--prazdroj',
                 url:         url || null,
                 description: description ? description.split('\n').filter(Boolean) : [],
@@ -277,15 +280,19 @@ export default function AdminCreate() {
                             <div className="create-select-wrapper">
                                 <select id="f-category" value={category} onChange={e => setCategory(e.target.value)}>
                                     <option value="">Vyber…</option>
-                                    <option>Kultura</option>
-                                    <option>Sport</option>
-                                    <option>Gastro</option>
-                                    <option>TOP akce</option>
+                                    {CATEGORIES.map(c => <option key={c.name}>{c.name}</option>)}
                                 </select>
                                 <svg className="create-select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="6 9 12 15 18 9" />
                                 </svg>
                             </div>
+                            <label className="create-check">
+                                <input type="checkbox" checked={top} onChange={e => setTop(e.target.checked)} />
+                                <span>
+                                    TOP akce
+                                    <small>Zobrazí se i na stránce TOP akce, kategorie zůstane zachovaná.</small>
+                                </span>
+                            </label>
                         </div>
                     </div>
 
@@ -355,9 +362,9 @@ export default function AdminCreate() {
 
                     {/* Obrázky */}
                     <div className="create-field">
-                        <label className="create-label">Obrázky</label>
+                        <label className="create-label">Obrázek</label>
                         <div id="ac-images-row">
-                            {['Hlavní obrázek', 'Další obrázek'].map((label, i) => (
+                            {['Hlavní obrázek'].map((label, i) => (
                                 <label key={i} className="create-img-dropzone">
                                     {images[i]
                                         ? <img src={images[i]} alt="" />
