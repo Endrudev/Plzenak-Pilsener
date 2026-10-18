@@ -37,3 +37,7 @@ if [ "$REMOTE_SIZE" != "$SIZE" ]; then
 fi
 
 echo "$(date -u +%FT%TZ) OK plzenak-${STAMP}.sql.gz ${SIZE} B"
+
+if [ -n "${HEALTHCHECK_URL:-}" ]; then
+    curl -fsS -m 10 --retry 3 "$HEALTHCHECK_URL" > /dev/null || true
+fi
