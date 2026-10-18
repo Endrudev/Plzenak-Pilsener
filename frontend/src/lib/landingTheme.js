@@ -38,6 +38,18 @@ export function usesLandingTheme(pathname) {
     return THEMED_PATHS.includes(pathname) || pathname.startsWith('/events/')
 }
 
+// Veřejné stránky, které téma záměrně nemají (právní texty). Administrace sem nepatří:
+// tam lišta vůbec není.
+const PLAIN_PATHS = ['/zasady-ochrany-osobnich-udaju', '/podminky-uziti']
+
+// Neexistující adresa dostane stránku 404, která je ve stejném jazyce jako homepage:
+// noční scéna pod průhlednou lištou a téma. Lišta proto musí vědět, že pro ni má téma
+// platit. Seznam PLAIN_PATHS se musí shodovat s routami v App.jsx: nová veřejná stránka
+// bez tématu se do něj přidá, jinak by na ní lišta nabízela přepínač, který nic nedělá.
+export function isNotFoundPath(pathname) {
+    return !usesLandingTheme(pathname) && !pathname.startsWith('/admin') && !PLAIN_PATHS.includes(pathname)
+}
+
 export function currentMode() {
     const attr = typeof document !== 'undefined' ? document.documentElement.dataset.lpMode : null
     return isMode(attr) ? attr : resolveMode(readStored())

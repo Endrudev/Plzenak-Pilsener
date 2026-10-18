@@ -1,71 +1,143 @@
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import CategoryHero from '../../components/CategoryHero/CategoryHero.jsx'
+import EventPoster from '../../components/events/EventPoster/EventPoster.jsx'
+import { ArrowRight, SearchIcon } from '../../components/landing/icons.jsx'
+import { getEvents } from '../../lib/eventsApi.js'
+import { initMode } from '../../lib/landingTheme.js'
+import cityHeroPoster from '../../components/scenes/posters/city-hero.webp'
+import '../../components/landing/landing.css'
 import './NotFound.css'
 
+// Stránka 404 ve stejném jazyce jako stránky kategorií: noční Plzeň pod průhlednou lištou,
+// pod ní list stránky v tématu (světlém nebo tmavém). Je to slepá ulička, takže místo
+// omluvy nabízí cesty dál: hledání, rychlé odkazy a pár nejbližších akcí.
+//
+// Scéna je jen nehybný obrázek (první snímek videa z homepage), ne video: stránka, na kterou
+// člověk zabloudí omylem, nemá stahovat pět megabajtů.
+//
+// SPA nemůže vrátit stavový kód 404, proto stránka za běhu přidá <meta name="robots"
+// content="noindex">, ať si ji vyhledávače nezapamatují jako obsah.
+
+const LINKS = [
+    { to: '/events?datum=dnes', label: 'Dnes v Plzni' },
+    { to: '/events?datum=vikend', label: 'Tento víkend' },
+    { to: '/top-akce', label: 'TOP akce' },
+    { to: '/events', label: 'Všechny akce' },
+]
+
 export default function NotFound() {
+    const navigate = useNavigate()
+    const [q, setQ] = useState('')
+    // null = načítá se, [] = nic k ukázání (prázdná databáze nebo chyba), jinak akce
+    const [events, setEvents] = useState(null)
+    const today = useMemo(() => new Date(), [])
+
+    useEffect(() => {
+        document.documentElement.classList.add('theme-lp')
+        initMode()
+        return () => document.documentElement.classList.remove('theme-lp')
+    }, [])
+
+    useEffect(() => {
+        const meta = document.createElement('meta')
+        meta.name = 'robots'
+        meta.content = 'noindex'
+        document.head.appendChild(meta)
+        return () => meta.remove()
+    }, [])
+
+    // Nejbližší akce jsou jen doplněk. Když se nenačtou, sekce se tiše vynechá a stránka
+    // pořád plní svůj účel (hledání a odkazy v hero).
+    useEffect(() => {
+        let cancelled = false
+        getEvents({ razeni: 'konani', perPage: 3 })
+            .then(data => { if (!cancelled) setEvents(data.items ?? []) })
+            .catch(() => { if (!cancelled) setEvents([]) })
+        return () => { cancelled = true }
+    }, [])
+
+    function handleSubmit(e) {
+        e.preventDefault()
+        const text = q.trim()
+        navigate(text ? `/events?q=${encodeURIComponent(text)}` : '/events')
+    }
+
     return (
-        <div id="notfound-page">
-            <div id="notfound-glow" />
+        <div className="lp nf">
+            <CategoryHero
+                compact
+                background="#140602"
+                poster={cityHeroPoster}
+                posterPosition="50% 100%"
+                crumbs={[{ to: '/', label: 'Plzeňák' }]}
+                breadcrumbLabel="Chyba 404"
+                title="Tady nic není"
+            >
+                <p className="nf-lead enter" style={{ '--i': 2 }}>
+                    Tuhle stránku jsme nenašli. Možná akce skončila, přesunula se jinam, nebo v odkazu chybí písmenko.
+                </p>
 
-            <div id="notfound-digits">
-                <span>4</span>
-                <svg id="notfound-pin" width="72" height="72" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 6.72 11.2 7.01 11.45a1.5 1.5 0 0 0 1.98 0C13.28 21.2 20 15.25 20 10c0-4.42-3.58-8-8-8zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-                </svg>
-                <span>4</span>
-            </div>
+                <div className="nf-tools">
+                    <form className="nf-search enter" style={{ '--i': 3 }} onSubmit={handleSubmit} role="search">
+                        <label className="nf-search-field" htmlFor="nf-q">
+                            <span className="visually-hidden">Hledat akci</span>
+                            <SearchIcon />
+                            <input
+                                id="nf-q"
+                                type="search"
+                                placeholder="Hledat akci, místo nebo interpreta"
+                                value={q}
+                                onChange={e => setQ(e.target.value)}
+                            />
+                        </label>
+                        <button type="submit" className="lp-btn nf-search-btn">
+                            Hledat
+                            <span className="lp-btn-ic"><ArrowRight /></span>
+                        </button>
+                    </form>
 
-            <p id="notfound-eyebrow">Chyba 404</p>
-            <h1 id="notfound-title">Tady nic není</h1>
-            <p id="notfound-desc">
-                Tuhle stránku jsme nenašli — možná už akce skončila, přesunula se jinam, nebo v odkazu chybí písmenko.
-            </p>
+                    <ul className="nf-links enter" style={{ '--i': 4 }}>
+                        {LINKS.map(link => (
+                            <li key={link.to}>
+                                <Link to={link.to} className="nf-link">{link.label}</Link>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </CategoryHero>
 
-            <div id="notfound-actions">
-                <Link to="/" id="notfound-home-btn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 9.5L12 3l9 6.5" /><path d="M5 9.5V21h14V9.5" />
-                    </svg>
-                    Zpět na domů
-                </Link>
-                <Link to="/events" id="notfound-events-btn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-                    </svg>
-                    Procházet akce
-                </Link>
-            </div>
-
-            {/* TODO: vizuální placeholder — hledání zatím nikde na webu skutečně nefiltruje, viz Home/Events */}
-            <div id="notfound-search">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-                <input type="text" placeholder="Hledat akce v Plzni…" aria-label="Hledat akce" />
-                <button type="button">Hledat</button>
-            </div>
-
-            <div id="notfound-quicklinks">
-                <Link to="/events">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="4" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
-                        <line x1="4.2" y1="4.2" x2="5.6" y2="5.6" /><line x1="18.4" y1="18.4" x2="19.8" y2="19.8" />
-                        <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
-                        <line x1="4.2" y1="19.8" x2="5.6" y2="18.4" /><line x1="18.4" y1="5.6" x2="19.8" y2="4.2" />
-                    </svg>
-                    Dnes v Plzni
-                </Link>
-                <Link to="/top-akce">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                    </svg>
-                    TOP akce
-                </Link>
-                <Link to="/events">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />
-                    </svg>
-                    Kategorie
-                </Link>
+            <div className="lp-sheet">
+                <section className="lp-wrap nf-more" aria-labelledby="nf-more-h">
+                    {events === null || events.length > 0 ? (
+                        <>
+                            <div className="lp-head">
+                                <h2 id="nf-more-h" className="lp-h2">Co se děje v Plzni</h2>
+                                <Link to="/events" className="lp-link">
+                                    Všechny akce
+                                    <ArrowRight size={18} />
+                                </Link>
+                            </div>
+                            <div className="nf-grid">
+                                {events === null
+                                    ? Array.from({ length: 3 }, (_, i) => (
+                                        <div key={i} className="ep ep--skeleton skeleton" aria-hidden="true" />
+                                    ))
+                                    : events.map((event, i) => (
+                                        <EventPoster key={event.id} event={event} index={i} today={today} />
+                                    ))}
+                            </div>
+                        </>
+                    ) : (
+                        <div className="nf-home">
+                            <h2 id="nf-more-h" className="visually-hidden">Další cesty</h2>
+                            <Link to="/" className="lp-btn">
+                                Zpět na úvodní stránku
+                                <span className="lp-btn-ic"><ArrowRight /></span>
+                            </Link>
+                        </div>
+                    )}
+                </section>
             </div>
         </div>
     )

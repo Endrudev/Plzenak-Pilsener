@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
 import { CATEGORIES } from '../../lib/filters/categories.jsx'
-import { setMode, useLandingMode, usesLandingTheme } from '../../lib/landingTheme.js'
+import { isNotFoundPath, setMode, useLandingMode, usesLandingTheme } from '../../lib/landingTheme.js'
 import { SearchIcon } from '../landing/icons.jsx'
 import './Header.css'
 
@@ -69,7 +69,7 @@ function Header() {
     // Přepínač tmavého a světlého tématu existuje jen na stránkách, které téma mají
     // (homepage a Akce), jinde je web světlý a není co přepínat. Lišta i logo se
     // barví podle zvoleného režimu.
-    const themed = usesLandingTheme(pathname)
+    const themed = usesLandingTheme(pathname) || isNotFoundPath(pathname)
     const mode = useLandingMode()
     const dark = themed && mode === 'dark'
 
