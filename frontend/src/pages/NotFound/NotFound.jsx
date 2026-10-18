@@ -6,6 +6,7 @@ import { ArrowRight, SearchIcon } from '../../components/landing/icons.jsx'
 import { getEvents } from '../../lib/eventsApi.js'
 import { initMode } from '../../lib/landingTheme.js'
 import cityHeroPoster from '../../components/scenes/posters/city-hero.webp'
+import cityHeroMp4 from '../../components/scenes/videos/city-hero.mp4'
 import '../../components/landing/landing.css'
 import './NotFound.css'
 
@@ -13,8 +14,10 @@ import './NotFound.css'
 // pod ní list stránky v tématu (světlém nebo tmavém). Je to slepá ulička, takže místo
 // omluvy nabízí cesty dál: hledání, rychlé odkazy a pár nejbližších akcí.
 //
-// Scéna je jen nehybný obrázek (první snímek videa z homepage), ne video: stránka, na kterou
-// člověk zabloudí omylem, nemá stahovat pět megabajtů.
+// Scéna je stejné video jako na stránce TOP akce (`city-hero`), jen vykadrované od oblohy:
+// pás je nižší než na kategoriích a spodek stejně zakrývá list stránky, takže se ořízne
+// ulice dole, ne měsíc a věže nahoře. Dokud video neběží (nebo když je omezení animací či
+// úspora dat), je vidět první snímek.
 //
 // SPA nemůže vrátit stavový kód 404, proto stránka za běhu přidá <meta name="robots"
 // content="noindex">, ať si ji vyhledávače nezapamatují jako obsah.
@@ -68,8 +71,7 @@ export default function NotFound() {
             <CategoryHero
                 compact
                 background="#140602"
-                poster={cityHeroPoster}
-                posterPosition="50% 100%"
+                video={{ mp4: cityHeroMp4, poster: cityHeroPoster, position: '50% 0%' }}
                 crumbs={[{ to: '/', label: 'Plzeňák' }]}
                 breadcrumbLabel="Chyba 404"
                 title="Tady nic není"
