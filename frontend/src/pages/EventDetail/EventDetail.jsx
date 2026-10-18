@@ -51,9 +51,8 @@ export default function EventDetail() {
         setLoading(true)
         setMapLoadedOnce(false)
         setRelated([])
-        // Odkaz z „Podobných akcí“ vede na jiný detail ve stejné komponentě, router
-        // sám scroll nevrací.
-        window.scrollTo(0, 0)
+        // Scroll na začátek při přechodu na jiný detail (odkaz z „Podobných akcí“)
+        // řeší <ScrollToTop /> v App.jsx pro všechny stránky.
         getEventById(id)
             .then(data => setEvent(data))
             .catch(() => setEvent(null))

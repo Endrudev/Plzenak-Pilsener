@@ -18,6 +18,7 @@ import NotFound from './pages/NotFound/NotFound.jsx'
 import { ConsentProvider, useConsent } from './lib/consent/ConsentContext.jsx'
 import CookieBanner from './components/CookieBanner/CookieBanner.jsx'
 import CookieSettings from './components/CookieSettings/CookieSettings.jsx'
+import ScrollToTop from './components/ScrollToTop/ScrollToTop.jsx'
 
 
 function Layout() {
@@ -69,6 +70,7 @@ function Layout() {
 function App() {
     return (
         <BrowserRouter>
+            <ScrollToTop />
             <ConsentProvider>
                 <Layout/>
             </ConsentProvider>
