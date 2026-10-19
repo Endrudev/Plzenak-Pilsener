@@ -40,7 +40,11 @@ export default function CookieBanner({ onAccept, onReject, onOpenSettings }) {
                             </svg>
                         </span>
                         <div className="ck-text">
-                            <h2 className="ck-title">Používáme cookies</h2>
+                            {/* Odstavec, ne nadpis: lišta je v HTML před <main> a její <h2>
+                                byl první nadpis stránky, před <h1> (vyhledávače a čtečky
+                                čtou strukturu nadpisů jako osnovu stránky). Oblast má
+                                vlastní aria-label, vzhled drží třída. */}
+                            <p className="ck-title">Používáme cookies</p>
                             <p className="ck-desc">
                                 Nezbytné drží web v provozu. Volitelné nám pomáhají načítat mapy a vložený obsah.
                                 Rozhodni sám,{' '}

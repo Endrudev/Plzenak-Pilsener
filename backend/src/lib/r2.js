@@ -17,6 +17,10 @@ async function sendObject(key, buffer, contentType) {
     Key: key,
     Body: buffer,
     ContentType: contentType,
+    // Klíč obsahuje náhodné UUID a obsah pod ním se nikdy nemění (nový
+    // obrázek = nový klíč), takže se smí cachovat natrvalo. Bez hlavičky
+    // dával Cloudflare prohlížeči jen výchozí 4 hodiny.
+    CacheControl: 'public, max-age=31536000, immutable',
     })
     await client.send(objectData)
 }

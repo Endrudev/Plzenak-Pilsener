@@ -112,7 +112,7 @@ router.get('*', async (req, res) => {
 
         if (route.type === 'admin' || status === 404) res.set('X-Robots-Tag', 'noindex')
 
-        const html = injectIntoTemplate(await getTemplate(), page)
+        const html = injectIntoTemplate(await getTemplate(), page, req.path)
         // HTML odkazuje na soubory s hashem v názvu, ty se cachují natrvalo.
         // Samotné HTML se musí ověřit pokaždé, jinak by po nasazení ukazovalo
         // na staré soubory.

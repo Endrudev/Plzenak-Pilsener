@@ -34,8 +34,11 @@ export default function HeroVideo({ poster, position, bleed = false, shade, acti
     const canHover = useMediaQuery('(hover: hover)')
 
     // Stažení po nečinnosti: najetí hned po načtení nečeká na síť, ale video nesoutěží se stránkou.
+    // Jen na zařízeních s myší. Na dotyku se video spouští, až když je dlaždice vidět, takže
+    // předstih by stahoval i videa pod okrajem obrazovky, která se třeba nikdy nespustí
+    // (na telefonu přes 2 MB navíc, PageSpeed to hlásil jako „enormous network payloads“).
     useEffect(() => {
-        if (reduced || saveData) return undefined
+        if (reduced || saveData || !canHover) return undefined
         const run = () => setPrefetch(true)
         const id = 'requestIdleCallback' in window
             ? window.requestIdleCallback(run, { timeout: 4000 })
@@ -44,7 +47,7 @@ export default function HeroVideo({ poster, position, bleed = false, shade, acti
             if ('cancelIdleCallback' in window) window.cancelIdleCallback(id)
             else window.clearTimeout(id)
         }
-    }, [reduced])
+    }, [reduced, canHover])
 
     // Viditelnost jen pro zařízení bez hoveru.
     useEffect(() => {

@@ -8,7 +8,7 @@
 export const SITE_NAME = 'Plzeňák'
 
 export function pageTitle(part) {
-    return part ? `${part} | ${SITE_NAME}` : `${SITE_NAME}: akce v Plzni na jednom místě`
+    return part ? `${part} | ${SITE_NAME}` : `${SITE_NAME}: akce v Plzni dnes i o víkendu – koncerty, divadlo`
 }
 
 // Detail akce: "Název – 24.10.2026 | Plzeňák" (backend: eventTitle v pages.js).
