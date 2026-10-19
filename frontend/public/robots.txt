@@ -1,0 +1,26 @@
+# robots.txt pro plzenak.eu
+# Celý web je otevřený všem robotům včetně AI (rozhodnutí 2026-10-19).
+# Administrace se z indexu drží hlavičkou X-Robots-Tag: noindex z Nginxu,
+# ne tady: zakázanou adresu robot nestáhne, a tak by noindex nikdy neviděl.
+# /api se také nezakazuje: Googlebot spouští JavaScript a bez dat z API
+# by viděl prázdné stránky.
+
+User-agent: *
+Allow: /
+
+# AI roboti jmenovitě, ať je vidět, že jsou povolení záměrně.
+# Pozor: robot se řídí JEN nejkonkrétnější skupinou, která na něj sedí,
+# pravidla z "*" se nesčítají. Přidaný Disallow musí být i tady.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+Allow: /
+
+# Sitemap se doplní ve fázi 4, až bude existovat.
