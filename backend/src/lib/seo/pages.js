@@ -5,7 +5,7 @@
 // načtení celé nahradí, proto je jednoduché a sémantické (nadpis, seznam,
 // odkazy), bez tříd a vzhledu.
 
-const { SITE_URL, PAGES, pageTitle } = require('./site')
+const { SITE_URL, PAGES, pageTitle, pageDescription } = require('./site')
 const { escapeHtml, truncate } = require('./html')
 const { buildHead } = require('./head')
 const { organization, website, eventLd, itemList, breadcrumbs } = require('./jsonLd')
@@ -21,9 +21,11 @@ function eventLine(event) {
 
 // Homepage, /akce a stránky kategorií. `events` je první stránka nadcházejících
 // akcí s filtrem stránky. Kanonická adresa je vždy bez parametrů: /akce?q=…
-// je jen jiný pohled na stejnou stránku.
-function listPage(path, events) {
+// je jen jiný pohled na stejnou stránku. `now` jde podstrčit kvůli testům
+// (popis /dnes a /tento-vikend obsahuje datum).
+function listPage(path, events, now = new Date()) {
     const page = PAGES[path]
+    const description = pageDescription(page, now)
     const canonical = `${SITE_URL}${path === '/' ? '/' : path}`
     const jsonLd = []
     if (path === '/') jsonLd.push(organization(), website())
@@ -34,12 +36,14 @@ function listPage(path, events) {
         ? `<ul>${events.map(eventLine).join('')}</ul>`
         : '<p>Teď tu nejsou žádné nadcházející akce.</p>'
     return {
-        head: buildHead({ title: page.title, description: page.description, canonical, jsonLd }),
-        body: `<main><h1>${escapeHtml(page.heading)}</h1><p>${escapeHtml(page.description)}</p>${list}<p><a href="/akce">Všechny akce</a></p></main>`,
+        head: buildHead({ title: page.title, description, canonical, jsonLd }),
+        body: `<main><h1>${escapeHtml(page.heading)}</h1><p>${escapeHtml(description)}</p>${list}<p><a href="/akce">Všechny akce</a></p></main>`,
     }
 }
 
-// Právní texty: jen titulek, popis a nadpis. Celý text vykreslí React.
+// Právní texty a O projektu: titulek, popis, nadpis a odstavce, pokud je
+// stránka v PAGES má (O projektu ano, aby text viděly i AI crawlery; právní
+// texty jsou dlouhé a vykreslí je až React).
 function staticPage(path) {
     const page = PAGES[path]
     const canonical = `${SITE_URL}${path}`
@@ -50,7 +54,7 @@ function staticPage(path) {
             canonical,
             jsonLd: [breadcrumbs([HOME_CRUMB, { name: page.heading, url: canonical }])],
         }),
-        body: `<main><h1>${escapeHtml(page.heading)}</h1></main>`,
+        body: `<main><h1>${escapeHtml(page.heading)}</h1>${(page.paragraphs ?? []).map(p => `<p>${escapeHtml(p)}</p>`).join('')}</main>`,
     }
 }
 

@@ -8,6 +8,14 @@ import { eventVisual } from '../../../lib/events/eventVisual.js'
 import { eventPath } from '../../../lib/events/eventPath.js'
 import './LandingToday.css'
 
+// Kam vede odkaz pod pásem podle vybraného období. Dnes a víkend mají vlastní
+// stránky (SEO fáze 5), zítřek ne, ten vede na všechny akce.
+const MORE = {
+    dnes: { to: '/dnes', label: 'Všechno dnes v Plzni' },
+    zitra: { to: '/akce', label: 'Všechny akce' },
+    vikend: { to: '/tento-vikend', label: 'Celý víkend v Plzni' },
+}
+
 // Sekce hned pod hero dlaždicemi: co se děje dnes, zítra a o víkendu.
 // Odpovídá na první otázku návštěvníka („kam dnes večer?") dřív, než se
 // zeptá, a bez hledání. Přepínač období filtruje v prohlížeči nad už
@@ -25,6 +33,7 @@ export default function LandingToday({ events, loading }) {
 
     const [picked, setPicked] = useState(null)
     const range = picked ?? (RANGES.find(r => counts[r.value] > 0)?.value ?? 'vikend')
+    const more = MORE[range] ?? MORE.zitra
     const items = useMemo(() => future.filter(e => inRange(e.date, range, today)), [future, range, today])
 
     const trackRef = useRef(null)
@@ -81,7 +90,7 @@ export default function LandingToday({ events, loading }) {
                     <div className="lp-wrap">
                         <div className="lt-empty">
                             <p>V tomhle období zatím nic nemáme.</p>
-                            <Link to="/akce" className="lp-link">Všechny akce <ArrowRight /></Link>
+                            <Link to={more.to} className="lp-link">{more.label} <ArrowRight /></Link>
                         </div>
                     </div>
                 ) : (
@@ -120,6 +129,12 @@ export default function LandingToday({ events, loading }) {
                     </div>
                 )}
             </div>
+
+            {!loading && items.length > 0 && (
+                <div className="lp-wrap lt-more">
+                    <Link to={more.to} className="lp-link">{more.label} <ArrowRight /></Link>
+                </div>
+            )}
         </Reveal>
     )
 }

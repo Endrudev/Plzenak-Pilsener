@@ -25,8 +25,8 @@ import { TITLES } from '../../lib/pageTitle.js'
 // content="noindex">, ať si ji vyhledávače nezapamatují jako obsah.
 
 const LINKS = [
-    { to: '/akce?datum=dnes', label: 'Dnes v Plzni' },
-    { to: '/akce?datum=vikend', label: 'Tento víkend' },
+    { to: '/dnes', label: 'Dnes v Plzni' },
+    { to: '/tento-vikend', label: 'Tento víkend' },
     { to: '/top-akce', label: 'TOP akce' },
     { to: '/akce', label: 'Všechny akce' },
 ]

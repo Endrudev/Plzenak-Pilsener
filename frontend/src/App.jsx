@@ -6,6 +6,9 @@ import Events from './pages/Events/Events.jsx'
 import TopAkce from './pages/TopAkce/TopAkce.jsx'
 import Hudba from './pages/Hudba/Hudba.jsx'
 import ZbytekProgramu from './pages/ZbytekProgramu/ZbytekProgramu.jsx'
+import Dnes from './pages/Dnes/Dnes.jsx'
+import TentoVikend from './pages/TentoVikend/TentoVikend.jsx'
+import About from './pages/About/About.jsx'
 import EventDetail from './pages/EventDetail/EventDetail.jsx'
 import Admin from './pages/Admin/Admin.jsx'
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard.jsx'
@@ -72,6 +75,9 @@ function Layout() {
                     <Route path="/top-akce" element={<TopAkce />} />
                     <Route path="/hudba" element={<Hudba />} />
                     <Route path="/zbytek-programu" element={<ZbytekProgramu />} />
+                    <Route path="/dnes" element={<Dnes />} />
+                    <Route path="/tento-vikend" element={<TentoVikend />} />
+                    <Route path="/o-projektu" element={<About />} />
                     <Route path="/akce/:idSlug" element={<EventDetail />} />
                     <Route path="/events" element={<LegacyEventsRedirect />} />
                     <Route path="/events/:id" element={<LegacyEventRedirect />} />

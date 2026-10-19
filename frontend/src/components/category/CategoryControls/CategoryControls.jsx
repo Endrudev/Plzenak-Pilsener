@@ -24,6 +24,9 @@ export default function CategoryControls({
     kdy,
     typ,
     typeOptions = [],
+    // Stránky /dnes a /tento-vikend mají období pevné, přepínač „Kdy“ by tam
+    // jen mátl (a s jiným obdobím by vždy vyšel prázdný výsledek).
+    showKdy = true,
     searchPlaceholder,
     searchLabel,
     onQueryChange,
@@ -62,7 +65,7 @@ export default function CategoryControls({
                 </div>
 
                 <div className="cc-filters">
-                    <div className="lp-chips" role="group" aria-label="Kdy">
+                    {showKdy && <div className="lp-chips" role="group" aria-label="Kdy">
                         {KDY.map(option => (
                             <button
                                 key={option.value}
@@ -74,7 +77,7 @@ export default function CategoryControls({
                                 {option.label}
                             </button>
                         ))}
-                    </div>
+                    </div>}
 
                     {typeOptions.length > 0 && (
                         <div className="ec-chips" role="group" aria-label="Typ akce">

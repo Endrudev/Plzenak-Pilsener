@@ -138,3 +138,15 @@
     letter-spacing: var(--tracking-heading);
     color: var(--lp-text);
 }
+
+/* ---------- úvodní věta s datem (/dnes, /tento-vikend) ---------- */
+/* Stejná typografie jako věta pod nadpisem na 404 (.nf-lead). Hero je noční
+   scéna, proto --dk-* napevno v obou tématech, stejně jako nadpis. */
+.cp-intro {
+    margin: 0;
+    max-width: 44ch;
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+    color: var(--dk-muted);
+    text-wrap: pretty;
+}

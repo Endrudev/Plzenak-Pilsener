@@ -38,6 +38,10 @@ export default function CategoryPage({
     emptyTitle,
     exclude,
     ranked = false,
+    // /dnes a /tento-vikend: období je pevné (bez přepínače „Kdy“) a pod
+    // nadpisem je věta s datem, která rovnou odpovídá „co se děje dnes“.
+    showKdy = true,
+    intro,
 }) {
     const {
         items, total, totalPages, loading,
@@ -55,7 +59,9 @@ export default function CategoryPage({
 
     return (
         <div className="lp cp">
-            <CategoryHero {...hero} />
+            <CategoryHero {...hero}>
+                {intro && <p className="cp-intro enter" style={{ '--i': 2 }}>{intro}</p>}
+            </CategoryHero>
 
             <div className="lp-sheet">
             <div className="lp-wrap cp-controls lp-sheet-lift">
@@ -64,6 +70,7 @@ export default function CategoryPage({
                     kdy={kdy}
                     typ={typ}
                     typeOptions={typeOptions}
+                    showKdy={showKdy}
                     searchPlaceholder={searchPlaceholder}
                     searchLabel={searchLabel}
                     onQueryChange={setQuery}
