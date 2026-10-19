@@ -234,3 +234,10 @@
 .lt-empty p {
     margin: 0;
 }
+
+/* Odkaz pod pásem karet: podle vybraného období na /dnes, /tento-vikend nebo /akce. */
+.lt-more {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--space-5);
+}

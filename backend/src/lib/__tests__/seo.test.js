@@ -308,3 +308,59 @@ describe('sitemap', () => {
         assert.equal(toLastmod('nesmysl'), null)
     })
 })
+
+describe('stránky /dnes, /tento-vikend a O projektu', () => {
+    const fs = require('node:fs')
+    const path = require('node:path')
+    const { pathToFileURL } = require('node:url')
+    const backendLabels = require('../seo/dayLabels')
+    const { ABOUT_PARAGRAPHS } = require('../seo/site')
+    const { staticPage } = require('../seo/pages')
+    const frontendFile = path.join(__dirname, '../../../../frontend/src/lib/events/dayLabels.js')
+
+    // Pondělí, sobota, neděle, přelom měsíce, přelom roku, 00:30 v Praze (22:30 UTC předchozího dne).
+    const DATES = ['2026-10-19T10:00:00Z', '2026-10-24T10:00:00Z', '2026-10-25T10:00:00Z',
+        '2026-10-29T10:00:00Z', '2026-12-28T10:00:00Z', '2026-10-18T22:30:00Z', '2027-03-28T10:00:00Z']
+
+    it('popisky dne a víkendu odpovídají pravidlům', () => {
+        const at = iso => new Date(iso)
+        assert.equal(backendLabels.todayLabel(at('2026-10-19T10:00:00Z')), 'pondělí 19. října 2026')
+        assert.equal(backendLabels.todayLabel(at('2026-10-18T22:30:00Z')), 'pondělí 19. října 2026', 'pražský den, ne UTC')
+        assert.equal(backendLabels.weekendLabel(at('2026-10-19T10:00:00Z')), 'sobota 24. a neděle 25. října 2026')
+        assert.equal(backendLabels.weekendLabel(at('2026-10-24T10:00:00Z')), 'sobota 24. a neděle 25. října 2026')
+        assert.equal(backendLabels.weekendLabel(at('2026-10-25T10:00:00Z')), 'neděle 25. října 2026', 'v neděli jen ta neděle')
+        assert.equal(backendLabels.weekendLabel(at('2026-10-29T10:00:00Z')), 'sobota 31. října a neděle 1. listopadu 2026')
+        assert.equal(backendLabels.weekendLabel(at('2026-12-28T10:00:00Z')), 'sobota 2. a neděle 3. ledna 2027')
+    })
+
+    it('serverová kopie dává stejné texty jako frontend', async () => {
+        const frontendLabels = await import(pathToFileURL(frontendFile).href)
+        for (const iso of DATES) {
+            for (const fn of ['todayLabel', 'weekendLabel', 'todayIntro', 'weekendIntro']) {
+                assert.equal(backendLabels[fn](new Date(iso)), frontendLabels[fn](new Date(iso)), `${fn} ${iso}`)
+            }
+        }
+    })
+
+    it('/dnes a /tento-vikend jsou výpisy s datem v popisu i v textu', () => {
+        const now = new Date('2026-10-19T10:00:00Z')
+        assert.deepEqual(matchRoute('/dnes'), { type: 'page', path: '/dnes' })
+        const today = listPage('/dnes', [EVENT], now)
+        assert.ok(today.head.includes('content="Akce v Plzni dnes, pondělí 19. října 2026:'))
+        assert.ok(today.body.includes('<h1>Dnes v Plzni</h1><p>Akce v Plzni dnes, pondělí 19. října 2026:'))
+        assert.ok(listPage('/tento-vikend', [], now).head.includes('sobota 24. a neděle 25. října 2026'))
+    })
+
+    it('O projektu má text v HTML pro roboty a frontend má stejné odstavce', () => {
+        const { body } = staticPage('/o-projektu')
+        for (const p of ABOUT_PARAGRAPHS) assert.ok(body.includes(`<p>${p}</p>`), p.slice(0, 40))
+        const about = fs.readFileSync(path.join(__dirname, '../../../../frontend/src/pages/About/About.jsx'), 'utf8')
+        for (const p of ABOUT_PARAGRAPHS) assert.ok(about.includes(`'${p}'`), `frontend: ${p.slice(0, 40)}`)
+    })
+
+    it('nové stránky jsou v sitemap', () => {
+        const { sitemapEntries } = require('../seo/sitemap')
+        const locs = sitemapEntries([]).map(e => e.loc)
+        for (const p of ['/dnes', '/tento-vikend', '/o-projektu']) assert.ok(locs.includes(`https://plzenak.eu${p}`), p)
+    })
+})

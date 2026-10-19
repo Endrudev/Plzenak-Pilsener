@@ -41,8 +41,11 @@ export function useEventsFilter(fixedParams, perPage = 12) {
     // `typ` se posílá jako `kategorie` VEDLE fixedParams — jen když je
     // vybraný, jinak by (na stránkách, co samy mají kategorie jako pevný
     // filtr, např. Hudba.jsx) přebil ten pevný na undefined a rozbil ho.
-    const params = { ...fixedParams, q, razeni, datum, page, perPage }
+    const params = { ...fixedParams, q, razeni, page, perPage }
     if (typ) params.kategorie = typ
+    // Období jen když ho uživatel vybral. Dřív šlo `datum: undefined` vždy a
+    // přepsalo by pevný filtr stránek /dnes a /tento-vikend ({ datum: … }).
+    if (datum) params.datum = datum
     getEvents(params)
       .then(data => { setItems(data.items); setTotal(data.total) })
       .catch(console.error)

@@ -34,10 +34,13 @@ describe('usesLandingTheme', () => {
         expect(usesLandingTheme('/top-akce')).toBe(true)
         expect(usesLandingTheme('/hudba')).toBe(true)
         expect(usesLandingTheme('/zbytek-programu')).toBe(true)
+        expect(usesLandingTheme('/dnes')).toBe(true)
+        expect(usesLandingTheme('/tento-vikend')).toBe(true)
     })
 
     it('ostatní stránky téma nemají', () => {
         expect(usesLandingTheme('/podminky-uziti')).toBe(false)
+        expect(usesLandingTheme('/o-projektu')).toBe(false)
         expect(usesLandingTheme('/admin/dashboard')).toBe(false)
         expect(usesLandingTheme('/akcex')).toBe(false)
     })
@@ -57,6 +60,8 @@ describe('isNotFoundPath', () => {
         expect(isNotFoundPath('/top-akce')).toBe(false)
         expect(isNotFoundPath('/podminky-uziti')).toBe(false)
         expect(isNotFoundPath('/zasady-ochrany-osobnich-udaju')).toBe(false)
+        expect(isNotFoundPath('/o-projektu')).toBe(false)
+        expect(isNotFoundPath('/dnes')).toBe(false)
     })
 
     it('administrace 404 není, lišta v ní není', () => {

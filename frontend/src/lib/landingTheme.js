@@ -32,7 +32,7 @@ function readStored() {
 // Stránky, které mají tmavé i světlé téma a v liště přepínač: homepage, Akce,
 // detail akce (/akce/:idSlug) a stránky kategorií. Ostatní stránky jsou světlé a
 // téma nemají.
-const THEMED_PATHS = ['/', '/akce', '/top-akce', '/hudba', '/zbytek-programu']
+const THEMED_PATHS = ['/', '/akce', '/top-akce', '/hudba', '/zbytek-programu', '/dnes', '/tento-vikend']
 
 export function usesLandingTheme(pathname) {
     return THEMED_PATHS.includes(pathname) || pathname.startsWith('/akce/')
@@ -40,7 +40,7 @@ export function usesLandingTheme(pathname) {
 
 // Veřejné stránky, které téma záměrně nemají (právní texty). Administrace sem nepatří:
 // tam lišta vůbec není.
-const PLAIN_PATHS = ['/zasady-ochrany-osobnich-udaju', '/podminky-uziti']
+const PLAIN_PATHS = ['/zasady-ochrany-osobnich-udaju', '/podminky-uziti', '/o-projektu']
 
 // Neexistující adresa dostane stránku 404, která je ve stejném jazyce jako homepage:
 // noční scéna pod průhlednou lištou a téma. Lišta proto musí vědět, že pro ni má téma
