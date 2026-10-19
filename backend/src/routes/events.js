@@ -43,6 +43,7 @@ function uploadImage(req, res, next) {
 const {sendObject, deleteObject} = require('../lib/r2')
 const {mapEvent, mapEventReverse} = require('../lib/eventMapping')
 const {resolveOrderBy, buildWhere, parsePaging} = require('../lib/eventsQuery')
+const {toIsoDate} = require('../lib/eventDate')
 
 router.get('/', async(req, res) => {
     try{
@@ -107,11 +108,18 @@ router.post('/', authMiddleware, async(req, res) => {
             res.status(400).json({error: 'V požadavku chybí povinná data.'})
             return
         }
+        // Textové date se zatím ukládá dál (krok expand, migrace 006), starts_on
+        // se z něj dopočítá. Nečitelné datum by akci vyřadilo ze všech výpisů.
+        const startsOn = toIsoDate(req.body.date)
+        if (!startsOn) {
+            res.status(400).json({error: 'Neplatné datum, očekává se D.M.RRRR.'})
+            return
+        }
         const insertResult = await query(`
-            INSERT INTO events (name, date, date_short, location, tags, img_class, url, description, map_src)
-            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            INSERT INTO events (name, date, date_short, location, tags, img_class, url, description, map_src, starts_on)
+            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             RETURNING *;
-            `, [result.name, result.date, result.date_short, result.location, result.tags, result.img_class, result.url, result.description, result.map_src]
+            `, [result.name, result.date, result.date_short, result.location, result.tags, result.img_class, result.url, result.description, result.map_src, startsOn]
         )
             res.status(201).json(mapEvent(insertResult.rows[0]))
         }
@@ -128,11 +136,17 @@ router.put('/:id', authMiddleware, async(req, res) => {
             res.status(400).json({error: 'V požadavku chybí povinná data.'})
             return
         }
+        const startsOn = toIsoDate(req.body.date)
+        if (!startsOn) {
+            res.status(400).json({error: 'Neplatné datum, očekává se D.M.RRRR.'})
+            return
+        }
         const updateResult = await query(`
-            UPDATE events SET name = $1, date = $2, location = $3, tags = $4, url = $5, description = $6, date_short = $7, img_class = $8, map_src = $9 
-            WHERE id = $10 
+            UPDATE events SET name = $1, date = $2, location = $3, tags = $4, url = $5, description = $6, date_short = $7, img_class = $8, map_src = $9,
+                starts_on = $10, updated_at = now()
+            WHERE id = $11
             RETURNING *;
-            `, [result.name, result.date, result.location, result.tags, result.url, result.description, result.date_short, result.img_class, result.map_src, req.params.id]
+            `, [result.name, result.date, result.location, result.tags, result.url, result.description, result.date_short, result.img_class, result.map_src, startsOn, req.params.id]
         )
         if(updateResult.rows.length === 0){
             res.status(404).json({error: 'Neplatné id akce. Zkuste to znovu.'})
@@ -201,7 +215,7 @@ router.post('/:id/image', authMiddleware, uploadImage, async (req, res) => {
         const urlPath = `${process.env.R2_PUBLIC_URL}/${key}`
         const updateResult = await query(`
             UPDATE events
-            SET image_url = $1, image_key = $2
+            SET image_url = $1, image_key = $2, updated_at = now()
             WHERE id = $3
             RETURNING *;
             `, [urlPath, key, req.params.id])

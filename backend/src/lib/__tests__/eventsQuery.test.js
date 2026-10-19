@@ -1,8 +1,8 @@
 const { describe, it } = require('node:test')
 const assert = require('node:assert/strict')
-const { SORTS, resolveOrderBy, buildWhere, parsePaging } = require('../eventsQuery')
+const { SORTS, TODAY, resolveOrderBy, buildWhere, parsePaging } = require('../eventsQuery')
 
-const NOT_PAST = `TO_DATE(date, 'DD.MM.YYYY') >= CURRENT_DATE`
+const NOT_PAST = `starts_on >= ${TODAY}`
 
 describe('buildWhere', () => {
     it('bez filtrů skryje jen proběhlé akce a nemá žádné hodnoty', () => {
@@ -86,9 +86,23 @@ describe('buildWhere', () => {
     })
 
     describe('datum', () => {
-        it('dnes přidá rovnost s CURRENT_DATE', () => {
+        it('dnes přidá rovnost s dnešním datem', () => {
             const { whereClause } = buildWhere({ datum: 'dnes' })
-            assert.match(whereClause, /TO_DATE\(date, 'DD\.MM\.YYYY'\) = CURRENT_DATE/)
+            assert.ok(whereClause.includes(`starts_on = ${TODAY}`))
+        })
+
+        it('dnes se počítá v pražském čase, ne v pásmu databáze', () => {
+            assert.match(TODAY, /AT TIME ZONE 'Europe\/Prague'/)
+            for (const datum of [undefined, 'dnes', 'vikend', '7dni', '30dni']) {
+                assert.equal(buildWhere({ datum }).whereClause.includes('CURRENT_DATE'), false, String(datum))
+            }
+        })
+
+        it('filtry i řazení jdou přes sloupec starts_on, ne přes převod textu', () => {
+            for (const datum of [undefined, 'dnes', 'vikend', '7dni', '30dni']) {
+                assert.equal(buildWhere({ datum }).whereClause.includes('TO_DATE'), false, String(datum))
+            }
+            assert.equal(SORTS.konani.includes('TO_DATE'), false)
         })
 
         it('vikend počítá posun od ISODOW a v neděli začíná dnes', () => {
@@ -100,8 +114,8 @@ describe('buildWhere', () => {
         })
 
         it('7dni a 30dni mají každé svůj interval', () => {
-            assert.match(buildWhere({ datum: '7dni' }).whereClause, /INTERVAL '7 days'/)
-            assert.match(buildWhere({ datum: '30dni' }).whereClause, /INTERVAL '30 days'/)
+            assert.ok(buildWhere({ datum: '7dni' }).whereClause.endsWith(`${TODAY} + 7`))
+            assert.ok(buildWhere({ datum: '30dni' }).whereClause.endsWith(`${TODAY} + 30`))
         })
 
         it('každý rychlý filtr si ponechá skrytí proběhlých akcí a přidá k němu vlastní podmínku', () => {

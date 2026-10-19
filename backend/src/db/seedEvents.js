@@ -4,6 +4,7 @@ const path = require('path')
 dotenv.config({path: path.join(__dirname, '../../.env')})
 
 const {query} = require('./pool')
+const {toIsoDate} = require('../lib/eventDate')
 
 // Gradientové třídy, co dnes v EventCard.css reálně existují — cyklí se mezi
 // nimi u akcí bez nahraného obrázku (viz frontend/src/components/EventCard/EventCard.css).
@@ -164,9 +165,9 @@ async function seedEvents() {
         const dateShort = e.date.slice(0, e.date.lastIndexOf('.'))
         const imgClass = IMG_CLASSES[i % IMG_CLASSES.length]
         await query(`
-            INSERT INTO events (name, date, date_short, location, tags, img_class, url, description, map_src)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
-            `, [e.name, e.date, dateShort, e.location, e.tags, imgClass, e.url, e.description, e.mapSrc]
+            INSERT INTO events (name, date, date_short, location, tags, img_class, url, description, map_src, starts_on)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
+            `, [e.name, e.date, dateShort, e.location, e.tags, imgClass, e.url, e.description, e.mapSrc, toIsoDate(e.date)]
         )
         inserted++
     }
