@@ -1,6 +1,8 @@
 // Mapování mezi sloupci v databázi (snake_case) a tvarem, který vidí API a
 // frontend (camelCase). Čisté funkce bez volání databáze.
 
+const { slugify } = require('./slug')
+
 function mapEvent(event) {
     return {
         id: event.id,
@@ -16,7 +18,10 @@ function mapEvent(event) {
         createdAt: event.created_at,
         imageUrl: event.image_url,
         startsOn: event.starts_on,
-        updatedAt: event.updated_at
+        updatedAt: event.updated_at,
+        // Neukládá se, dopočítá se z názvu (viz lib/slug.js). Proto ho
+        // mapEventReverse nemá: do databáze nemá kam jít.
+        slug: slugify(event.name)
     }
 }
 

@@ -4,7 +4,7 @@ import './OtherCategories.css'
 
 // Odkazy na zbylé dvě kategorie na konci každé kategorijní stránky. Každá stránka
 // ukáže ty druhé dvě, ne svou (`exclude` je její klíč). Odkazy vedou na
-// dedikované routy, ne na /events?….
+// dedikované routy, ne na /akce?….
 const CARDS = {
     top: { to: '/top-akce', title: 'TOP akce', subtitle: 'To nejlepší, co se v Plzni chystá' },
     hudba: { to: '/hudba', title: 'Hudba', subtitle: 'Koncerty, kluby a festivaly' },

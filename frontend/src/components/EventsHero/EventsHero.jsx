@@ -7,6 +7,7 @@ import { ArrowRight, ArrowUpRight, PinIcon } from '../landing/icons.jsx'
 import { getEvents } from '../../lib/eventsApi.js'
 import { dayParts } from '../../lib/events/dateRanges.js'
 import { eventBadge } from '../../lib/events/eventBadge.js'
+import { eventPath } from '../../lib/events/eventPath.js'
 import './EventsHero.css'
 
 // Hero stránky Akce: noční Plzeň z papíru jako smyčkové video (od 2026-10-07 tatáž
@@ -26,7 +27,7 @@ function NextEvent({ event }) {
     const badge = eventBadge(event.date)
 
     return (
-        <Link to={`/events/${event.id}`} className="eh-next enter" style={{ '--i': 4 }}>
+        <Link to={eventPath(event)} className="eh-next enter" style={{ '--i': 4 }}>
             <span className="eh-next-core">
                 {parts && (
                     <span className="eh-next-date" aria-hidden="true">

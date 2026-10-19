@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom'
 import { getEventById, getEvents } from '../../lib/eventsApi.js'
 import { eventBadge } from '../../lib/events/eventBadge.js'
 import { dayParts } from '../../lib/events/dateRanges.js'
@@ -10,6 +10,7 @@ import { useConsent } from '../../lib/consent/ConsentContext.jsx'
 import { buildIcsFile } from '../../lib/events/buildIcsFile.js'
 import { downloadTextFile } from '../../lib/downloadTextFile.js'
 import { shareEvent } from '../../lib/events/shareEvent.js'
+import { eventPath, parseEventId } from '../../lib/events/eventPath.js'
 import MapConsent from '../../components/ConsentGate/MapConsent.jsx'
 import EventDetailSkeleton from '../../components/EventDetailSkeleton/EventDetailSkeleton.jsx'
 import EventPoster from '../../components/events/EventPoster/EventPoster.jsx'
@@ -25,7 +26,10 @@ import './EventDetail.css'
 // Obsah (popis, mapa se souhlasem, kalendář, sdílení, odkaz na vstupenky) je
 // stejný jako dřív. Změnilo se rozvržení a vzhled, ne co stránka umí.
 export default function EventDetail() {
-    const { id } = useParams()
+    // Adresa je /akce/<id>-<slug>; o akci rozhoduje jen id na začátku.
+    const { idSlug } = useParams()
+    const id = parseEventId(idSlug)
+    const { pathname } = useLocation()
     const navigate = useNavigate()
     const [event, setEvent] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -53,11 +57,27 @@ export default function EventDetail() {
         setRelated([])
         // Scroll na začátek při přechodu na jiný detail (odkaz z „Podobných akcí“)
         // řeší <ScrollToTop /> v App.jsx pro všechny stránky.
+        // Parametr, který nezačíná číslem (/akce/abc), je rovnou „nenalezeno“,
+        // na API se neptá.
+        if (!id) {
+            setEvent(null)
+            setLoading(false)
+            return
+        }
         getEventById(id)
             .then(data => setEvent(data))
             .catch(() => setEvent(null))
             .finally(() => setLoading(false))
     }, [id])
+
+    // Chybný, zastaralý (po přejmenování akce) nebo chybějící slug se nahradí
+    // správným. `replace`, aby v historii nezůstala špatná adresa. Id se nemění,
+    // takže efekt výš akci znovu nestahuje.
+    useEffect(() => {
+        if (event && pathname !== eventPath(event)) {
+            navigate(eventPath(event), { replace: true })
+        }
+    }, [event, pathname, navigate])
 
     // Podobné akce: stejná kategorie jako tahle akce, bez ní samotné. Selhání se
     // tiše přeskočí, je to doplněk, ne obsah stránky.
@@ -87,8 +107,8 @@ export default function EventDetail() {
     function handleAddToCalendar() {
         if (!event) return
         const ics = buildIcsFile(event)
-        // event.date vždycky sedí na 'DD.MM.YYYY' (backend to vynucuje přes
-        // TO_DATE), takže tenhle guard je jen obrana proti jinému tvaru.
+        // event.date vždycky sedí na 'D.M.YYYY' (backend nečitelné datum odmítne
+        // kódem 400, viz toIsoDate), takže tenhle guard je jen obrana proti jinému tvaru.
         if (!ics) return
         downloadTextFile(ics.filename, ics.content, 'text/calendar;charset=utf-8')
     }
@@ -111,7 +131,7 @@ export default function EventDetail() {
             <div className="lp-wrap ed-missing">
                 <h1 className="ed-missing-title">Akce nenalezena</h1>
                 <p className="ed-missing-text">Odkaz už neplatí, nebo akce proběhla a byla smazána.</p>
-                <button type="button" className="lp-btn" onClick={() => navigate('/events')}>
+                <button type="button" className="lp-btn" onClick={() => navigate('/akce')}>
                     Zpět na akce
                     <span className="lp-btn-ic"><ArrowRight size={18} /></span>
                 </button>
@@ -149,7 +169,7 @@ export default function EventDetail() {
 
                 <div className="lp-wrap ed-hero-in">
                     <nav className="ed-crumbs enter" style={{ '--i': 0 }} aria-label="Drobečková navigace">
-                        <Link to="/">Plzeňák</Link> / <Link to="/events">Akce</Link>
+                        <Link to="/">Plzeňák</Link> / <Link to="/akce">Akce</Link>
                     </nav>
 
                     <div className="ed-hero-main">
@@ -233,7 +253,7 @@ export default function EventDetail() {
                                             {tags.map(tag => (
                                                 <Link
                                                     key={tag}
-                                                    to={`/events?kategorie=${encodeURIComponent(tag)}`}
+                                                    to={`/akce?kategorie=${encodeURIComponent(tag)}`}
                                                     className="ed-tag"
                                                 >
                                                     {tag}
@@ -263,7 +283,7 @@ export default function EventDetail() {
                 <section className="lp-wrap ed-related" aria-labelledby="ed-related-h">
                     <div className="lp-head">
                         <h2 id="ed-related-h" className="lp-h2">Podobné akce</h2>
-                        <Link to="/events" className="lp-link">
+                        <Link to="/akce" className="lp-link">
                             Všechny akce
                             <ArrowRight size={18} />
                         </Link>

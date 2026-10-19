@@ -30,12 +30,12 @@ function readStored() {
 }
 
 // Stránky, které mají tmavé i světlé téma a v liště přepínač: homepage, Akce,
-// detail akce (/events/:id) a stránky kategorií. Ostatní stránky jsou světlé a
+// detail akce (/akce/:idSlug) a stránky kategorií. Ostatní stránky jsou světlé a
 // téma nemají.
-const THEMED_PATHS = ['/', '/events', '/top-akce', '/hudba', '/zbytek-programu']
+const THEMED_PATHS = ['/', '/akce', '/top-akce', '/hudba', '/zbytek-programu']
 
 export function usesLandingTheme(pathname) {
-    return THEMED_PATHS.includes(pathname) || pathname.startsWith('/events/')
+    return THEMED_PATHS.includes(pathname) || pathname.startsWith('/akce/')
 }
 
 // Veřejné stránky, které téma záměrně nemají (právní texty). Administrace sem nepatří:

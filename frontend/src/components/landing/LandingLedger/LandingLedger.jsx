@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Reveal from '../../Reveal/Reveal.jsx'
 import { ArrowRight, ArrowUpRight, PinIcon } from '../icons.jsx'
 import { dayParts, upcoming } from '../../../lib/events/dateRanges.js'
+import { eventPath } from '../../../lib/events/eventPath.js'
 import './LandingLedger.css'
 
 // Nejbližších šest akcí jako lístky: vlevo velké datum (to je první, co se u
@@ -20,7 +21,7 @@ export default function LandingLedger({ events, loading }) {
             <div className="lp-wrap">
                 <div className="lp-head enter" style={{ '--i': 0 }}>
                     <h2 id="ll-h" className="lp-h2">Nejbližší akce</h2>
-                    <Link to="/events" className="lp-link">Všechny akce <ArrowRight /></Link>
+                    <Link to="/akce" className="lp-link">Všechny akce <ArrowRight /></Link>
                 </div>
 
                 {loading ? (
@@ -36,7 +37,7 @@ export default function LandingLedger({ events, loading }) {
                             return (
                                 <Link
                                     key={event.id}
-                                    to={`/events/${event.id}`}
+                                    to={eventPath(event)}
                                     className="ll-ticket enter"
                                     style={{ '--i': i + 1 }}
                                 >

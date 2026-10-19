@@ -8,8 +8,8 @@ import { DATE_OPTIONS } from '../../../lib/filters/dateFilters.js'
 import './LandingSearch.css'
 
 // Hledání je rozcestník, ne nástroj: odeslání nefiltruje tady, jen přesměruje
-// na /events s parametry (q, datum, kategorie, misto). Tři výběry sedí na
-// stejné backendové filtry, co používá /events sama. Cena tu chybí záměrně,
+// na /akce s parametry (q, datum, kategorie, misto). Tři výběry sedí na
+// stejné backendové filtry, co používá /akce sama. Cena tu chybí záměrně,
 // databáze na ni nemá sloupec, takže by šlo o klamavý ovládací prvek.
 export default function LandingSearch({ locations }) {
     const navigate = useNavigate()
@@ -23,7 +23,7 @@ export default function LandingSearch({ locations }) {
         if (search.kategorie) params.set('kategorie', search.kategorie)
         if (search.misto) params.set('misto', search.misto)
         const query = params.toString()
-        navigate(query ? `/events?${query}` : '/events')
+        navigate(query ? `/akce?${query}` : '/akce')
     }
 
     return (

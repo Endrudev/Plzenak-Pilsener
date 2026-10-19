@@ -85,6 +85,12 @@ router.get('/locations', async(req, res) => {
 })
 
 router.get('/:id', async(req, res) => {
+    // Id je kladné celé číslo. Cokoli jiného ('42-nazev', 'abc') by Postgres
+    // odmítl při převodu na integer a vrátilo by se 500 místo 404.
+    if (!/^\d+$/.test(req.params.id)) {
+        res.status(404).json({error: 'Akce nebyla nalezena.'})
+        return
+    }
     try{
         const result = await query(`
             SELECT * FROM events 

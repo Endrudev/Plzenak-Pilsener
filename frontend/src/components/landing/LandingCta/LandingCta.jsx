@@ -13,7 +13,7 @@ export default function LandingCta() {
                     <h2 id="lcta-h" className="lcta-title enter" style={{ '--i': 0 }}>
                         Dnes večer máš na výběr.
                     </h2>
-                    <Link to="/events" className="lp-btn lcta-btn enter" style={{ '--i': 1 }}>
+                    <Link to="/akce" className="lp-btn lcta-btn enter" style={{ '--i': 1 }}>
                         Všechny akce
                         <span className="lp-btn-ic"><ArrowRight /></span>
                     </Link>

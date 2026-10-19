@@ -16,7 +16,7 @@ import { GastroIcon, HudbaIcon, KulturaIcon, SportIcon, PamatkyIcon, DetiIcon } 
 //
 // Ikony jsou funkce `(size) => JSX`, ne hotové elementy — každé dosavadní
 // použité místo mělo svou vlastní velikost (26 px dlaždice na homepage,
-// 18 px mega-menu v hlavičce, 16 px filtr na /events) a tahle konsolidace
+// 18 px mega-menu v hlavičce, 16 px filtr na /akce) a tahle konsolidace
 // nemá měnit vzhled, jen sjednotit zdroj dat.
 
 export const CATEGORIES = [
