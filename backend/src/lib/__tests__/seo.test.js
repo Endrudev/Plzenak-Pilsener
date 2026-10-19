@@ -267,3 +267,44 @@ describe('titulky frontendu a serveru', () => {
         assert.equal(pageTitle('X'), 'X | Plzeňák')
     })
 })
+
+describe('sitemap', () => {
+    const { sitemapEntries, buildSitemap, toLastmod } = require('../seo/sitemap')
+    const { PAGES } = require('../seo/site')
+    const events = [
+        { ...EVENT, updatedAt: new Date('2026-10-18T10:00:00Z') },
+        { ...EVENT, id: 43, slug: 'jina-akce', updatedAt: new Date('2026-10-19T08:30:00Z') },
+    ]
+
+    it('obsahuje všechny stránky z PAGES a každou akci se slugem', () => {
+        const locs = sitemapEntries(events).map(e => e.loc)
+        for (const path of Object.keys(PAGES)) assert.ok(locs.includes(`https://plzenak.eu${path}`), path)
+        assert.ok(locs.includes('https://plzenak.eu/akce/42-knoflikova-valka'))
+        assert.ok(locs.includes('https://plzenak.eu/akce/43-jina-akce'))
+        assert.equal(locs.length, Object.keys(PAGES).length + 2)
+    })
+
+    it('akce má lastmod z updatedAt, výpisy nejnovější změnu, právní texty žádný', () => {
+        const byLoc = Object.fromEntries(sitemapEntries(events).map(e => [e.loc, e.lastmod]))
+        assert.equal(byLoc['https://plzenak.eu/akce/42-knoflikova-valka'], '2026-10-18T10:00:00.000Z')
+        assert.equal(byLoc['https://plzenak.eu/hudba'], '2026-10-19T08:30:00.000Z')
+        assert.equal(byLoc['https://plzenak.eu/podminky-uziti'], null)
+    })
+
+    it('bez akcí mají výpisy lastmod null, ne vymyšlené datum', () => {
+        assert.equal(sitemapEntries([]).find(e => e.loc === 'https://plzenak.eu/akce').lastmod, null)
+    })
+
+    it('XML má hlavičku, jmenný prostor, escapuje & a vynechá prázdný lastmod', () => {
+        const xml = buildSitemap([{ loc: 'https://plzenak.eu/a?x=1&y=2', lastmod: null }, { loc: 'https://plzenak.eu/b', lastmod: '2026-10-19T00:00:00.000Z' }])
+        assert.ok(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>'))
+        assert.ok(xml.includes('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'))
+        assert.ok(xml.includes('<loc>https://plzenak.eu/a?x=1&amp;y=2</loc></url>'))
+        assert.ok(xml.includes('<lastmod>2026-10-19T00:00:00.000Z</lastmod>'))
+    })
+
+    it('toLastmod nepustí neplatné datum', () => {
+        assert.equal(toLastmod(null), null)
+        assert.equal(toLastmod('nesmysl'), null)
+    })
+})

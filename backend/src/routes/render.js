@@ -21,6 +21,7 @@ const { PAGES } = require('../lib/seo/site')
 const { injectIntoTemplate } = require('../lib/seo/head')
 const { createTemplateSource } = require('../lib/seo/templateSource')
 const pages = require('../lib/seo/pages')
+const { sitemapEntries, buildSitemap } = require('../lib/seo/sitemap')
 
 const getTemplate = createTemplateSource({
     url: process.env.SITE_TEMPLATE_URL || 'http://frontend/index.html',
@@ -43,6 +44,27 @@ async function loadEvent(id) {
     const result = await query('SELECT * FROM events WHERE id = $1;', [id])
     return result.rows.length ? mapEvent(result.rows[0]) : null
 }
+
+// sitemap.xml (SEO fáze 4). Musí být před '*'. Nadcházející akce stejným
+// filtrem jako výpisy (buildWhere bez parametrů = od dneška), bez limitu:
+// sitemap smí mít až 50 000 adres a akcí je řádově stovky.
+//
+// Chyba vrací 500, ne 503: na 503 by Nginx odpověděl statickým index.html
+// s kódem 200 a vyhledávač by dostal HTML místo sitemap. 500 Nginx propustí.
+router.get('/sitemap.xml', async (req, res) => {
+    try {
+        const { whereClause, values } = buildWhere({})
+        const result = await query(
+            `SELECT * FROM events ${whereClause} ORDER BY ${resolveOrderBy('konani')};`,
+            values
+        )
+        const xml = buildSitemap(sitemapEntries(result.rows.map(mapEvent)))
+        res.set('Cache-Control', 'no-cache').type('application/xml').send(xml)
+    } catch (err) {
+        console.error('Sitemap:', err.message)
+        res.status(500).type('text').send('Sitemap teď nejde sestavit.')
+    }
+})
 
 router.get('*', async (req, res) => {
     const route = matchRoute(req.path)
