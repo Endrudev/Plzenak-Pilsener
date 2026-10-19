@@ -1,15 +1,40 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAfterLoad } from '../../lib/useAfterLoad.js'
 import PlzenakLogo from '../PlzenakLogo/PlzenakLogo.jsx'
 import DuskSkyline from '../NightSkyline/DuskSkyline.jsx'
 import './Footer.css'
 import { useConsent } from '../../lib/consent/ConsentContext.jsx'
 
+// Silueta města v patičce má stovky animovaných oken. Kreslí se, až je stránka
+// načtená a patička se blíží k obrazovce (do 600 px), a pak už zůstane. Na úvodní
+// obrazovce ji nikdo nevidí a jinak by soutěžila s prvním vykreslením stránky
+// (od 2026-10-20). Pás .footer-sky má pevnou výšku, takže pozdější kresba nic
+// neposune.
+function useShowSkyline(ref) {
+    const afterLoad = useAfterLoad()
+    const [near, setNear] = useState(false)
+
+    useEffect(() => {
+        const el = ref.current
+        if (near || !el) return undefined
+        if (!('IntersectionObserver' in window)) { setNear(true); return undefined }
+        const io = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setNear(true) }, { rootMargin: '600px 0px' })
+        io.observe(el)
+        return () => io.disconnect()
+    }, [ref, near])
+
+    return afterLoad && near
+}
+
 export default function Footer() {
     const { openSettings } = useConsent()
+    const skyRef = useRef(null)
+    const showSkyline = useShowSkyline(skyRef)
     return (
         <footer id="site-footer">
-            <div className="footer-sky" aria-hidden="true">
-                <DuskSkyline className="footer-skyline" />
+            <div className="footer-sky" aria-hidden="true" ref={skyRef}>
+                {showSkyline && <DuskSkyline className="footer-skyline footer-skyline--in" />}
             </div>
             <div id="footer-body">
             <div id="footer-inner">

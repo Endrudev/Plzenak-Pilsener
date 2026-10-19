@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useAfterLoad } from '../../lib/useAfterLoad.js'
 import './HeroScene.css'
 
 // Jak dlouho zůstane živá scéna po odjetí myši v DOM. Krátké znovunajetí
@@ -21,7 +22,13 @@ const GRACE_MS = 400
 // v pixelech, ve zmenšené dlaždici scénu znatelně přiblíží. Poster ho kvůli
 // stejnému záběru opakuje (bleed). Ztmavení pod text je zvlášť (shade), protože
 // závisí na rozměru dlaždice, ne na obrázku.
-export default function HeroScene({ poster, position, active, Live, liveProps, bleed = false, shade }) {
+//
+// Na telefonu (bez hoveru) je dlaždice „aktivní“ pořád, takže by se živá scéna stavěla
+// hned při načtení stránky, v nejcitlivější chvíli. Proto se přimontuje až po načtení
+// (useAfterLoad). Do té doby je vidět poster, se kterým je shodná (od 2026-10-20).
+export default function HeroScene({ poster, position, active: wantsActive, Live, liveProps, bleed = false, shade }) {
+    const afterLoad = useAfterLoad()
+    const active = wantsActive && afterLoad
     const [mounted, setMounted] = useState(false)
     const [ready, setReady] = useState(false)
     const liveRef = useRef(null)
