@@ -2,43 +2,10 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { uploadEventImage, getEventById, updateEvent, deleteEvent } from '../../lib/eventsApi.js'
 import { useAuthGuard } from '../../lib/useAuthGuard.js'
+import { MONTHS, DAYS, toCzech, isSameDay, buildCalendarDays } from '../../lib/date.js'
 import { CATEGORIES } from '../../lib/filters/categories.jsx'
 import { splitTags, joinTags } from '../../lib/events/eventTags.js'
 import './AdminEdit.css'
-
-//Deklarace polí pro překlad měsíců a dnů pro kalendářový popup.
-const MONTHS = ['Leden','Únor','Březen','Duben','Květen','Červen',
-    'Červenec','Srpen','Září','Říjen','Listopad','Prosinec']
-const DAYS = ['Po','Út','St','Čt','Pá','So','Ne']
-
-//Převedení datumu na český formát.
-function toCzech(date) {
-    if (!date) return ''
-    return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`
-}
-
-//Porovnání Date objektů
-function isSameDay(a, b) {
-    return(
-        a && b &&
-        a.getDate() === b.getDate() &&
-        a.getMonth() === b.getMonth() &&
-        a.getFullYear() === b.getFullYear()
-    )
-}
-
-//Vytvoření pole Date objektů pro popup kalendář
-function buildCalendarDays(year, month) {
-    const firstDay = new Date(year, month, 1).getDay()
-    const offset = (firstDay + 6) % 7 // Počet polí před prvním dnem v měsící
-    const daysInMonth = new Date(year, month + 1, 0).getDate()
-    const cells = []
-    for (let i = 0; i < offset; i++)
-        cells.push(null)
-    for (let d = 1; d <= daysInMonth; d++)
-        cells.push(new Date(year, month, d))
-    return cells
-}
 
 export default function AdminEdit() {
     const { id } = useParams()
@@ -63,13 +30,13 @@ export default function AdminEdit() {
     const [saving, setSaving] = useState(false)
     const [deleting, setDeleting] = useState(false)
     const [loadError, setLoadError] = useState(null)
-    const [images, setImages] = useState([null, null])
+    const [imagePreview, setImagePreview] = useState(null)
     const [address, setAddress] = useState('')
     const [suggestions, setSuggestions] = useState([])
     const [showSuggestions, setShowSuggestions] = useState(false)
     const [mapSrc, setMapSrc] = useState('')
     const [geocoding, setGeocoding] = useState(false)
-    const [imageUrl1, setImageUrl1] = useState(null)
+    const [imageFile, setImageFile] = useState(null)
 
     const calRef = useRef(null)
     const addressRef = useRef(null)
@@ -93,7 +60,7 @@ export default function AdminEdit() {
             // null ani undefined — React by ho přepnul na neřízený a od té chvíle
             // by ignoroval value. Proto se všechno textové sráží na prázdný řetězec.
             setTitle(event.name ?? '')
-            setImages([event.imageUrl, null])
+            setImagePreview(event.imageUrl)
             setMapSrc(event.mapSrc ?? '')
             setLocationName(event.location ?? '')
             setDescription(event.description?.join('\n') ?? '')
@@ -200,7 +167,7 @@ export default function AdminEdit() {
         }if(!category.trim()) { alert('Vyplňte kategorii.'); return
         }if(!locationName.trim()) { alert('Vyplňte lokaci.'); return
         }if(!description.trim()) { alert('Vyplňte popis.'); return
-        }if(!images[0]) { alert('Akce musí mít hlavní obrázek. Vyberte nový.'); return
+        }if(!imagePreview) { alert('Akce musí mít hlavní obrázek. Vyberte nový.'); return
         }
         setSaving(true)
         let response = null
@@ -216,8 +183,8 @@ export default function AdminEdit() {
                 description: description ? description.split('\n').filter(Boolean) : [],
                 mapSrc:      mapSrc || null,
             })
-            if(imageUrl1 !== null){
-                await uploadEventImage(response.id, imageUrl1)
+            if(imageFile !== null){
+                await uploadEventImage(response.id, imageFile)
             }
             navigate('/admin/dashboard')
         } catch (e) {
@@ -248,22 +215,18 @@ export default function AdminEdit() {
     // Obrázek je u akce povinný, takže "odebrat" znamená "vybrat jiný": teprve
     // nahrání nového obrázku při uložení přepíše ten dosavadní (a backend při tom
     // uklidí starý objekt z R2). Do té doby jde editaci zavřít bez následků.
-    function handleRemoveImage(index) {
-        const current = images[index]
-        if (!current) return
-        if (current.startsWith('blob:')) URL.revokeObjectURL(current)
-        setImages(prev => prev.map((img, i) => i === index ? null : img))
-        if (index === 0) setImageUrl1(null)
+    function handleRemoveImage() {
+        if (!imagePreview) return
+        if (imagePreview.startsWith('blob:')) URL.revokeObjectURL(imagePreview)
+        setImagePreview(null)
+        setImageFile(null)
     }
 
-    function handleImage(index, e) {
+    function handleImage(e) {
         const file = e.target.files[0]
         if (!file) return
-        const url = URL.createObjectURL(file)
-        setImages(prev => prev.map((img, i) => i === index ? url : img))
-        if(index === 0){
-            setImageUrl1(file)
-        }
+        setImagePreview(URL.createObjectURL(file))
+        setImageFile(file)
     }
 
     const today = new Date()
@@ -456,44 +419,42 @@ export default function AdminEdit() {
                     <div className="ae-field">
                         <label className="ae-label">Obrázek</label>
                         <div id="ae-images-row">
-                            {['Hlavní obrázek'].map((label, i) => (
-                                <label key={i} className="ae-img-dropzone">
-                                    {images[i]
-                                        ? (
-                                            <>
-                                                <img src={images[i]} alt="" />
-                                                <button
-                                                    type="button"
-                                                    className="ae-img-remove-btn"
-                                                    title="Odebrat obrázek"
-                                                    aria-label="Odebrat obrázek"
-                                                    onClick={e => {
-                                                        e.preventDefault()
-                                                        e.stopPropagation()
-                                                        handleRemoveImage(i)
-                                                    }}
-                                                >
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-                                                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                                                    </svg>
-                                                </button>
-                                            </>
-                                        )
-                                        : (
-                                            <>
-                                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                                                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                                                    <circle cx="8.5" cy="8.5" r="1.5" />
-                                                    <polyline points="21 15 16 10 5 21" />
+                            <label className="ae-img-dropzone">
+                                {imagePreview
+                                    ? (
+                                        <>
+                                            <img src={imagePreview} alt="" />
+                                            <button
+                                                type="button"
+                                                className="ae-img-remove-btn"
+                                                title="Odebrat obrázek"
+                                                aria-label="Odebrat obrázek"
+                                                onClick={e => {
+                                                    e.preventDefault()
+                                                    e.stopPropagation()
+                                                    handleRemoveImage()
+                                                }}
+                                            >
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+                                                    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                                                 </svg>
-                                                <span className="ae-dropzone-label">{label}</span>
-                                                <span className="ae-dropzone-sub">or <u>browse files</u></span>
-                                            </>
-                                        )
-                                    }
-                                    <input type="file" accept="image/*" hidden onChange={e => handleImage(i, e)} />
-                                </label>
-                            ))}
+                                            </button>
+                                        </>
+                                    )
+                                    : (
+                                        <>
+                                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                                <polyline points="21 15 16 10 5 21" />
+                                            </svg>
+                                            <span className="ae-dropzone-label">Hlavní obrázek</span>
+                                            <span className="ae-dropzone-sub">or <u>browse files</u></span>
+                                        </>
+                                    )
+                                }
+                                <input type="file" accept="image/*" hidden onChange={handleImage} />
+                            </label>
                         </div>
                     </div>
 

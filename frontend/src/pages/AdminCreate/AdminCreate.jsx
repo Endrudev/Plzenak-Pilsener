@@ -2,43 +2,10 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createEvent, uploadEventImage, deleteEvent } from '../../lib/eventsApi.js'
 import { useAuthGuard } from '../../lib/useAuthGuard.js'
+import { MONTHS, DAYS, toCzech, isSameDay, buildCalendarDays } from '../../lib/date.js'
 import { CATEGORIES } from '../../lib/filters/categories.jsx'
 import { splitTags, joinTags } from '../../lib/events/eventTags.js'
 import './AdminCreate.css'
-
-//Deklarace polí pro překlad měsíců a dnů pro kalendářový popup.
-const MONTHS = ['Leden','Únor','Březen','Duben','Květen','Červen',
-    'Červenec','Srpen','Září','Říjen','Listopad','Prosinec']
-const DAYS = ['Po','Út','St','Čt','Pá','So','Ne']
-
-//Převedení datumu na český formát.
-function toCzech(date) {
-    if (!date) return ''
-    return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`
-}
-
-//Porovnání Date objektů
-function isSameDay(a, b) {
-    return(
-        a && b &&
-        a.getDate() === b.getDate() &&
-        a.getMonth() === b.getMonth() &&
-        a.getFullYear() === b.getFullYear()
-    )
-}
-
-//Vytvoření pole Date objektů pro popup kalendář
-function buildCalendarDays(year, month) {
-    const firstDay = new Date(year, month, 1).getDay()
-    const offset = (firstDay + 6) % 7 // Počet polí před prvním dnem v měsící
-    const daysInMonth = new Date(year, month + 1, 0).getDate()
-    const cells = []
-    for (let i = 0; i < offset; i++)
-        cells.push(null)
-    for (let d = 1; d <= daysInMonth; d++)
-        cells.push(new Date(year, month, d))
-    return cells
-}
 
 export default function AdminCreate() {
     const navigate = useNavigate()
@@ -57,13 +24,13 @@ export default function AdminCreate() {
     const [top, setTop] = useState(false)
     const [locationName, setLocationName] = useState('')
     const [saving, setSaving] = useState(false)
-    const [images, setImages] = useState([null, null])
+    const [imagePreview, setImagePreview] = useState(null)
     const [address, setAddress] = useState('')
     const [suggestions, setSuggestions] = useState([])
     const [showSuggestions, setShowSuggestions] = useState(false)
     const [mapSrc, setMapSrc] = useState('')
     const [geocoding, setGeocoding] = useState(false)
-    const [imageUrl1, setImageUrl1] = useState(null)
+    const [imageFile, setImageFile] = useState(null)
 
     const calRef = useRef(null)
     const addressRef = useRef(null)
@@ -149,7 +116,7 @@ export default function AdminCreate() {
 
     async function handleSave() {
         if (!title.trim()) { alert('Vyplňte nadpis.'); return
-        }if(imageUrl1 === null) { alert('Přidejte obrázek.'); return
+        }if(imageFile === null) { alert('Přidejte obrázek.'); return
         }if(!category.trim()) { alert('Vyplňte kategorii.'); return
         }if(!description.trim()) { alert('Vyplňte popis.'); return
         }if(!locationName.trim()) { alert('Vyplňte lokaci.'); return
@@ -168,7 +135,7 @@ export default function AdminCreate() {
                 description: description ? description.split('\n').filter(Boolean) : [],
                 mapSrc:      mapSrc || null,
             })
-            await uploadEventImage(response.id, imageUrl1)
+            await uploadEventImage(response.id, imageFile)
             navigate('/admin/dashboard')
         } catch (e) {
             alert('Chyba při ukládání: ' + e.message)
@@ -182,14 +149,11 @@ export default function AdminCreate() {
         }
     }
 
-    function handleImage(index, e) {
+    function handleImage(e) {
         const file = e.target.files[0]
         if (!file) return
-        const url = URL.createObjectURL(file)
-        setImages(prev => prev.map((img, i) => i === index ? url : img))
-        if(index === 0){
-            setImageUrl1(file)
-        }
+        setImagePreview(URL.createObjectURL(file))
+        setImageFile(file)
     }
 
     const today = new Date()
@@ -364,25 +328,23 @@ export default function AdminCreate() {
                     <div className="create-field">
                         <label className="create-label">Obrázek</label>
                         <div id="ac-images-row">
-                            {['Hlavní obrázek'].map((label, i) => (
-                                <label key={i} className="create-img-dropzone">
-                                    {images[i]
-                                        ? <img src={images[i]} alt="" />
-                                        : (
-                                            <>
-                                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                                                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                                                    <circle cx="8.5" cy="8.5" r="1.5" />
-                                                    <polyline points="21 15 16 10 5 21" />
-                                                </svg>
-                                                <span className="dropzone-label">{label}</span>
-                                                <span className="dropzone-sub">or <u>browse files</u></span>
-                                            </>
-                                        )
-                                    }
-                                    <input type="file" accept="image/*" hidden onChange={e => handleImage(i, e)} />
-                                </label>
-                            ))}
+                            <label className="create-img-dropzone">
+                                {imagePreview
+                                    ? <img src={imagePreview} alt="" />
+                                    : (
+                                        <>
+                                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                                <polyline points="21 15 16 10 5 21" />
+                                            </svg>
+                                            <span className="dropzone-label">Hlavní obrázek</span>
+                                            <span className="dropzone-sub">or <u>browse files</u></span>
+                                        </>
+                                    )
+                                }
+                                <input type="file" accept="image/*" hidden onChange={handleImage} />
+                            </label>
                         </div>
                     </div>
 

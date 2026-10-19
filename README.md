@@ -228,7 +228,7 @@ Aplikace je nasazená a funkční — psaní i čtení akcí, administrace, uplo
 | # | Krok | Stav |
 |:--:|---|---|
 | 1 | **CI pipeline** (GitHub Actions — dva joby, běží na každém PR i po merge) | ✅ hotovo |
-| 2 | **Unit testy** (Vitest) — pokrytá souhlasová vrstva, zbytek se dopisuje | 🔨 rozpracováno |
+| 2 | **Unit testy** — Vitest ve frontendu, `node --test` v backendu | ✅ hotovo (backendové testy zatím mimo CI) |
 | 3 | **Nasazení** — Dockerfile pro backend, Nginx pro frontend, `docker-compose.yml` | ✅ hotovo, celý stack běží v Compose |
 | 4 | **End-to-end ověření** celého toku (login, CRUD, veřejné čtení) v Compose prostředí | ✅ ověřeno i v prohlížeči na ostrém serveru |
 | 5 | **Server, doména, HTTPS** — AWS EC2, Cloudflare, Caddy | ✅ hotovo |

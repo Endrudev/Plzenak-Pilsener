@@ -41,114 +41,15 @@ function uploadImage(req, res, next) {
     })
 }
 const {sendObject, deleteObject} = require('../lib/r2')
-
-// Povolené způsoby řazení. ORDER BY se nedá poslat přes $1 (placeholder umí jen
-// hodnoty, ne názvy sloupců), takže uživatel posílá jen klíč do téhle tabulky a
-// samotné SQL je vždycky napsané tady. Druhotné řazení podle id drží pořadí
-// stabilní, když má víc akcí stejné datum.
-const SORTS = {
-    konani:  `TO_DATE(date, 'DD.MM.YYYY') ASC, id ASC`,
-    pridano: `created_at DESC, id ASC`,
-}
-
-function mapEvent(event) {
-    return {
-        id: event.id,
-        name: event.name,
-        date: event.date,
-        location: event.location,
-        tags: event.tags,
-        url: event.url,
-        description: event.description,
-        dateShort: event.date_short,
-        imgClass: event.img_class,
-        mapSrc: event.map_src,
-        createdAt: event.created_at,
-        imageUrl: event.image_url
-    }
-}
-
-function mapEventReverse(event) {
-    return{
-        id: event.id,
-        name: event.name,
-        date: event.date,
-        location: event.location,
-        tags: event.tags,
-        url: event.url,
-        description: event.description,
-        date_short: event.dateShort,
-        img_class: event.imgClass,
-        map_src: event.mapSrc,
-        created_at: event.createdAt,
-        image_url: event.imageUrl
-    }
-}
+const {mapEvent, mapEventReverse} = require('../lib/eventMapping')
+const {resolveOrderBy, buildWhere, parsePaging} = require('../lib/eventsQuery')
 
 router.get('/', async(req, res) => {
     try{
-        const { q, kategorie, misto, datum, top, vyjma, razeni, page, perPage } = req.query
-        const conditions = []
-        const values = []
-        conditions.push(`TO_DATE(date, 'DD.MM.YYYY') >= CURRENT_DATE`)
-        if (datum === 'dnes') {
-            conditions.push(`TO_DATE(date, 'DD.MM.YYYY') = CURRENT_DATE`)
-        }
-        if (datum === 'vikend') {
-            // Nejbližší sobota a neděle. Posun ode dneška je 6 - ISODOW (po=1 … so=6),
-            // konec je o den dál. V neděli je oba posuny 0 — víkend je právě dnes,
-            // protože sobota už byla.
-            conditions.push(`TO_DATE(date, 'DD.MM.YYYY') BETWEEN
-                CURRENT_DATE + (CASE WHEN EXTRACT(ISODOW FROM CURRENT_DATE) = 7 THEN 0
-                                     ELSE (6 - EXTRACT(ISODOW FROM CURRENT_DATE))::int END)
-                AND
-                CURRENT_DATE + (CASE WHEN EXTRACT(ISODOW FROM CURRENT_DATE) = 7 THEN 0
-                                     ELSE (7 - EXTRACT(ISODOW FROM CURRENT_DATE))::int END)`)
-        }
-        if (datum === '7dni') {
-            conditions.push(`TO_DATE(date, 'DD.MM.YYYY') BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'`)
-        }
-        if (datum === '30dni') {
-            conditions.push(`TO_DATE(date, 'DD.MM.YYYY') BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '30 days'`)
-        }
-        if (q) {
-            values.push(`%${q}%`)
-            conditions.push(`name ILIKE $${values.length}`)
-        }
-        if (kategorie) {
-            values.push(kategorie)
-            conditions.push(`EXISTS (SELECT 1 FROM unnest(tags) t WHERE t ILIKE $${values.length})`)
-        }
-        if (misto) {
-            values.push(misto)
-            conditions.push(`location = $${values.length}`)
-        }
-        if (top === '1') {
-            values.push('TOP akce')
-            conditions.push(`EXISTS (SELECT 1 FROM unnest(tags) t WHERE t ILIKE $${values.length})`)
-        }
-        // Opak `kategorie`/`top` — akce, co NEMAJÍ žádný z vyjmenovaných tagů.
-        // Zatím jediný spotřebitel je stránka /zbytek-programu (vše kromě
-        // TOP akce a Hudba), ale je to obecný parametr, ne hardcoded pro ni.
-        if (vyjma) {
-            const tagy = vyjma.split(',').map(t => t.trim()).filter(Boolean)
-            for (const tag of tagy) {
-                values.push(tag)
-                conditions.push(`NOT EXISTS (SELECT 1 FROM unnest(tags) t WHERE t ILIKE $${values.length})`)
-            }
-        }
-        const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
-        // Neznámá nebo chybějící hodnota spadne na výchozí řazení podle data konání
-        const orderBy = SORTS[razeni] || SORTS.konani
-
-        // Stránkování — page/perPage jsou nepovinné. Volající, co je nepošle
-        // (Home.jsx, AdminDashboard.jsx), dostanou velkorysou první stránku
-        // (100), ne doslova všechno bez limitu — dotaz tak zůstává vždycky
-        // omezený, i když se dnešní objem dat (pár desítek akcí) chová stejně
-        // jako dřívější "vrať úplně všechno".
-        const perPageNum = Math.min(Math.max(parseInt(perPage, 10) || 100, 1), 100)
-        const pageNum = Math.max(parseInt(page, 10) || 1, 1)
-        const offset = (pageNum - 1) * perPageNum
+        const { razeni, page, perPage } = req.query
+        const { whereClause, values } = buildWhere(req.query)
+        const orderBy = resolveOrderBy(razeni)
+        const { pageNum, perPageNum, offset } = parsePaging(page, perPage)
 
         const countResult = await query(`SELECT COUNT(*) FROM events ${whereClause};`, values)
         const total = parseInt(countResult.rows[0].count, 10)
