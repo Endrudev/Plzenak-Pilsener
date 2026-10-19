@@ -23,7 +23,15 @@ import './HeroScene.css'
 //
 // `autoplay` (hero stránek kategorií): video není vázané na hover, běží pořád, dokud je hero
 // aspoň z čtvrtiny vidět, a při úspoře dat zůstane poster.
-export default function HeroVideo({ poster, position, bleed = false, shade, active = false, autoplay = false, webm, mp4 }) {
+//
+// `mobileMp4` (hero stránek kategorií, od 2026-10-20): užší výřez videa v nižším rozlišení
+// pro telefony na výšku, se stejnými 60 snímky. Obsahuje přesně tu část záběru, kterou telefon
+// při daném object-position může ukázat (scripts/make-mobile-hero-videos.mjs), takže záběr
+// vypadá stejně a stahuje se asi třetina dat. Širší obrazovky (tablet, telefon naležato)
+// dostanou plné video, mobilnímu výřezu by na nich chyběly boky.
+export const MOBILE_VIDEO_QUERY = '(max-width: 540px)'
+
+export default function HeroVideo({ poster, position, bleed = false, shade, active = false, autoplay = false, webm, mp4, mobileMp4 }) {
     const ref = useRef(null)
     const wrapRef = useRef(null)
     const [shown, setShown] = useState(false)
@@ -32,6 +40,13 @@ export default function HeroVideo({ poster, position, bleed = false, shade, acti
     const [visible, setVisible] = useState(false)
     const reduced = useMediaQuery('(prefers-reduced-motion: reduce)')
     const canHover = useMediaQuery('(hover: hover)')
+    // useMediaQuery zná šířku už při prvním vykreslení, telefon tedy nestáhne napřed plné video.
+    const small = useMediaQuery(MOBILE_VIDEO_QUERY)
+    const mp4Src = small && mobileMp4 ? mobileMp4 : mp4
+
+    // Při výměně verze (otočení telefonu přes hranici 540 px) se <video> přimontuje znovu
+    // (key níž) a nové video se ukáže, až skutečně běží, stejně jako při prvním spuštění.
+    useEffect(() => { setShown(false) }, [mp4Src])
 
     // Stažení po nečinnosti: najetí hned po načtení nečeká na síť, ale video nesoutěží se stránkou.
     // Jen na zařízeních s myší. Na dotyku se video spouští, až když je dlaždice vidět, takže
@@ -70,7 +85,8 @@ export default function HeroVideo({ poster, position, bleed = false, shade, acti
         } else {
             v.pause()
         }
-    }, [wantsPlay])
+        // mp4Src: po výměně verze je ref.current nový prvek a ten se musí spustit znovu.
+    }, [wantsPlay, mp4Src])
 
     return (
         <div ref={wrapRef} className="hero-video-wrap">
@@ -84,6 +100,7 @@ export default function HeroVideo({ poster, position, bleed = false, shade, acti
                 style={{ objectPosition: position }}
             />
             <video
+                key={mp4Src}
                 ref={ref}
                 className={`hero-video${shown ? ' is-shown' : ''}`}
                 muted
@@ -99,7 +116,7 @@ export default function HeroVideo({ poster, position, bleed = false, shade, acti
                 {/* MP4 první: při 60 snímcích je menší než VP9 WebM (koncert 2,0 proti 3,7 MB) a
                     všechny větší prohlížeče ho dekódují hardwarově. WebM je záloha pro
                     prohlížeče bez H.264 (některé instalace Firefoxu na Linuxu). */}
-                {mp4 && <source src={mp4} type="video/mp4" />}
+                {mp4Src && <source src={mp4Src} type="video/mp4" />}
                 {webm && <source src={webm} type="video/webm" />}
             </video>
             {shade && <div className={`hero-poster-shade hero-poster-shade--${shade}`} />}

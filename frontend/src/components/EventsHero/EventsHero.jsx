@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import HeroVideo from '../HeroBento/HeroVideo.jsx'
 import cityHeroPoster from '../scenes/posters/city-hero.webp'
 import cityHeroMp4 from '../scenes/videos/city-hero.mp4'
+import cityHeroMobileMp4 from '../scenes/videos/city-hero-mobile.mp4'
 import { ArrowRight, ArrowUpRight, PinIcon } from '../landing/icons.jsx'
 import { getEvents } from '../../lib/eventsApi.js'
 import { dayParts } from '../../lib/events/dateRanges.js'
@@ -64,7 +65,7 @@ export default function EventsHero({ onSearch }) {
             <div className="eh-scene">
                 <div className="eh-scene-in">
                     {/* ukotvení dole: spodek scény (lampy) musí sedět na desku s ovládáním, viz --eh-shift */}
-                    <HeroVideo autoplay poster={cityHeroPoster} position="50% 100%" mp4={cityHeroMp4} />
+                    <HeroVideo autoplay poster={cityHeroPoster} position="50% 100%" mp4={cityHeroMp4} mobileMp4={cityHeroMobileMp4} />
                 </div>
             </div>
 
