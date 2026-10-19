@@ -509,3 +509,9 @@ main {
   white-space: nowrap;
   border: 0;
 }
+
+/* Místo pro stránku, jejíž kód se teprve stahuje (Suspense v App.jsx). Výška okna, aby
+   patička nevyskočila nahoru a pak se neposunula dolů (CLS). */
+.page-loading {
+  min-height: 100vh;
+}
