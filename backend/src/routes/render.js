@@ -23,10 +23,28 @@ const { createTemplateSource } = require('../lib/seo/templateSource')
 const pages = require('../lib/seo/pages')
 const { sitemapEntries, buildSitemap } = require('../lib/seo/sitemap')
 const { indexNow } = require('../lib/indexNow')
+const { pageSource, preloadTags } = require('../lib/seo/assets')
 
 const getTemplate = createTemplateSource({
     url: process.env.SITE_TEMPLATE_URL || 'http://frontend/index.html',
 })
+
+// Manifest buildu frontendu (který soubor obsahuje kód které stránky), pro
+// modulepreload v lib/seo/assets.js. Stejný mechanismus jako šablona: stažení
+// z Nginxu, nejvýš 60 s staré. Adresa se odvozuje od šablony, leží vedle ní.
+const getManifest = createTemplateSource({
+    url: (process.env.SITE_TEMPLATE_URL || 'http://frontend/index.html').replace(/index\.html$/, '.vite/manifest.json'),
+})
+
+// Nápovědy pro kód stránky. Chyba manifestu stránku nerozbije, jen se vynechají.
+async function pagePreloads(route) {
+    try {
+        return preloadTags(JSON.parse(await getManifest()), pageSource(route))
+    } catch (err) {
+        console.error('Manifest:', err.message)
+        return ''
+    }
+}
 
 // Kolik akcí dostane výpis v HTML. Robotům stačí odkazy na nejbližší akce,
 // úplný seznam bude v sitemap (fáze 4).
@@ -112,6 +130,8 @@ router.get('*', async (req, res) => {
 
         if (route.type === 'admin' || status === 404) res.set('X-Robots-Tag', 'noindex')
 
+        const preloads = await pagePreloads(route)
+        if (preloads) page = { ...page, head: `${page.head}\n    ${preloads}` }
         const html = injectIntoTemplate(await getTemplate(), page, req.path)
         // HTML odkazuje na soubory s hashem v názvu, ty se cachují natrvalo.
         // Samotné HTML se musí ověřit pokaždé, jinak by po nasazení ukazovalo

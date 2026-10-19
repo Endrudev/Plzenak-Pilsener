@@ -257,6 +257,39 @@ describe('createTemplateSource', () => {
         const get = createTemplateSource({ url: 'u', fetchFn: fakeFetch([{ status: 502, body: '' }]) })
         await assert.rejects(get())
     })
+
+    it('po ttl se ptá podmíněně s ETagem: 304 vrátí kopii, nový soubor se stáhne hned', async () => {
+        // Scénář nasazení: frontend se vymění, backend běží dál. Nový index.html musí
+        // být vidět hned (ne až za minutu), jinak by odkazoval na smazané soubory.
+        let t = 0
+        const sent = []
+        const responses = [
+            { status: 200, body: 'v1', etag: '"a"' },
+            { status: 304, body: '' },
+            { status: 200, body: 'v2', etag: '"b"' },
+        ]
+        const fetchFn = async (url, options) => {
+            sent.push(options.headers['If-None-Match'] ?? null)
+            const r = responses[sent.length - 1]
+            return { ok: r.status === 200, status: r.status, text: async () => r.body, headers: { get: () => r.etag ?? null } }
+        }
+        const get = createTemplateSource({ url: 'u', ttlMs: 1000, fetchFn, now: () => t })
+        assert.equal(await get(), 'v1')
+        t = 1000
+        assert.equal(await get(), 'v1', '304 = beze změny')
+        t = 2000
+        assert.equal(await get(), 'v2', 'nový soubor po nasazení')
+        assert.deepEqual(sent, [null, '"a"', '"a"'])
+    })
+
+    it('výchozí okno bez dotazu je krátké (nejvýš pár sekund)', async () => {
+        let t = 0
+        const fetchFn = fakeFetch([{ status: 200, body: 'v1' }, { status: 200, body: 'v2' }])
+        const get = createTemplateSource({ url: 'u', fetchFn, now: () => t })
+        await get()
+        t = 5000
+        assert.equal(await get(), 'v2')
+    })
 })
 
 describe('titulky frontendu a serveru', () => {
@@ -378,5 +411,54 @@ describe('stránky /dnes, /tento-vikend a O projektu', () => {
         const { sitemapEntries } = require('../seo/sitemap')
         const locs = sitemapEntries([]).map(e => e.loc)
         for (const p of ['/dnes', '/tento-vikend', '/o-projektu']) assert.ok(locs.includes(`https://plzenak.eu${p}`), p)
+    })
+})
+
+describe('preloadTags a pageSource', () => {
+    const { preloadTags, pageSource, PAGE_SOURCES } = require('../seo/assets')
+    const { PAGES } = require('../seo/site')
+    const MANIFEST = {
+        'index.html': { file: 'assets/index-a.js', isEntry: true },
+        'src/pages/Dnes/Dnes.jsx': { file: 'assets/Dnes-b.js', imports: ['index.html', '_CategoryPage-c.js', '_Shared-d.js'] },
+        '_CategoryPage-c.js': { file: 'assets/CategoryPage-c.js', css: ['assets/CategoryPage-c.css'], imports: ['_Shared-d.js'] },
+        '_Shared-d.js': { file: 'assets/Shared-d.js' },
+        '_Css-!~{00u}~.js': { file: 'assets/Admin-e.css' },
+        'src/pages/EventDetail/EventDetail.jsx': { file: 'assets/EventDetail-f.js', css: ['assets/EventDetail-f.css'], imports: ['index.html', '_Css-!~{00u}~.js'] },
+    }
+
+    it('kód stránky, sdílené části (jednou) a CSS; hlavní balík ne', () => {
+        const tags = preloadTags(MANIFEST, 'src/pages/Dnes/Dnes.jsx')
+        assert.ok(tags.includes('<link rel="modulepreload" crossorigin href="/assets/Dnes-b.js">'))
+        assert.ok(tags.includes('href="/assets/CategoryPage-c.js"'))
+        assert.equal(tags.match(/Shared-d\.js/g).length, 1, 'sdílená část jen jednou')
+        assert.ok(tags.includes('<link rel="preload" as="style" crossorigin href="/assets/CategoryPage-c.css">'))
+        assert.equal(tags.includes('index-a.js'), false)
+    })
+
+    it('importovaný soubor, který je jen CSS, se přednačte jako styl', () => {
+        const tags = preloadTags(MANIFEST, 'src/pages/EventDetail/EventDetail.jsx')
+        assert.ok(tags.includes('as="style" crossorigin href="/assets/Admin-e.css"'))
+        assert.ok(tags.includes('href="/assets/EventDetail-f.css"'))
+    })
+
+    it('chybějící manifest, stránka nebo homepage nedá nic', () => {
+        assert.equal(preloadTags(null, 'src/pages/Dnes/Dnes.jsx'), '')
+        assert.equal(preloadTags(MANIFEST, 'src/pages/Neni.jsx'), '')
+        assert.equal(preloadTags(MANIFEST, null), '')
+        assert.equal(pageSource({ type: 'page', path: '/' }), null)
+        assert.equal(pageSource({ type: 'admin' }), null)
+    })
+
+    it('každá stránka z PAGES kromě homepage má zdrojový soubor a ten na disku existuje', () => {
+        const fs = require('node:fs')
+        const path = require('node:path')
+        for (const route of Object.keys(PAGES).filter(p => p !== '/')) {
+            const src = PAGE_SOURCES[route]
+            assert.ok(src, `${route}: chybí v PAGE_SOURCES`)
+            assert.ok(fs.existsSync(path.join(__dirname, '../../../../frontend', src)), `${route}: ${src} neexistuje`)
+        }
+        for (const type of ['event', 'notfound']) {
+            assert.ok(fs.existsSync(path.join(__dirname, '../../../../frontend', pageSource({ type }))), type)
+        }
     })
 })
