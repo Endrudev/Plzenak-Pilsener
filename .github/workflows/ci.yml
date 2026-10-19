@@ -40,5 +40,6 @@ jobs:
           cache: npm
           cache-dependency-path: backend/package-lock.json
       - run: npm ci
+      - run: npm test
       - name: Kontrola syntaxe
         run: find . -name '*.js' -not -path './node_modules/*' -exec node --check {} +
