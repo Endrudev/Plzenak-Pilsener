@@ -180,8 +180,9 @@ Hodnoty `datum`: `dnes`, `vikend`, `7dni`, `30dni`. Hodnoty `razeni`: `konani` (
 events
   id           serial PRIMARY KEY
   name         text NOT NULL
-  date         text NOT NULL          -- formát DD.MM.YYYY
-  date_short   text NOT NULL
+  date         text NOT NULL          -- formát D.M.YYYY, dobíhá (viz níž)
+  date_short   text NOT NULL          -- dobíhá (viz níž)
+  starts_on    date NOT NULL          -- migrace 006, datum konání, index
   location     text NOT NULL
   tags         text[]                 -- kategorie akce
   badge        text
@@ -193,6 +194,7 @@ events
   image_url    text                   -- migrace 002
   image_key    text                   -- migrace 003, klíč objektu v R2
   created_at   timestamptz DEFAULT now()
+  updated_at   timestamptz NOT NULL DEFAULT now()  -- migrace 006
 
 admins
   id             serial PRIMARY KEY
@@ -201,7 +203,7 @@ admins
   created_at     timestamptz DEFAULT now()
 ```
 
-> **Známý dluh:** `date` je `text`, ne `date`. Filtry proto musí datum parsovat za běhu (`TO_DATE(date, 'DD.MM.YYYY')`), což znemožňuje index. Je to pozůstatek z první verze aplikace a stojí na seznamu k opravě — vědomě, ne omylem.
+> **Dobíhající přechod:** datum konání je od migrace 006 ve sloupci `starts_on` typu `date`. Filtry a řazení jdou přes něj a „dnes“ se počítá v pražském čase. Původní textové `date` a `date_short` se zatím dál zapisují (postup expand/contract: rollback nasazení vrací jen kód, ne databázi). Smaže je až další migrace.
 
 ---
 
@@ -242,7 +244,7 @@ Pipeline hlídá u frontendu instalaci z lockfilu, testy a produkční build (v�
 Vedu si je otevřeně, jsou to rozhodnutí a dluhy, ne přehlédnutí:
 
 - **`POST /events` a upload obrázku jsou dvě nezávislá volání** bez atomicity; při selhání druhého se akce uklidí v `catch`, ale správně to není.
-- **`events.date` je `text`, ne `date`** — viz poznámka u [schématu](#databáze).
+- **Textové `events.date` a `date_short` ještě dobíhají** vedle `starts_on`, viz poznámka u [schématu](#databáze).
 - **Mapové zobrazení akcí** (`/mapa`) je navržené, ale neimplementované.
 
 ---

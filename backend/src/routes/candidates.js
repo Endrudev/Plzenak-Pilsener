@@ -7,6 +7,7 @@ const { importerAuth, importerLimiter } = require('../middleware/importerAuth')
 const { sendObject, deleteObject } = require('../lib/r2')
 const { IMAGE_MIME } = require('../lib/images')
 const { downloadImage, ImageError } = require('../lib/fetchImage')
+const { toIsoDate } = require('../lib/eventDate')
 
 // Fronta návrhů akcí (tabulka event_candidates, migrace 005). Návrhy posílá importér
 // (úzký token IMPORTER_TOKEN), schvaluje je a zamítá přihlášený administrátor. Veřejné
@@ -210,10 +211,10 @@ async function approveCandidate(id) {
     let event
     try {
         const inserted = await query(`
-            INSERT INTO events (name, date, date_short, location, tags, img_class, url, description, map_src)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NULL)
+            INSERT INTO events (name, date, date_short, location, tags, img_class, url, description, map_src, starts_on)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NULL, $9)
             RETURNING *;
-        `, [c.name, c.date, c.date_short, c.location, c.tags, DEFAULT_IMG_CLASS, c.source_url, c.description])
+        `, [c.name, c.date, c.date_short, c.location, c.tags, DEFAULT_IMG_CLASS, c.source_url, c.description, toIsoDate(c.date)])
         event = inserted.rows[0]
     } catch (err) {
         console.error(err.message)
@@ -230,7 +231,7 @@ async function approveCandidate(id) {
             const key = `events/${event.id}/${crypto.randomUUID()}.${type}`
             await sendObject(key, buffer, IMAGE_MIME[type])
             try {
-                await query(`UPDATE events SET image_url = $1, image_key = $2 WHERE id = $3;`,
+                await query(`UPDATE events SET image_url = $1, image_key = $2, updated_at = now() WHERE id = $3;`,
                     [`${process.env.R2_PUBLIC_URL}/${key}`, key, event.id])
                 imageSaved = true
             } catch (dbErr) {

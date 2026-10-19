@@ -14,7 +14,9 @@ function mapEvent(event) {
         imgClass: event.img_class,
         mapSrc: event.map_src,
         createdAt: event.created_at,
-        imageUrl: event.image_url
+        imageUrl: event.image_url,
+        startsOn: event.starts_on,
+        updatedAt: event.updated_at
     }
 }
 
@@ -31,7 +33,9 @@ function mapEventReverse(event) {
         img_class: event.imgClass,
         map_src: event.mapSrc,
         created_at: event.createdAt,
-        image_url: event.imageUrl
+        image_url: event.imageUrl,
+        starts_on: event.startsOn,
+        updated_at: event.updatedAt
     }
 }
 

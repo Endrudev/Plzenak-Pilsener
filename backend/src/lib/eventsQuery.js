@@ -7,9 +7,15 @@
 // samotné SQL je vždycky napsané tady. Druhotné řazení podle id drží pořadí
 // stabilní, když má víc akcí stejné datum.
 const SORTS = {
-    konani:  `TO_DATE(date, 'DD.MM.YYYY') ASC, id ASC`,
+    konani:  `starts_on ASC, id ASC`,
     pridano: `created_at DESC, id ASC`,
 }
+
+// Dnešní datum v Plzni. CURRENT_DATE by vrátilo datum v časovém pásmu
+// databáze, a to je v Dockeru UTC: mezi půlnocí a druhou ráno (v zimě do
+// jedné) by "dnes" byl pořád včerejšek. now() je okamžik, AT TIME ZONE ho
+// převede na pražský místní čas a ::date z něj vezme den.
+const TODAY = `(now() AT TIME ZONE 'Europe/Prague')::date`
 
 // Neznámá nebo chybějící hodnota spadne na výchozí řazení podle data konání.
 // `Object.hasOwn`, aby klíč jako `constructor` nebo `__proto__` nevrátil
@@ -23,26 +29,28 @@ function resolveOrderBy(razeni) {
 function buildWhere({ q, kategorie, misto, datum, top, vyjma } = {}) {
     const conditions = []
     const values = []
-    conditions.push(`TO_DATE(date, 'DD.MM.YYYY') >= CURRENT_DATE`)
+    conditions.push(`starts_on >= ${TODAY}`)
     if (datum === 'dnes') {
-        conditions.push(`TO_DATE(date, 'DD.MM.YYYY') = CURRENT_DATE`)
+        conditions.push(`starts_on = ${TODAY}`)
     }
     if (datum === 'vikend') {
         // Nejbližší sobota a neděle. Posun ode dneška je 6 - ISODOW (po=1 … so=6),
         // konec je o den dál. V neděli je oba posuny 0 — víkend je právě dnes,
         // protože sobota už byla.
-        conditions.push(`TO_DATE(date, 'DD.MM.YYYY') BETWEEN
-                CURRENT_DATE + (CASE WHEN EXTRACT(ISODOW FROM CURRENT_DATE) = 7 THEN 0
-                                     ELSE (6 - EXTRACT(ISODOW FROM CURRENT_DATE))::int END)
+        conditions.push(`starts_on BETWEEN
+                ${TODAY} + (CASE WHEN EXTRACT(ISODOW FROM ${TODAY}) = 7 THEN 0
+                                 ELSE (6 - EXTRACT(ISODOW FROM ${TODAY}))::int END)
                 AND
-                CURRENT_DATE + (CASE WHEN EXTRACT(ISODOW FROM CURRENT_DATE) = 7 THEN 0
-                                     ELSE (7 - EXTRACT(ISODOW FROM CURRENT_DATE))::int END)`)
+                ${TODAY} + (CASE WHEN EXTRACT(ISODOW FROM ${TODAY}) = 7 THEN 0
+                                 ELSE (7 - EXTRACT(ISODOW FROM ${TODAY}))::int END)`)
     }
+    // date + celé číslo dá zase date. Dřívější + INTERVAL dával timestamp,
+    // což u date sloupce fungovalo jen díky implicitnímu převodu.
     if (datum === '7dni') {
-        conditions.push(`TO_DATE(date, 'DD.MM.YYYY') BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'`)
+        conditions.push(`starts_on BETWEEN ${TODAY} AND ${TODAY} + 7`)
     }
     if (datum === '30dni') {
-        conditions.push(`TO_DATE(date, 'DD.MM.YYYY') BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '30 days'`)
+        conditions.push(`starts_on BETWEEN ${TODAY} AND ${TODAY} + 30`)
     }
     if (q) {
         values.push(`%${q}%`)
@@ -85,4 +93,4 @@ function parsePaging(page, perPage) {
     return { pageNum, perPageNum, offset: (pageNum - 1) * perPageNum }
 }
 
-module.exports = { SORTS, resolveOrderBy, buildWhere, parsePaging }
+module.exports = { SORTS, TODAY, resolveOrderBy, buildWhere, parsePaging }
