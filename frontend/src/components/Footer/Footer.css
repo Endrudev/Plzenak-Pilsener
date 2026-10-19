@@ -56,9 +56,19 @@
     50%      { opacity: 0.3; }
 }
 
+/* Silueta se kreslí až po načtení (useShowSkyline ve Footer.jsx). Kde je patička vidět
+   hned, nesmí naskočit skokem, proto se prolne. */
+.footer-skyline--in {
+    animation: overlay-in var(--dur-slow) var(--ease-standard) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .dusk-win rect {
         animation: none !important;
+    }
+
+    .footer-skyline--in {
+        animation: none;
     }
 }
 

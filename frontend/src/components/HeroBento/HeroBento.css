@@ -224,9 +224,13 @@
     }
 }
 
+/* Bez prolnutí z průhlednosti (rozhodl autor 2026-10-20): dlaždice je vidět od prvního
+   snímku a jen se vysune a zvětší na místo. Chrome průhledný prvek nepočítá jako
+   vykreslený, takže prolnutí posouvalo LCP homepage na mobilu o celou sekundu
+   (změřeno 4,6 → 3,6 s). Pohyb (transform) LCP neovlivňuje. */
 @keyframes ht-in {
-    from { opacity: 0; transform: translateY(32px) scale(0.965); }
-    to   { opacity: 1; transform: none; }
+    from { transform: translateY(32px) scale(0.965); }
+    to   { transform: none; }
 }
 
 @keyframes ht-settle {

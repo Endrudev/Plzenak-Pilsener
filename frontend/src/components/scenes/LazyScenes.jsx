@@ -18,11 +18,20 @@ const ProgramScene = lazy(loadProgram)
 // po vykreslení, takže při prvním najetí na dlaždici už chunk čeká v cache a
 // scéna se přimontuje bez čekání na síť. import() se deduplikuje, takže
 // následné lazy() načtení použije stejný modul.
+//
+// Jen na zařízeních s myší a až po načtení stránky (od 2026-10-20). Předstih slouží
+// k tomu, aby se scéna pod kurzorem rozjela hned. Na telefonu žádný kurzor není,
+// a na pomalém mobilu stahování a spuštění kódu scény soutěžilo s prvním vykreslením
+// stránky (změřeno: LCP homepage 4,4 s, se zablokovaným souborem scény 3,6 s).
 export function preloadScenes(names = ['city', 'concert', 'program']) {
+    if (!window.matchMedia('(hover: hover)').matches) return
     const loaders = { city: loadCity, concert: loadConcert, program: loadProgram }
     const run = () => names.forEach(n => loaders[n]?.())
-    if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout: 4000 })
-    else setTimeout(run, 1500)
+    const idle = () => ('requestIdleCallback' in window
+        ? window.requestIdleCallback(run, { timeout: 4000 })
+        : setTimeout(run, 1500))
+    if (document.readyState === 'complete') idle()
+    else window.addEventListener('load', idle, { once: true })
 }
 
 // Barva pozadí z ukázek balíčku (html/city.html, concert.html, program.html).
