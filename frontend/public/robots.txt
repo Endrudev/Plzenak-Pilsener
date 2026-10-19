@@ -23,4 +23,6 @@ User-agent: Google-Extended
 User-agent: Applebot-Extended
 Allow: /
 
-# Sitemap se doplní ve fázi 4, až bude existovat.
+# Seznam adres pro vyhledávače, generuje backend (SEO fáze 4). Musí to být
+# celá adresa, ne cesta.
+Sitemap: https://plzenak.eu/sitemap.xml
