@@ -5,7 +5,7 @@
 > Osobní studijní projekt. Píšu ho proto, abych se naučil fullstack vývoj do hloubky — od SQL migrací přes REST API a autentizaci až po nasazení. Detaily o tom, jak vznikal, jsou v sekci [Jak projekt vznikal](#jak-projekt-vznikal).
 
 > [!NOTE]
-> **Aktuální stav: nasazeno na https://plzenak.eu.** Aplikace běží na serveru v AWS za Caddy (HTTPS), s doménou a DNS v Cloudflare, obrázky v R2 a denními zálohami databáze. CI pipeline hlídá každý pull request, nasazení zatím dělám ručně. Podrobněji v sekci [Stav a další kroky](#stav-a-další-kroky).
+> **Aktuální stav: nasazeno na https://plzenak.eu.** Aplikace běží na serveru v AWS za Caddy (HTTPS), s doménou a DNS v Cloudflare, obrázky v R2 a denními zálohami databáze. CI pipeline hlídá každý pull request a merge do `main` se po zelené CI sám nasadí na server přes SSH. Podrobněji v sekci [Stav a další kroky](#stav-a-další-kroky).
 
 ---
 
@@ -233,9 +233,9 @@ Aplikace je nasazená a funkční — psaní i čtení akcí, administrace, uplo
 | 4 | **End-to-end ověření** celého toku (login, CRUD, veřejné čtení) v Compose prostředí | ✅ ověřeno i v prohlížeči na ostrém serveru |
 | 5 | **Server, doména, HTTPS** — AWS EC2, Cloudflare, Caddy | ✅ hotovo |
 | 6 | **Zálohy** — denní `pg_dump` do soukromého bucketu v R2 | ✅ hotovo, obnova vyzkoušená |
-| 7 | **Automatické nasazení** z GitHub Actions | ⏳ zatím ručně |
+| 7 | **Automatické nasazení** z GitHub Actions (SSH, `ops/deploy.sh`, migrace, kontrola zdraví, návrat při selhání) | ✅ hotovo 2026-10-19 |
 
-Pipeline hlídá u frontendu instalaci z lockfilu, testy a produkční build (včetně typové kontroly), u backendu instalaci a syntaktickou kontrolu všech souborů. Až budou testy i na backendu, syntaktickou kontrolu nahradí.
+Pipeline hlídá u frontendu instalaci z lockfilu, testy a produkční build (včetně typové kontroly), u backendu instalaci, testy čistých funkcí a syntaktickou kontrolu všech souborů (ta zůstává, protože testy pokrývají jen `lib/`).
 
 ### Známé mezery
 
