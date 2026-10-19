@@ -50,7 +50,7 @@ export default function CategoryHero({
 
     const trail = crumbs ?? [
         { to: '/', label: 'Plzeňák' },
-        { to: '/events', label: 'Akce' },
+        { to: '/akce', label: 'Akce' },
     ]
 
     let sceneNode = scene

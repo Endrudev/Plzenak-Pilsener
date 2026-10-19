@@ -23,10 +23,10 @@ import './NotFound.css'
 // content="noindex">, ať si ji vyhledávače nezapamatují jako obsah.
 
 const LINKS = [
-    { to: '/events?datum=dnes', label: 'Dnes v Plzni' },
-    { to: '/events?datum=vikend', label: 'Tento víkend' },
+    { to: '/akce?datum=dnes', label: 'Dnes v Plzni' },
+    { to: '/akce?datum=vikend', label: 'Tento víkend' },
     { to: '/top-akce', label: 'TOP akce' },
-    { to: '/events', label: 'Všechny akce' },
+    { to: '/akce', label: 'Všechny akce' },
 ]
 
 export default function NotFound() {
@@ -63,7 +63,7 @@ export default function NotFound() {
     function handleSubmit(e) {
         e.preventDefault()
         const text = q.trim()
-        navigate(text ? `/events?q=${encodeURIComponent(text)}` : '/events')
+        navigate(text ? `/akce?q=${encodeURIComponent(text)}` : '/akce')
     }
 
     return (
@@ -115,7 +115,7 @@ export default function NotFound() {
                         <>
                             <div className="lp-head">
                                 <h2 id="nf-more-h" className="lp-h2">Co se děje v Plzni</h2>
-                                <Link to="/events" className="lp-link">
+                                <Link to="/akce" className="lp-link">
                                     Všechny akce
                                     <ArrowRight size={18} />
                                 </Link>

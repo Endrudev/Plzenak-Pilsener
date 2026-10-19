@@ -46,7 +46,7 @@ Open the page that owns the area you're touching. The full index is the vault `R
 | Routes, pages, header | `02 Frontend/Routing a stránky.md` |
 | Frontend structure, state, conventions | `02 Frontend/Architektura.md` |
 | CSS, tokens, components | `02 Frontend/Styling a komponenty.md` |
-| Search, filters, sorting on `/events` | `02 Frontend/Filtrování a hledání.md` |
+| Search, filters, sorting on `/akce` | `02 Frontend/Filtrování a hledání.md` |
 | Cookie consent | `02 Frontend/Souhlas a cookies.md` |
 | Personal data, GDPR | `01 Projekt/Osobní údaje a GDPR.md` |
 | Tests | `04 DevOps/Testy.md` |

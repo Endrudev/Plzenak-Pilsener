@@ -3,6 +3,7 @@ import Reveal from '../../Reveal/Reveal.jsx'
 import { ArrowRight, ArrowUpRight, PinIcon } from '../icons.jsx'
 import { dayParts } from '../../../lib/events/dateRanges.js'
 import { eventVisual } from '../../../lib/events/eventVisual.js'
+import { eventPath } from '../../../lib/events/eventPath.js'
 import './LandingFeature.css'
 
 // TOP akce jako jedna velká karta s fotkou, nad ostatními se drží druhá a třetí.
@@ -17,7 +18,7 @@ function FeatureCard({ event, size, index }) {
 
     return (
         <Link
-            to={`/events/${event.id}`}
+            to={eventPath(event)}
             className={`lf-card lf-card--${size} enter`}
             style={{ '--i': index }}
         >

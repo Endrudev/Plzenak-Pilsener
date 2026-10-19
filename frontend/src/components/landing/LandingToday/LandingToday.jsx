@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, PinIcon } from '../icons.jsx'
 import { RANGES, dayParts, inRange, upcoming } from '../../../lib/events/dateRanges.js'
 import { eventBadge } from '../../../lib/events/eventBadge.js'
 import { eventVisual } from '../../../lib/events/eventVisual.js'
+import { eventPath } from '../../../lib/events/eventPath.js'
 import './LandingToday.css'
 
 // Sekce hned pod hero dlaždicemi: co se děje dnes, zítra a o víkendu.
@@ -80,7 +81,7 @@ export default function LandingToday({ events, loading }) {
                     <div className="lp-wrap">
                         <div className="lt-empty">
                             <p>V tomhle období zatím nic nemáme.</p>
-                            <Link to="/events" className="lp-link">Všechny akce <ArrowRight /></Link>
+                            <Link to="/akce" className="lp-link">Všechny akce <ArrowRight /></Link>
                         </div>
                     </div>
                 ) : (
@@ -91,7 +92,7 @@ export default function LandingToday({ events, loading }) {
                             return (
                                 <Link
                                     key={event.id}
-                                    to={`/events/${event.id}`}
+                                    to={eventPath(event)}
                                     className="lt-card enter"
                                     style={{ '--i': i + 1 }}
                                 >

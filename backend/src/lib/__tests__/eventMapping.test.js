@@ -35,6 +35,7 @@ const API = {
     imageUrl: 'https://r2.example/events/7/a.jpg',
     startsOn: '2026-08-29',
     updatedAt: '2026-08-02T08:00:00.000Z',
+    slug: 'pivni-slavnosti',
 }
 
 describe('mapEvent', () => {

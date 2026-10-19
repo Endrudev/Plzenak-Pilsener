@@ -46,7 +46,7 @@ export default function LandingCategories({ events }) {
                                     <span className="lc-go" aria-hidden="true"><ArrowUpRight /></span>
                                 </span>
                                 <span className="lc-label">
-                                    <Link to={`/events?kategorie=${encodeURIComponent(cell.name)}`} className="lc-link">
+                                    <Link to={`/akce?kategorie=${encodeURIComponent(cell.name)}`} className="lc-link">
                                         <span className="lc-name">{cell.name}</span>
                                         <span className="visually-hidden">, {eventCountLabel(count)}</span>
                                     </Link>

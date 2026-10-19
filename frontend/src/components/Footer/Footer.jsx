@@ -21,7 +21,7 @@ export default function Footer() {
                 <nav id="footer-col-app" aria-label="Appka">
                     <span className="footer-col-label">Appka</span>
                     <Link to="/">Domů</Link>
-                    <Link to="/events">Akce</Link>
+                    <Link to="/akce">Akce</Link>
                     <Link to="/top-akce">TOP akce</Link>
                 </nav>
 

@@ -156,7 +156,7 @@ function Header() {
 
                     <nav id="header-nav" aria-label="Hlavní navigace">
                         <Link to="/" className={linkClass('/')}>Domů</Link>
-                        <Link to="/events" className={`${linkClass('/events')} nav-link--search`}>
+                        <Link to="/akce" className={`${linkClass('/akce')} nav-link--search`}>
                             <span className="nav-search-ic"><SearchIcon size={15} /></span>
                             Akce
                         </Link>
@@ -211,7 +211,7 @@ function Header() {
                                             {CATEGORIES.filter(cat => cat.slug !== 'hudba').map((cat, i) => (
                                                 <Link
                                                     key={cat.slug}
-                                                    to={`/events?kategorie=${encodeURIComponent(cat.name)}`}
+                                                    to={`/akce?kategorie=${encodeURIComponent(cat.name)}`}
                                                     className="ncm-cat ncm-rise"
                                                     style={{ '--i': i + 2 }}
                                                 >
@@ -223,7 +223,7 @@ function Header() {
                                         </div>
                                     </div>
 
-                                    <Link to="/events" className="ncm-all ncm-rise" style={{ '--i': 7 }}>
+                                    <Link to="/akce" className="ncm-all ncm-rise" style={{ '--i': 7 }}>
                                         Všechny akce
                                         <span className="ncm-all-ic"><ArrowRight size={16} /></span>
                                     </Link>
@@ -277,7 +277,7 @@ function Header() {
             >
                 <nav id="header-overlay-nav" aria-label="Hlavní navigace">
                     <Link to="/" className={linkClass('/')} style={{ '--i': 0 }}>Domů</Link>
-                    <Link to="/events" className={`${linkClass('/events')} nav-link--search`} style={{ '--i': 1 }}>
+                    <Link to="/akce" className={`${linkClass('/akce')} nav-link--search`} style={{ '--i': 1 }}>
                         Akce
                         <SearchIcon size={28} />
                     </Link>
@@ -290,7 +290,7 @@ function Header() {
                         {CATEGORIES.map((cat, i) => (
                             <Link
                                 key={cat.slug}
-                                to={`/events?kategorie=${encodeURIComponent(cat.name)}`}
+                                to={`/akce?kategorie=${encodeURIComponent(cat.name)}`}
                                 className="header-overlay-cat"
                                 style={{ '--i': 4 + i }}
                             >
@@ -301,7 +301,7 @@ function Header() {
                     </div>
                 </div>
 
-                <Link to="/events" id="header-overlay-cta" style={{ '--i': 10 }}>
+                <Link to="/akce" id="header-overlay-cta" style={{ '--i': 10 }}>
                     Všechny akce
                     <span id="header-overlay-cta-ic"><ArrowRight size={18} /></span>
                 </Link>

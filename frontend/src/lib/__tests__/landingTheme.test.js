@@ -26,8 +26,8 @@ describe('resolveMode', () => {
 describe('usesLandingTheme', () => {
     it('homepage, Akce a detail akce mají téma', () => {
         expect(usesLandingTheme('/')).toBe(true)
-        expect(usesLandingTheme('/events')).toBe(true)
-        expect(usesLandingTheme('/events/42')).toBe(true)
+        expect(usesLandingTheme('/akce')).toBe(true)
+        expect(usesLandingTheme('/akce/42-knoflikova-valka')).toBe(true)
     })
 
     it('stránky kategorií mají téma', () => {
@@ -39,21 +39,21 @@ describe('usesLandingTheme', () => {
     it('ostatní stránky téma nemají', () => {
         expect(usesLandingTheme('/podminky-uziti')).toBe(false)
         expect(usesLandingTheme('/admin/dashboard')).toBe(false)
-        expect(usesLandingTheme('/eventsx')).toBe(false)
+        expect(usesLandingTheme('/akcex')).toBe(false)
     })
 })
 
 describe('isNotFoundPath', () => {
     it('neexistující adresa je 404 a dostane téma', () => {
         expect(isNotFoundPath('/neexistuje')).toBe(true)
-        expect(isNotFoundPath('/eventsx')).toBe(true)
+        expect(isNotFoundPath('/akcex')).toBe(true)
         expect(isNotFoundPath('/mapa')).toBe(true)
     })
 
     it('stránky s tématem a bez něj 404 nejsou', () => {
         expect(isNotFoundPath('/')).toBe(false)
-        expect(isNotFoundPath('/events')).toBe(false)
-        expect(isNotFoundPath('/events/42')).toBe(false)
+        expect(isNotFoundPath('/akce')).toBe(false)
+        expect(isNotFoundPath('/akce/42-knoflikova-valka')).toBe(false)
         expect(isNotFoundPath('/top-akce')).toBe(false)
         expect(isNotFoundPath('/podminky-uziti')).toBe(false)
         expect(isNotFoundPath('/zasady-ochrany-osobnich-udaju')).toBe(false)

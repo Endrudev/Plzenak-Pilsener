@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowUpRight, PinIcon } from '../../landing/icons.jsx'
 import { dayParts } from '../../../lib/events/dateRanges.js'
 import { eventBadge } from '../../../lib/events/eventBadge.js'
+import { eventPath } from '../../../lib/events/eventPath.js'
 import './EventTicket.css'
 
 // Řádek akce v seznamu: velké datum vlevo, vpravo název, místo a štítky. Seznam
@@ -13,7 +14,7 @@ export default function EventTicket({ event, index, today }) {
     const tags = event.tags ?? []
 
     return (
-        <Link to={`/events/${event.id}`} className="et enter" style={{ '--i': index }}>
+        <Link to={eventPath(event)} className="et enter" style={{ '--i': index }}>
             {parts && (
                 <span className="et-date" aria-hidden="true">
                     <b>{parts.day}</b>

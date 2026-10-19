@@ -3,6 +3,7 @@ import { ArrowUpRight, PinIcon } from '../../landing/icons.jsx'
 import { dayParts } from '../../../lib/events/dateRanges.js'
 import { eventBadge } from '../../../lib/events/eventBadge.js'
 import { eventVisual } from '../../../lib/events/eventVisual.js'
+import { eventPath } from '../../../lib/events/eventPath.js'
 import './EventPoster.css'
 
 // Karta akce v mřížce na stránce Akce: fotka (nebo gradient kategorie) přes celou
@@ -19,7 +20,7 @@ export default function EventPoster({ event, index, today, rank }) {
     const tags = (event.tags ?? []).filter(tag => tag !== 'TOP akce').slice(0, 2)
 
     return (
-        <Link to={`/events/${event.id}`} className="ep enter" style={{ '--i': index }}>
+        <Link to={eventPath(event)} className="ep enter" style={{ '--i': index }}>
             <span className="ep-media" style={eventVisual(event)} aria-hidden="true" />
             <span className="ep-scrim" aria-hidden="true" />
 

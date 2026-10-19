@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom'
 import Header from './components/Header/Header.jsx'
 import Footer from './components/Footer/Footer.jsx'
 import Home from './pages/Home/Home.jsx'
@@ -19,6 +19,22 @@ import { ConsentProvider, useConsent } from './lib/consent/ConsentContext.jsx'
 import CookieBanner from './components/CookieBanner/CookieBanner.jsx'
 import CookieSettings from './components/CookieSettings/CookieSettings.jsx'
 import ScrollToTop from './components/ScrollToTop/ScrollToTop.jsx'
+
+
+// Staré adresy z doby před 2026-10-19 (/events, /events/42) přesměrují na
+// /akce a nechají parametry filtrů. `replace`, aby tlačítko Zpět nevedlo
+// zpátky na přesměrování. Pro roboty jde o přesměrování jen v prohlížeči,
+// skutečné 301 doplní serverový renderer (SEO fáze 3).
+function LegacyEventsRedirect() {
+    const { search } = useLocation()
+    return <Navigate to={`/akce${search}`} replace />
+}
+
+// /events/42 → /akce/42; správný slug doplní EventDetail.
+function LegacyEventRedirect() {
+    const { id } = useParams()
+    return <Navigate to={`/akce/${id}`} replace />
+}
 
 
 function Layout() {
@@ -47,11 +63,13 @@ function Layout() {
             <main>
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/events" element={<Events />} />
+                    <Route path="/akce" element={<Events />} />
                     <Route path="/top-akce" element={<TopAkce />} />
                     <Route path="/hudba" element={<Hudba />} />
                     <Route path="/zbytek-programu" element={<ZbytekProgramu />} />
-                    <Route path="/events/:id" element={<EventDetail />} />
+                    <Route path="/akce/:idSlug" element={<EventDetail />} />
+                    <Route path="/events" element={<LegacyEventsRedirect />} />
+                    <Route path="/events/:id" element={<LegacyEventRedirect />} />
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/admin/dashboard" element={<AdminDashboard />} />
                     <Route path="/admin/create" element={<AdminCreate />} />

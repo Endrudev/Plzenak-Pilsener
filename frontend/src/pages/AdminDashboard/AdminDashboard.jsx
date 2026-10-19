@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getEvents, deleteEvent, getCandidates } from '../../lib/eventsApi.js'
 import { useAuthGuard } from '../../lib/useAuthGuard.js'
+import { eventPath } from '../../lib/events/eventPath.js'
 import PlzenakLogo from '../../components/PlzenakLogo/PlzenakLogo.jsx'
 import './AdminDashboard.css'
 
@@ -73,7 +74,7 @@ export default function AdminDashboard() {
     function ActionButtons({ event }) {
         return (
             <div className="action-btns">
-                <button className="action-btn action-view" title="Zobrazit" onClick={() => navigate(`/events/${event.id}`)}>
+                <button className="action-btn action-view" title="Zobrazit" onClick={() => navigate(eventPath(event))}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                         <circle cx="12" cy="12" r="3" />
