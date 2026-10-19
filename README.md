@@ -282,6 +282,18 @@ A hlavně: **DevOps je teď to, čemu nerozumím**, takže si ho beru na sebe a 
 
 Hranice se tedy neposouvá pohodlím, ale tím, **co už umím** — a další na řadě je infrastruktura.
 
+### Fáze 3 — samostatná práce ve všech oblastech
+
+Infrastrukturu jsem si postavil sám: Docker a Compose, Nginx a Caddy, CI v GitHub Actions, nasazení na AWS s automatickým CD a rollbackem. Od 19. 10. 2026 proto platí další posun:
+
+| Oblast | Kdo |
+|---|---|
+| Frontend, backend, **DevOps a infrastruktura**, dokumentace | AI asistent, samostatně |
+| Technická rozhodnutí | AI asistent rozhodne a vysvětlí proč |
+| Rozhodnutí s trvalými nebo vnějšími následky (nové služby, osobní údaje, peníze, nevratné zásahy do produkce, změna produktu) | já |
+
+Pořád platí, že mi AI přesně řekne, co udělala a proč. Rozdíl je v tom, že na schválení nečeká u každého technického kroku.
+
 ### Kde je vidět postup
 
 Pravidlo v aktuálním znění je v [`CLAUDE.md`](CLAUDE.md). Souběžně vedu **dokumentační vault** (samostatný repozitář `Plzenak-Pilsener-docs`), který je zdrojem pravdy o projektu — architektura, API kontrakt, rejstřík rozhodnutí a deník — proč padla která volba, jaké chyby jsem udělal a co mě naučily. Historie commitů je psaná česky a inkrementálně, takže z ní jde přečíst postup práce, ne jen výsledek.
