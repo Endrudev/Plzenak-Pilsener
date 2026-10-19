@@ -1,6 +1,6 @@
 const { describe, it } = require('node:test')
 const assert = require('node:assert/strict')
-const { toIsoDate } = require('../eventDate')
+const { toIsoDate, toCzechDate } = require('../eventDate')
 
 describe('toIsoDate', () => {
     it('převede zápis s nulami (importér) na ISO', () => {
@@ -35,6 +35,25 @@ describe('toIsoDate', () => {
     it('odmítne hodnotu, která není text', () => {
         for (const value of [null, undefined, 20260305, {}, []]) {
             assert.equal(toIsoDate(value), null, String(value))
+        }
+    })
+})
+
+describe('toCzechDate', () => {
+    it('převede ISO datum na DD.MM.RRRR s nulami', () => {
+        assert.equal(toCzechDate('2026-03-05'), '05.03.2026')
+        assert.equal(toCzechDate('2026-10-24'), '24.10.2026')
+    })
+
+    it('je opakem toIsoDate', () => {
+        for (const iso of ['2026-01-01', '2028-02-29', '2026-12-31']) {
+            assert.equal(toIsoDate(toCzechDate(iso)), iso)
+        }
+    })
+
+    it('na cokoli jiného než ISO text vrátí null', () => {
+        for (const value of [null, undefined, '', '5.3.2026', '2026-3-5', new Date()]) {
+            assert.equal(toCzechDate(value), null, String(value))
         }
     })
 })

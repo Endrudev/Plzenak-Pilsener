@@ -5,7 +5,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiO
 {
     "name": "Testovací akce",
     "date": "01.01.2027",
-    "dateShort": "01.01.",
     "location": "Testovací lokace",
     "tags": ["Test"],
     "badge": "Nové",

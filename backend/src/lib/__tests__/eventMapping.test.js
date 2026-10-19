@@ -5,12 +5,14 @@ const { mapEvent, mapEventReverse } = require('../eventMapping')
 const ROW = {
     id: 7,
     name: 'Pivní slavnosti',
-    date: '29.8.2026',
+    // Textové sloupce, které od migrace 007 dobíhají a nesmí se číst. Hodnota
+    // je schválně jiná než starts_on, aby test poznal, odkud se datum vzalo.
+    date: '1.1.2000',
     location: 'Náměstí Republiky',
     tags: ['Hudba'],
     url: 'https://example.cz',
     description: ['Odstavec.'],
-    date_short: '29.8.',
+    date_short: '1.1.',
     img_class: 'event-image--prazdroj',
     map_src: 'https://osm.example/map',
     created_at: '2026-08-01T10:00:00.000Z',
@@ -23,12 +25,11 @@ const ROW = {
 const API = {
     id: 7,
     name: 'Pivní slavnosti',
-    date: '29.8.2026',
+    date: '29.08.2026',
     location: 'Náměstí Republiky',
     tags: ['Hudba'],
     url: 'https://example.cz',
     description: ['Odstavec.'],
-    dateShort: '29.8.',
     imgClass: 'event-image--prazdroj',
     mapSrc: 'https://osm.example/map',
     createdAt: '2026-08-01T10:00:00.000Z',
@@ -41,6 +42,16 @@ const API = {
 describe('mapEvent', () => {
     it('převede snake_case sloupce na camelCase pole API', () => {
         assert.deepEqual(mapEvent(ROW), API)
+    })
+
+    it('date v API dopočítá ze starts_on, textové sloupce date a date_short nečte', () => {
+        const result = mapEvent(ROW)
+        assert.equal(result.date, '29.08.2026')
+        assert.equal('dateShort' in result, false)
+    })
+
+    it('bez starts_on je date null, ne text ze starého sloupce', () => {
+        assert.equal(mapEvent({ ...ROW, starts_on: null }).date, null)
     })
 
     it('nepustí do odpovědi interní sloupec image_key', () => {
@@ -58,7 +69,6 @@ describe('mapEvent', () => {
 
     it('chybějící sloupce dají undefined, ne výjimku', () => {
         const result = mapEvent({ id: 1, name: 'X' })
-        assert.equal(result.dateShort, undefined)
         assert.equal(result.imageUrl, undefined)
     })
 })
@@ -66,7 +76,7 @@ describe('mapEvent', () => {
 describe('mapEventReverse', () => {
     it('převede camelCase pole z těla požadavku na sloupce databáze', () => {
         const result = mapEventReverse(API)
-        assert.equal(result.date_short, '29.8.')
+        assert.equal(result.starts_on, '2026-08-29')
         assert.equal(result.img_class, 'event-image--prazdroj')
         assert.equal(result.map_src, 'https://osm.example/map')
         assert.equal(result.created_at, '2026-08-01T10:00:00.000Z')
@@ -89,9 +99,15 @@ describe('mapEventReverse', () => {
     it('tvar, který putuje do INSERT/UPDATE, drží názvy sloupců, na které se SQL odkazuje', () => {
         // Hlídá překlep v názvu klíče: SQL v routes/events.js čte právě tyhle.
         const keys = Object.keys(mapEventReverse(API))
-        for (const k of ['name', 'date', 'date_short', 'location', 'tags', 'img_class', 'url', 'description', 'map_src']) {
+        for (const k of ['name', 'location', 'tags', 'img_class', 'url', 'description', 'map_src']) {
             assert.ok(keys.includes(k), `chybí klíč ${k}`)
         }
+    })
+
+    it('textové date a date_short do databáze neposílá', () => {
+        const keys = Object.keys(mapEventReverse({ ...API, dateShort: '29.8.' }))
+        assert.equal(keys.includes('date'), false)
+        assert.equal(keys.includes('date_short'), false)
     })
 })
 

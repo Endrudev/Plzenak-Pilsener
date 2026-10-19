@@ -162,12 +162,11 @@ const events = [
 async function seedEvents() {
     let inserted = 0
     for (const [i, e] of events.entries()) {
-        const dateShort = e.date.slice(0, e.date.lastIndexOf('.'))
         const imgClass = IMG_CLASSES[i % IMG_CLASSES.length]
         await query(`
-            INSERT INTO events (name, date, date_short, location, tags, img_class, url, description, map_src, starts_on)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
-            `, [e.name, e.date, dateShort, e.location, e.tags, imgClass, e.url, e.description, e.mapSrc, toIsoDate(e.date)]
+            INSERT INTO events (name, location, tags, img_class, url, description, map_src, starts_on)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
+            `, [e.name, e.location, e.tags, imgClass, e.url, e.description, e.mapSrc, toIsoDate(e.date)]
         )
         inserted++
     }

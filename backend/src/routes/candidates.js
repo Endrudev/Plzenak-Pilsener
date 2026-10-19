@@ -211,10 +211,10 @@ async function approveCandidate(id) {
     let event
     try {
         const inserted = await query(`
-            INSERT INTO events (name, date, date_short, location, tags, img_class, url, description, map_src, starts_on)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NULL, $9)
+            INSERT INTO events (name, location, tags, img_class, url, description, map_src, starts_on)
+            VALUES ($1, $2, $3, $4, $5, $6, NULL, $7)
             RETURNING *;
-        `, [c.name, c.date, c.date_short, c.location, c.tags, DEFAULT_IMG_CLASS, c.source_url, c.description, toIsoDate(c.date)])
+        `, [c.name, c.location, c.tags, DEFAULT_IMG_CLASS, c.source_url, c.description, toIsoDate(c.date)])
         event = inserted.rows[0]
     } catch (err) {
         console.error(err.message)

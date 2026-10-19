@@ -18,4 +18,15 @@ function toIsoDate(value) {
     return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`
 }
 
-module.exports = { toIsoDate }
+// Opačný směr pro pole `date` v API: '2026-03-05' → '05.03.2026'. Od migrace 007
+// se textové datum v databázi neudržuje, frontend ho ale dál čte a zobrazuje.
+// Vstup je text z pg (parser typu date v db/pool.js), nic jiného sem nechodí;
+// cokoli jiného vrátí null.
+function toCzechDate(iso) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso ?? '')
+    if (!match) return null
+    const [, y, m, d] = match
+    return `${d}.${m}.${y}`
+}
+
+module.exports = { toIsoDate, toCzechDate }

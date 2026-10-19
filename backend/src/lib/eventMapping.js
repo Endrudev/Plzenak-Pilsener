@@ -2,17 +2,19 @@
 // frontend (camelCase). Čisté funkce bez volání databáze.
 
 const { slugify } = require('./slug')
+const { toCzechDate } = require('./eventDate')
 
 function mapEvent(event) {
     return {
         id: event.id,
         name: event.name,
-        date: event.date,
+        // Od migrace 007 jediný zdroj data je starts_on. `date` zůstává v API
+        // pro zobrazení na frontendu a dopočítá se z něj (DD.MM.RRRR).
+        date: toCzechDate(event.starts_on),
         location: event.location,
         tags: event.tags,
         url: event.url,
         description: event.description,
-        dateShort: event.date_short,
         imgClass: event.img_class,
         mapSrc: event.map_src,
         createdAt: event.created_at,
@@ -25,16 +27,16 @@ function mapEvent(event) {
     }
 }
 
+// `date` z těla požadavku tu není: routa ho převede na starts_on přes
+// toIsoDate a zkontroluje (nečitelné datum = 400).
 function mapEventReverse(event) {
     return {
         id: event.id,
         name: event.name,
-        date: event.date,
         location: event.location,
         tags: event.tags,
         url: event.url,
         description: event.description,
-        date_short: event.dateShort,
         img_class: event.imgClass,
         map_src: event.mapSrc,
         created_at: event.createdAt,
