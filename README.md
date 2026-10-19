@@ -180,8 +180,6 @@ Hodnoty `datum`: `dnes`, `vikend`, `7dni`, `30dni`. Hodnoty `razeni`: `konani` (
 events
   id           serial PRIMARY KEY
   name         text NOT NULL
-  date         text                   -- od migrace 007 se nepoužívá, dobíhá (viz níž)
-  date_short   text                   -- od migrace 007 se nepoužívá, dobíhá (viz níž)
   starts_on    date NOT NULL          -- migrace 006, datum konání, index
   location     text NOT NULL
   tags         text[]                 -- kategorie akce
@@ -203,7 +201,7 @@ admins
   created_at     timestamptz DEFAULT now()
 ```
 
-> **Dobíhající přechod:** datum konání je od migrace 006 ve sloupci `starts_on` typu `date`. Filtry a řazení jdou přes něj a „dnes“ se počítá v pražském čase. Původní textové `date` a `date_short` aplikace od migrace 007 nečte ani nezapisuje a `date` v API se dopočítá ze `starts_on`. Sloupce ještě existují kvůli bezpečnému rollbacku (rollback nasazení vrací jen kód, ne databázi) a smaže je samostatná migrace 008.
+> **Datum konání** je ve sloupci `starts_on` typu `date`. Filtry a řazení jdou přes něj a „dnes“ se počítá v pražském čase. Pole `date` v API (`DD.MM.RRRR`) se z něj dopočítá. Původní textové sloupce `date` a `date_short` se odstranily ve třech nasazeních (migrace 006–008, postup expand/contract), protože rollback nasazení vrací jen kód, ne databázi.
 
 ---
 
@@ -244,7 +242,6 @@ Pipeline hlídá u frontendu instalaci z lockfilu, testy a produkční build (v�
 Vedu si je otevřeně, jsou to rozhodnutí a dluhy, ne přehlédnutí:
 
 - **`POST /events` a upload obrázku jsou dvě nezávislá volání** bez atomicity; při selhání druhého se akce uklidí v `catch`, ale správně to není.
-- **Textové `events.date` a `date_short` ještě dobíhají** vedle `starts_on`, viz poznámka u [schématu](#databáze).
 - **Mapové zobrazení akcí** (`/mapa`) je navržené, ale neimplementované.
 
 ---
