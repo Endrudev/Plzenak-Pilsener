@@ -8,6 +8,9 @@ const { sendObject, deleteObject } = require('../lib/r2')
 const { IMAGE_MIME } = require('../lib/images')
 const { downloadImage, ImageError } = require('../lib/fetchImage')
 const { toIsoDate } = require('../lib/eventDate')
+const { mapEvent } = require('../lib/eventMapping')
+const { eventPath } = require('../lib/seo/routes')
+const { indexNow, eventUrl } = require('../lib/indexNow')
 
 // Fronta návrhů akcí (tabulka event_candidates, migrace 005). Návrhy posílá importér
 // (úzký token IMPORTER_TOKEN), schvaluje je a zamítá přihlášený administrátor. Veřejné
@@ -247,7 +250,9 @@ async function approveCandidate(id) {
 
     await query(`UPDATE event_candidates SET event_id = $1 WHERE id = $2;`, [event.id, id])
         .catch(e => console.error(e.message))
-    return { ok: true, id, eventId: event.id, imageSaved, imageError }
+    // eventPath kvůli IndexNow (posílá routa, u hromadného schválení najednou)
+    // a administraci se hodí taky: odkaz rovnou na novou akci.
+    return { ok: true, id, eventId: event.id, eventPath: eventPath(mapEvent(event)), imageSaved, imageError }
 }
 
 // POST /api/candidates/approve — hromadné schválení, body: { ids: [1, 2, 3] }.
@@ -265,6 +270,8 @@ router.post('/approve', authMiddleware, async (req, res) => {
             const outcome = await approveCandidate(Number(id))
             results.push(outcome.ok ? outcome : { id: Number(id), ok: false, error: outcome.error })
         }
+        // Všechny nové akce jedním požadavkem, ne jedním na akci.
+        void indexNow.notify(results.filter(r => r.ok).map(r => eventUrl(r.eventPath)))
         res.json({ results })
     } catch (err) {
         console.error(err.message)
@@ -279,6 +286,7 @@ router.post('/:id/approve', authMiddleware, async (req, res) => {
         if (id === null) return res.status(400).json({ error: 'Neplatné id.' })
         const outcome = await approveCandidate(id)
         if (!outcome.ok) return res.status(outcome.status).json({ error: outcome.error })
+        void indexNow.notify([eventUrl(outcome.eventPath)])
         res.json(outcome)
     } catch (err) {
         console.error(err.message)

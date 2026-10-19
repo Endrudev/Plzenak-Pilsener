@@ -44,6 +44,15 @@ const {sendObject, deleteObject} = require('../lib/r2')
 const {mapEvent, mapEventReverse} = require('../lib/eventMapping')
 const {resolveOrderBy, buildWhere, parsePaging} = require('../lib/eventsQuery')
 const {toIsoDate} = require('../lib/eventDate')
+const {indexNow, eventUrl} = require('../lib/indexNow')
+const {eventPath} = require('../lib/seo/routes')
+
+// IndexNow: vytvořenou, upravenou nebo smazanou akci oznámit vyhledávačům.
+// Nečeká se na to a chyba se jen zaloguje (viz lib/indexNow.js). U smazané
+// akce vyhledávač zjistí 404 a stránku z indexu vyřadí.
+function pingEvent(row) {
+    void indexNow.notify([eventUrl(eventPath(mapEvent(row)))])
+}
 
 router.get('/', async(req, res) => {
     try{
@@ -127,6 +136,7 @@ router.post('/', authMiddleware, async(req, res) => {
             RETURNING *;
             `, [result.name, result.location, result.tags, result.img_class, result.url, result.description, result.map_src, startsOn]
         )
+            pingEvent(insertResult.rows[0])
             res.status(201).json(mapEvent(insertResult.rows[0]))
         }
     catch(err) {
@@ -157,6 +167,7 @@ router.put('/:id', authMiddleware, async(req, res) => {
         if(updateResult.rows.length === 0){
             res.status(404).json({error: 'Neplatné id akce. Zkuste to znovu.'})
         }else{
+            pingEvent(updateResult.rows[0])
             res.status(200).json(mapEvent(updateResult.rows[0]))
         }
     }catch(err) {
@@ -186,6 +197,7 @@ router.delete('/:id', authMiddleware, async(req, res) =>{
                     console.error('Nepodařilo se smazat obrázek z R2:', r2err.message)
                 }
             }
+            pingEvent(deletedEvent)
             res.status(204).send()
         }
     }catch(err) {
@@ -242,6 +254,7 @@ router.post('/:id/image', authMiddleware, uploadImage, async (req, res) => {
                     console.error('Nepodařilo se smazat předchozí obrázek z R2:', r2err.message)
                 }
             }
+            pingEvent(updateResult.rows[0])
             res.status(200).json(mapEvent(updateResult.rows[0]))
         }
     }catch(err) {
