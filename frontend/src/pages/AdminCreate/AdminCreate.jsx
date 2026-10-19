@@ -127,7 +127,6 @@ export default function AdminCreate() {
             response = await createEvent({
                 name:        title,
                 date:        inputVal || null,
-                dateShort:   inputVal ? inputVal.slice(0, inputVal.lastIndexOf('.')) : null,
                 location:    locationName || null,
                 tags:        joinTags({ category, top }),
                 imgClass:    'event-image--prazdroj',

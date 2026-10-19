@@ -110,22 +110,22 @@ router.get('/:id', async(req, res) => {
 router.post('/', authMiddleware, async(req, res) => {
     try{
         const result = mapEventReverse(req.body)
-        if(!req.body.name || !req.body.date || !req.body.dateShort || !req.body.location || !req.body.description || req.body.description.length === 0 || !req.body.description.some(item => item.trim() !== '')){
+        if(!req.body.name || !req.body.date || !req.body.location || !req.body.description || req.body.description.length === 0 || !req.body.description.some(item => item.trim() !== '')){
             res.status(400).json({error: 'V požadavku chybí povinná data.'})
             return
         }
-        // Textové date se zatím ukládá dál (krok expand, migrace 006), starts_on
-        // se z něj dopočítá. Nečitelné datum by akci vyřadilo ze všech výpisů.
+        // Datum se ukládá jen jako starts_on (od migrace 007 se textové date
+        // nezapisuje). Nečitelné datum by akci vyřadilo ze všech výpisů.
         const startsOn = toIsoDate(req.body.date)
         if (!startsOn) {
             res.status(400).json({error: 'Neplatné datum, očekává se D.M.RRRR.'})
             return
         }
         const insertResult = await query(`
-            INSERT INTO events (name, date, date_short, location, tags, img_class, url, description, map_src, starts_on)
-            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            INSERT INTO events (name, location, tags, img_class, url, description, map_src, starts_on)
+            VALUES($1, $2, $3, $4, $5, $6, $7, $8)
             RETURNING *;
-            `, [result.name, result.date, result.date_short, result.location, result.tags, result.img_class, result.url, result.description, result.map_src, startsOn]
+            `, [result.name, result.location, result.tags, result.img_class, result.url, result.description, result.map_src, startsOn]
         )
             res.status(201).json(mapEvent(insertResult.rows[0]))
         }
@@ -138,7 +138,7 @@ router.post('/', authMiddleware, async(req, res) => {
 router.put('/:id', authMiddleware, async(req, res) => {
     try{
         const result = mapEventReverse(req.body)
-        if(!req.body.name || !req.body.date || !req.body.dateShort || !req.body.location || !req.body.description || req.body.description.length === 0 || !req.body.description.some(item => item.trim() !== '')){
+        if(!req.body.name || !req.body.date || !req.body.location || !req.body.description || req.body.description.length === 0 || !req.body.description.some(item => item.trim() !== '')){
             res.status(400).json({error: 'V požadavku chybí povinná data.'})
             return
         }
@@ -148,11 +148,11 @@ router.put('/:id', authMiddleware, async(req, res) => {
             return
         }
         const updateResult = await query(`
-            UPDATE events SET name = $1, date = $2, location = $3, tags = $4, url = $5, description = $6, date_short = $7, img_class = $8, map_src = $9,
-                starts_on = $10, updated_at = now()
-            WHERE id = $11
+            UPDATE events SET name = $1, location = $2, tags = $3, url = $4, description = $5, img_class = $6, map_src = $7,
+                starts_on = $8, updated_at = now()
+            WHERE id = $9
             RETURNING *;
-            `, [result.name, result.date, result.location, result.tags, result.url, result.description, result.date_short, result.img_class, result.map_src, startsOn, req.params.id]
+            `, [result.name, result.location, result.tags, result.url, result.description, result.img_class, result.map_src, startsOn, req.params.id]
         )
         if(updateResult.rows.length === 0){
             res.status(404).json({error: 'Neplatné id akce. Zkuste to znovu.'})

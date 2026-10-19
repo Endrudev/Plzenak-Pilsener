@@ -175,7 +175,6 @@ export default function AdminEdit() {
             response = await updateEvent(id, {
                 name:        title,
                 date:        inputVal || null,
-                dateShort:   inputVal ? inputVal.slice(0, inputVal.lastIndexOf('.')) : null,
                 location:    locationName || null,
                 tags:        joinTags({ category, extra: extraTags, top }),
                 imgClass:    'event-image--prazdroj',

@@ -180,8 +180,8 @@ Hodnoty `datum`: `dnes`, `vikend`, `7dni`, `30dni`. Hodnoty `razeni`: `konani` (
 events
   id           serial PRIMARY KEY
   name         text NOT NULL
-  date         text NOT NULL          -- formát D.M.YYYY, dobíhá (viz níž)
-  date_short   text NOT NULL          -- dobíhá (viz níž)
+  date         text                   -- od migrace 007 se nepoužívá, dobíhá (viz níž)
+  date_short   text                   -- od migrace 007 se nepoužívá, dobíhá (viz níž)
   starts_on    date NOT NULL          -- migrace 006, datum konání, index
   location     text NOT NULL
   tags         text[]                 -- kategorie akce
@@ -203,7 +203,7 @@ admins
   created_at     timestamptz DEFAULT now()
 ```
 
-> **Dobíhající přechod:** datum konání je od migrace 006 ve sloupci `starts_on` typu `date`. Filtry a řazení jdou přes něj a „dnes“ se počítá v pražském čase. Původní textové `date` a `date_short` se zatím dál zapisují (postup expand/contract: rollback nasazení vrací jen kód, ne databázi). Smaže je až další migrace.
+> **Dobíhající přechod:** datum konání je od migrace 006 ve sloupci `starts_on` typu `date`. Filtry a řazení jdou přes něj a „dnes“ se počítá v pražském čase. Původní textové `date` a `date_short` aplikace od migrace 007 nečte ani nezapisuje a `date` v API se dopočítá ze `starts_on`. Sloupce ještě existují kvůli bezpečnému rollbacku (rollback nasazení vrací jen kód, ne databázi) a smaže je samostatná migrace 008.
 
 ---
 
