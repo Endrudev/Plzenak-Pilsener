@@ -18,9 +18,7 @@ export default function ZbytekProgramu() {
                 theme: 'light',
                 scene: <LazyProgramScene label="Trh, posezení a park z papíru" />,
                 breadcrumbLabel: 'Zbytek programu',
-                title: 'Zbytek programu',
-                lead: 'Trhy, kino, divadlo, prohlídky i akce pro děti. Nic tě nehoní, projdi si to v klidu.',
-            }}
+                title: 'Zbytek programu',            }}
             typeOptions={TYPE_OPTIONS}
             searchPlaceholder="Hledat v programu"
             searchLabel="Hledat v programu"

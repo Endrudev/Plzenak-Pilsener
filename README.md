@@ -5,7 +5,7 @@
 > Osobní studijní projekt. Píšu ho proto, abych se naučil fullstack vývoj do hloubky — od SQL migrací přes REST API a autentizaci až po nasazení. Detaily o tom, jak vznikal, jsou v sekci [Jak projekt vznikal](#jak-projekt-vznikal).
 
 > [!NOTE]
-> **Aktuální stav: rozpracováno, zatím bez nasazení.** Aplikace je funkční lokálně — backend, databáze, administrace i veřejná část běží. CI pipeline hlídá každý pull request; teď dopisuji unit testy a pak přijde kontejnerizace a nasazení. Podrobněji v sekci [Stav a další kroky](#stav-a-další-kroky).
+> **Aktuální stav: nasazeno na https://plzenak.eu.** Aplikace běží na serveru v AWS za Caddy (HTTPS), s doménou a DNS v Cloudflare, obrázky v R2 a denními zálohami databáze. CI pipeline hlídá každý pull request, nasazení zatím dělám ručně. Podrobněji v sekci [Stav a další kroky](#stav-a-další-kroky).
 
 ---
 
@@ -223,14 +223,17 @@ Co je v aplikaci ošetřené:
 
 ## Stav a další kroky
 
-Aplikace běží lokálně a je funkční — psaní i čtení akcí, administrace, upload obrázků, souhlasová vrstva. **Nasazená zatím není** a k launchi vede tahle cesta, v tomhle pořadí:
+Aplikace je nasazená a funkční — psaní i čtení akcí, administrace, upload obrázků, souhlasová vrstva, fronta návrhů akcí. Cesta, kterou prošla, a co zbývá:
 
 | # | Krok | Stav |
 |:--:|---|---|
 | 1 | **CI pipeline** (GitHub Actions — dva joby, běží na každém PR i po merge) | ✅ hotovo |
 | 2 | **Unit testy** — Vitest ve frontendu, `node --test` v backendu | ✅ hotovo (backendové testy zatím mimo CI) |
 | 3 | **Nasazení** — Dockerfile pro backend, Nginx pro frontend, `docker-compose.yml` | ✅ hotovo, celý stack běží v Compose |
-| 4 | **End-to-end ověření** celého toku (login, CRUD, veřejné čtení) v Compose prostředí | ✅ ověřeno přes API, ruční proklik zbývá |
+| 4 | **End-to-end ověření** celého toku (login, CRUD, veřejné čtení) v Compose prostředí | ✅ ověřeno i v prohlížeči na ostrém serveru |
+| 5 | **Server, doména, HTTPS** — AWS EC2, Cloudflare, Caddy | ✅ hotovo |
+| 6 | **Zálohy** — denní `pg_dump` do soukromého bucketu v R2 | ✅ hotovo, obnova vyzkoušená |
+| 7 | **Automatické nasazení** z GitHub Actions | ⏳ zatím ručně |
 
 Pipeline hlídá u frontendu instalaci z lockfilu, testy a produkční build (včetně typové kontroly), u backendu instalaci a syntaktickou kontrolu všech souborů. Až budou testy i na backendu, syntaktickou kontrolu nahradí.
 
@@ -239,7 +242,6 @@ Pipeline hlídá u frontendu instalaci z lockfilu, testy a produkční build (v�
 Vedu si je otevřeně, jsou to rozhodnutí a dluhy, ne přehlédnutí:
 
 - **`POST /events` a upload obrázku jsou dvě nezávislá volání** bez atomicity; při selhání druhého se akce uklidí v `catch`, ale správně to není.
-- **Kategorie Hudba / Památky / Pro děti** zatím nejdou vybrat ve formuláři administrace.
 - **`events.date` je `text`, ne `date`** — viz poznámka u [schématu](#databáze).
 - **Mapové zobrazení akcí** (`/mapa`) je navržené, ale neimplementované.
 

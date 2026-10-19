@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { resolveMode, usesLandingTheme } from '../landingTheme.js'
+import { isNotFoundPath, resolveMode, usesLandingTheme } from '../landingTheme.js'
 
 describe('resolveMode', () => {
     it('uložená volba platí', () => {
@@ -40,5 +40,28 @@ describe('usesLandingTheme', () => {
         expect(usesLandingTheme('/podminky-uziti')).toBe(false)
         expect(usesLandingTheme('/admin/dashboard')).toBe(false)
         expect(usesLandingTheme('/eventsx')).toBe(false)
+    })
+})
+
+describe('isNotFoundPath', () => {
+    it('neexistující adresa je 404 a dostane téma', () => {
+        expect(isNotFoundPath('/neexistuje')).toBe(true)
+        expect(isNotFoundPath('/eventsx')).toBe(true)
+        expect(isNotFoundPath('/mapa')).toBe(true)
+    })
+
+    it('stránky s tématem a bez něj 404 nejsou', () => {
+        expect(isNotFoundPath('/')).toBe(false)
+        expect(isNotFoundPath('/events')).toBe(false)
+        expect(isNotFoundPath('/events/42')).toBe(false)
+        expect(isNotFoundPath('/top-akce')).toBe(false)
+        expect(isNotFoundPath('/podminky-uziti')).toBe(false)
+        expect(isNotFoundPath('/zasady-ochrany-osobnich-udaju')).toBe(false)
+    })
+
+    it('administrace 404 není, lišta v ní není', () => {
+        expect(isNotFoundPath('/admin')).toBe(false)
+        expect(isNotFoundPath('/admin/candidates')).toBe(false)
+        expect(isNotFoundPath('/admin/neco-jineho')).toBe(false)
     })
 })

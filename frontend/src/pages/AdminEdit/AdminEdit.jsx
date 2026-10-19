@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { uploadEventImage, getEventById, updateEvent, deleteEvent } from '../../lib/eventsApi.js'
 import { useAuthGuard } from '../../lib/useAuthGuard.js'
 import { MONTHS, DAYS, toCzech, isSameDay, buildCalendarDays } from '../../lib/date.js'
+import { CATEGORIES } from '../../lib/filters/categories.jsx'
+import { splitTags, joinTags } from '../../lib/events/eventTags.js'
 import './AdminEdit.css'
 
 export default function AdminEdit() {
@@ -20,6 +22,10 @@ export default function AdminEdit() {
     const [description, setDescription] = useState('')
     const [url, setUrl] = useState('')
     const [category, setCategory] = useState('')
+    // Vedlejší štítky (druhá kategorie) formulář nezobrazuje, ale při uložení je vrací zpět,
+    // aby je úprava akce nezahodila. TOP akce je zvlášť zaškrtávátko.
+    const [extraTags, setExtraTags] = useState([])
+    const [top, setTop] = useState(false)
     const [locationName, setLocationName] = useState('')
     const [saving, setSaving] = useState(false)
     const [deleting, setDeleting] = useState(false)
@@ -58,7 +64,10 @@ export default function AdminEdit() {
             setMapSrc(event.mapSrc ?? '')
             setLocationName(event.location ?? '')
             setDescription(event.description?.join('\n') ?? '')
-            setCategory(event.tags?.[0] ?? '')
+            const parts = splitTags(event.tags)
+            setCategory(parts.category)
+            setExtraTags(parts.extra)
+            setTop(parts.top)
             setUrl(event.url ?? '')
 
             // Datum se do stavu pouští jen tehdy, když se ho podaří rozebrat.
@@ -168,7 +177,7 @@ export default function AdminEdit() {
                 date:        inputVal || null,
                 dateShort:   inputVal ? inputVal.slice(0, inputVal.lastIndexOf('.')) : null,
                 location:    locationName || null,
-                tags:        category ? [category] : [],
+                tags:        joinTags({ category, extra: extraTags, top }),
                 imgClass:    'event-image--prazdroj',
                 url:         url || null,
                 description: description ? description.split('\n').filter(Boolean) : [],
@@ -326,15 +335,19 @@ export default function AdminEdit() {
                             <div className="ae-select-wrapper">
                                 <select id="f-category" value={category} onChange={e => setCategory(e.target.value)}>
                                     <option value="">Vyber…</option>
-                                    <option>Kultura</option>
-                                    <option>Sport</option>
-                                    <option>Gastro</option>
-                                    <option>TOP akce</option>
+                                    {CATEGORIES.map(c => <option key={c.name}>{c.name}</option>)}
                                 </select>
                                 <svg className="ae-select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="6 9 12 15 18 9" />
                                 </svg>
                             </div>
+                            <label className="ae-check">
+                                <input type="checkbox" checked={top} onChange={e => setTop(e.target.checked)} />
+                                <span>
+                                    TOP akce
+                                    <small>Zobrazí se i na stránce TOP akce, kategorie zůstane zachovaná.</small>
+                                </span>
+                            </label>
                         </div>
                     </div>
 

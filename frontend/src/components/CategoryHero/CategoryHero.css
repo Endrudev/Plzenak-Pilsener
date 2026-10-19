@@ -78,17 +78,8 @@
     text-wrap: balance;
 }
 
-.cat-hero-lead {
-    margin: 0;
-    max-width: 30ch;
-    font-size: var(--fs-body-lg);
-    line-height: var(--lh-body);
-    color: var(--dk-muted);
-}
-
 /* ---------- denní scéna (Zbytek programu): tmavý text na světlém ---------- */
-.cat-hero--light .cat-hero-crumbs,
-.cat-hero--light .cat-hero-lead {
+.cat-hero--light .cat-hero-crumbs {
     color: var(--color-calm-text-soft);
 }
 
@@ -108,5 +99,34 @@
 
     .cat-hero-title {
         font-size: var(--fs-display-l);
+    }
+}
+
+/* ---------- nehybný obrázek místo scény (404) ---------- */
+.cat-hero-still {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* ---------- kompaktní pás: výška podle obsahu ----------
+   Pás s hledáním a odkazy pod nadpisem je vyšší než čistý nadpis, proto nedrží pevnou
+   výšku. Dole nechává místo na list stránky (.lp-sheet), který do pásu zajíždí o poloměr
+   scény, aby nic z obsahu nezmizelo pod ním. */
+.cat-hero--compact {
+    height: auto;
+    min-height: 600px;
+    padding-bottom: calc(var(--radius-scene) + var(--space-12));
+}
+
+@media (max-width: 767px) {
+    .cat-hero--compact {
+        height: auto;
+        min-height: 560px;
+        padding-bottom: calc(var(--radius-scene) + var(--space-10));
     }
 }

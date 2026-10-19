@@ -410,6 +410,18 @@ html.theme-lp:not([data-lp-mode='light']) {
   --nav-shadow:      0 14px 34px -14px rgba(0, 0, 0, 0.7);
 }
 
+/* Posuvník: nativní, jen v barvách webu (viz pravidlo na html níž). Výchozí je pro
+   světlé stránky (krémové pozadí, světlé téma), tmavé téma ho přepíše. Dráha je
+   průhledná, takže splývá s pozadím stránky. */
+:root {
+  --scrollbar-thumb: #BFA68B;
+  --scrollbar-track: transparent;
+}
+
+html.theme-lp:not([data-lp-mode='light']) {
+  --scrollbar-thumb: #6B5645;
+}
+
 html, body {
   margin: 0;
   min-height: 100%;
@@ -429,6 +441,11 @@ html {
   -webkit-text-size-adjust: 100%;
   /* Šedý záblesk při klepnutí na mobilu: stisk řeší vlastní :active. */
   -webkit-tap-highlight-color: transparent;
+  /* Tenký posuvník v barvách webu. Obě vlastnosti se dědí, takže je převezmou i
+     vnitřní posuvníky (výběr, menu). Na telefonu jsou posuvníky překryvné a tohle
+     je neovlivní. Tvar se nastavit nedá, jen barva a tloušťka. */
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
 }
 
 /* Nadpisy se zalomí do vyrovnaných řádků (žádná sirotčí slova), odstavce

@@ -55,7 +55,9 @@ export default function Footer() {
                     </a>
                 </nav>
 
-                <p id="footer-copy">© Plzeňák 2026</p>
+                <p id="footer-copy">
+                    © Plzeňák 2026 · Učební projekt juniorního vývojáře. Nekomerční, bez zisku a bez propagace.
+                </p>
             </div>
             </div>
         </footer>

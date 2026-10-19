@@ -134,6 +134,46 @@
     }
 }
 
+/* Odkaz na frontu návrhů akcí: druhotné tlačítko vedle hlavního Vytvořit akci. */
+#candidates-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-el);
+    padding: var(--space-3) var(--space-5);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: background var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+#candidates-btn:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    #candidates-btn:hover {
+        background: var(--color-surface-soft);
+    }
+}
+
+#candidates-count {
+    min-width: 22px;
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: #fff;
+    font-size: var(--fs-2xs);
+    line-height: 22px;
+    text-align: center;
+}
+
 #dash-search-wrapper {
     display: flex;
     align-items: center;
@@ -456,6 +496,11 @@
     }
 
     #create-btn {
+        flex-shrink: 0;
+        width: auto;
+    }
+
+    #candidates-btn {
         flex-shrink: 0;
         width: auto;
     }

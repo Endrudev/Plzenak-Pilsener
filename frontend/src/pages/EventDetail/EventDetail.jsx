@@ -15,6 +15,7 @@ import EventDetailSkeleton from '../../components/EventDetailSkeleton/EventDetai
 import EventPoster from '../../components/events/EventPoster/EventPoster.jsx'
 import { ArrowRight, ArrowUpRight, CalendarIcon, PinIcon, ShareIcon, TicketIcon } from '../../components/landing/icons.jsx'
 import '../../components/landing/landing.css'
+import LearningNote from '../../components/LearningNote/LearningNote.jsx'
 import './EventDetail.css'
 
 // Detail akce, postavený od nuly 2026-10-04 ve stejném jazyce jako homepage a
@@ -50,9 +51,8 @@ export default function EventDetail() {
         setLoading(true)
         setMapLoadedOnce(false)
         setRelated([])
-        // Odkaz z „Podobných akcí“ vede na jiný detail ve stejné komponentě, router
-        // sám scroll nevrací.
-        window.scrollTo(0, 0)
+        // Scroll na začátek při přechodu na jiný detail (odkaz z „Podobných akcí“)
+        // řeší <ScrollToTop /> v App.jsx pro všechny stránky.
         getEventById(id)
             .then(data => setEvent(data))
             .catch(() => setEvent(null))
@@ -275,6 +275,8 @@ export default function EventDetail() {
                     </div>
                 </section>
             )}
+
+            <LearningNote variant="detail" />
             </div>
 
             {/* Lišta s tlačítkem na telefonu a tabletu. Na desktopu stejnou roli

@@ -115,14 +115,6 @@
     color: var(--color-primary);
 }
 
-.eh-lead {
-    margin: 0;
-    max-width: 38ch;
-    font-size: var(--fs-body-lg);
-    line-height: var(--lh-body);
-    color: var(--color-cream-muted);
-}
-
 .eh-cta {
     margin-top: var(--space-2);
 }

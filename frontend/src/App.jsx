@@ -11,12 +11,14 @@ import Admin from './pages/Admin/Admin.jsx'
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard.jsx'
 import AdminCreate from './pages/AdminCreate/AdminCreate.jsx'
 import AdminEdit from './pages/AdminEdit/AdminEdit.jsx'
+import AdminCandidates from './pages/AdminCandidates/AdminCandidates.jsx'
 import Privacy from './pages/Privacy/Privacy.jsx'
 import Terms from './pages/Terms/Terms.jsx'
 import NotFound from './pages/NotFound/NotFound.jsx'
 import { ConsentProvider, useConsent } from './lib/consent/ConsentContext.jsx'
 import CookieBanner from './components/CookieBanner/CookieBanner.jsx'
 import CookieSettings from './components/CookieSettings/CookieSettings.jsx'
+import ScrollToTop from './components/ScrollToTop/ScrollToTop.jsx'
 
 
 function Layout() {
@@ -54,6 +56,7 @@ function Layout() {
                     <Route path="/admin/dashboard" element={<AdminDashboard />} />
                     <Route path="/admin/create" element={<AdminCreate />} />
                     <Route path="/admin/edit/:id" element={<AdminEdit />} />
+                    <Route path="/admin/candidates" element={<AdminCandidates />} />
                     <Route path="/zasady-ochrany-osobnich-udaju" element={<Privacy />} />
                     <Route path="/podminky-uziti" element={<Terms />} />
                     <Route path="*" element={<NotFound />} />
@@ -67,6 +70,7 @@ function Layout() {
 function App() {
     return (
         <BrowserRouter>
+            <ScrollToTop />
             <ConsentProvider>
                 <Layout/>
             </ConsentProvider>

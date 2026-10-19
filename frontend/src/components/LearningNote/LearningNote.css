@@ -1,0 +1,13 @@
+.learning-note-wrap {
+    margin-block: var(--space-8) 0;
+    padding-bottom: var(--space-8);
+}
+
+.learning-note {
+    margin: 0;
+    max-width: 62ch;
+    font-size: var(--fs-sm);
+    line-height: var(--lh-body);
+    color: var(--lp-muted);
+    text-wrap: balance;
+}
