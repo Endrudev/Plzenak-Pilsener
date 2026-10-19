@@ -19,6 +19,8 @@ import { ConsentProvider, useConsent } from './lib/consent/ConsentContext.jsx'
 import CookieBanner from './components/CookieBanner/CookieBanner.jsx'
 import CookieSettings from './components/CookieSettings/CookieSettings.jsx'
 import ScrollToTop from './components/ScrollToTop/ScrollToTop.jsx'
+import { useDocumentTitle } from './lib/useDocumentTitle.js'
+import { TITLES } from './lib/pageTitle.js'
 
 
 // Staré adresy z doby před 2026-10-19 (/events, /events/42) přesměrují na
@@ -41,6 +43,9 @@ function Layout() {
     const { pathname } = useLocation()
     const isAdmin = pathname.startsWith('/admin')
     const { consent, acceptAll, rejectAll, save, openSettings, closeSettings, isSettingsOpen } = useConsent()
+    // Všechny stránky administrace mají jeden titulek. Veřejné stránky si ho
+    // nastavují samy (null tady titulek nemění).
+    useDocumentTitle(isAdmin ? TITLES.admin : null)
 
     return (
         <>

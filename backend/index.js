@@ -7,6 +7,7 @@ dotenv.config({path: path.join(__dirname, '.env')})
 const authRouter = require('./src/routes/auth')
 const events = require('./src/routes/events')
 const candidates = require('./src/routes/candidates')
+const render = require('./src/routes/render')
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -34,5 +35,15 @@ app.use('/api/events', events)
 app.get('/api/health', (req, res) => {
     res.json({status: 'ok'})
 })
+
+// Neznámá adresa pod /api dostane JSON 404 a nespadne do rendereru níž, který
+// by na ni vrátil HTML stránku.
+app.use('/api', (req, res) => {
+    res.status(404).json({error: 'Neznámý endpoint.'})
+})
+
+// Serverový renderer HTML pro všechno ostatní (musí být poslední). Nginx sem
+// posílá jen adresy, které nejsou statický soubor.
+app.use(render)
 
 app.listen(PORT, () => console.log("vše ok"))

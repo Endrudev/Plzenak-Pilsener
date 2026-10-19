@@ -3,6 +3,8 @@ import { LazyCityScene } from '../../components/scenes/LazyScenes.jsx'
 import cityHeroPoster from '../../components/scenes/posters/city-hero.webp'
 import cityHeroMp4 from '../../components/scenes/videos/city-hero.mp4'
 import { CATEGORIES } from '../../lib/filters/categories.jsx'
+import { useDocumentTitle } from '../../lib/useDocumentTitle.js'
+import { TITLES } from '../../lib/pageTitle.js'
 
 // Pevný filtr: top=1. Uživatel ho nemůže vypnout, jen hledat, vybrat období,
 // zúžit na kategorii a řadit. Vzhled a chování drží sdílená šablona.
@@ -12,6 +14,7 @@ const FIXED = { top: '1' }
 const TYPE_OPTIONS = CATEGORIES.map(c => ({ value: c.name, label: c.name }))
 
 export default function TopAkce() {
+    useDocumentTitle(TITLES.top)
     return (
         <CategoryPage
             fixed={FIXED}

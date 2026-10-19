@@ -11,6 +11,8 @@ import { buildIcsFile } from '../../lib/events/buildIcsFile.js'
 import { downloadTextFile } from '../../lib/downloadTextFile.js'
 import { shareEvent } from '../../lib/events/shareEvent.js'
 import { eventPath, parseEventId } from '../../lib/events/eventPath.js'
+import { useDocumentTitle } from '../../lib/useDocumentTitle.js'
+import { eventTitle, TITLES } from '../../lib/pageTitle.js'
 import MapConsent from '../../components/ConsentGate/MapConsent.jsx'
 import EventDetailSkeleton from '../../components/EventDetailSkeleton/EventDetailSkeleton.jsx'
 import EventPoster from '../../components/events/EventPoster/EventPoster.jsx'
@@ -43,6 +45,9 @@ export default function EventDetail() {
     const buyRef = useRef(null)
     const [buyVisible, setBuyVisible] = useState(true)
     const today = useRef(new Date()).current
+
+    // Během načítání titulek nechá (null), neexistující akce dostane titulek 404.
+    useDocumentTitle(loading ? null : event ? eventTitle(event) : TITLES.notFound)
 
     // Téma stránky je celostránkové, stejně jako na homepage a v Akcích.
     useEffect(() => {
