@@ -55,7 +55,7 @@ export default function CategoryHero({
 
     let sceneNode = scene
     if (video && !(forceLive && scene)) {
-        sceneNode = <HeroVideo autoplay poster={video.poster} position={video.position} webm={video.webm} mp4={video.mp4} />
+        sceneNode = <HeroVideo autoplay poster={video.poster} position={video.position} webm={video.webm} mp4={video.mp4} mobileMp4={video.mobileMp4} />
     } else if (poster) {
         sceneNode = <img className="cat-hero-still" src={poster} alt="" aria-hidden="true" draggable={false} style={{ objectPosition: posterPosition }} />
     }

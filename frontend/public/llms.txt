@@ -1,0 +1,19 @@
+# Plzeňák
+
+> Přehled kulturních a společenských akcí v Plzni na jednom místě: koncerty, divadlo, výstavy, přednášky, sport a program pro děti. Nekomerční projekt, akce schvaluje člověk, proběhlé akce z výpisů mizí.
+
+Data jsou česky. Každá akce má vlastní stránku s datem, místem, popisem a odkazem na web pořadatele; stránky obsahují strukturovaná data schema.org (Event).
+
+## Hlavní stránky
+
+- [Dnes v Plzni](https://plzenak.eu/dnes): akce, které se konají dnes
+- [Tento víkend v Plzni](https://plzenak.eu/tento-vikend): akce na nejbližší sobotu a neděli
+- [Všechny akce](https://plzenak.eu/akce): kalendář všech nadcházejících akcí
+- [TOP akce](https://plzenak.eu/top-akce): výběr nejzajímavějších akcí
+- [Koncerty a hudba](https://plzenak.eu/hudba): nadcházející koncerty a hudební akce
+- [Další akce](https://plzenak.eu/zbytek-programu): divadlo, výstavy, přednášky, sport a další
+
+## O projektu
+
+- [O projektu](https://plzenak.eu/o-projektu): kdo web provozuje a odkud jsou akce
+- [Sitemap](https://plzenak.eu/sitemap.xml): seznam všech stránek včetně jednotlivých akcí

@@ -4,11 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Plzeňák</title>
-    <!-- Favicon: PNG pro starší prohlížeče, SVG pro ostatní (ostrý v každé velikosti),
+    <!-- Favicon: SVG pro moderní prohlížeče (ostrý v každé velikosti), PNG 48/96/192
+         pro Google (ikona ve výsledcích hledání musí mít rozměr násobku 48 px), 32 px
+         a favicon.ico pro starší prohlížeče a nástroje, které hledají /favicon.ico,
          apple-touch-icon pro ikonu na ploše iPhonu. Soubory leží v public/. -->
-    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
     <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml">
+    <link rel="icon" href="/favicon-48.png" sizes="48x48" type="image/png">
+    <link rel="icon" href="/favicon-96.png" sizes="96x96" type="image/png">
+    <link rel="icon" href="/favicon-192.png" sizes="192x192" type="image/png">
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <!-- Největší prvek homepage (LCP) je obrázek scény v dlaždici TOP akce. Bez
+         nápovědy by ho prohlížeč začal stahovat až po spuštění JavaScriptu. Vite
+         cestu přepíše na hashovaný soubor. data-page="/": serverový renderer
+         odkaz na ostatních stránkách vyřízne (backend/src/lib/seo/head.js). -->
+    <link rel="preload" as="image" href="./src/components/scenes/posters/city.webp" fetchpriority="high" data-page="/">
+    <!-- Obsah, který do #root vkládá serverový renderer (backend/src/lib/seo), je
+         pro roboty. Návštěvníkovi s JavaScriptem se neukáže, dokud ho React
+         nenahradí: na pomalém připojení by se jinak po načtení písem posunul (CLS).
+         Bez JavaScriptu ho <noscript> zviditelní. -->
+    <style>#root > .ssr { display: none; }</style>
+    <noscript><style>#root > .ssr { display: block; }</style></noscript>
     <!-- Téma homepage se nastaví dřív, než se vykreslí stránka, ať se nezablikne
          jiné než zvolené. Výchozí je světlé, tmavé jen při uložené volbě. Stejná
          logika jako resolveMode v lib/landingTheme.js. -->

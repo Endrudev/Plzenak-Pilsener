@@ -9,7 +9,7 @@ const SITE_NAME = 'Plzeňák'
 // frontend/src/lib/pageTitle.js, aby se titulek v záložce po přechodu mezi
 // stránkami (React) shodoval s tím, co poslal server. Při změně upravit obojí.
 function pageTitle(part) {
-    return part ? `${part} | ${SITE_NAME}` : `${SITE_NAME}: akce v Plzni na jednom místě`
+    return part ? `${part} | ${SITE_NAME}` : `${SITE_NAME}: akce v Plzni dnes i o víkendu – koncerty, divadlo`
 }
 
 // Odstavce stránky O projektu (bez HTML, renderer je escapuje).

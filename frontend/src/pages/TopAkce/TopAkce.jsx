@@ -2,6 +2,7 @@ import CategoryPage from '../../components/category/CategoryPage/CategoryPage.js
 import { LazyCityScene } from '../../components/scenes/LazyScenes.jsx'
 import cityHeroPoster from '../../components/scenes/posters/city-hero.webp'
 import cityHeroMp4 from '../../components/scenes/videos/city-hero.mp4'
+import cityHeroMobileMp4 from '../../components/scenes/videos/city-hero-mobile.mp4'
 import { CATEGORIES } from '../../lib/filters/categories.jsx'
 import { useDocumentTitle } from '../../lib/useDocumentTitle.js'
 import { TITLES } from '../../lib/pageTitle.js'
@@ -21,7 +22,7 @@ export default function TopAkce() {
             hero={{
                 background: '#401909',
                 sceneShift: true,
-                video: { mp4: cityHeroMp4, poster: cityHeroPoster, position: '50% 100%' },
+                video: { mp4: cityHeroMp4, mobileMp4: cityHeroMobileMp4, poster: cityHeroPoster, position: '50% 100%' },
                 scene: <LazyCityScene shade label="Noční Plzeň z papíru" />,
                 breadcrumbLabel: 'TOP akce',
                 title: 'TOP akce',            }}

@@ -6,3 +6,10 @@ plzenak.eu {
 www.plzenak.eu {
     redir https://plzenak.eu{uri} permanent
 }
+
+# http://www rovnou na https://plzenak.eu jedním skokem. Bez tohohle bloku
+# Caddy nejdřív přesměruje http://www → https://www a teprve pak blok výš
+# odstraní www: dvě přesměrování, PageSpeed to hlásí jako zdržení.
+http://www.plzenak.eu {
+    redir https://plzenak.eu{uri} permanent
+}

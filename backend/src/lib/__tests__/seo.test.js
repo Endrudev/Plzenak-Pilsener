@@ -81,14 +81,29 @@ describe('injectIntoTemplate', () => {
         const html = injectIntoTemplate(TEMPLATE, { head: '<title>Nový</title>', body: '<h1>Ahoj</h1>' })
         assert.ok(html.includes('<title>Nový</title>'))
         assert.equal(html.includes('<title>Plzeňák</title>'), false)
-        assert.ok(html.includes('<div id="root"><h1>Ahoj</h1></div>'))
+        assert.ok(html.includes('<div id="root"><div class="ssr"><h1>Ahoj</h1></div></div>'))
         assert.ok(html.includes('/assets/index-abc.js'))
+    })
+
+    it('obsah je v obalu .ssr (index.html ho návštěvníkovi s JS skryje), prázdný obsah bez obalu', () => {
+        assert.ok(injectIntoTemplate(TEMPLATE, { head: '', body: '<p>x</p>' }).includes('<div class="ssr"><p>x</p></div>'))
+        assert.ok(injectIntoTemplate(TEMPLATE, { head: '', body: '' }).includes('<div id="root"></div>'))
+    })
+
+    it('odkaz s data-page nechá jen na své stránce', () => {
+        const tpl = TEMPLATE.replace('</head>', '    <link rel="preload" as="image" href="/assets/city-x.webp" data-page="/">\n</head>')
+        assert.ok(injectIntoTemplate(tpl, { head: '<title>T</title>' }, '/').includes('city-x.webp'))
+        for (const path of ['/akce', '/hudba', '/neexistuje']) {
+            const html = injectIntoTemplate(tpl, { head: '<title>T</title>' }, path)
+            assert.equal(html.includes('city-x.webp'), false, path)
+            assert.ok(html.includes('</head>'), path)
+        }
     })
 
     it('znaky $& a $1 v obsahu nevyloží jako odkaz na shodu', () => {
         const html = injectIntoTemplate(TEMPLATE, { head: '<title>$& $1</title>', body: '$`' })
         assert.ok(html.includes('<title>$& $1</title>'))
-        assert.ok(html.includes('<div id="root">$`</div>'))
+        assert.ok(html.includes('<div class="ssr">$`</div>'))
     })
 
     it('šablona bez značek je chyba, ne tiché vrácení bez SEO', () => {
@@ -262,7 +277,8 @@ describe('titulky frontendu a serveru', () => {
     })
 
     it('titulek homepage a tvar "<část> | Plzeňák" jsou stejné', () => {
-        assert.ok(frontend.includes(`\`\${SITE_NAME}: akce v Plzni na jednom místě\``))
+        assert.ok(frontend.includes(`\`\${SITE_NAME}: akce v Plzni dnes i o víkendu – koncerty, divadlo\``))
+        assert.equal(pageTitle(null), 'Plzeňák: akce v Plzni dnes i o víkendu – koncerty, divadlo')
         assert.ok(frontend.includes('`${part} | ${SITE_NAME}`'))
         assert.equal(pageTitle('X'), 'X | Plzeňák')
     })

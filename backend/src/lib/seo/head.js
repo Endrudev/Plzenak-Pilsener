@@ -28,21 +28,36 @@ function buildHead({ title, description, canonical, robots, ogType = 'website', 
     return tags.join('\n    ')
 }
 
+// <link … data-page="/cesta"> v index.html patří jen té jedné stránce (preload
+// obrázku, který je největším prvkem homepage). Na ostatních by stahoval
+// zbytečně, proto ho renderer vyřízne.
+const PAGE_LINK_RE = /[ \t]*<link\b[^>]*\bdata-page="([^"]*)"[^>]*>\r?\n?/g
+
+function keepPageLinks(template, path) {
+    return template.replace(PAGE_LINK_RE, (tag, page) => (page === path ? tag : ''))
+}
+
 const TITLE_RE = /<title>[\s\S]*?<\/title>/
 const ROOT_RE = /<div id="root"><\/div>/
 
 // Nahradí <title> sestavenou hlavičkou a do prázdného <div id="root"> vloží
 // obsah stránky. Když šablona značky nemá (změnil se index.html), vyhodí
 // chybu: tichý návrat šablony bez úprav by SEO rozbil nepozorovaně.
-function injectIntoTemplate(template, { head, body = '' }) {
+function injectIntoTemplate(template, { head, body = '' }, path) {
+    if (path !== undefined) template = keepPageLinks(template, path)
     if (!TITLE_RE.test(template) || !ROOT_RE.test(template)) {
         throw new Error('Šablona index.html nemá <title> nebo prázdný <div id="root">.')
     }
     // Funkce místo řetězce jako druhý argument replace: v řetězci by se znaky
     // $& nebo $1 z názvu akce vyložily jako odkaz na shodu.
+    // Obsah je v obalu .ssr, který index.html skryje (display: none), dokud
+    // React stránku nevykreslí. Roboti ho čtou z HTML, návštěvník s JavaScriptem
+    // ho nevidí: jinak by se na pomalém připojení po načtení písem posunul
+    // a stránka by měla CLS 0,27 (změřeno 2026-10-20). Bez JavaScriptu ho
+    // <noscript> v index.html zviditelní.
     return template
         .replace(TITLE_RE, () => head)
-        .replace(ROOT_RE, () => `<div id="root">${body}</div>`)
+        .replace(ROOT_RE, () => `<div id="root">${body ? `<div class="ssr">${body}</div>` : ''}</div>`)
 }
 
-module.exports = { buildHead, injectIntoTemplate }
+module.exports = { buildHead, injectIntoTemplate, keepPageLinks }

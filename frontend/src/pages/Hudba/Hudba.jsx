@@ -2,6 +2,7 @@ import CategoryPage from '../../components/category/CategoryPage/CategoryPage.js
 import { LazyConcertScene } from '../../components/scenes/LazyScenes.jsx'
 import concertHeroPoster from '../../components/scenes/posters/concert-hero.webp'
 import concertHeroMp4 from '../../components/scenes/videos/concert-hero.mp4'
+import concertHeroMobileMp4 from '../../components/scenes/videos/concert-hero-mobile.mp4'
 import { useMediaQuery } from '../../lib/useMediaQuery.js'
 import { useDocumentTitle } from '../../lib/useDocumentTitle.js'
 import { TITLES } from '../../lib/pageTitle.js'
@@ -24,7 +25,7 @@ export default function Hudba() {
             fixed={FIXED}
             hero={{
                 background: '#140602',
-                video: { mp4: concertHeroMp4, poster: concertHeroPoster, position: narrow ? '85% 50%' : '50% 50%' },
+                video: { mp4: concertHeroMp4, mobileMp4: concertHeroMobileMp4, poster: concertHeroPoster, position: narrow ? '85% 50%' : '50% 50%' },
                 scene: <LazyConcertScene focus={narrow ? 'right' : 'center'} shade label="Koncert z papíru" />,
                 breadcrumbLabel: 'Hudba',
                 title: 'Hudba',            }}
