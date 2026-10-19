@@ -22,6 +22,7 @@ const { injectIntoTemplate } = require('../lib/seo/head')
 const { createTemplateSource } = require('../lib/seo/templateSource')
 const pages = require('../lib/seo/pages')
 const { sitemapEntries, buildSitemap } = require('../lib/seo/sitemap')
+const { indexNow } = require('../lib/indexNow')
 
 const getTemplate = createTemplateSource({
     url: process.env.SITE_TEMPLATE_URL || 'http://frontend/index.html',
@@ -65,6 +66,14 @@ router.get('/sitemap.xml', async (req, res) => {
         res.status(500).type('text').send('Sitemap teď nejde sestavit.')
     }
 })
+
+// Soubor s klíčem IndexNow (https://plzenak.eu/<klíč>.txt). Vyhledávač si ho
+// stáhne a ověří, že adresy posíláme my. Jen když je IndexNow zapnutý.
+if (indexNow.enabled) {
+    router.get(`/${indexNow.key}.txt`, (req, res) => {
+        res.type('text').send(indexNow.key)
+    })
+}
 
 router.get('*', async (req, res) => {
     const route = matchRoute(req.path)

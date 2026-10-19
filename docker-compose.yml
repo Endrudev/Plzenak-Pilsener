@@ -32,6 +32,10 @@ services:
       R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
       R2_BUCKET_NAME: ${R2_BUCKET_NAME}
       R2_PUBLIC_URL: ${R2_PUBLIC_URL}
+      # Klíč IndexNow (oznamování změn vyhledávačům). Je jen v Doppler configu
+      # prd: lokální stack by jinak posílal vyhledávačům adresy vývojových akcí.
+      # Prázdný = IndexNow vypnutý. ":-" potlačí varování, když chybí.
+      INDEXNOW_KEY: ${INDEXNOW_KEY:-}
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
       interval: 10s
