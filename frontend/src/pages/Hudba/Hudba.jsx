@@ -3,6 +3,8 @@ import { LazyConcertScene } from '../../components/scenes/LazyScenes.jsx'
 import concertHeroPoster from '../../components/scenes/posters/concert-hero.webp'
 import concertHeroMp4 from '../../components/scenes/videos/concert-hero.mp4'
 import { useMediaQuery } from '../../lib/useMediaQuery.js'
+import { useDocumentTitle } from '../../lib/useDocumentTitle.js'
+import { TITLES } from '../../lib/pageTitle.js'
 
 // Pevný filtr: kategorie Hudba. Vzhled a chování drží sdílená šablona.
 //
@@ -12,6 +14,7 @@ import { useMediaQuery } from '../../lib/useMediaQuery.js'
 const FIXED = { kategorie: 'Hudba' }
 
 export default function Hudba() {
+    useDocumentTitle(TITLES.music)
     // Pódium je ve scéně vpravo. V úzkém hero by ho výchozí ořez na střed odřízl,
     // zůstal by jen dav.
     const narrow = useMediaQuery('(max-width: 767px)')

@@ -1,6 +1,8 @@
 import CategoryPage from '../../components/category/CategoryPage/CategoryPage.jsx'
 import { LazyProgramScene } from '../../components/scenes/LazyScenes.jsx'
 import { CATEGORIES } from '../../lib/filters/categories.jsx'
+import { useDocumentTitle } from '../../lib/useDocumentTitle.js'
+import { TITLES } from '../../lib/pageTitle.js'
 
 // „Zbytek programu“ je všechno kromě TOP akcí a Hudby (ty mají vlastní stránky).
 // Filtruje vyloučením přes parametr `vyjma` na backendu, ne kladným výběrem.
@@ -10,6 +12,7 @@ const FIXED = { vyjma: 'TOP akce,Hudba' }
 const TYPE_OPTIONS = CATEGORIES.filter(c => c.name !== 'Hudba').map(c => ({ value: c.name, label: c.name }))
 
 export default function ZbytekProgramu() {
+    useDocumentTitle(TITLES.rest)
     return (
         <CategoryPage
             fixed={FIXED}

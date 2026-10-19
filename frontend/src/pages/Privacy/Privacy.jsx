@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
 import './Privacy.css'
+import { useDocumentTitle } from '../../lib/useDocumentTitle.js'
+import { TITLES } from '../../lib/pageTitle.js'
 
 export default function Privacy() {
+    useDocumentTitle(TITLES.privacy)
     return (
         <div id="privacy-page">
             <div id="privacy-header-wrap">

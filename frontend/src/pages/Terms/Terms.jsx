@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
 import './Terms.css'
+import { useDocumentTitle } from '../../lib/useDocumentTitle.js'
+import { TITLES } from '../../lib/pageTitle.js'
 
 export default function Terms() {
+    useDocumentTitle(TITLES.terms)
     return (
         <div id="terms-page">
             <div id="terms-header-wrap">

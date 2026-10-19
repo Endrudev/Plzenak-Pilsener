@@ -11,6 +11,8 @@ import { getEvents, getEventLocations } from '../../lib/eventsApi.js'
 import { initMode } from '../../lib/landingTheme.js'
 import '../../components/landing/landing.css'
 import './Home.css'
+import { useDocumentTitle } from '../../lib/useDocumentTitle.js'
+import { TITLES } from '../../lib/pageTitle.js'
 
 // Homepage, postavená od nuly 2026-10-04. Zachované jsou jen hero dlaždice
 // (HeroBento), značka, font Bricolage a brandová oranžová. Všechno ostatní je
@@ -29,6 +31,7 @@ import './Home.css'
 // nezávisí, takže se vykreslí hned a zbytek stránky nabíhá, až data přijdou
 // (sekce mezitím ukazují kostru).
 export default function Home() {
+    useDocumentTitle(TITLES.home)
     const [events, setEvents] = useState([])
     const [locations, setLocations] = useState([])
     const [loading, setLoading] = useState(true)

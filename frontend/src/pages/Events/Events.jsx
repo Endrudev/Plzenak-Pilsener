@@ -14,6 +14,8 @@ import { initMode } from '../../lib/landingTheme.js'
 import '../../components/landing/landing.css'
 import LearningNote from '../../components/LearningNote/LearningNote.jsx'
 import './Events.css'
+import { useDocumentTitle } from '../../lib/useDocumentTitle.js'
+import { TITLES } from '../../lib/pageTitle.js'
 
 // Stránka Akce, postavená od nuly 2026-10-04. Hero (EventsHero) byl 2026-10-05
 // rozšířený o vrstvy, dominanty a kartu s nejbližší akcí. Všechno ostatní je nové a drží se stejného jazyka jako
@@ -25,6 +27,7 @@ import './Events.css'
 const PER_PAGE = 12
 
 export default function Events() {
+    useDocumentTitle(TITLES.events)
     const [searchParams, setSearchParams] = useSearchParams()
     const [items, setItems] = useState([])
     const [total, setTotal] = useState(0)

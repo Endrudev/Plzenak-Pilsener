@@ -9,6 +9,8 @@ import cityHeroPoster from '../../components/scenes/posters/city-hero.webp'
 import cityHeroMp4 from '../../components/scenes/videos/city-hero.mp4'
 import '../../components/landing/landing.css'
 import './NotFound.css'
+import { useDocumentTitle } from '../../lib/useDocumentTitle.js'
+import { TITLES } from '../../lib/pageTitle.js'
 
 // Stránka 404 ve stejném jazyce jako stránky kategorií: noční Plzeň pod průhlednou lištou,
 // pod ní list stránky v tématu (světlém nebo tmavém). Je to slepá ulička, takže místo
@@ -30,6 +32,7 @@ const LINKS = [
 ]
 
 export default function NotFound() {
+    useDocumentTitle(TITLES.notFound)
     const navigate = useNavigate()
     const [q, setQ] = useState('')
     // null = načítá se, [] = nic k ukázání (prázdná databáze nebo chyba), jinak akce
