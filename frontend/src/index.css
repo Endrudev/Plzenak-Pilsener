@@ -134,6 +134,24 @@
   --nav-h-mobile:     56px;
   --overlay-bg:       rgba(15, 9, 5, 0.88);
 
+  /* ---------- SOUHLAS · lišta a nastavení cookies (2026-10-20) ----------
+     Stejný princip jako --nav-*: výchozí hodnoty jsou světlé (zásady, podmínky,
+     světlé téma), tmavá homepage je přepíše níž. Komponenty o tématu nevědí.
+     Do 2026-10-20 byla lišta tmavá vždy (--dk-*) a na světlé stránce trčela. */
+  --ck-bg:            #F6F3EF;
+  --ck-surface:       #FEFCFA;
+  --ck-line:          rgba(26, 17, 11, 0.09);
+  --ck-line-strong:   rgba(26, 17, 11, 0.18);
+  --ck-text:          #1A110B;
+  --ck-muted:         #66564A;
+  --ck-link:          var(--color-label);   /* oranžová jako text: #E8720C má na světlém jen ~3:1 */
+  --ck-edge:          rgba(255, 255, 255, 0.8);   /* světlá hrana nahoře uvnitř karty */
+  --ck-hover:         rgba(26, 17, 11, 0.05);
+  --ck-tint:          rgba(26, 17, 11, 0.03);    /* podklad řádku kategorie v nastavení */
+  --ck-track:         rgba(26, 17, 11, 0.08);    /* vypnutý přepínač */
+  --ck-knob:          #FFFFFF;
+  --ck-knob-shadow:   0 1px 3px rgba(26, 17, 11, 0.25);
+
   /* ---------- GRADIENT ---------- */
   --hero-gradient:    linear-gradient(135deg, #EF9F27 0%, #E8720C 100%);
 
@@ -408,6 +426,20 @@ html.theme-lp:not([data-lp-mode='light']) {
   --nav-hover:       rgba(255, 233, 210, 0.08);
   --nav-edge:        rgba(255, 233, 210, 0.10);
   --nav-shadow:      0 14px 34px -14px rgba(0, 0, 0, 0.7);
+
+  --ck-bg:           var(--dk-bg);
+  --ck-surface:      var(--dk-surface);
+  --ck-line:         var(--dk-line);
+  --ck-line-strong:  var(--dk-line-strong);
+  --ck-text:         var(--dk-text);
+  --ck-muted:        var(--dk-muted);
+  --ck-link:         var(--color-primary);
+  --ck-edge:         rgba(255, 233, 210, 0.08);
+  --ck-hover:        rgba(255, 233, 210, 0.08);
+  --ck-tint:         rgba(255, 233, 210, 0.03);
+  --ck-track:        rgba(255, 233, 210, 0.1);
+  --ck-knob:         var(--dk-text);
+  --ck-knob-shadow:  none;
 }
 
 /* Posuvník: nativní, jen v barvách webu (viz pravidlo na html níž). Výchozí je pro

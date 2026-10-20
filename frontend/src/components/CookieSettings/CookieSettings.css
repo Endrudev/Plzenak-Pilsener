@@ -1,5 +1,5 @@
-/* Nastavení cookies: modální okno. Vždy tmavé (--dk-*), stejně jako lišta, ať je
-   stejné na všech stránkách bez ohledu na téma. Dvojitý rám: vnější okraj a jádro
+/* Nastavení cookies: modální okno. V barvách tématu stránky (tokeny --ck-*),
+   stejně jako lišta. Dvojitý rám: vnější okraj a jádro
    se soustředným zaoblením. Přepínač se hýbe jen transformem. */
 
 .cs-overlay {
@@ -29,9 +29,9 @@
     overflow-y: auto;
     box-sizing: border-box;
     padding: var(--space-1-5);
-    border: 1px solid var(--dk-line-strong);
+    border: 1px solid var(--ck-line-strong);
     border-radius: var(--radius-scene);
-    background: color-mix(in srgb, var(--dk-bg) 78%, transparent);
+    background: color-mix(in srgb, var(--ck-bg) 78%, transparent);
     box-shadow: var(--shadow-pop);
     /* Nikdy od scale(0): okno vyroste z 0.96 a z průhlednosti, uprostřed obrazovky. */
     animation: cs-modal-in var(--dur-slow) var(--ease-drawer);
@@ -57,9 +57,9 @@
     gap: var(--space-5);
     padding: var(--space-6);
     border-radius: calc(var(--radius-scene) - var(--space-1-5));
-    background: var(--dk-surface);
-    box-shadow: inset 0 1px 0 rgba(255, 233, 210, 0.08);
-    color: var(--dk-text);
+    background: var(--ck-surface);
+    box-shadow: inset 0 1px 0 var(--ck-edge);
+    color: var(--ck-text);
 }
 
 .cs-header {
@@ -75,14 +75,14 @@
     font-weight: var(--fw-extrabold);
     line-height: var(--lh-snug);
     letter-spacing: var(--tracking-heading);
-    color: var(--dk-text);
+    color: var(--ck-text);
 }
 
 .cs-lede {
     margin: var(--space-2) 0 0;
     font-size: var(--fs-body);
     line-height: var(--lh-snug);
-    color: var(--dk-muted);
+    color: var(--ck-muted);
 }
 
 .cs-close {
@@ -91,10 +91,10 @@
     place-items: center;
     width: var(--touch-min);
     height: var(--touch-min);
-    border: 1px solid var(--dk-line-strong);
+    border: 1px solid var(--ck-line-strong);
     border-radius: 50%;
     background: transparent;
-    color: var(--dk-text);
+    color: var(--ck-text);
     cursor: pointer;
     transition: background-color var(--dur-fast) var(--ease-standard),
                 transform var(--dur-fast) var(--ease-standard);
@@ -106,14 +106,14 @@
 
 @media (hover: hover) {
     .cs-close:hover {
-        background: rgba(255, 233, 210, 0.08);
+        background: var(--ck-hover);
     }
 }
 
 .cs-close:focus-visible,
 .cs-switch:focus-visible,
 .cs-btn:focus-visible {
-    outline: 2px solid var(--dk-text);
+    outline: 2px solid var(--ck-text);
     outline-offset: 2px;
 }
 
@@ -130,9 +130,9 @@
     justify-content: space-between;
     gap: var(--space-4);
     padding: var(--space-4) var(--space-5);
-    border: 1px solid var(--dk-line);
+    border: 1px solid var(--ck-line);
     border-radius: calc(var(--radius-scene) - var(--space-1-5) - var(--space-4));
-    background: rgba(255, 233, 210, 0.03);
+    background: var(--ck-tint);
 }
 
 .cs-row-text {
@@ -143,14 +143,14 @@
     margin: 0 0 var(--space-1);
     font-size: var(--fs-body-lg);
     font-weight: var(--fw-bold);
-    color: var(--dk-text);
+    color: var(--ck-text);
 }
 
 .cs-row-desc {
     margin: 0;
     font-size: var(--fs-sm);
     line-height: var(--lh-snug);
-    color: var(--dk-muted);
+    color: var(--ck-muted);
 }
 
 .cs-always {
@@ -158,7 +158,7 @@
     padding: var(--space-1-5) var(--space-3);
     border-radius: var(--radius-pill);
     background: color-mix(in srgb, var(--color-primary) 18%, transparent);
-    color: var(--color-primary);
+    color: var(--ck-link);
     font-size: var(--fs-xs);
     font-weight: var(--fw-bold);
     white-space: nowrap;
@@ -171,9 +171,9 @@
     width: 56px;
     height: 32px;
     padding: 0;
-    border: 1px solid var(--dk-line-strong);
+    border: 1px solid var(--ck-line-strong);
     border-radius: var(--radius-pill);
-    background: rgba(255, 233, 210, 0.1);
+    background: var(--ck-track);
     cursor: pointer;
     transition: background-color var(--dur-base) var(--ease-standard),
                 border-color var(--dur-base) var(--ease-standard),
@@ -191,7 +191,8 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: var(--dk-text);
+    background: var(--ck-knob);
+    box-shadow: var(--ck-knob-shadow);
     transition: transform var(--dur-base) var(--ease-drawer);
 }
 
@@ -231,8 +232,8 @@
 
 .cs-btn--ghost {
     background: transparent;
-    border-color: var(--dk-line-strong);
-    color: var(--dk-text);
+    border-color: var(--ck-line-strong);
+    color: var(--ck-text);
 }
 
 .cs-btn--accent {
@@ -242,7 +243,7 @@
 
 @media (hover: hover) {
     .cs-btn--ghost:hover {
-        background: rgba(255, 233, 210, 0.08);
+        background: var(--ck-hover);
     }
 
     .cs-btn--accent:hover {

@@ -1,5 +1,5 @@
-/* Souhlasová lišta. Tmavá karta v rohu, vždy tmavá (--dk-*): stránky bez tématu
-   (zásady, podmínky) a stránky se světlým tématem pak mají stejnou lištu.
+/* Souhlasová lišta. Karta v rohu v barvách tématu stránky (tokeny --ck-* v
+   index.css): světlá na světlých stránkách, tmavá na tmavé homepage.
    Karta je dvojitý rám: vnější okraj, uvnitř jádro se soustředným zaoblením.
    Pohyb je jen transform a opacity. */
 
@@ -36,9 +36,9 @@
     max-width: 440px;
     box-sizing: border-box;
     padding: var(--space-1-5);
-    border: 1px solid var(--dk-line-strong);
+    border: 1px solid var(--ck-line-strong);
     border-radius: var(--radius-scene);
-    background: color-mix(in srgb, var(--dk-bg) 78%, transparent);
+    background: color-mix(in srgb, var(--ck-bg) 78%, transparent);
     box-shadow: var(--shadow-pop);
     pointer-events: auto;
 }
@@ -49,9 +49,9 @@
     gap: var(--space-4);
     padding: var(--space-5);
     border-radius: calc(var(--radius-scene) - var(--space-1-5));
-    background: var(--dk-surface);
-    box-shadow: inset 0 1px 0 rgba(255, 233, 210, 0.08);
-    color: var(--dk-text);
+    background: var(--ck-surface);
+    box-shadow: inset 0 1px 0 var(--ck-edge);
+    color: var(--ck-text);
 }
 
 .ck-head {
@@ -80,18 +80,18 @@
     font-size: var(--fs-body-lg);
     font-weight: var(--fw-bold);
     letter-spacing: var(--tracking-heading);
-    color: var(--dk-text);
+    color: var(--ck-text);
 }
 
 .ck-desc {
     margin: 0;
     font-size: var(--fs-sm);
     line-height: var(--lh-snug);
-    color: var(--dk-muted);
+    color: var(--ck-muted);
 }
 
 .ck-desc a {
-    color: var(--color-primary);
+    color: var(--ck-link);
     font-weight: var(--fw-semibold);
     text-decoration: none;
 }
@@ -103,7 +103,7 @@
 }
 
 .ck-desc a:focus-visible {
-    outline: 2px solid var(--dk-text);
+    outline: 2px solid var(--ck-text);
     outline-offset: 2px;
     border-radius: var(--radius-pill);
 }
@@ -134,8 +134,8 @@
 
 .ck-btn--ghost {
     background: transparent;
-    border-color: var(--dk-line-strong);
-    color: var(--dk-text);
+    border-color: var(--ck-line-strong);
+    color: var(--ck-text);
 }
 
 .ck-btn--accent {
@@ -145,7 +145,7 @@
 
 @media (hover: hover) {
     .ck-btn--ghost:hover {
-        background: rgba(255, 233, 210, 0.08);
+        background: var(--ck-hover);
     }
 
     .ck-btn--accent:hover {
@@ -155,7 +155,7 @@
 
 .ck-btn:focus-visible,
 .ck-link:focus-visible {
-    outline: 2px solid var(--dk-text);
+    outline: 2px solid var(--ck-text);
     outline-offset: 2px;
 }
 
@@ -166,7 +166,7 @@
     border: 0;
     border-radius: var(--radius-pill);
     background: transparent;
-    color: var(--dk-muted);
+    color: var(--ck-muted);
     font-family: inherit;
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
@@ -183,7 +183,7 @@
 
 @media (hover: hover) {
     .ck-link:hover {
-        color: var(--dk-text);
+        color: var(--ck-text);
     }
 }
 
