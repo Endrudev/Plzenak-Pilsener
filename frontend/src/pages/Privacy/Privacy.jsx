@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import './Privacy.css'
+import MeasurementOptOut from '../../components/MeasurementOptOut/MeasurementOptOut.jsx'
 import { useDocumentTitle } from '../../lib/useDocumentTitle.js'
 import { TITLES } from '../../lib/pageTitle.js'
 
@@ -28,7 +29,7 @@ export default function Privacy() {
                             <circle cx="12" cy="12" r="9" />
                             <path d="M12 7v5l3.5 2" />
                         </svg>
-                        <span>Naposledy upraveno 16. 10. 2026</span>
+                        <span>Naposledy upraveno 20. 10. 2026</span>
                     </div>
                 </div>
             </div>
@@ -55,7 +56,8 @@ export default function Privacy() {
                         <h2>2. Jaké údaje zpracováváme</h2>
                         <p>
                             Pro běžné prohlížení akcí od tebe nepotřebujeme nic. Nemáme registraci návštěvníků,
-                            neměříme návštěvnost a nepoužíváme žádné sledovací ani reklamní skripty.
+                            nepoužíváme cookies ani reklamní skripty. Návštěvnost měříme vlastním nástrojem bez
+                            cookies, který můžeš vypnout (viz níže).
                         </p>
                         <ul>
                             <li>
@@ -71,8 +73,19 @@ export default function Privacy() {
                             <li>
                                 <strong>Úložiště prohlížeče (localStorage)</strong> — web nenastavuje žádné cookies.
                                 V paměti tvého prohlížeče uloží jen záznam o tvém rozhodnutí o souhlasu
-                                (<code>plzenak-consent</code>: verze, čas a volba) a případně volbu světlého nebo
-                                tmavého vzhledu (<code>plzenak-theme</code>). Na server se nic z toho neposílá.
+                                (<code>plzenak-consent</code>: verze, čas a volba), případně volbu světlého nebo
+                                tmavého vzhledu (<code>plzenak-theme</code>) a tvou volbu vypnout měření návštěvnosti
+                                (<code>umami.disabled</code>). Na server se nic z toho neposílá.
+                            </li>
+                            <li>
+                                <strong>Měření návštěvnosti</strong> — při zobrazení stránky odešle prohlížeč na náš
+                                server (stats.plzenak.eu) adresu stránky, odkud jsi přišel, typ prohlížeče, systému a
+                                zařízení, jazyk a rozlišení obrazovky. Z IP adresy se odvodí země a město a vytvoří se
+                                z ní anonymní identifikátor návštěvy, samotná IP adresa se neukládá. Identifikátor se
+                                každý měsíc mění, takže návštěvy se nedají propojit do delší historie ani přiřadit ke
+                                konkrétnímu člověku. Nepoužíváme k tomu cookies a data nikomu nepředáváme. Měříme
+                                nástrojem Umami, který běží na našem serveru. Prohlížeče se zapnutým Do Not Track
+                                neměříme vůbec.
                             </li>
                             <li>
                                 <strong>Účet správce</strong> — e-mail a zahašované heslo (bcrypt). Vzniká jen lidem,
@@ -88,6 +101,11 @@ export default function Privacy() {
                                 výš, zpracujeme tvou e-mailovou adresu a obsah zprávy, abychom ti mohli odpovědět.
                             </li>
                         </ul>
+                        <p>
+                            Měření návštěvnosti si můžeš pro tento prohlížeč kdykoli vypnout. Volba se uloží jen
+                            v tvém prohlížeči, v jiném prohlížeči nebo po vymazání dat webu ji je potřeba zopakovat.
+                        </p>
+                        <MeasurementOptOut />
                     </section>
 
                     <section id="proc-udaje-zpracovavame" className="legal-section">
@@ -98,6 +116,13 @@ export default function Privacy() {
                             Právním základem je náš oprávněný zájem na provozu a zabezpečení webu (čl. 6 odst. 1
                             písm. f) GDPR). Nepoužíváme je k profilování ani k marketingu a nespojujeme je s žádným
                             účtem.
+                        </p>
+                        <p>
+                            Návštěvnost měříme, abychom věděli, které stránky a akce lidi zajímají a jestli web
+                            funguje, jak má. Právním základem je náš oprávněný zájem na zlepšování webu (čl. 6
+                            odst. 1 písm. f) GDPR). Měření nepotřebuje souhlas, protože nepoužívá cookies,
+                            neukládá IP adresu a data zůstávají u nás. Proti měření můžeš vznést námitku tím, že
+                            ho vypneš v oddílu 2.
                         </p>
                         <p>
                             Zprávy, které nám napíšeš, zpracováváme, abychom ti odpověděli, na základě našeho
@@ -119,7 +144,8 @@ export default function Privacy() {
                         <ul>
                             <li>
                                 <strong>Amazon Web Services (AWS)</strong> — hosting serveru, na kterém web běží, v
-                                regionu EU (Stockholm, Švédsko). Server zpracovává technické záznamy a údaje správce.
+                                regionu EU (Stockholm, Švédsko). Server zpracovává technické záznamy, statistiky
+                                návštěvnosti a údaje správce.
                             </li>
                             <li>
                                 <strong>Cloudflare</strong> — správa domény (DNS), úložiště obrázků akcí na adrese
@@ -167,6 +193,10 @@ export default function Privacy() {
                                 <strong>Přihlašovací token</strong> — vyprší za 8 hodin od přihlášení.
                             </li>
                             <li>
+                                <strong>Statistiky návštěvnosti</strong> — po dobu provozu webu. Obsahují jen anonymní
+                                identifikátor návštěvy, který se každý měsíc mění, nikoli IP adresu.
+                            </li>
+                            <li>
                                 <strong>Záznam o souhlasu a volba vzhledu</strong> — v tvém prohlížeči, dokud ho
                                 nesmažeš (například vymazáním dat webu).
                             </li>
@@ -194,7 +224,8 @@ export default function Privacy() {
                             Vůči nám máš vždy právo na přístup ke svým údajům, jejich opravu, výmaz, omezení
                             zpracování, přenositelnost a právo vznést námitku proti zpracování z oprávněného zájmu.
                             Souhlas s načtením mapy můžeš kdykoli odvolat v <strong>Nastavení cookies</strong> v
-                            patičce.
+                            patičce, měření návštěvnosti vypnout v{' '}
+                            <a className="legal-link" href="#jake-udaje-zpracovavame">oddílu 2</a>.
                         </p>
                         <p>
                             Stačí napsat na{' '}
@@ -208,7 +239,7 @@ export default function Privacy() {
                         <h2>7. Změny tohoto dokumentu</h2>
                         <p>
                             Tento dokument budeme aktualizovat, pokud se změní způsob, jakým Plzeňák funguje —
-                            například přibude služba třetí strany nebo měření návštěvnosti. Datum poslední úpravy
+                            například přibude služba třetí strany. Datum poslední úpravy
                             najdeš vždy nahoře.
                         </p>
                     </section>

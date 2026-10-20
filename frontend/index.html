@@ -39,6 +39,28 @@
         } catch (e) {}
       })();
     </script>
+    <!-- Měření návštěvnosti: Umami na vlastním serveru (stats.plzenak.eu), bez
+         cookies a bez ukládání IP, viz Zásady. defer: nebrzdí vykreslení stránky.
+         data-domains: měří se jen na plzenak.eu, ne při vývoji na localhost.
+         data-do-not-track: prohlížeč s Do Not Track se neměří.
+         data-exclude-search: dotaz (?q=, ?page=) se do adresy nepočítá, takže
+         hledání a filtry nedělají z jedné návštěvy desítky zobrazení stránek.
+         data-before-send: administrace se neměří (funkce níž vrátí null).
+         Vypnutí měření pro prohlížeč: klíč umami.disabled, lib/analytics.js. -->
+    <script>
+      window.plzenakBeforeSend = function (type, payload) {
+        try {
+          if (new URL(payload.url, location.href).pathname.indexOf('/admin') === 0) return null;
+        } catch (e) {}
+        return payload;
+      };
+    </script>
+    <script defer src="https://stats.plzenak.eu/script.js"
+      data-website-id="086e92d4-10f0-42fb-8538-9270225f1639"
+      data-domains="plzenak.eu"
+      data-do-not-track="true"
+      data-exclude-search="true"
+      data-before-send="plzenakBeforeSend"></script>
   </head>
   <body>
     <div id="root"></div>
