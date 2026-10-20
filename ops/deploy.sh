@@ -31,6 +31,21 @@ main() {
 
     PREVIOUS=$(git rev-parse HEAD)
 
+    # Caddy si Caddyfile přečte jen při startu a `compose up -d` ho znovu
+    # nevytvoří, když se v docker-compose.yml u něj nic nezměnilo. Navíc je
+    # Caddyfile připojený jako jeden soubor: git ho při přepnutí verze nahradí
+    # novým a běžící kontejner dál vidí ten starý, takže nepomůže ani
+    # `caddy reload`. Proto se při změně Caddyfile kontejner vytvoří znovu
+    # (výpadek HTTPS na sekundu, dvě). Předtím se nová konfigurace ověří v
+    # dočasném kontejneru: chybná skončí chybou dřív, než shodí běžící Caddy.
+    refresh_caddy() {
+        if git diff --quiet "$1" "$2" -- Caddyfile; then return 0; fi
+        echo "Caddyfile se změnil, vytvářím Caddy znovu"
+        doppler run -- docker compose run --rm --no-deps -T caddy \
+            caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+        doppler run -- docker compose up -d --no-deps --force-recreate caddy
+    }
+
     # Návrat na předchozí verzi. Musí být nastavený dřív, než se cokoli změní.
     # Migrace se nevrací, proto mají být zpětně kompatibilní.
     rollback() {
@@ -38,6 +53,7 @@ main() {
         echo "Nasazení selhalo, vracím $PREVIOUS" >&2
         git switch --detach "$PREVIOUS"
         doppler run -- docker compose up -d --build
+        refresh_caddy "$SHA" "$PREVIOUS"
     }
     trap rollback ERR
 
@@ -47,6 +63,7 @@ main() {
     doppler run -- docker compose build
     doppler run -- docker compose run --rm -T backend npm run migrate
     doppler run -- docker compose up -d
+    refresh_caddy "$PREVIOUS" "$SHA"
 
     # Backend potřebuje po startu pár sekund
     for i in $(seq 1 30); do
