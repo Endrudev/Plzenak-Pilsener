@@ -81,7 +81,67 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # Návštěvnost (Umami, od 2026-10-20). Vlastní databáze v samostatném
+  # kontejneru: data analytiky jsou oddělená od akcí, Umami nemá přístup k
+  # databázi aplikace a její chyba ani aktualizace se aplikace nedotkne.
+  # Záměrně mimo zálohy (ops/backup.sh): ztráta statistik nic nerozbije.
+  umami-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: ${UMAMI_DB_PASSWORD}
+    volumes:
+      - umami-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U umami -d umami"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  umami:
+    # Pevná verze, ne latest: aktualizace je vědomý krok (změna čísla v PR),
+    # ne náhoda při příštím nasazení. Při startu si Umami samo migruje schéma.
+    image: ghcr.io/umami-software/umami:3.4.0
+    environment:
+      # Heslo musí být hex (openssl rand -hex 32): je uvnitř URL, znaky jako
+      # @ / : by adresu rozbily.
+      DATABASE_URL: postgresql://umami:${UMAMI_DB_PASSWORD}@umami-db:5432/umami
+      APP_SECRET: ${UMAMI_APP_SECRET}
+      TWO_FACTOR_ENCRYPTION_KEY: ${UMAMI_2FA_KEY}
+      # Nástěnka jinak volá servery umami.is (telemetrie, kontrola aktualizací).
+      DISABLE_TELEMETRY: "1"
+      DISABLE_UPDATES: "1"
+    # Jen na localhostu serveru, ne do internetu. Slouží k prvnímu přihlášení
+    # přes SSH tunel (výchozí účet admin/umami se musí změnit dřív, než bude
+    # nástěnka veřejně dostupná). Veřejná cesta vede přes Caddy.
+    ports:
+      - "127.0.0.1:3000:3000"
+    init: true
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3000/api/heartbeat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      umami-db:
+        condition: service_healthy
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 volumes:
   db-data:
   caddy-data:
   caddy-config:
+  umami-db-data:
