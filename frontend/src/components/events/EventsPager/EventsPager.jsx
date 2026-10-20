@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { getPageItems } from '../../Pagination/getPageItems.js'
 import { ArrowLeft, ArrowRight } from '../../landing/icons.jsx'
 import './EventsPager.css'
@@ -5,16 +6,29 @@ import './EventsPager.css'
 // Stránkování seznamu akcí. Rozložení řady (první, poslední, okolí, tři tečky)
 // počítá sdílená getPageItems, tady je jen vzhled podle tématu stránky.
 // Na telefonu je číselná řada nahrazená údajem „Stránka X z Y“ mezi šipkami.
+//
+// Po přepnutí stránky odroluje na začátek výsledků (nejbližší <section> kolem
+// lišty), jinak by člověk zůstal dole u stránkování a nové akce by začínaly
+// mimo obrazovku. ScrollToTop v App.jsx to nepokryje: na /akce se adresa
+// nemění vůbec a na kategoriích jen ?page=. Odstup pod lepící hlavičkou dává
+// scroll-margin-top u sekce; plynulost a omezení pohybu řídí scroll-behavior
+// v index.css, který behavior: 'auto' respektuje.
 export default function EventsPager({ page, totalPages, onChange }) {
+    const navRef = useRef(null)
     if (totalPages <= 1) return null
 
+    function go(next) {
+        onChange(next)
+        navRef.current?.closest('section')?.scrollIntoView({ behavior: 'auto', block: 'start' })
+    }
+
     return (
-        <nav className="epg" aria-label="Stránkování">
+        <nav ref={navRef} className="epg" aria-label="Stránkování">
             <button
                 type="button"
                 className="epg-btn epg-arrow"
                 disabled={page <= 1}
-                onClick={() => onChange(page - 1)}
+                onClick={() => go(page - 1)}
                 aria-label="Předchozí stránka"
             >
                 <ArrowLeft />
@@ -31,7 +45,7 @@ export default function EventsPager({ page, totalPages, onChange }) {
                             className="epg-btn"
                             aria-current={item === page ? 'page' : undefined}
                             aria-label={`Stránka ${item}`}
-                            onClick={() => onChange(item)}
+                            onClick={() => go(item)}
                         >
                             {item}
                         </button>
@@ -45,7 +59,7 @@ export default function EventsPager({ page, totalPages, onChange }) {
                 type="button"
                 className="epg-btn epg-arrow"
                 disabled={page >= totalPages}
-                onClick={() => onChange(page + 1)}
+                onClick={() => go(page + 1)}
                 aria-label="Další stránka"
             >
                 <ArrowRight />
