@@ -17,6 +17,8 @@
 /* ---------- výsledky ---------- */
 .cp-results {
     padding-top: var(--space-10);
+    /* stránkování sem roluje (EventsPager), lepící hlavička ji nesmí zakrýt */
+    scroll-margin-top: var(--header-h);
 }
 
 .cp-bar {
