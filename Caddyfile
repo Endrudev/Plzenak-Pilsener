@@ -3,6 +3,14 @@ plzenak.eu {
     reverse_proxy frontend:80
 }
 
+# Měření návštěvnosti (Umami, od 2026-10-20): nástěnka, měřicí skript
+# /script.js a příjem návštěv /api/send. Certifikát vydá Caddy sám jako
+# u hlavní domény. Záznam stats v DNS je "DNS only", stejně jako plzenak.eu.
+stats.plzenak.eu {
+    encode zstd gzip
+    reverse_proxy umami:3000
+}
+
 www.plzenak.eu {
     redir https://plzenak.eu{uri} permanent
 }
