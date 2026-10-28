@@ -29,7 +29,7 @@ export default function Privacy() {
                             <circle cx="12" cy="12" r="9" />
                             <path d="M12 7v5l3.5 2" />
                         </svg>
-                        <span>Naposledy upraveno 20. 10. 2026</span>
+                        <span>Naposledy upraveno 28. 10. 2026</span>
                     </div>
                 </div>
             </div>
@@ -94,7 +94,10 @@ export default function Privacy() {
                             </li>
                             <li>
                                 <strong>Údaje o akcích</strong> — název, popis, datum, místo a adresa akce a obrázek.
-                                Vkládá je správce a jsou určené ke zveřejnění; nejsou to údaje o návštěvnících.
+                                Jsou určené ke zveřejnění a nejsou to údaje o návštěvnících. Část akcí vkládá správce
+                                ručně, část přebíráme z veřejného kalendáře města Plzně (akce.plzen.eu) jako návrhy,
+                                které před zveřejněním zkontroluje a schválí člověk. Popis akce může obsahovat jména
+                                účinkujících, pořadatelů nebo autorů, jak je zveřejnil pořadatel.
                             </li>
                             <li>
                                 <strong>E-maily, které nám napíšeš</strong> — když pošleš zprávu na adresu uvedenou
@@ -127,6 +130,14 @@ export default function Privacy() {
                         <p>
                             Zprávy, které nám napíšeš, zpracováváme, abychom ti odpověděli, na základě našeho
                             oprávněného zájmu na vyřízení tvého dotazu.
+                        </p>
+                        <p>
+                            Akce převzaté z akce.plzen.eu zpracováváme, abychom mohli nabídnout úplný přehled akcí ve
+                            městě. Nástroj umělé inteligence k nim podle údajů pořadatele připraví návrh vlastního
+                            popisku a štítků. Právním základem je náš oprávněný zájem na přípravě obsahu webu (čl. 6
+                            odst. 1 písm. f) GDPR). Pracujeme jen s údaji, které pořadatel sám zveřejnil k propagaci
+                            akce, nic dalšího o lidech nedohledáváme a nepoužíváme to k profilování. Pokud jsi
+                            účinkující nebo pořadatel a nechceš, aby u akce bylo tvé jméno, napiš nám a upravíme to.
                         </p>
                         <p>
                             Načtení mapy (viz níže) a uložení záznamu o souhlasu probíhá na základě tvého souhlasu
@@ -165,14 +176,24 @@ export default function Privacy() {
                                 <strong>Nominatim</strong> — našeptávač adres v administraci. Dotaz odchází jen
                                 tehdy, když správce píše adresu do formuláře akce, návštěvníků se netýká.
                             </li>
+                            <li>
+                                <strong>Google (Gemini API)</strong> — služba umělé inteligence, která z údajů o akci
+                                převzaté z akce.plzen.eu připraví návrh popisku a štítků. Posíláme jí jen název, typ,
+                                místo, adresu a popis akce od pořadatele, nikdy nic o návštěvnících webu. Používáme
+                                placenou verzi služby, u které Google podle svých{' '}
+                                <a className="legal-link" href="https://ai.google.dev/gemini-api/terms">podmínek</a>{' '}
+                                obsah nepoužívá ke zlepšování svých produktů a zpracovává ho jako náš zpracovatel.
+                                Smluvní stranou je Google Cloud EMEA Limited (Irsko).
+                            </li>
                         </ul>
                         <p>
                             Písma na webu jsou ukládaná přímo u nás, takže při jejich načtení nic neodchází k
                             třetím stranám.
                         </p>
                         <p>
-                            Amazon a Cloudflare jsou společnosti ze Spojených států. Data hostujeme v EU, ale
-                            Cloudflare provozuje síť po celém světě a údaje tak mohou být zpracovány i mimo EU.
+                            Amazon, Cloudflare a Google jsou společnosti ze Spojených států. Data hostujeme v EU, ale
+                            Cloudflare provozuje síť po celém světě a Google může údaje poslané do Gemini zpracovávat
+                            v kterékoli zemi, kde má zařízení, takže údaje mohou být zpracovány i mimo EU.
                             Poskytovatelé se při předávání opírají o mechanismy, které evropské právo uznává
                             (rozhodnutí o odpovídající ochraně v rámci EU–US Data Privacy Framework nebo standardní
                             smluvní doložky).
@@ -210,6 +231,14 @@ export default function Privacy() {
                             </li>
                             <li>
                                 <strong>E-maily od tebe</strong> — jen po dobu nezbytnou k vyřízení dotazu.
+                            </li>
+                            <li>
+                                <strong>Údaje poslané do Gemini</strong> — Google je uchovává po omezenou dobu, a to jen
+                                kvůli odhalování zneužití služby a povinnostem, které mu ukládá zákon.
+                            </li>
+                            <li>
+                                <strong>Návrhy akcí z akce.plzen.eu</strong> — uchováváme je i po schválení nebo
+                                zamítnutí, aby se stejná akce do fronty nevracela.
                             </li>
                             <li>
                                 <strong>Údaje o akcích</strong> — zůstávají zveřejněné i po skončení akce jako archiv
