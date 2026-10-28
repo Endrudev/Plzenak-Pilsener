@@ -173,6 +173,37 @@ router.post('/', importerLimiter, importerAuth, async (req, res) => {
     }
 })
 
+// POST /api/candidates/status — stav odeslaných návrhů pro měření importéru (I-10),
+// body: { sourceUrls: [...] }. POST, protože sto adres se do query stringu nevejde.
+// Vrací jen stav, id vzniklé akce a čas vyřízení, žádný text návrhu: uniklý token
+// importéru tak prozradí nejvýš to, co se s návrhy stalo.
+router.post('/status', importerLimiter, importerAuth, async (req, res) => {
+    try {
+        const urls = req.body && req.body.sourceUrls
+        if (!Array.isArray(urls) || urls.length === 0 || urls.length > MAX_BATCH
+            || !urls.every(url => typeof url === 'string' && url.length > 0 && url.length <= 500)) {
+            return res.status(400).json({ error: `Pole sourceUrls musí obsahovat 1 až ${MAX_BATCH} adres.` })
+        }
+        const unique = [...new Set(urls)]
+        const result = await query(`
+            SELECT source_url, status, event_id, reviewed_at
+            FROM event_candidates
+            WHERE source_url = ANY($1);
+        `, [unique])
+        const items = result.rows.map(row => ({
+            sourceUrl: row.source_url,
+            status: row.status,
+            eventId: row.event_id,
+            reviewedAt: row.reviewed_at,
+        }))
+        const known = new Set(items.map(item => item.sourceUrl))
+        res.json({ items, unknown: unique.filter(url => !known.has(url)) })
+    } catch (err) {
+        console.error(err.message)
+        res.status(500).json({ error: 'Stav návrhů se nepodařilo načíst. Zkuste to znovu.' })
+    }
+})
+
 // GET /api/candidates?status=pending — seznam pro administraci
 router.get('/', authMiddleware, async (req, res) => {
     try {

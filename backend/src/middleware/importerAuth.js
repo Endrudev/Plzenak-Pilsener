@@ -2,8 +2,9 @@ const crypto = require('node:crypto')
 const rateLimit = require('express-rate-limit')
 
 // Přihlášení importéru: samostatný token IMPORTER_TOKEN (Doppler), ne JWT administrátora.
-// Smí jediné, odeslat návrhy akcí do fronty (POST /api/candidates). Nic nečte, nemění
-// a nic nezveřejní, takže i kdyby unikl, nejhorší možnost jsou další návrhy ke schválení.
+// Smí odeslat návrhy akcí do fronty (POST /api/candidates) a zjistit jejich stav
+// (POST /api/candidates/status, bez obsahu návrhů). Nic nemění a nic nezveřejní, takže
+// i kdyby unikl, nejhorší možnost jsou další návrhy ke schválení a přehled jejich stavu.
 //
 // Když proměnná není nastavená, brána je zavřená (503): lepší než nechat porovnávat
 // proti prázdnému řetězci.
