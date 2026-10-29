@@ -1,0 +1,517 @@
+/* Sdílené prvky administrace (2026-10-29). Importuje je AdminShell a přihlášení.
+   Barvy jsou --lp-* (téma homepage, html.theme-lp), takže světlé i tmavé téma
+   platí bez jediného pravidla navíc. Tvarový jazyk je z veřejného webu: malé a
+   interaktivní je plná pilulka, plochy mají --radius-scene a vnitřek o odsazení
+   menší oblouk (soustředné rohy). Administrace je nástroj, proto je hustší a
+   klidnější než landing: žádné scény, žádné gradienty přes plochy, pohyb jen
+   jako odezva na akci. */
+
+html.theme-admin {
+    color: var(--lp-text);
+}
+
+#adm,
+#adm-login {
+    --adm-control-h: 48px;
+    color: var(--lp-text);
+    font-family: var(--font-sans);
+}
+
+/* ---------- odkaz „přeskočit na obsah“ ---------- */
+.adm-skip {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+    z-index: 60;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    transform: translateY(-200%);
+}
+
+.adm-skip:focus-visible {
+    transform: none;
+}
+
+/* ---------- hlavička stránky ---------- */
+.adm-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4) var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+.adm-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    margin: 0 0 var(--space-2);
+    color: var(--lp-accent-text);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+}
+
+.adm-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-heading-1);
+    font-weight: var(--fw-extrabold);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tracking-display-l);
+}
+
+.adm-lead {
+    max-width: var(--measure);
+    margin: var(--space-3) 0 0;
+    color: var(--lp-muted);
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+}
+
+/* ---------- tlačítka ---------- */
+.adm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: var(--touch-min);
+    padding: 0 var(--space-5);
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    background: var(--lp-surface-hi);
+    color: var(--lp-text);
+    font-family: var(--font-display);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-bold);
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                border-color var(--dur-fast) var(--ease-standard),
+                color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+.adm-btn:active:not(:disabled) {
+    transform: scale(var(--scale-tap));
+}
+
+.adm-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+@media (hover: hover) {
+    .adm-btn:hover:not(:disabled) {
+        background: color-mix(in srgb, var(--lp-text) 12%, var(--lp-surface-hi));
+    }
+}
+
+.adm-btn--primary {
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+}
+
+@media (hover: hover) {
+    .adm-btn--primary:hover:not(:disabled) {
+        background: var(--color-primary-hover);
+    }
+}
+
+.adm-btn--ghost {
+    border-color: var(--lp-line-strong);
+    background: transparent;
+}
+
+@media (hover: hover) {
+    .adm-btn--ghost:hover:not(:disabled) {
+        background: var(--lp-surface-hi);
+    }
+}
+
+.adm-btn--danger {
+    background: var(--danger-soft);
+    color: var(--danger-ink);
+}
+
+@media (hover: hover) {
+    .adm-btn--danger:hover:not(:disabled) {
+        background: color-mix(in srgb, var(--danger-ink) 18%, transparent);
+    }
+}
+
+.adm-btn--solid-danger {
+    background: var(--danger-ink);
+    color: var(--lp-surface);
+}
+
+@media (hover: hover) {
+    .adm-btn--solid-danger:hover:not(:disabled) {
+        background: color-mix(in srgb, var(--danger-ink) 86%, var(--lp-text));
+    }
+}
+
+.adm-btn--sm {
+    min-height: 40px;
+    padding: 0 var(--space-4);
+    font-size: var(--fs-sm);
+}
+
+.adm-btn:focus-visible,
+.adm-icon-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Kulaté tlačítko jen s ikonou. Na hrubém ukazateli (prst) má aspoň 44 px. */
+.adm-icon-btn {
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--lp-muted);
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+.adm-icon-btn:active:not(:disabled) {
+    transform: scale(var(--scale-chip));
+}
+
+@media (hover: hover) {
+    .adm-icon-btn:hover {
+        background: var(--nav-hover);
+        color: var(--lp-text);
+    }
+
+    .adm-icon-btn--danger:hover {
+        background: var(--danger-soft);
+        color: var(--danger-ink);
+    }
+}
+
+@media (pointer: coarse) {
+    .adm-icon-btn {
+        width: var(--touch-min);
+        height: var(--touch-min);
+    }
+}
+
+/* ---------- pole formuláře ---------- */
+.adm-label {
+    display: block;
+    margin-bottom: var(--space-2);
+    color: var(--lp-text);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+}
+
+.adm-label-hint {
+    margin-left: var(--space-1);
+    color: var(--lp-muted);
+    font-weight: var(--fw-medium);
+}
+
+/* Vstup s volitelnou ikonou vlevo: obal nese rámeček a fokus, samotný <input> je
+   průhledný. Tak jde fokus zvýraznit i u polí s ikonou nebo tlačítkem uvnitř. */
+.adm-input {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2-5);
+    box-sizing: border-box;
+    width: 100%;
+    min-height: var(--adm-control-h);
+    padding: 0 var(--space-4);
+    border: 1px solid var(--lp-line-strong);
+    border-radius: var(--radius-field-soft);
+    background: var(--lp-bg);
+    color: var(--lp-muted);
+    transition: border-color var(--dur-fast) var(--ease-standard),
+                box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+.adm-input:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-shadow);
+}
+
+.adm-input[data-invalid] {
+    border-color: var(--danger-ink);
+}
+
+.adm-input > input,
+.adm-input > select,
+.adm-input > textarea,
+.adm-input > button.adm-input-value {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    min-height: calc(var(--adm-control-h) - 2px);
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--lp-text);
+    font: inherit;
+    /* 16 px: iOS při menším písmu po klepnutí do pole přiblíží stránku */
+    font-size: var(--fs-body-lg);
+}
+
+.adm-input > input::placeholder,
+.adm-input > textarea::placeholder {
+    color: var(--lp-muted);
+    opacity: 0.8;
+}
+
+.adm-input--area {
+    align-items: stretch;
+    padding: var(--space-3) var(--space-4);
+}
+
+.adm-input > textarea {
+    min-height: 140px;
+    line-height: var(--lh-body);
+    resize: vertical;
+}
+
+/* Nativní <select> bez systémové šipky, šipka je ikona za ním. */
+.adm-input > select {
+    appearance: none;
+    cursor: pointer;
+}
+
+.adm-input > select option {
+    background: var(--lp-surface);
+    color: var(--lp-text);
+}
+
+.adm-input-chevron {
+    pointer-events: none;
+    margin-left: calc(-1 * var(--space-6));
+}
+
+.adm-field-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    margin: var(--space-2) 0 0;
+    color: var(--danger-ink);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+}
+
+/* ---------- segmentový přepínač (pilulky v kolejnici) ---------- */
+/* Na nejužších displejích (320 px) se přepínač nevejde, posune se do strany
+   místo toho, aby přetekl stránku. */
+.adm-seg {
+    display: inline-flex;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: var(--space-1);
+    padding: var(--space-1);
+    border-radius: var(--radius-pill);
+    background: var(--lp-surface-hi);
+}
+
+.adm-seg button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    min-height: 36px;
+    padding: 0 var(--space-4);
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--lp-muted);
+    font-family: var(--font-display);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                color var(--dur-fast) var(--ease-standard);
+}
+
+@media (hover: hover) {
+    .adm-seg button:hover {
+        color: var(--lp-text);
+    }
+}
+
+.adm-seg button[aria-pressed='true'] {
+    background: var(--lp-surface);
+    color: var(--lp-text);
+    box-shadow: var(--shadow-card);
+}
+
+/* V tmavém tématu je --lp-surface tmavší než kolejnice, aktivní pilulka by
+   zapadla. Zvedne se o stupeň nad kolejnici. */
+html.theme-lp:not([data-lp-mode='light']) .adm-seg button[aria-pressed='true'] {
+    background: color-mix(in srgb, var(--lp-text) 14%, var(--lp-surface-hi));
+    box-shadow: none;
+}
+
+.adm-seg-count {
+    color: var(--lp-muted);
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+}
+
+@media (pointer: coarse) {
+    .adm-seg button {
+        min-height: 40px;
+    }
+}
+
+/* ---------- štítek kategorie ---------- */
+.adm-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-0-5) var(--space-2-5);
+    border-radius: var(--radius-pill);
+    background: var(--lp-surface-hi);
+    color: var(--lp-text);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    white-space: nowrap;
+}
+
+.adm-chip--top {
+    background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+    color: var(--lp-accent-text);
+}
+
+.adm-chip--past {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--lp-line-strong);
+    color: var(--lp-muted);
+}
+
+/* ---------- panel ---------- */
+.adm-panel {
+    border: 1px solid var(--lp-line);
+    border-radius: var(--radius-scene);
+    background: var(--lp-surface);
+    box-shadow: var(--shadow-card);
+}
+
+html.theme-lp:not([data-lp-mode='light']) .adm-panel {
+    box-shadow: none;
+}
+
+/* ---------- prázdný a chybový stav ---------- */
+.adm-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-16) var(--space-6);
+    text-align: center;
+}
+
+.adm-empty-ic {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: var(--space-1);
+    border-radius: 50%;
+    background: var(--lp-surface-hi);
+    color: var(--lp-accent-text);
+}
+
+.adm-empty--error .adm-empty-ic {
+    background: var(--danger-soft);
+    color: var(--danger-ink);
+}
+
+.adm-empty h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-display);
+}
+
+.adm-empty p {
+    max-width: 44ch;
+    margin: 0 0 var(--space-2);
+    color: var(--lp-muted);
+    line-height: var(--lh-body);
+}
+
+/* ---------- hláška v textu stránky ---------- */
+.adm-notice {
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    padding: var(--space-3-5) var(--space-4);
+    border-radius: var(--radius-card);
+    background: var(--success-soft);
+    color: var(--lp-text);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+}
+
+.adm-notice > svg {
+    flex-shrink: 0;
+    margin-top: var(--space-0-5);
+    color: var(--success-ink);
+}
+
+.adm-notice--error {
+    background: var(--danger-soft);
+}
+
+.adm-notice--error > svg {
+    color: var(--danger-ink);
+}
+
+.adm-notice strong {
+    font-weight: var(--fw-semibold);
+}
+
+.adm-notice ul {
+    margin: var(--space-1-5) 0 0;
+    padding-left: var(--space-5);
+    color: var(--lp-muted);
+    font-size: var(--fs-sm);
+}
+
+.adm-notice-close {
+    margin: calc(-1 * var(--space-2)) calc(-1 * var(--space-2)) calc(-1 * var(--space-2)) auto;
+}
+
+/* ---------- kostra načítání v barvách tématu ---------- */
+.adm-skel {
+    border-radius: var(--radius-card);
+    background: linear-gradient(90deg, var(--lp-surface-hi) 25%, var(--lp-surface) 50%, var(--lp-surface-hi) 75%);
+    background-size: 200% 100%;
+    animation: shimmer var(--loop-shimmer) var(--ease-linear) infinite;
+}
+
+/* ---------- vstup obsahu stránky ---------- */
+@media (prefers-reduced-motion: no-preference) {
+    .adm-rise {
+        animation: fade-up var(--dur-slow) var(--ease-standard) backwards;
+        animation-delay: calc(min(var(--i, 0), var(--stagger-max)) * var(--stagger-grid));
+    }
+}

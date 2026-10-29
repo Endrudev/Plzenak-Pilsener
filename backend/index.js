@@ -4,6 +4,7 @@ const cors = require('cors')
 const path = require('path')
 
 dotenv.config({path: path.join(__dirname, '.env')})
+const { checkConnection } = require('./src/db/pool')
 const authRouter = require('./src/routes/auth')
 const events = require('./src/routes/events')
 const candidates = require('./src/routes/candidates')
@@ -46,4 +47,7 @@ app.use('/api', (req, res) => {
 // posílá jen adresy, které nejsou statický soubor.
 app.use(render)
 
-app.listen(PORT, () => console.log("vše ok"))
+app.listen(PORT, () => {
+    console.log("vše ok")
+    checkConnection()
+})

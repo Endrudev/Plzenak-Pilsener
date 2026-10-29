@@ -152,6 +152,18 @@
   --ck-knob:          #FFFFFF;
   --ck-knob-shadow:   0 1px 3px rgba(26, 17, 11, 0.25);
 
+  /* ---------- ADMINISTRACE · stavové barvy (2026-10-29) ----------
+     Administrace jede na tokenech --lp-* (stejné tmavé a světlé téma jako
+     homepage). Navíc potřebuje dvě stavové barvy, které veřejný web nemá:
+     nevratnou akci (smazat, zamítnout) a potvrzení. --*-ink je pro TEXT
+     a ikony (kontrast přes 4,5:1 na --lp-surface), --*-soft pro podklad.
+     Tmavé hodnoty jsou přepis níž pod html.theme-lp:not([data-lp-mode='light']). */
+  --danger-ink:   #B3261E;
+  --danger-soft:  rgba(179, 38, 30, 0.09);
+  --success-ink:  #2B6B3F;
+  --success-soft: rgba(52, 168, 83, 0.12);
+  --scrim:        rgba(15, 9, 5, 0.55);   /* podklad pod dialogem */
+
   /* ---------- GRADIENT ---------- */
   --hero-gradient:    linear-gradient(135deg, #EF9F27 0%, #E8720C 100%);
 
@@ -440,6 +452,12 @@ html.theme-lp:not([data-lp-mode='light']) {
   --ck-track:        rgba(255, 233, 210, 0.1);
   --ck-knob:         var(--dk-text);
   --ck-knob-shadow:  none;
+
+  --danger-ink:      #FF8F80;
+  --danger-soft:     rgba(255, 143, 128, 0.12);
+  --success-ink:     #7DD69A;
+  --success-soft:    rgba(125, 214, 154, 0.12);
+  --scrim:           rgba(0, 0, 0, 0.6);
 }
 
 /* Posuvník: nativní, jen v barvách webu (viz pravidlo na html níž). Výchozí je pro
@@ -490,7 +508,7 @@ p, li, figcaption { text-wrap: pretty; }
 
 /* Číselné údaje, které se mění nebo stojí ve sloupci: počty, stránkování,
    admin tabulka. Jedna šířka číslic = nic neposkakuje. */
-.category-tile-count, .pagination-btn, .dashboard-pag-btn, #categories-count, table td, table th {
+.category-tile-count, .pagination-btn, #categories-count, table td, table th {
   font-variant-numeric: tabular-nums;
 }
 

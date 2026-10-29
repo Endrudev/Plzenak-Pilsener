@@ -15,6 +15,21 @@ export async function getEvents(filter = {}){
     return data
 }
 
+// Seznam pro administraci: všechny akce včetně proběhlých, bez stránkování (GET
+// /api/events/admin, jen s tokenem). Veřejné getEvents vrací jen nadcházející.
+export async function getAdminEvents(){
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events/admin`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+    const data = await response.json().catch(() => ({}))
+    if (!response.ok){
+        throw new Error(data.error || `Server vrátil chybu ${response.status}.`)
+    }
+    return data
+}
+
 export async function getEventLocations(){
     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/events/locations`)
     const data = await response.json()
