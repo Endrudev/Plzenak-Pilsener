@@ -12,11 +12,18 @@ async function seed() {
 
     const passwordHash = await bcrypt.hash(password, 12)
 
-    await query('INSERT INTO admins(email, password_hash) VALUES ($1, $2) ON CONFLICT (email) DO NOTHING',
+    // Existující účet se nemění (ON CONFLICT DO NOTHING), ani jeho heslo. Dřív to seed
+    // neřekl a hlásil úspěch, i když heslo z .env nikam nezapsal.
+    const result = await query('INSERT INTO admins(email, password_hash) VALUES ($1, $2) ON CONFLICT (email) DO NOTHING',
         [email, passwordHash]
     )
 
-    console.log('Seed dokončen pro účet:', email)
+    if (result.rowCount === 0) {
+        console.log(`Účet ${email} už existuje, heslo zůstalo beze změny.`)
+        console.log('Heslo podle .env nastaví: npm run seed:reset')
+    } else {
+        console.log('Seed dokončen pro účet:', email)
+    }
     process.exit(0)
 }
 
