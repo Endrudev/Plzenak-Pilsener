@@ -93,6 +93,25 @@ router.get('/locations', async(req, res) => {
     }
 })
 
+// Seznam pro administraci: všechny akce včetně proběhlých, nejnovější datum první.
+// Veřejné GET / vrací jen nadcházející a nejvýš 100 na stránku, takže admin by
+// proběhlé akce neviděl vůbec a po stovce akcí by se ke zbytku nedostal.
+// Filtrování a stránkování dělá administrace v prohlížeči. LIMIT je jen pojistka.
+// Musí stát nad /:id, jinak by "admin" Express vzal jako id.
+const ADMIN_LIST_LIMIT = 1000
+
+router.get('/admin', authMiddleware, async(req, res) => {
+    try{
+        const result = await query(`SELECT * FROM events
+            ORDER BY starts_on DESC, id DESC
+            LIMIT $1;`, [ADMIN_LIST_LIMIT])
+        res.json({ items: result.rows.map(mapEvent) })
+    }catch(err){
+        console.error(err.message)
+        res.status(500).json({error: 'Akce nelze načíst. Zkuste to znovu.'})
+    }
+})
+
 router.get('/:id', async(req, res) => {
     // Id je kladné celé číslo. Cokoli jiného ('42-nazev', 'abc') by Postgres
     // odmítl při převodu na integer a vrátilo by se 500 místo 404.

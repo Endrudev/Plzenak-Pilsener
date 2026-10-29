@@ -1,0 +1,89 @@
+/* Potvrzovací dialog. Karta roste z mírně zmenšené velikosti (modal-in, stejně
+   jako nastavení cookies), podklad se prolne. Na telefonu sedí u spodního okraje,
+   kde má palec tlačítka. */
+
+.adm-dialog {
+    box-sizing: border-box;
+    width: min(calc(100% - 2 * var(--gutter)), 440px);
+    max-width: none;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--lp-text);
+    overflow: visible;
+}
+
+.adm-dialog::backdrop {
+    background: var(--scrim);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    animation: overlay-in var(--dur-base) var(--ease-standard);
+}
+
+.adm-dialog[open] .adm-dialog-card {
+    animation: modal-in var(--dur-base) var(--ease-standard);
+}
+
+.adm-dialog-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    border: 1px solid var(--lp-line);
+    border-radius: var(--radius-scene);
+    background: var(--lp-surface);
+    box-shadow: var(--shadow-pop);
+    font-family: var(--font-sans);
+}
+
+.adm-dialog-ic {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: var(--space-2);
+    border-radius: 50%;
+    background: var(--danger-soft);
+    color: var(--danger-ink);
+}
+
+.adm-dialog h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-snug);
+    letter-spacing: var(--tracking-display);
+    overflow-wrap: anywhere;
+}
+
+.adm-dialog-body {
+    color: var(--lp-muted);
+    line-height: var(--lh-body);
+}
+
+.adm-dialog-body p {
+    margin: 0;
+}
+
+.adm-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+}
+
+@media (max-width: 559px) {
+    .adm-dialog {
+        margin-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+    }
+
+    .adm-dialog-actions {
+        flex-direction: column-reverse;
+    }
+
+    .adm-dialog-actions .adm-btn {
+        width: 100%;
+    }
+}

@@ -1,0 +1,334 @@
+/* Rám administrace. Lišta je stejný skleněný ostrov jako veřejná hlavička
+   (Header.css) a čte stejné tokeny --nav-*, které html.theme-lp přebarví
+   na tmavé. Na telefonu se navigace přesouvá do spodní lišty na dosah palce:
+   tři cesty se tam vejdou vedle sebe a nemusí se schovávat do menu. */
+
+#adm {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    background: var(--lp-bg);
+}
+
+#adm-bar {
+    position: sticky;
+    top: var(--space-3);
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    box-sizing: border-box;
+    width: calc(100% - 2 * var(--gutter));
+    max-width: var(--container);
+    min-height: var(--nav-h-mobile);
+    margin: var(--space-3) auto 0;
+    padding: 0 var(--space-2) 0 var(--space-5);
+    border: 1px solid var(--nav-line);
+    border-radius: var(--radius-pill);
+    background: var(--nav-bg-scrolled);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: inset 0 1px 0 var(--nav-edge), var(--nav-shadow);
+    font-family: var(--font-display);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+    #adm-bar {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+}
+
+#adm-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2-5);
+    flex-shrink: 0;
+    border-radius: var(--radius-pill);
+    color: var(--nav-ink);
+    text-decoration: none;
+}
+
+#adm-brand:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+}
+
+#adm-brand-tag {
+    display: none;
+    padding: var(--space-1) var(--space-2-5);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+    color: var(--lp-accent-text);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+}
+
+/* ---------- navigace ---------- */
+#adm-nav {
+    display: none;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.adm-nav-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--touch-min);
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-pill);
+    color: var(--nav-muted);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                color var(--dur-fast) var(--ease-standard),
+                transform var(--dur-fast) var(--ease-standard);
+}
+
+.adm-nav-link:active {
+    transform: scale(var(--scale-tap));
+}
+
+@media (hover: hover) {
+    .adm-nav-link:hover {
+        background: var(--nav-hover);
+        color: var(--nav-ink);
+    }
+}
+
+.adm-nav-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.adm-nav-link--active {
+    background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    color: var(--nav-ink);
+}
+
+.adm-nav-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 var(--space-1-5);
+    box-sizing: border-box;
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    font-family: var(--font-sans);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-bold);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+#adm-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    margin-left: auto;
+}
+
+#adm-create {
+    display: none;
+}
+
+/* ---------- účet ---------- */
+#adm-account {
+    position: relative;
+}
+
+#adm-account-btn {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--nav-line);
+    border-radius: 50%;
+    background: var(--lp-surface-hi);
+    color: var(--nav-ink);
+    font-family: var(--font-display);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-extrabold);
+    cursor: pointer;
+    transition: transform var(--dur-fast) var(--ease-standard),
+                border-color var(--dur-fast) var(--ease-standard);
+}
+
+#adm-account-btn:active {
+    transform: scale(var(--scale-chip));
+}
+
+@media (hover: hover) {
+    #adm-account-btn:hover {
+        border-color: var(--color-primary);
+    }
+}
+
+#adm-account-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+#adm-account-menu {
+    position: absolute;
+    top: calc(100% + var(--space-3));
+    right: 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-0-5);
+    min-width: 248px;
+    padding: var(--space-1-5);
+    border: 1px solid var(--nav-line);
+    border-radius: var(--radius-card);
+    background: var(--nav-panel);
+    box-shadow: inset 0 1px 0 var(--nav-edge), var(--shadow-pop);
+    font-family: var(--font-sans);
+    transform-origin: top right;
+    animation: popover-in var(--dur-base) var(--ease-standard);
+}
+
+#adm-account-who {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-0-5);
+    margin-bottom: var(--space-1);
+    padding: var(--space-2-5) var(--space-3) var(--space-3);
+    border-bottom: 1px solid var(--lp-line);
+}
+
+#adm-account-who span {
+    color: var(--lp-muted);
+    font-size: var(--fs-xs);
+}
+
+#adm-account-who strong {
+    overflow-wrap: anywhere;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+}
+
+.adm-menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2-5);
+    min-height: var(--touch-min);
+    padding: 0 var(--space-3);
+    border: 0;
+    border-radius: calc(var(--radius-card) - var(--space-1-5));
+    background: transparent;
+    color: var(--lp-text);
+    font: inherit;
+    font-size: var(--fs-body);
+    font-weight: var(--fw-medium);
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.adm-menu-item svg {
+    color: var(--lp-muted);
+}
+
+@media (hover: hover) {
+    .adm-menu-item:hover {
+        background: var(--nav-hover);
+    }
+}
+
+.adm-menu-item:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+}
+
+/* ---------- obsah ---------- */
+#adm-main {
+    flex: 1;
+    box-sizing: border-box;
+    width: calc(100% - 2 * var(--gutter));
+    max-width: var(--container);
+    margin: 0 auto;
+    /* dole místo pro spodní lištu na telefonu */
+    padding: var(--space-8) 0 calc(var(--space-16) + var(--touch-min) + env(safe-area-inset-bottom));
+    outline: none;
+}
+
+/* ---------- spodní lišta (telefon) ---------- */
+#adm-tabbar {
+    position: fixed;
+    left: 50%;
+    bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
+    z-index: 30;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-1);
+    box-sizing: border-box;
+    width: min(calc(100% - 2 * var(--gutter)), 420px);
+    padding: var(--space-1-5);
+    border: 1px solid var(--nav-line);
+    border-radius: var(--radius-pill);
+    background: var(--nav-bg-scrolled);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: inset 0 1px 0 var(--nav-edge), var(--nav-shadow);
+    font-family: var(--font-display);
+    transform: translateX(-50%);
+}
+
+#adm-tabbar .adm-nav-link {
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-0-5);
+    min-height: 52px;
+    padding: 0;
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-bold);
+}
+
+.adm-tab-ic {
+    position: relative;
+    display: flex;
+}
+
+.adm-tab-ic .adm-nav-count {
+    position: absolute;
+    top: calc(-1 * var(--space-1-5));
+    left: calc(100% - var(--space-1-5));
+}
+
+.adm-tab-create-ic {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 24px;
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+}
+
+@media (min-width: 560px) {
+    #adm-brand-tag { display: inline-flex; }
+}
+
+@media (min-width: 768px) {
+    #adm-bar {
+        min-height: var(--nav-h);
+        gap: var(--space-6);
+    }
+
+    #adm-nav { display: flex; }
+    #adm-create { display: inline-flex; }
+    #adm-tabbar { display: none; }
+
+    #adm-main {
+        padding: var(--space-12) 0 var(--space-16);
+    }
+}

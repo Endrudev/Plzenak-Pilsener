@@ -1,0 +1,520 @@
+/* Formulář akce (vytvoření i úprava). Na desktopu dva sloupce: sekce formuláře
+   vlevo, vpravo přilepený náhled karty. Dole lišta s uložením, která zůstává
+   vidět při posouvání, na telefonu nad spodní navigací. */
+
+#ef-back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--touch-min);
+    margin: calc(-1 * var(--space-3)) 0 var(--space-1) calc(-1 * var(--space-2));
+    padding: 0 var(--space-3) 0 var(--space-2);
+    border-radius: var(--radius-pill);
+    color: var(--lp-muted);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+}
+
+@media (hover: hover) {
+    #ef-back:hover {
+        background: var(--lp-surface-hi);
+        color: var(--lp-text);
+    }
+}
+
+#ef-head-actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+#ef-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+}
+
+#ef-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+}
+
+.ef-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    padding: var(--space-5);
+}
+
+.ef-section-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-display);
+}
+
+.ef-field {
+    min-width: 0;
+}
+
+.ef-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+}
+
+.ef-note {
+    margin: var(--space-2) 0 0;
+    color: var(--lp-muted);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-body);
+}
+
+.ef-section > .ef-note {
+    margin-top: calc(-1 * var(--space-3));
+}
+
+/* ---------- přepínač TOP ---------- */
+.ef-switch {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    box-sizing: border-box;
+    min-height: var(--adm-control-h);
+    padding: 0 var(--space-4);
+    border: 1px solid var(--lp-line-strong);
+    border-radius: var(--radius-field-soft);
+    cursor: pointer;
+    transition: border-color var(--dur-fast) var(--ease-standard),
+                background-color var(--dur-fast) var(--ease-standard);
+}
+
+.ef-switch input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ef-switch-track {
+    position: relative;
+    flex-shrink: 0;
+    width: 40px;
+    height: 24px;
+    border-radius: var(--radius-pill);
+    background: var(--ck-track);
+    transition: background-color var(--dur-base) var(--ease-standard);
+}
+
+.ef-switch-track::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--ck-knob);
+    box-shadow: var(--ck-knob-shadow);
+    transition: transform var(--dur-base) var(--ease-standard);
+}
+
+.ef-switch input:checked + .ef-switch-track {
+    background: var(--color-primary);
+}
+
+.ef-switch input:checked + .ef-switch-track::after {
+    background: var(--lp-ink-on-accent);
+    transform: translateX(16px);
+}
+
+.ef-switch:has(input:checked) {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+.ef-switch:has(input:focus-visible) {
+    box-shadow: var(--focus-shadow);
+}
+
+.ef-switch-text {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    font-weight: var(--fw-semibold);
+}
+
+.ef-switch-text svg {
+    color: var(--lp-accent-text);
+}
+
+/* ---------- datum a kalendář ---------- */
+.ef-date-wrap,
+.ef-suggest-wrap {
+    position: relative;
+}
+
+.ef-date-value {
+    text-align: left;
+    cursor: pointer;
+}
+
+.ef-date-value::first-letter {
+    text-transform: uppercase;
+}
+
+#ef-cal {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: 0;
+    z-index: 26;   /* nad lištou s uložením (25) */
+    box-sizing: border-box;
+    width: min(320px, 100%);
+    padding: var(--space-3);
+    border: 1px solid var(--lp-line);
+    border-radius: var(--radius-card);
+    background: var(--lp-surface);
+    box-shadow: var(--shadow-pop);
+    transform-origin: top left;
+    animation: popover-in var(--dur-base) var(--ease-standard);
+}
+
+#ef-cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
+}
+
+#ef-cal-month {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+}
+
+#ef-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: var(--space-0-5);
+}
+
+.ef-cal-dow {
+    padding: var(--space-1) 0;
+    color: var(--lp-muted);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-bold);
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.ef-cal-day {
+    aspect-ratio: 1;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--lp-text);
+    font: inherit;
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+@media (hover: hover) {
+    .ef-cal-day:hover {
+        background: var(--lp-surface-hi);
+    }
+}
+
+.ef-cal-day--today {
+    box-shadow: inset 0 0 0 1px var(--color-primary);
+    color: var(--lp-accent-text);
+    font-weight: var(--fw-bold);
+}
+
+.ef-cal-day[aria-pressed='true'] {
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    font-weight: var(--fw-bold);
+}
+
+.ef-cal-day:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+}
+
+/* ---------- našeptávač adres ---------- */
+#ef-suggest {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: 0;
+    right: 0;
+    z-index: 26;   /* nad lištou s uložením (25) */
+    margin: 0;
+    padding: var(--space-1-5);
+    border: 1px solid var(--lp-line);
+    border-radius: var(--radius-card);
+    background: var(--lp-surface);
+    box-shadow: var(--shadow-pop);
+    list-style: none;
+    animation: popover-in var(--dur-base) var(--ease-standard);
+}
+
+#ef-suggest button {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2-5);
+    width: 100%;
+    padding: var(--space-2-5) var(--space-3);
+    border: 0;
+    border-radius: calc(var(--radius-card) - var(--space-1-5));
+    background: transparent;
+    color: var(--lp-text);
+    font: inherit;
+    font-size: var(--fs-sm);
+    line-height: var(--lh-snug);
+    text-align: left;
+    cursor: pointer;
+}
+
+#ef-suggest svg {
+    flex-shrink: 0;
+    margin-top: var(--space-0-5);
+    color: var(--lp-muted);
+}
+
+@media (hover: hover) {
+    #ef-suggest button:hover {
+        background: var(--lp-surface-hi);
+    }
+}
+
+#ef-suggest button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+}
+
+#ef-map {
+    position: relative;
+    margin-top: var(--space-3);
+    overflow: hidden;
+    border: 1px solid var(--lp-line);
+    border-radius: var(--radius-field-soft);
+}
+
+#ef-map iframe {
+    display: block;
+    width: 100%;
+    height: 200px;
+    border: 0;
+}
+
+#ef-map-clear {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    box-shadow: var(--shadow-card);
+}
+
+/* ---------- obrázek ---------- */
+.ef-drop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    min-height: 200px;
+    padding: var(--space-6);
+    border: 1.5px dashed var(--lp-line-strong);
+    border-radius: var(--radius-field);
+    background: var(--lp-bg);
+    color: var(--lp-muted);
+    text-align: center;
+    cursor: pointer;
+    transition: border-color var(--dur-fast) var(--ease-standard),
+                background-color var(--dur-fast) var(--ease-standard);
+}
+
+.ef-drop strong {
+    color: var(--lp-text);
+    font-family: var(--font-display);
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-bold);
+}
+
+.ef-drop span {
+    font-size: var(--fs-sm);
+}
+
+.ef-drop-ic {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: var(--space-2);
+    border-radius: 50%;
+    background: var(--lp-surface-hi);
+    color: var(--lp-accent-text);
+    transition: transform var(--dur-base) var(--ease-standard);
+}
+
+@media (hover: hover) {
+    .ef-drop:hover {
+        border-color: var(--color-primary);
+    }
+}
+
+.ef-drop--over {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 8%, var(--lp-bg));
+}
+
+.ef-drop--over .ef-drop-ic {
+    transform: scale(1.08);
+}
+
+.ef-drop--invalid {
+    border-color: var(--danger-ink);
+}
+
+/* Fokus z klávesnice je na skrytém inputu, vidět ho musí plocha. */
+.ef-field:has(#ef-image:focus-visible) .ef-drop,
+.ef-field:has(#ef-image:focus-visible) .ef-image {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.ef-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-field);
+    background: var(--lp-surface-hi);
+}
+
+.ef-image img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 300px;
+    object-fit: cover;
+}
+
+.ef-image-actions {
+    position: absolute;
+    right: var(--space-3);
+    bottom: var(--space-3);
+    display: flex;
+    gap: var(--space-2);
+}
+
+.ef-image-actions .adm-btn {
+    background: var(--lp-surface);
+    box-shadow: var(--shadow-card);
+}
+
+.ef-image-flag {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    padding: var(--space-1) var(--space-2-5);
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: var(--lp-ink-on-accent);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+}
+
+/* ---------- náhled ---------- */
+#ef-preview {
+    min-width: 0;
+}
+
+.ef-preview-label {
+    margin: 0 0 var(--space-3);
+    color: var(--lp-muted);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+}
+
+.ef-preview-card {
+    max-width: 420px;
+    pointer-events: none;
+}
+
+/* ---------- lišta s uložením ---------- */
+#ef-bar {
+    position: sticky;
+    bottom: calc(var(--space-3) + 64px + var(--space-3) + env(safe-area-inset-bottom));
+    z-index: 25;
+    margin-top: var(--space-6);
+}
+
+#ef-bar-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border: 1px solid var(--nav-line);
+    border-radius: var(--radius-pill);
+    background: var(--nav-bg-scrolled);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: inset 0 1px 0 var(--nav-edge), var(--nav-shadow);
+}
+
+#ef-bar-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding-left: var(--space-3);
+    color: var(--lp-muted);
+    font-size: var(--fs-sm);
+}
+
+.ef-bar-status--error {
+    color: var(--danger-ink) !important;
+    font-weight: var(--fw-medium);
+}
+
+@media (max-width: 479px) {
+    #ef-bar-inner > .adm-btn--ghost {
+        display: none;
+    }
+}
+
+@media (min-width: 640px) {
+    .ef-row {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .ef-section {
+        padding: var(--space-6);
+    }
+}
+
+@media (min-width: 768px) {
+    #ef-bar {
+        bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+    }
+}
+
+@media (min-width: 1040px) {
+    #ef-grid {
+        grid-template-columns: minmax(0, 1fr) 360px;
+        align-items: start;
+    }
+
+    #ef-preview {
+        position: sticky;
+        top: calc(var(--nav-h) + var(--space-3) + var(--space-6));
+    }
+}

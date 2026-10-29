@@ -1,17 +1,36 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import PlzenakLogo from '../../components/PlzenakLogo/PlzenakLogo.jsx'
+import DuskSkyline from '../../components/NightSkyline/DuskSkyline.jsx'
+import { useAdminTheme } from '../../components/admin/useAdminTheme.js'
+import { AlertIcon, ChevronLeftIcon, EyeIcon, EyeOffIcon, LockIcon, MailIcon } from '../../components/admin/adminIcons.jsx'
+import { currentSession, saveToken } from '../../lib/admin/session.js'
+import { useLandingMode } from '../../lib/landingTheme.js'
+import '../../components/admin/admin.css'
 import './Admin.css'
 
 export default function Admin() {
+    useAdminTheme()
     const navigate = useNavigate()
+    const mode = useLandingMode()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
+    const [capsLock, setCapsLock] = useState(false)
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
 
-    async function handleLogin() {
-        if (!email || !password) { setError('Vyplňte e-mail a heslo.'); return }
+    // Kdo má platný token, na přihlášení nemá co dělat.
+    useEffect(() => {
+        if (currentSession()) navigate('/admin/dashboard', { replace: true })
+    }, [])
+
+    // Skutečný <form> se submitem: Enter funguje v obou polích bez vlastního
+    // posluchače a správce hesel pozná přihlašovací formulář (autocomplete níž).
+    async function handleSubmit(e) {
+        e.preventDefault()
+        if (loading) return
+        if (!email.trim() || !password) { setError('Vyplňte e-mail a heslo.'); return }
         setLoading(true)
         setError('')
         try {
@@ -20,18 +39,18 @@ export default function Admin() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({email, password}),
+                body: JSON.stringify({ email: email.trim(), password }),
             })
             // Odpověď nemusí být JSON — rate limiter, proxy nebo pád serveru umí
             // vrátit HTML. Bez tohohle by .json() vyhodil výjimku a přihlášení by
             // skončilo tiše, jako by se nic nestalo.
             const data = await fetchResult.json().catch(() => ({}))
-            if(!fetchResult.ok) {
+            if (!fetchResult.ok) {
                 setError(data.error || `Přihlášení selhalo (HTTP ${fetchResult.status}).`)
                 return
             }
-            localStorage.setItem('token', data.token)
-            navigate('/admin/dashboard')
+            saveToken(data.token)
+            navigate('/admin/dashboard', { replace: true })
         } catch (e) {
             // Sem spadne hlavně nedostupný backend. Dřív se výjimka nikam nezapsala,
             // setLoading(false) se neprovedl a tlačítko zůstalo v "Přihlašuji…"
@@ -43,78 +62,97 @@ export default function Admin() {
         }
     }
 
-    function handleKeyDown(e) {
-        if (e.key === 'Enter') handleLogin()
+    // Caps Lock se pozná jen z události klávesnice, proto se kontroluje při psaní hesla.
+    function checkCaps(e) {
+        if (typeof e.getModifierState === 'function') setCapsLock(e.getModifierState('CapsLock'))
     }
 
     return (
-        <div id="admin-page">
-            <div id="admin-card">
-                <PlzenakLogo variant="mark" size={40} style={{ alignSelf: 'center' }} />
-                <h1 id="admin-title">Přihlášení</h1>
-                <p id="admin-subtitle">Správa akcí Plzeňáku — jen pro adminy.</p>
+        <div id="adm-login">
+            <main id="login-main">
+                <Link to="/" id="login-back">
+                    <ChevronLeftIcon size={16} />Zpět na web
+                </Link>
 
-                <div id="admin-form">
-                    <label className="admin-label" htmlFor="admin-email">E-mail</label>
-                    <div className="admin-input-wrapper">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
-                            <polyline points="22 6 12 13 2 6" />
-                        </svg>
-                        <input
-                            id="admin-email"
-                            type="email"
-                            placeholder="vas@email.cz"
-                            className="admin-input"
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                        />
-                    </div>
+                <div id="login-form-wrap">
+                    <span className="login-logo"><PlzenakLogo size={28} tone={mode === 'dark' ? 'inverseColor' : 'color'} /></span>
 
-                    <label className="admin-label" htmlFor="admin-password">Heslo</label>
-                    <div className="admin-input-wrapper">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2" />
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                        </svg>
-                        <input
-                            id="admin-password"
-                            type="password"
-                            placeholder="••••••••"
-                            className="admin-input"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                        />
-                        {/* TODO: vizuální placeholder, přepínání viditelnosti hesla zatím není propojené (chybí state) */}
-                        <button type="button" className="admin-eye-btn" aria-label="Zobrazit heslo" tabIndex={-1}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                <circle cx="12" cy="12" r="3" />
-                            </svg>
+                    <h1 id="login-title">Přihlášení</h1>
+                    <p id="login-lead">Správa akcí Plzeňáku. Přístup mají jen administrátoři.</p>
+
+                    <form id="login-form" onSubmit={handleSubmit} noValidate>
+                        <div>
+                            <label className="adm-label" htmlFor="login-email">E-mail</label>
+                            <div className="adm-input" data-invalid={(error && !email.trim()) || undefined}>
+                                <MailIcon size={18} />
+                                <input
+                                    id="login-email"
+                                    type="email"
+                                    name="email"
+                                    autoComplete="username"
+                                    inputMode="email"
+                                    autoCapitalize="none"
+                                    spellCheck={false}
+                                    placeholder="vas@email.cz"
+                                    value={email}
+                                    onChange={e => setEmail(e.target.value)}
+                                    aria-describedby={error ? 'login-error' : undefined}
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="adm-label" htmlFor="login-password">Heslo</label>
+                            <div className="adm-input" data-invalid={(error && !password) || undefined}>
+                                <LockIcon size={18} />
+                                <input
+                                    id="login-password"
+                                    type={showPassword ? 'text' : 'password'}
+                                    name="password"
+                                    autoComplete="current-password"
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                    onKeyDown={checkCaps}
+                                    onKeyUp={checkCaps}
+                                    aria-describedby={[capsLock && 'login-caps', error && 'login-error'].filter(Boolean).join(' ') || undefined}
+                                />
+                                <button
+                                    type="button"
+                                    className="adm-icon-btn login-eye"
+                                    aria-label={showPassword ? 'Skrýt heslo' : 'Zobrazit heslo'}
+                                    aria-pressed={showPassword}
+                                    onClick={() => setShowPassword(v => !v)}
+                                >
+                                    {showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
+                                </button>
+                            </div>
+                            {capsLock && <p id="login-caps" className="login-hint">Je zapnutý Caps Lock.</p>}
+                        </div>
+
+                        {error && (
+                            <p id="login-error" className="adm-field-error" role="alert">
+                                <AlertIcon size={16} />{error}
+                            </p>
+                        )}
+
+                        <button type="submit" id="login-submit" className="adm-btn adm-btn--primary" disabled={loading}>
+                            {loading ? 'Přihlašuji…' : 'Přihlásit se'}
                         </button>
-                    </div>
-
-                    {error && <p id="admin-error">{error}</p>}
-
-                    <button id="admin-submit" onClick={handleLogin} disabled={loading}>
-                        {loading ? 'Přihlašuji…' : 'Přihlásit'}
-                    </button>
-
-                    {/* TODO: vizuální placeholder, obnova hesla není implementovaná (žádný backend flow) */}
-                    <a href="#" id="admin-forgot">Zapomenuté heslo?</a>
-
-                    <hr id="admin-divider" />
-
-                    <button id="admin-back-btn" onClick={() => navigate('/')}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
-                        </svg>
-                        Zpět na Plzeňák
-                    </button>
+                    </form>
                 </div>
-            </div>
+
+                <p id="login-foot">Plzeňák · akce v Plzni na jednom místě</p>
+            </main>
+
+            <aside id="login-art" aria-hidden="true">
+                <div id="login-art-glow" />
+                <div id="login-art-text">
+                    <span id="login-art-eyebrow">Administrace</span>
+                    <p id="login-art-title">Co se dnes večer v&nbsp;Plzni děje, rozhoduješ ty.</p>
+                </div>
+                <DuskSkyline className="login-skyline" />
+            </aside>
         </div>
     )
 }

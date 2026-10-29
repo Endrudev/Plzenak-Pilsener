@@ -1,520 +1,358 @@
-#dashboard-page {
-    min-height: 100vh;
-    background: var(--color-page);
+/* Přehled akcí v administraci. Obecné prvky (tlačítka, pole, přepínač, panel,
+   prázdný stav) jsou v components/admin/admin.css, tady je jen to, co patří
+   přehledu: souhrn, nástrojová lišta, řádky a stránkování. */
+
+/* ---------- souhrn: jedna plocha se čtyřmi čísly, ne čtyři karty ---------- */
+#dash-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: var(--space-6);
+    overflow: hidden;
 }
 
-/* ---- Topbar ---- */
-#dashboard-topbar {
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-line);
-}
-
-#dashboard-topbar-inner {
-    max-width: 1040px;
-    margin: 0 auto;
-    padding: var(--space-3) var(--space-5);
+.dash-stat {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-5) var(--space-5) var(--space-4);
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
 }
 
-#dashboard-brand {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
+/* Oddělovače jen mezi buňkami: svislý vpravo, vodorovný pod první řadou. */
+.dash-stat:nth-child(odd) {
+    box-shadow: inset -1px 0 0 var(--lp-line);
 }
 
-#dashboard-admin-badge {
-    background: var(--badge-bg);
-    color: var(--badge-ink);
-    font-family: var(--font-sans);
-    font-size: var(--fs-2xs);
-    font-weight: var(--fw-semibold);
-    padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-pill);
+.dash-stat:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--lp-line);
 }
 
-#dashboard-user {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
+.dash-stat-value {
+    font-family: var(--font-display);
+    font-size: var(--fs-heading-2);
+    font-weight: var(--fw-extrabold);
+    line-height: 1;
+    letter-spacing: var(--tracking-heading);
+    font-variant-numeric: tabular-nums;
 }
 
-#dashboard-user-name {
-    display: none;
-    font-family: var(--font-sans);
+.dash-stat-label {
+    color: var(--lp-muted);
     font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    color: var(--color-ink);
 }
 
-#dashboard-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--badge-bg);
-    color: var(--badge-ink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-sans);
-    font-weight: var(--fw-semibold);
-    font-size: var(--fs-xs);
-    flex-shrink: 0;
+.dash-stat--warn .dash-stat-value {
+    color: var(--lp-accent-text);
 }
 
-#dashboard-logout-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: none;
-    border: none;
-    border-radius: var(--radius-el);
-    color: var(--color-text-muted);
+.dash-stat--link {
     cursor: pointer;
-    transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard),
-                transform var(--dur-fast) var(--ease-standard);
-}
-
-#dashboard-logout-btn:active {
-    transform: scale(var(--scale-tap));
+    transition: background-color var(--dur-fast) var(--ease-standard);
 }
 
 @media (hover: hover) {
-    #dashboard-logout-btn:hover {
-        background: var(--color-surface-soft);
-        color: var(--color-ink);
+    .dash-stat--link:hover {
+        background: var(--nav-hover);
     }
 }
 
-/* ---- Content ---- */
-#dashboard-content {
-    max-width: 1040px;
-    margin: 0 auto;
-    padding: var(--space-6) var(--space-5) var(--space-10);
-    box-sizing: border-box;
+.dash-stat--link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -4px;
 }
 
-/* ---- Toolbar ---- */
-#dashboard-toolbar {
-    display: flex;
-    flex-direction: column;
+/* ---------- nástrojová lišta ---------- */
+#dash-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-3);
     margin-bottom: var(--space-5);
 }
 
-#create-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    background: var(--color-primary);
-    border: none;
-    border-radius: var(--radius-el);
-    padding: var(--space-3) var(--space-5);
-    font-family: var(--font-sans);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    color: #fff;
-    cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard),
-                transform var(--dur-fast) var(--ease-standard);
+#dash-toolbar .adm-seg {
+    justify-self: start;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
 }
 
-#create-btn:active {
-    transform: scale(var(--scale-tap));
-}
-
-@media (hover: hover) {
-    #create-btn:hover {
-        filter: brightness(1.08);
-    }
-}
-
-/* Odkaz na frontu návrhů akcí: druhotné tlačítko vedle hlavního Vytvořit akci. */
-#candidates-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-el);
-    padding: var(--space-3) var(--space-5);
-    font-family: var(--font-sans);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    color: var(--color-ink);
-    cursor: pointer;
-    transition: background var(--dur-fast) var(--ease-standard),
-                transform var(--dur-fast) var(--ease-standard);
-}
-
-#candidates-btn:active {
-    transform: scale(var(--scale-tap));
-}
-
-@media (hover: hover) {
-    #candidates-btn:hover {
-        background: var(--color-surface-soft);
-    }
-}
-
-#candidates-count {
-    min-width: 22px;
-    padding: 0 var(--space-2);
-    border-radius: var(--radius-pill);
-    background: var(--color-primary);
-    color: #fff;
-    font-size: var(--fs-2xs);
-    line-height: 22px;
-    text-align: center;
-}
-
-#dash-search-wrapper {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-el);
-    padding: var(--space-3) var(--space-4);
-    color: var(--color-text-muted);
-}
-
-#dash-search-wrapper:focus-within {
-    border-color: var(--color-primary);
-    box-shadow: var(--focus-shadow);
-}
-
-#dash-search {
-    flex: 1;
-    min-width: 0;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-family: var(--font-sans);
-    font-size: var(--fs-body);
-    color: var(--color-ink);
-}
-
-#dash-search::placeholder {
-    color: var(--color-text-muted);
-}
-
-/* Kostra tabulky při načítání: šest řádků ve výšce skutečných řádků. */
-#dashboard-loading {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    padding: var(--space-2) 0;
-}
-
-.dash-skel-row {
-    height: 56px;
-    border-radius: var(--radius-el);
-}
-
-/* ---- Empty state ---- */
-#dashboard-empty {
-    border: 1px dashed var(--color-line);
-    border-radius: var(--radius-card);
-    padding: var(--space-16) var(--space-5);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-2);
-    text-align: center;
-}
-
-#dashboard-empty-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: var(--color-surface-soft);
-    color: var(--color-text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: var(--space-2);
-}
-
-#dashboard-empty h2 {
-    font-family: var(--font-display);
-    font-size: var(--fs-h3);
-    font-weight: var(--fw-semibold);
-    color: var(--color-ink);
-    margin: 0;
-}
-
-#dashboard-empty p {
-    font-family: var(--font-sans);
-    font-size: var(--fs-sm);
-    color: var(--color-text-muted);
-    margin: 0;
-    max-width: 340px;
-}
-
-.dashboard-empty-btn {
-    margin-top: var(--space-3);
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    background: var(--color-primary);
-    border: none;
-    border-radius: var(--radius-el);
-    padding: var(--space-3) var(--space-5);
-    font-family: var(--font-sans);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    color: #fff;
-    cursor: pointer;
-    transition: filter var(--dur-fast) var(--ease-standard),
-                transform var(--dur-fast) var(--ease-standard);
-}
-
-.dashboard-empty-btn:active {
-    transform: scale(var(--scale-tap));
-}
-
-@media (hover: hover) {
-    .dashboard-empty-btn:hover {
-        filter: brightness(1.08);
-    }
-}
-
-/* ---- Table (desktop) ---- */
-#events-table {
+#dash-search-kbd {
     display: none;
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
-    overflow: hidden;
-}
-
-#events-table th {
-    background: var(--color-surface-soft);
-    text-align: left;
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-label);
+    padding: var(--space-0-5) var(--space-2);
+    border: 1px solid var(--lp-line-strong);
+    border-radius: var(--radius-sm);
+    color: var(--lp-muted);
     font-family: var(--font-sans);
-    font-size: var(--fs-2xs);
-    font-weight: var(--fw-semibold);
-    color: var(--color-text-muted);
-    padding: var(--space-3) var(--space-4);
+    font-size: var(--fs-xs);
+    line-height: 1.4;
 }
 
-#events-table td {
-    padding: var(--space-3) var(--space-4);
-    font-family: var(--font-sans);
-    font-size: var(--fs-body);
-    border-top: 1px solid var(--color-line);
+/* Prázdné hledání ukazuje zkratku, při psaní by jen překážela. */
+#dash-search:not(:focus-within):has(input:placeholder-shown) #dash-search-kbd {
+    display: inline-block;
 }
 
-#events-table tbody tr {
-    transition: background var(--dur-fast) var(--ease-standard);
+@media (pointer: coarse) {
+    #dash-search-kbd { display: none !important; }
+}
+
+#dash-count {
+    margin: 0 0 var(--space-3);
+    padding-left: var(--space-1);
+    color: var(--lp-muted);
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- seznam ---------- */
+.dash-list {
+    margin: 0;
+    padding: var(--space-1-5);
+    list-style: none;
+}
+
+/* Řádek: datum | náhled | název a meta | akce. Na telefonu náhled zmizí a akce
+   zůstanou vpravo, název se zalomí. */
+.dash-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: calc(var(--radius-scene) - var(--space-1-5));
+    transition: background-color var(--dur-fast) var(--ease-standard);
+}
+
+.dash-row + .dash-row {
+    box-shadow: 0 -1px 0 var(--lp-line);
 }
 
 @media (hover: hover) {
-    #events-table tbody tr:hover {
-        background: var(--color-surface-soft);
+    .dash-row:hover {
+        background: var(--nav-hover);
+    }
+
+    .dash-row:hover,
+    .dash-row:hover + .dash-row {
+        box-shadow: none;
     }
 }
 
-.col-id {
-    width: 70px;
-    font-variant-numeric: tabular-nums;
-    color: var(--color-text-muted);
+.dash-row:focus-within {
+    background: var(--nav-hover);
 }
 
-.col-title {
-    font-weight: var(--fw-medium);
-    color: var(--color-ink);
-}
-
-.col-date {
-    width: 130px;
-    font-variant-numeric: tabular-nums;
-    color: var(--color-text-muted);
-}
-
-.col-actions {
-    width: 140px;
-}
-
-/* ---- Action buttons (shared table/cards) ---- */
-.action-btns {
-    display: flex;
-    gap: var(--space-2);
-    align-items: center;
-}
-
-.action-btn {
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: var(--radius-el);
-    background: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: var(--color-text-muted);
-    transition: background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard),
-                transform var(--dur-fast) var(--ease-standard);
-    flex-shrink: 0;
-}
-
-.action-btn:active {
-    transform: scale(var(--scale-tap));
-}
-
-@media (hover: hover) {
-    .action-btn:hover {
-        background: var(--color-surface-soft);
-    }
-}
-
-.action-delete {
-    color: var(--color-primary);
-}
-
-/* ---- Cards (mobile) ---- */
-#dashboard-cards {
+.dash-date {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
-}
-
-.dashboard-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
-    padding: var(--space-4);
-}
-
-.dashboard-card-top {
-    display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--space-2);
+    justify-content: center;
+    width: 52px;
+    height: 56px;
+    box-sizing: border-box;
+    border-radius: var(--radius-btn-s);
+    background: var(--lp-surface-hi);
+    font-family: var(--font-display);
+    line-height: 1;
 }
 
-.dashboard-card-id {
-    font-family: var(--font-sans);
+.dash-date b {
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-extrabold);
+    letter-spacing: var(--tracking-heading);
+    font-variant-numeric: tabular-nums;
+}
+
+.dash-date i {
+    margin-top: var(--space-1);
+    color: var(--lp-muted);
     font-size: var(--fs-2xs);
-    font-weight: var(--fw-semibold);
-    color: var(--color-primary);
-    font-variant-numeric: tabular-nums;
+    font-style: normal;
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    white-space: nowrap;
 }
 
-.dashboard-card-title {
-    font-family: var(--font-sans);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    color: var(--color-ink);
+.dash-thumb {
+    display: none;
+    width: 88px;
+    height: 56px;
+    border-radius: var(--radius-btn-s);
+    background-color: var(--lp-surface-hi);
+    background-size: cover;
+    background-position: center;
 }
 
-.dashboard-card-date {
-    font-family: var(--font-sans);
-    font-size: var(--fs-sm);
-    color: var(--color-text-muted);
-    margin-top: var(--space-0-5);
-    font-variant-numeric: tabular-nums;
-}
-
-/* ---- Pagination ---- */
-#dashboard-pagination {
+.dash-main {
     display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    min-width: 0;
+}
+
+.dash-name {
+    color: var(--lp-text);
+    font-family: var(--font-display);
+    font-size: var(--fs-body-lg);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-snug);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+/* Celý řádek je cíl odkazu. Řádek má position: relative, jinak by se překryv
+   roztáhl po celé stránce (past popsaná v Styling a komponenty, pravidlo 3). */
+.dash-name::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+}
+
+.dash-name:focus-visible {
+    outline: none;
+}
+
+.dash-row:has(.dash-name:focus-visible) {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+}
+
+.dash-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1-5);
+    min-width: 0;
+}
+
+.dash-where {
+    min-width: 0;
+    margin-right: var(--space-1);
+    color: var(--lp-muted);
+    font-size: var(--fs-sm);
+    overflow-wrap: anywhere;
+}
+
+.dash-actions {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: var(--space-0-5);
+}
+
+/* Proběhlá akce je tlumená, ať oko jde nejdřív na to, co se ještě dá změnit. */
+.dash-row--past .dash-date,
+.dash-row--past .dash-thumb {
+    opacity: 0.55;
+}
+
+.dash-row--past .dash-name {
+    color: var(--lp-muted);
+}
+
+/* kostra: stejná výška jako skutečný řádek, nic se po načtení nepřeskládá */
+.dash-row--skel {
+    display: block;
+}
+
+.dash-row--skel .adm-skel {
+    display: block;
+    height: 56px;
+    border-radius: var(--radius-btn-s);
+}
+
+/* ---------- stránkování ---------- */
+#dash-pager {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-1);
     margin-top: var(--space-6);
 }
 
-.dashboard-pag-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 1px solid var(--color-line);
-    background: var(--color-surface);
-    font-family: var(--font-sans);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    color: var(--color-text-muted);
+.dash-pager-btn {
+    min-width: var(--touch-min);
+    height: var(--touch-min);
+    padding: 0 var(--space-2);
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--lp-muted);
+    font-family: var(--font-display);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-bold);
+    font-variant-numeric: tabular-nums;
     cursor: pointer;
-    transition: background var(--dur-fast) var(--ease-standard),
-                transform var(--dur-fast) var(--ease-standard);
-}
-
-.dashboard-pag-btn:active {
-    transform: scale(var(--scale-tap));
+    transition: background-color var(--dur-fast) var(--ease-standard),
+                color var(--dur-fast) var(--ease-standard);
 }
 
 @media (hover: hover) {
-    .dashboard-pag-btn:hover {
-        background: var(--color-surface-soft);
+    .dash-pager-btn:hover {
+        background: var(--lp-surface-hi);
+        color: var(--lp-text);
     }
 }
 
-.dashboard-pag-btn--active {
+.dash-pager-btn[aria-current='page'] {
     background: var(--color-primary);
-    border-color: var(--color-primary);
-    color: #fff;
+    color: var(--lp-ink-on-accent);
 }
 
-.dashboard-pag-dots {
-    color: var(--color-text-muted);
-    font-family: var(--font-sans);
-    padding: 0 var(--space-0-5);
+.dash-pager-gap {
+    padding: 0 var(--space-1);
+    color: var(--lp-muted);
 }
 
-/* ---- Responsive ---- */
-@media (min-width: 480px) {
-    #dashboard-user-name {
+#dash-pager .adm-icon-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+@media (min-width: 640px) {
+    .dash-row {
+        grid-template-columns: auto auto minmax(0, 1fr) auto;
+        gap: var(--space-4);
+    }
+
+    .dash-thumb {
         display: block;
     }
 }
 
 @media (min-width: 768px) {
-    #events-table {
-        display: table;
+    #dash-stats {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
-    #dashboard-cards {
-        display: none;
+    .dash-stat {
+        padding: var(--space-6);
     }
 
-    #dashboard-toolbar {
-        flex-direction: row;
-        align-items: center;
+    .dash-stat:nth-child(-n + 2) {
+        border-bottom: 0;
     }
 
-    #create-btn {
-        flex-shrink: 0;
-        width: auto;
+    .dash-stat:not(:last-child) {
+        box-shadow: inset -1px 0 0 var(--lp-line);
     }
 
-    #candidates-btn {
-        flex-shrink: 0;
-        width: auto;
-    }
-
-    #dash-search-wrapper {
-        flex: 1;
-        max-width: 320px;
-        margin-left: auto;
+    .dash-stat:last-child {
+        box-shadow: none;
     }
 }
 
-/* Chybová varianta prázdného stavu — stejné rozvržení, jiná ikona a barva,
-   aby "backend neodpověděl" nešlo splést s "zatím žádné akce". */
-.dashboard-empty--error #dashboard-empty-icon {
-    background: var(--badge-bg);
-    color: var(--badge-ink);
+@media (min-width: 900px) {
+    #dash-toolbar {
+        grid-template-columns: minmax(0, 1fr) auto 220px;
+        align-items: center;
+    }
 }
