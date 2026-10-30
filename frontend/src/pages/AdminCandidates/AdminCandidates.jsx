@@ -13,6 +13,13 @@ import './AdminCandidates.css'
 
 const BATCH = 10
 
+const STAGE_LABEL = {
+    queued: 'Čeká',
+    working: 'Schvaluji…',
+    done: 'Schváleno',
+    failed: 'Nepovedlo se',
+}
+
 const TABS = [
     { value: 'pending', label: 'Čekající' },
     { value: 'approved', label: 'Schválené' },
@@ -29,6 +36,10 @@ export default function AdminCandidates() {
     const [busy, setBusy] = useState(false)
     const [notice, setNotice] = useState(null)
     const [pendingReject, setPendingReject] = useState(null)
+    // Průběh schvalování: { ids, done, batch, outcomes }. `ids` je celé pořadí, `done` kolik
+    // z nich už server vrátil, `batch` velikost právě odeslané dávky, `outcomes` id → ok.
+    // null = nic neběží. Z toho se počítá lišta průběhu i stav každé karty.
+    const [progress, setProgress] = useState(null)
     // Odpověď na starší požadavek nesmí přepsat novější (rychlé přepnutí záložek).
     const requestRef = useRef(0)
 
@@ -83,14 +94,20 @@ export default function AdminCandidates() {
         setBusy(true)
         setNotice(null)
         const results = []
+        const outcomes = new Map()
         try {
             for (let i = 0; i < ids.length; i += BATCH) {
-                const data = await approveCandidates(ids.slice(i, i + BATCH))
+                const batch = ids.slice(i, i + BATCH)
+                setProgress({ ids, done: i, batch: batch.length, outcomes: new Map(outcomes) })
+                const data = await approveCandidates(batch)
                 results.push(...data.results)
+                for (const r of data.results) outcomes.set(r.id, r.ok)
             }
+            setProgress({ ids, done: ids.length, batch: 0, outcomes: new Map(outcomes) })
         } catch (e) {
             setNotice({ type: 'error', text: 'Schválení se nepodařilo: ' + e.message, details: [] })
             setBusy(false)
+            setProgress(null)
             await load(status)
             return
         }
@@ -108,7 +125,31 @@ export default function AdminCandidates() {
             details,
         })
         setBusy(false)
+        // Průběh zmizí až s novým seznamem, jinak by karty na okamžik skočily zpět do
+        // výchozího stavu, než je reload nahradí.
         await load(status)
+        setProgress(null)
+    }
+
+    // Zavření karty uprostřed schvalování by zbylé dávky už neodeslalo. Prohlížeč se zeptá.
+    useEffect(() => {
+        if (!progress) return undefined
+        function onBeforeUnload(e) {
+            e.preventDefault()
+            e.returnValue = ''
+        }
+        window.addEventListener('beforeunload', onBeforeUnload)
+        return () => window.removeEventListener('beforeunload', onBeforeUnload)
+    }, [Boolean(progress)])
+
+    // Stav karty během schvalování: null (není ve frontě), 'queued', 'working', 'done', 'failed'.
+    function stageOf(id) {
+        if (!progress) return null
+        const index = progress.ids.indexOf(id)
+        if (index < 0) return null
+        if (index < progress.done) return progress.outcomes.get(id) === false ? 'failed' : 'done'
+        if (index < progress.done + progress.batch) return 'working'
+        return 'queued'
     }
 
     // Zamítnutí potvrzuje dialog (AdminDialog), ne window.confirm.
@@ -198,7 +239,7 @@ export default function AdminCandidates() {
                         {items.map((item, i) => (
                             <li
                                 key={item.id}
-                                className={`cand-card adm-rise${selected.has(item.id) ? ' cand-card--selected' : ''}`}
+                                className={`cand-card adm-rise${selected.has(item.id) ? ' cand-card--selected' : ''}${stageOf(item.id) ? ` cand-card--${stageOf(item.id)}` : ''}`}
                                 style={{ '--i': i }}
                             >
                                 {status === 'pending' && (
@@ -235,7 +276,12 @@ export default function AdminCandidates() {
                                     </a>
                                 </div>
                                 <div className="cand-actions">
-                                    {status === 'pending' && (
+                                    {status === 'pending' && stageOf(item.id) && (
+                                        <span className={`cand-stage cand-stage--${stageOf(item.id)}`}>
+                                            {STAGE_LABEL[stageOf(item.id)]}
+                                        </span>
+                                    )}
+                                    {status === 'pending' && !stageOf(item.id) && (
                                         <>
                                             <button type="button" className="adm-btn adm-btn--primary adm-btn--sm" disabled={busy} onClick={() => approve([item.id])}>
                                                 <CheckIcon size={16} />Schválit
@@ -258,7 +304,35 @@ export default function AdminCandidates() {
             )}
 
             {/* Hromadné schválení: lišta se přilepí ke spodku okna, jakmile je něco vybráno. */}
-            {status === 'pending' && selected.size > 0 && (
+            {/* Průběh schvalování. Hotová část lišty je plná, právě odeslaná dávka pulzuje:
+                dávka trvá i několik sekund (stahují se obrázky) a bez pohybu by to vypadalo,
+                že se nic neděje. role="status" čtečce oznámí každou změnu počtu. */}
+            {progress && (
+                <div id="cand-progress" role="status">
+                    <span id="cand-progress-text">
+                        {/* Rozsah právě odeslané dávky, ne počet hotových: "10 z 14" během
+                            první dávky by vypadalo, že deset už je schváleno. */}
+                        {progress.done >= progress.ids.length
+                            ? <>Hotovo, načítám seznam</>
+                            : progress.ids.length === 1
+                                ? <>Schvaluji akci…</>
+                                : <>Schvaluji <b>{progress.done + 1}–{progress.done + progress.batch}</b> z {progress.ids.length}</>}
+                    </span>
+                    <span
+                        id="cand-progress-track"
+                        aria-hidden="true"
+                        style={{
+                            '--done': progress.done / progress.ids.length,
+                            '--batch': progress.batch / progress.ids.length,
+                        }}
+                    >
+                        <i id="cand-progress-done" />
+                        <i id="cand-progress-batch" />
+                    </span>
+                </div>
+            )}
+
+            {status === 'pending' && selected.size > 0 && !progress && (
                 <div id="cand-bulk" role="region" aria-label="Hromadné schválení">
                     <span id="cand-bulk-count">Vybráno <b>{selected.size}</b></span>
                     <button type="button" className="adm-btn adm-btn--ghost adm-btn--sm" disabled={busy} onClick={() => setSelected(new Set())}>
