@@ -220,3 +220,124 @@
         bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
     }
 }
+
+/* ---------- průběh schvalování ----------
+   Stejné místo jako hromadná lišta (ta se během běhu skryje). Dvě vrstvy přes
+   celou dráhu, roztažené jen transformem: spodní, světlejší sahá po konec právě
+   odeslané dávky a pulzuje (jediná smyčka na stránce), horní plná ukazuje hotovou
+   část. --done a --batch jsou podíly 0–1 z JSX. */
+#cand-progress {
+    position: fixed;
+    left: 50%;
+    bottom: calc(var(--space-3) + 64px + var(--space-3) + env(safe-area-inset-bottom));
+    z-index: 35;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    box-sizing: border-box;
+    width: min(calc(100% - 2 * var(--gutter)), 440px);
+    padding: var(--space-3) var(--space-5);
+    border: 1px solid var(--nav-line);
+    border-radius: var(--radius-pill);
+    background: var(--nav-panel);
+    box-shadow: inset 0 1px 0 var(--nav-edge), var(--shadow-pop);
+    transform: translateX(-50%);
+    animation: cand-bulk-in var(--dur-base) var(--ease-standard);
+}
+
+#cand-progress-text {
+    flex-shrink: 0;
+    color: var(--lp-muted);
+    font-size: var(--fs-sm);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+#cand-progress-text b {
+    color: var(--lp-text);
+}
+
+#cand-progress-track {
+    position: relative;
+    flex: 1;
+    height: 8px;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--lp-surface-hi);
+}
+
+#cand-progress-track i {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--color-primary);
+    transform-origin: left center;
+    transition: transform var(--dur-slow) var(--ease-standard);
+}
+
+#cand-progress-batch {
+    opacity: 0.35;
+    transform: scaleX(calc(var(--done) + var(--batch)));
+    animation: cand-progress-pulse var(--loop-shimmer) var(--ease-in-out) infinite;
+}
+
+#cand-progress-done {
+    transform: scaleX(var(--done));
+}
+
+@keyframes cand-progress-pulse {
+    0%, 100% { opacity: 0.2; }
+    50%      { opacity: 0.55; }
+}
+
+/* ---------- stav karty během schvalování ---------- */
+.cand-stage {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-pill);
+    background: var(--lp-surface-hi);
+    color: var(--lp-muted);
+    font-family: var(--font-display);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    white-space: nowrap;
+}
+
+.cand-stage--working {
+    background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+    color: var(--lp-accent-text);
+}
+
+.cand-stage--done {
+    background: var(--success-soft);
+    color: var(--success-ink);
+}
+
+.cand-stage--failed {
+    background: var(--danger-soft);
+    color: var(--danger-ink);
+}
+
+.cand-card--working {
+    border-color: var(--color-primary);
+}
+
+/* Hotové a čekající karty ustoupí, oko jde na tu, která se právě zpracovává. */
+.cand-card--queued,
+.cand-card--done {
+    opacity: 0.6;
+    transition: opacity var(--dur-base) var(--ease-standard);
+}
+
+.cand-card--failed {
+    border-color: var(--danger-ink);
+}
+
+@media (min-width: 768px) {
+    #cand-progress {
+        bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
+    }
+}
