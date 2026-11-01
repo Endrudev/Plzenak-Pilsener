@@ -7,6 +7,7 @@
 // jen datum, žádnou vymyšlenou půlnoc.
 
 const { SITE_URL, SITE_NAME } = require('./site')
+const { pragueDateTime } = require('../eventDate')
 
 const CONTEXT = 'https://schema.org'
 
@@ -38,7 +39,8 @@ function eventLd(event, url) {
         '@context': CONTEXT,
         '@type': 'Event',
         name: event.name,
-        startDate: event.startsOn,
+        // S časem jako okamžik s posunem ('2026-11-05T19:00:00+01:00'), bez něj jen datum.
+        startDate: pragueDateTime(event.startsOn, event.startTime),
         eventStatus: 'https://schema.org/EventScheduled',
         eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
         location: {

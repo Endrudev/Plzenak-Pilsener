@@ -29,4 +29,58 @@ function toCzechDate(iso) {
     return `${d}.${m}.${y}`
 }
 
-module.exports = { toIsoDate, toCzechDate }
+// Čas začátku z formuláře nebo od importéru: 'H:MM' i 'HH:MM' → 'HH:MM'.
+// Vrací null, když zápis nesedí nebo čas neexistuje (24:00, 19:60). Prázdnou
+// hodnotu (akce bez času) rozlišuje routa sama, sem chodí jen vyplněná.
+function toTime(value) {
+    if (typeof value !== 'string') return null
+    const match = /^(\d{1,2}):(\d{2})$/.exec(value.trim())
+    if (!match) return null
+    const [h, m] = [Number(match[1]), Number(match[2])]
+    if (h > 23 || m > 59) return null
+    return `${String(h).padStart(2, '0')}:${match[2]}`
+}
+
+// Nepovinný čas z těla požadavku. Chybějící, null nebo prázdný řetězec = akce
+// bez času ({ value: null }); cokoli jiného musí být platný čas, jinak { error }.
+// Starý klient, který pole vůbec nezná, tak dál funguje.
+function optionalTime(value) {
+    if (value === undefined || value === null || value === '') return { value: null }
+    const time = toTime(value)
+    return time ? { value: time } : { error: 'Neplatný čas začátku, očekává se HH:MM.' }
+}
+
+// Sloupec typu time vrací pg jako text '19:00:00'. API posílá jen hodiny a minuty.
+function fromDbTime(value) {
+    const match = /^(\d{2}):(\d{2})/.exec(value ?? '')
+    return match ? `${match[1]}:${match[2]}` : null
+}
+
+const PRAGUE_OFFSET = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Prague', timeZoneName: 'longOffset' })
+
+// Posun Prahy proti UTC v daném okamžiku jako '+01:00' (zima) nebo '+02:00' (léto).
+function offsetAt(instant) {
+    const name = PRAGUE_OFFSET.formatToParts(instant).find(p => p.type === 'timeZoneName').value
+    return name === 'GMT' ? '+00:00' : name.slice(3)
+}
+
+function offsetMinutes(offset) {
+    const sign = offset.startsWith('-') ? -1 : 1
+    return sign * (Number(offset.slice(1, 3)) * 60 + Number(offset.slice(4, 6)))
+}
+
+// Datum a čas akce jako ISO 8601 s posunem, např. '2026-11-05T19:00:00+01:00'.
+// Podle něj Google a kalendáře poznají skutečný okamžik začátku. Posun závisí
+// na datu (letní čas), proto se nepíše natvrdo: nejdřív se místní čas zkusmo
+// vezme jako UTC, zjistí se posun v tu chvíli a s ním se okamžik přepočítá
+// a posun ověří ještě jednou (kvůli nocím, kdy se mění čas).
+// Bez času vrací jen datum: JSON-LD akci bez známého času nepřidává půlnoc.
+function pragueDateTime(isoDate, time) {
+    if (!time) return isoDate
+    const guess = new Date(`${isoDate}T${time}:00Z`)
+    const first = offsetAt(guess)
+    const offset = offsetAt(new Date(guess.getTime() - offsetMinutes(first) * 60_000))
+    return `${isoDate}T${time}:00${offset}`
+}
+
+module.exports = { toIsoDate, toCzechDate, toTime, optionalTime, fromDbTime, pragueDateTime }

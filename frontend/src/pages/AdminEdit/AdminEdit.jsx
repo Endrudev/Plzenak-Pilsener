@@ -25,6 +25,7 @@ function toFormValues(event) {
         title: event.name ?? '',
         // Nečitelné datum nechá výchozí dnešek, `null.split()` by shodilo celé načtení.
         date: parseCzechDate(event.date) ?? new Date(),
+        startTime: event.startTime ?? '',
         category: parts.category,
         // Vedlejší štítky (druhá kategorie) formulář nezobrazuje, ale při uložení je vrací zpět,
         // aby je úprava akce nezahodila. TOP akce je zvlášť přepínač.

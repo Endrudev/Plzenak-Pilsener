@@ -67,6 +67,15 @@ export function CalendarIcon({ size = 18 }) {
     )
 }
 
+export function ClockIcon({ size = 18 }) {
+    return (
+        <svg width={size} height={size} {...base}>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" />
+        </svg>
+    )
+}
+
 export function ShareIcon({ size = 18 }) {
     return (
         <svg width={size} height={size} {...base}>

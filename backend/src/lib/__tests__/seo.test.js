@@ -123,6 +123,12 @@ describe('eventLd', () => {
         assert.equal(ld.description, 'První odstavec. Druhý odstavec.')
     })
 
+    it('se známým časem má startDate jako okamžik v pražském čase', () => {
+        // 24. 10. 2026 je ještě letní čas, 31. 10. už zimní
+        assert.equal(eventLd({ ...EVENT, startTime: '19:00' }, 'u').startDate, '2026-10-24T19:00:00+02:00')
+        assert.equal(eventLd({ ...EVENT, startsOn: '2026-10-31', startTime: '19:00' }, 'u').startDate, '2026-10-31T19:00:00+01:00')
+    })
+
     it('prázdný popis a chybějící obrázek vynechá, nevyplní prázdnou hodnotou', () => {
         const ld = eventLd({ ...EVENT, description: [''], imageUrl: null }, 'u')
         assert.equal('description' in ld, false)
@@ -198,6 +204,14 @@ describe('stránky', () => {
     it('titulek a popis akce začínají tím, kdy a kde', () => {
         assert.equal(eventTitle(EVENT), 'Knoflíková válka – 24.10.2026 | Plzeňák')
         assert.ok(eventDescription(EVENT).startsWith('24.10.2026, Divadlo J. K. Tyla. První odstavec.'))
+    })
+
+    it('známý čas je v popisu i v textu stránky, titulek zůstává jen s datem', () => {
+        const timed = { ...EVENT, startTime: '19:00' }
+        assert.equal(eventTitle(timed), eventTitle(EVENT))
+        assert.ok(eventDescription(timed).startsWith('24.10.2026 v 19:00, Divadlo J. K. Tyla.'))
+        assert.ok(eventPage(timed).body.includes('<p>24.10.2026 v 19:00, Divadlo J. K. Tyla</p>'))
+        assert.ok(listPage('/', [timed]).body.includes('(24.10.2026 v 19:00, Divadlo J. K. Tyla)'))
     })
 
     it('výpis odkazuje na akce přes eventPath a má ItemList, homepage i Organization', () => {

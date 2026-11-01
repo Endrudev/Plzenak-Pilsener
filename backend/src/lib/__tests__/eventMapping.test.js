@@ -19,6 +19,7 @@ const ROW = {
     image_url: 'https://r2.example/events/7/a.jpg',
     image_key: 'events/7/a.jpg',
     starts_on: '2026-08-29',
+    start_time: '19:30:00',
     updated_at: '2026-08-02T08:00:00.000Z',
 }
 
@@ -35,6 +36,7 @@ const API = {
     createdAt: '2026-08-01T10:00:00.000Z',
     imageUrl: 'https://r2.example/events/7/a.jpg',
     startsOn: '2026-08-29',
+    startTime: '19:30',
     updatedAt: '2026-08-02T08:00:00.000Z',
     slug: 'pivni-slavnosti',
 }
@@ -52,6 +54,10 @@ describe('mapEvent', () => {
 
     it('bez starts_on je date null, ne text ze starého sloupce', () => {
         assert.equal(mapEvent({ ...ROW, starts_on: null }).date, null)
+    })
+
+    it('akce bez času má startTime null', () => {
+        assert.equal(mapEvent({ ...ROW, start_time: null }).startTime, null)
     })
 
     it('nepustí do odpovědi interní sloupec image_key', () => {

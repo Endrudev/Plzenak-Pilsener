@@ -16,7 +16,7 @@ import { eventTitle, TITLES } from '../../lib/pageTitle.js'
 import MapConsent from '../../components/ConsentGate/MapConsent.jsx'
 import EventDetailSkeleton from '../../components/EventDetailSkeleton/EventDetailSkeleton.jsx'
 import EventPoster from '../../components/events/EventPoster/EventPoster.jsx'
-import { ArrowRight, ArrowUpRight, CalendarIcon, PinIcon, ShareIcon, TicketIcon } from '../../components/landing/icons.jsx'
+import { ArrowRight, ArrowUpRight, CalendarIcon, ClockIcon, PinIcon, ShareIcon, TicketIcon } from '../../components/landing/icons.jsx'
 import '../../components/landing/landing.css'
 import LearningNote from '../../components/LearningNote/LearningNote.jsx'
 import './EventDetail.css'
@@ -195,6 +195,7 @@ export default function EventDetail() {
                             )}
                             <span className="ed-meta-text">
                                 {event.date && <span className="ed-meta-line"><CalendarIcon size={16} />{parts ? `${parts.weekday} ` : ''}{event.date}</span>}
+                                {event.startTime && <span className="ed-meta-line"><ClockIcon size={16} />Začátek v {event.startTime}</span>}
                                 {event.location && <span className="ed-meta-line"><PinIcon size={16} />{event.location}</span>}
                             </span>
                         </div>
@@ -243,6 +244,12 @@ export default function EventDetail() {
                                     <div className="ed-fact">
                                         <dt><CalendarIcon size={16} />Kdy</dt>
                                         <dd>{parts ? `${parts.weekday} ` : ''}{event.date}</dd>
+                                    </div>
+                                )}
+                                {event.startTime && (
+                                    <div className="ed-fact">
+                                        <dt><ClockIcon size={16} />Začátek</dt>
+                                        <dd>{event.startTime}</dd>
                                     </div>
                                 )}
                                 {event.location && (
@@ -309,7 +316,7 @@ export default function EventDetail() {
             <div className="ed-bar" data-hidden={buyVisible || undefined} inert={buyVisible ? '' : undefined}>
                 <div className="ed-bar-text">
                     <strong>{event.name}</strong>
-                    {event.date && <span>{event.date}</span>}
+                    {event.date && <span>{event.date}{event.startTime && ` v ${event.startTime}`}</span>}
                 </div>
                 {event.url ? (
                     <a href={event.url} target="_blank" rel="noreferrer" className="ed-bar-btn">

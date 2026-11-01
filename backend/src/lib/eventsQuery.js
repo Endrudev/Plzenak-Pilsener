@@ -4,10 +4,11 @@
 
 // Povolené způsoby řazení. ORDER BY se nedá poslat přes $1 (placeholder umí jen
 // hodnoty, ne názvy sloupců), takže uživatel posílá jen klíč do téhle tabulky a
-// samotné SQL je vždycky napsané tady. Druhotné řazení podle id drží pořadí
-// stabilní, když má víc akcí stejné datum.
+// samotné SQL je vždycky napsané tady. V rámci dne jdou akce podle času,
+// akce bez času (výstava, celodenní) první, protože platí od rána. Řazení
+// podle id nakonec drží pořadí stabilní, když se shoduje i čas.
 const SORTS = {
-    konani:  `starts_on ASC, id ASC`,
+    konani:  `starts_on ASC, start_time ASC NULLS FIRST, id ASC`,
     pridano: `created_at DESC, id ASC`,
 }
 
