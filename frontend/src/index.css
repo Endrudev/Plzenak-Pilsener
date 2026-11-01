@@ -14,6 +14,8 @@
      zůstávají beze změny — handoff je nepokrývá, nemá smysl je rušit. */
   --color-primary:       #E8720C;
   --color-primary-hover: #F58A2A;
+  --color-on-primary:    #FFFFFF;   /* text a ikona na plné --color-primary */
+  --color-on-photo:      #FFFFFF;   /* text přes fotku nebo video akce (s tmavým přechodem pod ním) */
   --sun:                 #F5A623;
   /* Badge vzdálenějšího data a akcent na tmavém. Do 2026-10-04 se token
      používal ve třech souborech (var(--amber)), ale nikde nebyl definovaný,
@@ -47,6 +49,7 @@
   --color-night-2:     #2A1106;
   --color-skyline-back: #4A2312;   /* zadní řada budov nad pásem Hledání: plná, bez oken, světlejší než přední */
   --color-footer:      #140702;   /* jen patička — nejtmavší tón appky */
+  --color-events-hero: #401909;   /* pod scénou hero /akce, než se scéna načte */
   /* Dlaždice kategorií na homepage: jedna jantarová plocha, 2026-10-05 */
   --tile-a:            #F7B040;
   --tile-b:            #EE8E1E;

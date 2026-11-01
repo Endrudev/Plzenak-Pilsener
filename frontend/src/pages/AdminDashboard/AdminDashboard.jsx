@@ -9,7 +9,7 @@ import { splitTags } from '../../lib/events/eventTags.js'
 import { CATEGORIES } from '../../lib/filters/categories.jsx'
 import { PERIODS, adminStats, filterAdminEvents } from '../../lib/admin/adminEvents.js'
 import { rememberDashboard } from '../../lib/admin/dashboardReturn.js'
-import { getPageItems } from '../../components/Pagination/getPageItems.js'
+import { getPageItems } from '../../lib/getPageItems.js'
 import AdminShell from '../../components/admin/AdminShell/AdminShell.jsx'
 import AdminDialog from '../../components/admin/AdminDialog/AdminDialog.jsx'
 import {

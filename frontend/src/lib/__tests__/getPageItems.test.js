@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getPageItems } from './getPageItems.js'
+import { getPageItems } from '../getPageItems.js'
 
 describe('getPageItems', () => {
     it('vrátí jen [1] když je jedna nebo žádná stránka', () => {

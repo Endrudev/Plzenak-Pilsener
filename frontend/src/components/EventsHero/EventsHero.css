@@ -11,7 +11,7 @@
     isolation: isolate;
     margin-top: calc(-1 * var(--header-h));
     overflow: hidden;
-    background: #401909;
+    background: var(--color-events-hero);
     color: var(--color-cream);
 }
 

@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { getPageItems } from '../../Pagination/getPageItems.js'
+import { getPageItems } from '../../../lib/getPageItems.js'
 import { ArrowLeft, ArrowRight } from '../../landing/icons.jsx'
 import './EventsPager.css'
 

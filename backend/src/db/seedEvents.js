@@ -6,11 +6,12 @@ dotenv.config({path: path.join(__dirname, '../../.env')})
 const {query} = require('./pool')
 const {toIsoDate} = require('../lib/eventDate')
 
-// Gradientové třídy, co dnes v EventCard.css reálně existují — cyklí se mezi
-// nimi u akcí bez nahraného obrázku (viz frontend/src/components/EventCard/EventCard.css).
+// Hodnoty sloupce img_class. Frontend je dnes nevykresluje (akce bez obrázku
+// dostane vzhled podle kategorie, lib/events/eventVisual.js), sloupec je ale
+// pořád povinná součást řádku, tak se plní stejně jako dřív.
 const IMG_CLASSES = ['event-image--majales', 'event-image--sklo', 'event-image--prazdroj']
 
-// Stejný způsob sestavení OSM embed URL jako v AdminCreate.jsx/AdminEdit.jsx
+// Stejný způsob sestavení OSM embed URL jako ve formuláři akce (components/admin/EventForm)
 // (bbox = W,S,E,N kolem bodu, marker = lat,lon) — souřadnice jsou přibližné
 // polohy skutečných plzeňských míst, jen pro vizuální testování mapy na detailu.
 function mapSrc(lat, lon) {
