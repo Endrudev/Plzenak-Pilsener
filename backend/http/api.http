@@ -1,0 +1,105 @@
+# Ruční zkoušení API přes rozšíření REST Client ve VS Code: nad každým
+# požadavkem je odkaz „Send Request“. Bloky odděluje ###.
+#
+# Nejdřív pošli „Přihlášení“. Token z odpovědi si ostatní požadavky berou samy
+# přes {{login.response.body.token}}, nic se nekopíruje. Heslo sem nepiš
+# natrvalo, soubor je v gitu: vyplň ho jen při zkoušení a změnu neukládej.
+
+@api = http://localhost:3001/api
+@token = {{login.response.body.token}}
+# IMPORTER_TOKEN z backend/.env, jen pro návrhy od importéru
+@importerToken = doplnit
+
+### Přihlášení
+# @name login
+POST {{api}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "password": "doplnit"
+}
+
+### Veřejný seznam akcí (jen budoucí). Parametry: q, kategorie, misto,
+### datum (dnes, vikend, 7dni, 30dni), top, vyjma, razeni, page, perPage
+GET {{api}}/events?datum=vikend
+
+### Místa pro filtr
+GET {{api}}/events/locations
+
+### Jedna akce
+GET {{api}}/events/1
+
+### Všechny akce pro administraci, včetně minulých (chráněné)
+GET {{api}}/events/admin
+Authorization: Bearer {{token}}
+
+### Nová akce (chráněné). Datum D.M.RRRR, ukládá se jako starts_on
+# @name created
+POST {{api}}/events
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Testovací akce",
+    "date": "01.01.2027",
+    "location": "Náměstí Republiky",
+    "tags": ["Kultura"],
+    "imgClass": "event-image--prazdroj",
+    "url": "https://example.com",
+    "description": ["První odstavec popisu."]
+}
+
+### Úprava akce vytvořené výš (chráněné)
+PUT {{api}}/events/{{created.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Testovací akce (upravená)",
+    "date": "02.01.2027",
+    "location": "Náměstí Republiky",
+    "tags": ["Kultura", "TOP akce"],
+    "imgClass": "event-image--prazdroj",
+    "url": "https://example.com",
+    "description": ["Upravený popis."]
+}
+
+### Smazání akce vytvořené výš (chráněné, smaže i obrázek v R2)
+DELETE {{api}}/events/{{created.response.body.id}}
+Authorization: Bearer {{token}}
+
+### Bez tokenu: má vrátit 401
+GET {{api}}/events/admin
+
+### Návrhy akcí ve frontě (chráněné). status: pending, approved, rejected
+GET {{api}}/candidates?status=pending
+Authorization: Bearer {{token}}
+
+### Návrh od importéru (úzký token IMPORTER_TOKEN, ne přihlášení)
+POST {{api}}/candidates
+Content-Type: application/json
+Authorization: Bearer {{importerToken}}
+
+{
+    "items": [{
+        "name": "Návrh z importéru",
+        "date": "15.01.2027",
+        "location": "DEPO2015",
+        "tags": ["Kultura"],
+        "description": ["Popis návrhu."],
+        "sourceUrl": "https://akce.plzen.eu/zkouska"
+    }]
+}
+
+### Stav návrhů podle zdrojových adres (importér)
+POST {{api}}/candidates/status
+Content-Type: application/json
+Authorization: Bearer {{importerToken}}
+
+{
+    "sourceUrls": ["https://akce.plzen.eu/zkouska"]
+}
+
+### Zdraví backendu (používá ho deploy.sh a UptimeRobot)
+GET {{api}}/health

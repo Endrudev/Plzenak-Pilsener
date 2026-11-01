@@ -104,7 +104,7 @@
     justify-content: center;
     border-radius: 50%;
     background: var(--color-primary);
-    color: #fff;
+    color: var(--color-on-primary);
     transition: transform var(--dur-slow) var(--ease-drawer),
                 background-color var(--dur-fast) var(--ease-standard);
 }

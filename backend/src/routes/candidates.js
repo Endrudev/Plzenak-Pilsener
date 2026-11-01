@@ -37,8 +37,9 @@ function isHttpsUrl(value, maxLength) {
     }
 }
 
-// Datum se ukládá jako text DD.MM.YYYY (podle něj řadí TO_DATE v events.js), takže
-// špatný zápis by akci tiše vyřadil ze všech seznamů. Kontroluje se i to, že den existuje.
+// Návrh drží datum jako text DD.MM.YYYY (podle něj řadí TO_DATE v GET / níž a při
+// schválení se převede na starts_on), takže špatný zápis by návrh rozbil. Kontroluje
+// se i to, že den existuje.
 function isValidDate(value) {
     const match = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(value)
     if (!match) return false

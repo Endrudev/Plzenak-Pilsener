@@ -84,7 +84,7 @@
     overflow: hidden;
     isolation: isolate;
     scroll-snap-align: start;
-    color: #fff;
+    color: var(--color-on-photo);
     text-decoration: none;
     background: var(--lp-surface);
     transition: transform var(--dur-base) var(--ease-standard);

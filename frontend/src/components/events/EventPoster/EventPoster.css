@@ -17,7 +17,7 @@
     overflow: hidden;
     isolation: isolate;
     background: var(--lp-surface);
-    color: #fff;
+    color: var(--color-on-photo);
     text-decoration: none;
     transition: transform var(--dur-base) var(--ease-standard);
 }

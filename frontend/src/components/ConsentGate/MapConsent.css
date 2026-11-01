@@ -61,7 +61,7 @@
 
 .map-consent-btn--primary {
     background: var(--color-primary);
-    color: #fff;
+    color: var(--color-on-primary);
 }
 
 @media (hover: hover) {
