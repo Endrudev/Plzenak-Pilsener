@@ -19,6 +19,11 @@ export function validateEventForm(values) {
     const errors = {}
     if (!values.title?.trim()) errors.title = 'Vyplňte název akce.'
     if (!values.date) errors.date = 'Vyberte datum.'
+    // Nepovinný. Pole type="time" vrací 'HH:MM' nebo prázdný řetězec, tohle chytí
+    // jen hodnotu odjinud (starší prohlížeč s obyčejným textovým polem).
+    if (values.startTime && !/^([01]\d|2[0-3]):[0-5]\d$/.test(values.startTime)) {
+        errors.startTime = 'Čas zadejte jako HH:MM, např. 19:30.'
+    }
     if (!values.category?.trim()) errors.category = 'Vyberte kategorii.'
     if (!values.description?.trim()) errors.description = 'Napište krátký popis.'
     if (!values.locationName?.trim()) errors.locationName = 'Vyplňte místo konání.'

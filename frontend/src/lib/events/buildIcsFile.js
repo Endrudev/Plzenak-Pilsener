@@ -3,11 +3,12 @@
 // žádný DOM) — to dělá volající (EventDetail.jsx), tahle jen vrací
 // { filename, content } nebo null, když se datum nedá rozparsovat.
 //
-// event.date je v DB uložené jako 'DD.MM.YYYY', BEZ času (viz
-// backend/src/db/seedEvents.js, migrace) — appka žádný čas konání
-// nezná, takže se generuje celodenní událost (DTSTART/DTEND s
-// VALUE=DATE), ne DATE-TIME s vymyšleným časem. Kdyby DB časy měla,
-// tahle funkce by se rozšířila, ne nahradila.
+// event.date je 'DD.MM.YYYY', event.startTime 'HH:MM' nebo null (od
+// migrace 009). Akce s časem je událost od té hodiny, zapsaná v UTC, aby ji
+// kalendář umístil správně i v telefonu nastaveném na jiné pásmo. Konec
+// akce neznáme, proto pevné 2 hodiny: bez konce by ji kalendáře ukázaly
+// jako bod bez délky. Akce bez času zůstává celodenní (VALUE=DATE), žádný
+// vymyšlený čas.
 
 function pad(n) {
     return String(n).padStart(2, '0')
@@ -59,6 +60,33 @@ function toDateStamp({ y, mo, d }) {
     return `${y}${pad(mo)}${pad(d)}`
 }
 
+// Okamžik začátku v UTC jako 'YYYYMMDDTHHMMSSZ'. Čas akce je pražský, posun
+// proti UTC závisí na datu (letní čas): nejdřív se místní čas zkusmo vezme
+// jako UTC, zjistí se posun Prahy v tu chvíli a s ním se okamžik přepočítá.
+// Druhé měření posunu pokryje noci, kdy se mění čas. Stejný postup má
+// backend pro JSON-LD (backend/src/lib/eventDate.js).
+const PRAGUE = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Prague', timeZoneName: 'longOffset' })
+
+function pragueOffsetMinutes(instant) {
+    const name = PRAGUE.formatToParts(instant).find(p => p.type === 'timeZoneName').value
+    const m = /^GMT([+-])(\d{2}):(\d{2})$/.exec(name)
+    return m ? (m[1] === '-' ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3])) : 0
+}
+
+function pragueToUtc({ y, mo, d }, time) {
+    const [h, mi] = time.split(':').map(Number)
+    const guess = Date.UTC(y, mo - 1, d, h, mi)
+    const first = pragueOffsetMinutes(new Date(guess))
+    return new Date(guess - pragueOffsetMinutes(new Date(guess - first * 60_000)) * 60_000)
+}
+
+function toUtcStamp(date) {
+    return `${date.getUTCFullYear()}${pad(date.getUTCMonth() + 1)}${pad(date.getUTCDate())}`
+        + `T${pad(date.getUTCHours())}${pad(date.getUTCMinutes())}${pad(date.getUTCSeconds())}Z`
+}
+
+const TIMED_DURATION_MS = 2 * 60 * 60 * 1000
+
 // Neháčkovaný, bezpečný název souboru z názvu akce (fallback "akce", když
 // by po očištění nezbylo nic — např. název čistě v emoji).
 function slugifyFilename(name) {
@@ -75,10 +103,15 @@ export function buildIcsFile(event) {
     const start = parseDate(event?.date)
     if (!start) return null
 
-    const end = nextDay(start)
-    const now = new Date()
-    const stamp = `${now.getUTCFullYear()}${pad(now.getUTCMonth() + 1)}${pad(now.getUTCDate())}`
-        + `T${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}${pad(now.getUTCSeconds())}Z`
+    const stamp = toUtcStamp(new Date())
+
+    let when
+    if (/^\d{2}:\d{2}$/.test(event.startTime ?? '')) {
+        const begin = pragueToUtc(start, event.startTime)
+        when = [`DTSTART:${toUtcStamp(begin)}`, `DTEND:${toUtcStamp(new Date(begin.getTime() + TIMED_DURATION_MS))}`]
+    } else {
+        when = [`DTSTART;VALUE=DATE:${toDateStamp(start)}`, `DTEND;VALUE=DATE:${toDateStamp(nextDay(start))}`]
+    }
 
     const descriptionText = Array.isArray(event.description) ? event.description.join('\n\n') : ''
 
@@ -90,8 +123,7 @@ export function buildIcsFile(event) {
         'BEGIN:VEVENT',
         `UID:event-${event.id}@plzenak.cz`,
         `DTSTAMP:${stamp}`,
-        `DTSTART;VALUE=DATE:${toDateStamp(start)}`,
-        `DTEND;VALUE=DATE:${toDateStamp(end)}`,
+        ...when,
         `SUMMARY:${escapeIcsText(event.name)}`,
     ]
 

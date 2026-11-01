@@ -32,6 +32,8 @@ export function emptyEvent() {
         // Výchozí je dnešek — dřív tu bylo natvrdo 30.4.2026, takže nová akce
         // dostala loňské datum, pokud ho admin ručně nezměnil.
         date: new Date(),
+        // 'HH:MM', nebo prázdné u akce bez času (výstava, celodenní akce)
+        startTime: '',
         category: '',
         extraTags: [],
         top: false,
@@ -44,12 +46,13 @@ export function emptyEvent() {
 }
 
 function snapshot(v) {
-    return JSON.stringify([v.title, toCzech(v.date), v.category, v.top, v.description, v.locationName, v.mapSrc, v.url, v.imagePreview])
+    return JSON.stringify([v.title, toCzech(v.date), v.startTime, v.category, v.top, v.description, v.locationName, v.mapSrc, v.url, v.imagePreview])
 }
 
 const FIELD_IDS = {
     title: 'ef-title',
     date: 'ef-date',
+    startTime: 'ef-time',
     category: 'ef-category',
     description: 'ef-desc',
     locationName: 'ef-location',
@@ -60,6 +63,7 @@ const FIELD_IDS = {
 export default function EventForm({ mode, initial, viewHref, onSubmit, onDelete }) {
     const [title, setTitle] = useState(initial.title)
     const [selected, setSelected] = useState(initial.date)
+    const [startTime, setStartTime] = useState(initial.startTime)
     const [category, setCategory] = useState(initial.category)
     const [top, setTop] = useState(initial.top)
     const [description, setDescription] = useState(initial.description)
@@ -76,7 +80,7 @@ export default function EventForm({ mode, initial, viewHref, onSubmit, onDelete 
     // Neuložené změny = otisk současných hodnot se liší od otisku počátečních. Pole,
     // ne objekt: pořadí je pevné, takže stejné hodnoty dají vždy stejný řetězec.
     const initialKey = useRef(snapshot({ ...initial, imagePreview: initial.imageUrl }))
-    const dirty = !saved && snapshot({ title, date: selected, category, top, description, locationName, mapSrc, url, imagePreview }) !== initialKey.current
+    const dirty = !saved && snapshot({ title, date: selected, startTime, category, top, description, locationName, mapSrc, url, imagePreview }) !== initialKey.current
 
     // Rozdělaná akce se nesmí ztratit zavřením karty nebo obnovením stránky. Přechody
     // uvnitř aplikace to nepokryje (BrowserRouter neumí blokovat navigaci), ty mají
@@ -121,7 +125,7 @@ export default function EventForm({ mode, initial, viewHref, onSubmit, onDelete 
     async function handleSubmit(e) {
         e.preventDefault()
         if (saving) return
-        const found = validateEventForm({ title, date: selected, category, description, locationName, url, hasImage: Boolean(imagePreview) })
+        const found = validateEventForm({ title, date: selected, startTime, category, description, locationName, url, hasImage: Boolean(imagePreview) })
         setErrors(found)
         const first = Object.keys(found)[0]
         if (first) {
@@ -135,6 +139,9 @@ export default function EventForm({ mode, initial, viewHref, onSubmit, onDelete 
                 payload: {
                     name:        title.trim(),
                     date:        toCzech(selected),
+                    // null = akce bez času. Klíč se posílá vždy: když chybí,
+                    // backend čas při úpravě nechá být (kvůli starším klientům).
+                    startTime:   startTime || null,
                     location:    locationName.trim(),
                     tags:        joinTags({ category, extra: initial.extraTags, top }),
                     imgClass:    'event-image--prazdroj',
@@ -157,10 +164,11 @@ export default function EventForm({ mode, initial, viewHref, onSubmit, onDelete 
         id: 0,
         name: title.trim() || 'Název akce',
         date: toCzech(selected),
+        startTime: startTime || null,
         location: locationName.trim() || 'Místo konání',
         tags: joinTags({ category, extra: initial.extraTags, top }),
         imageUrl: imagePreview,
-    }), [title, selected, locationName, category, top, imagePreview])
+    }), [title, selected, startTime, locationName, category, top, imagePreview])
 
     const backTo = dashboardPath()
 
@@ -253,11 +261,27 @@ export default function EventForm({ mode, initial, viewHref, onSubmit, onDelete 
                     </Section>
 
                     <Section title="Kdy a kde" index={1}>
-                        <DateField
-                            value={selected}
-                            error={errors.date}
-                            onChange={date => { setSelected(date); clearError('date') }}
-                        />
+                        <div className="ef-row">
+                            <DateField
+                                value={selected}
+                                error={errors.date}
+                                onChange={date => { setSelected(date); clearError('date') }}
+                            />
+
+                            <Field id="ef-time" label="Začátek" hint="nepovinné" error={errors.startTime}>
+                                {/* Bez vlastní ikony: prohlížeč do pole kreslí svoje hodiny, které otevírají výběr času. */}
+                                <div className="adm-input" data-invalid={errors.startTime ? '' : undefined}>
+                                    <input
+                                        id="ef-time"
+                                        type="time"
+                                        value={startTime}
+                                        aria-invalid={Boolean(errors.startTime)}
+                                        aria-describedby={errors.startTime ? 'ef-time-error' : undefined}
+                                        onChange={e => { setStartTime(e.target.value); clearError('startTime') }}
+                                    />
+                                </div>
+                            </Field>
+                        </div>
 
                         <Field id="ef-location" label="Místo konání" error={errors.locationName}>
                             <div className="adm-input" data-invalid={errors.locationName ? '' : undefined}>

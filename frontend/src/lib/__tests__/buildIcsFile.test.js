@@ -22,6 +22,23 @@ describe('buildIcsFile', () => {
         expect(result.content).toContain('END:VCALENDAR')
     })
 
+    it('akce s časem začíná v tu hodinu pražského času, zapsanou v UTC, a trvá 2 hodiny', () => {
+        // 21. 9. je letní čas (UTC+2): 19:00 v Plzni = 17:00 UTC
+        const summer = buildIcsFile({ ...BASE_EVENT, startTime: '19:00' }).content
+        expect(summer).toContain('DTSTART:20260921T170000Z')
+        expect(summer).toContain('DTEND:20260921T190000Z')
+        expect(summer).not.toContain('VALUE=DATE')
+        // 5. 11. je zimní čas (UTC+1)
+        const winter = buildIcsFile({ ...BASE_EVENT, date: '05.11.2026', startTime: '19:00' }).content
+        expect(winter).toContain('DTSTART:20261105T180000Z')
+    })
+
+    it('akce bez času nebo s nečitelným časem zůstává celodenní', () => {
+        for (const startTime of [null, undefined, '', '7 večer']) {
+            expect(buildIcsFile({ ...BASE_EVENT, startTime }).content).toContain('DTSTART;VALUE=DATE:20260921')
+        }
+    })
+
     it('zvládne přechod přes hranici roku', () => {
         const result = buildIcsFile({ ...BASE_EVENT, date: '31.12.2026' })
         expect(result.content).toContain('DTSTART;VALUE=DATE:20261231')

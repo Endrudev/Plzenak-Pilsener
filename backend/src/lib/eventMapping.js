@@ -2,7 +2,7 @@
 // frontend (camelCase). Čisté funkce bez volání databáze.
 
 const { slugify } = require('./slug')
-const { toCzechDate } = require('./eventDate')
+const { toCzechDate, fromDbTime } = require('./eventDate')
 
 function mapEvent(event) {
     return {
@@ -20,6 +20,8 @@ function mapEvent(event) {
         createdAt: event.created_at,
         imageUrl: event.image_url,
         startsOn: event.starts_on,
+        // 'HH:MM', nebo null u akce bez času (výstava, celodenní akce)
+        startTime: fromDbTime(event.start_time),
         updatedAt: event.updated_at,
         // Neukládá se, dopočítá se z názvu (viz lib/slug.js). Proto ho
         // mapEventReverse nemá: do databáze nemá kam jít.
@@ -28,7 +30,8 @@ function mapEvent(event) {
 }
 
 // `date` z těla požadavku tu není: routa ho převede na starts_on přes
-// toIsoDate a zkontroluje (nečitelné datum = 400).
+// toIsoDate a zkontroluje (nečitelné datum = 400). `start_time` se přenese,
+// ale routa ho stejně ukládá až po kontrole přes optionalTime.
 function mapEventReverse(event) {
     return {
         id: event.id,
@@ -42,6 +45,7 @@ function mapEventReverse(event) {
         created_at: event.createdAt,
         image_url: event.imageUrl,
         starts_on: event.startsOn,
+        start_time: event.startTime,
         updated_at: event.updatedAt
     }
 }

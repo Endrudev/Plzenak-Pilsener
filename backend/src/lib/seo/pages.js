@@ -14,8 +14,14 @@ const { eventPath } = require('./routes')
 const HOME_CRUMB = { name: 'Plzeňák', url: `${SITE_URL}/` }
 const EVENTS_CRUMB = { name: 'Akce', url: `${SITE_URL}/akce` }
 
+// Kdy: datum a čas začátku, je-li známý ('05.11.2026 v 19:00').
+function eventWhen(event) {
+    if (!event.date) return null
+    return event.startTime ? `${event.date} v ${event.startTime}` : event.date
+}
+
 function eventLine(event) {
-    const meta = [event.date, event.location].filter(Boolean).map(escapeHtml).join(', ')
+    const meta = [eventWhen(event), event.location].filter(Boolean).map(escapeHtml).join(', ')
     return `<li><a href="${escapeHtml(eventPath(event))}">${escapeHtml(event.name)}</a>${meta ? ` (${meta})` : ''}</li>`
 }
 
@@ -67,7 +73,7 @@ function eventTitle(event) {
 // Popis začíná tím, na co se lidé i AI ptají nejdřív: kdy a kde. Pak začátek
 // popisu akce.
 function eventDescription(event) {
-    const when = [event.date, event.location].filter(Boolean).join(', ')
+    const when = [eventWhen(event), event.location].filter(Boolean).join(', ')
     const text = (event.description ?? []).join(' ')
     return truncate(when ? `${when}. ${text}` : text)
 }
@@ -78,7 +84,7 @@ function eventPage(event) {
         .filter(p => p && p.trim())
         .map(p => `<p>${escapeHtml(p)}</p>`)
         .join('')
-    const meta = [event.date, event.location].filter(Boolean).map(escapeHtml).join(', ')
+    const meta = [eventWhen(event), event.location].filter(Boolean).map(escapeHtml).join(', ')
     // Escapování nezabrání odkazu javascript:…, proto jen http(s).
     const link = /^https?:\/\//i.test(event.url ?? '')
         ? `<p><a href="${escapeHtml(event.url)}" rel="nofollow noopener">Web pořadatele a vstupenky</a></p>`

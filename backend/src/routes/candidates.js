@@ -7,7 +7,7 @@ const { importerAuth, importerLimiter } = require('../middleware/importerAuth')
 const { sendObject, deleteObject } = require('../lib/r2')
 const { IMAGE_MIME } = require('../lib/images')
 const { downloadImage, ImageError } = require('../lib/fetchImage')
-const { toIsoDate } = require('../lib/eventDate')
+const { toIsoDate, optionalTime, fromDbTime } = require('../lib/eventDate')
 const { mapEvent } = require('../lib/eventMapping')
 const { eventPath } = require('../lib/seo/routes')
 const { indexNow, eventUrl } = require('../lib/indexNow')
@@ -66,6 +66,10 @@ function validateCandidate(input) {
         return { error: 'Datum musí mít tvar DD.MM.RRRR a existovat.' }
     }
 
+    // Nepovinný: importér ho pošle, když ho zdroj uvádí.
+    const startTime = optionalTime(input.startTime)
+    if (startTime.error) return { error: startTime.error }
+
     const location = cleanString(input.location, 200)
     if (!location) return { error: 'Chybí místo (nejvýš 200 znaků).' }
 
@@ -103,6 +107,7 @@ function validateCandidate(input) {
             name,
             date: input.date,
             dateShort: input.date.slice(0, 5),
+            startTime: startTime.value,
             location,
             tags,
             description,
@@ -120,6 +125,7 @@ function mapCandidate(row) {
         name: row.name,
         date: row.date,
         dateShort: row.date_short,
+        startTime: fromDbTime(row.start_time),
         location: row.location,
         tags: row.tags,
         description: row.description,
@@ -156,11 +162,11 @@ router.post('/', importerLimiter, importerAuth, async (req, res) => {
             const c = checked.value
             const result = await query(`
                 INSERT INTO event_candidates
-                    (source_url, name, date, date_short, location, tags, description, source_image_url, raw)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                    (source_url, name, date, date_short, location, tags, description, source_image_url, raw, start_time)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                 ON CONFLICT (source_url) DO NOTHING
                 RETURNING id;
-            `, [c.sourceUrl, c.name, c.date, c.dateShort, c.location, c.tags, c.description, c.sourceImageUrl, c.raw])
+            `, [c.sourceUrl, c.name, c.date, c.dateShort, c.location, c.tags, c.description, c.sourceImageUrl, c.raw, c.startTime])
             if (result.rows.length > 0) {
                 created.push({ index, id: result.rows[0].id })
             } else {
@@ -215,7 +221,7 @@ router.get('/', authMiddleware, async (req, res) => {
         const result = await query(`
             SELECT * FROM event_candidates
             WHERE status = $1
-            ORDER BY TO_DATE(date, 'DD.MM.YYYY') ASC, id ASC
+            ORDER BY TO_DATE(date, 'DD.MM.YYYY') ASC, start_time ASC NULLS FIRST, id ASC
             LIMIT 500;
         `, [status])
         res.json({ items: result.rows.map(mapCandidate) })
@@ -246,10 +252,10 @@ async function approveCandidate(id) {
     let event
     try {
         const inserted = await query(`
-            INSERT INTO events (name, location, tags, img_class, url, description, map_src, starts_on)
-            VALUES ($1, $2, $3, $4, $5, $6, NULL, $7)
+            INSERT INTO events (name, location, tags, img_class, url, description, map_src, starts_on, start_time)
+            VALUES ($1, $2, $3, $4, $5, $6, NULL, $7, $8)
             RETURNING *;
-        `, [c.name, c.location, c.tags, DEFAULT_IMG_CLASS, c.source_url, c.description, toIsoDate(c.date)])
+        `, [c.name, c.location, c.tags, DEFAULT_IMG_CLASS, c.source_url, c.description, toIsoDate(c.date), c.start_time])
         event = inserted.rows[0]
     } catch (err) {
         console.error(err.message)

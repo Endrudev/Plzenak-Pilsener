@@ -21,6 +21,18 @@ describe('validateEventForm', () => {
         expect(Object.keys(errors)).toEqual(['title', 'date', 'category', 'description', 'locationName', 'image'])
     })
 
+    it('čas začátku je nepovinný, ale musí být HH:MM', () => {
+        expect(validateEventForm({ ...valid, startTime: '' })).toEqual({})
+        expect(validateEventForm({ ...valid, startTime: '19:30' })).toEqual({})
+        expect(validateEventForm({ ...valid, startTime: '24:00' })).toHaveProperty('startTime')
+        expect(validateEventForm({ ...valid, startTime: '7 večer' })).toHaveProperty('startTime')
+    })
+
+    it('chyba času je hned za datem, kvůli fokusu na první chybné pole', () => {
+        const errors = validateEventForm({ ...valid, date: null, startTime: 'x', category: '' })
+        expect(Object.keys(errors)).toEqual(['date', 'startTime', 'category'])
+    })
+
     it('odkaz je nepovinný, ale musí být adresa', () => {
         expect(validateEventForm({ ...valid, url: 'https://plzen.eu/akce' })).toEqual({})
         expect(validateEventForm({ ...valid, url: 'plzen.eu' })).toHaveProperty('url')

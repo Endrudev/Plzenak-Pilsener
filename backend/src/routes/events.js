@@ -43,7 +43,7 @@ function uploadImage(req, res, next) {
 const {sendObject, deleteObject} = require('../lib/r2')
 const {mapEvent, mapEventReverse} = require('../lib/eventMapping')
 const {resolveOrderBy, buildWhere, parsePaging} = require('../lib/eventsQuery')
-const {toIsoDate} = require('../lib/eventDate')
+const {toIsoDate, optionalTime} = require('../lib/eventDate')
 const {indexNow, eventUrl} = require('../lib/indexNow')
 const {eventPath} = require('../lib/seo/routes')
 
@@ -103,7 +103,7 @@ const ADMIN_LIST_LIMIT = 1000
 router.get('/admin', authMiddleware, async(req, res) => {
     try{
         const result = await query(`SELECT * FROM events
-            ORDER BY starts_on DESC, id DESC
+            ORDER BY starts_on DESC, start_time DESC NULLS LAST, id DESC
             LIMIT $1;`, [ADMIN_LIST_LIMIT])
         res.json({ items: result.rows.map(mapEvent) })
     }catch(err){
@@ -149,11 +149,16 @@ router.post('/', authMiddleware, async(req, res) => {
             res.status(400).json({error: 'Neplatné datum, očekává se D.M.RRRR.'})
             return
         }
+        const startTime = optionalTime(req.body.startTime)
+        if (startTime.error) {
+            res.status(400).json({error: startTime.error})
+            return
+        }
         const insertResult = await query(`
-            INSERT INTO events (name, location, tags, img_class, url, description, map_src, starts_on)
-            VALUES($1, $2, $3, $4, $5, $6, $7, $8)
+            INSERT INTO events (name, location, tags, img_class, url, description, map_src, starts_on, start_time)
+            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING *;
-            `, [result.name, result.location, result.tags, result.img_class, result.url, result.description, result.map_src, startsOn]
+            `, [result.name, result.location, result.tags, result.img_class, result.url, result.description, result.map_src, startsOn, startTime.value]
         )
             pingEvent(insertResult.rows[0])
             res.status(201).json(mapEvent(insertResult.rows[0]))
@@ -176,12 +181,22 @@ router.put('/:id', authMiddleware, async(req, res) => {
             res.status(400).json({error: 'Neplatné datum, očekává se D.M.RRRR.'})
             return
         }
+        const startTime = optionalTime(req.body.startTime)
+        if (startTime.error) {
+            res.status(400).json({error: startTime.error})
+            return
+        }
+        // Klíč startTime úplně chybí = klient o času neví (administrace otevřená
+        // v prohlížeči ještě před nasazením téhle verze) a čas akce se nemění.
+        // startTime: null nebo '' = admin čas vědomě odebral.
+        const sendsTime = Object.hasOwn(req.body, 'startTime')
         const updateResult = await query(`
             UPDATE events SET name = $1, location = $2, tags = $3, url = $4, description = $5, img_class = $6, map_src = $7,
-                starts_on = $8, updated_at = now()
+                starts_on = $8, updated_at = now(),
+                start_time = CASE WHEN $10 THEN $11::time ELSE start_time END
             WHERE id = $9
             RETURNING *;
-            `, [result.name, result.location, result.tags, result.url, result.description, result.img_class, result.map_src, startsOn, req.params.id]
+            `, [result.name, result.location, result.tags, result.url, result.description, result.img_class, result.map_src, startsOn, req.params.id, sendsTime, startTime.value]
         )
         if(updateResult.rows.length === 0){
             res.status(404).json({error: 'Neplatné id akce. Zkuste to znovu.'})

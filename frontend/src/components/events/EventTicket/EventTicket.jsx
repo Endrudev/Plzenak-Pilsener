@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, PinIcon } from '../../landing/icons.jsx'
+import { ArrowUpRight, ClockIcon, PinIcon } from '../../landing/icons.jsx'
 import { dayParts } from '../../../lib/events/dateRanges.js'
 import { eventBadge } from '../../../lib/events/eventBadge.js'
 import { eventPath } from '../../../lib/events/eventPath.js'
@@ -26,6 +26,7 @@ export default function EventTicket({ event, index, today }) {
             <span className="et-body">
                 <span className="et-title">{event.name}</span>
                 <span className="et-meta">
+                    {event.startTime && <span className="et-where"><ClockIcon size={14} />{event.startTime}</span>}
                     <span className="et-where"><PinIcon size={14} />{event.location}</span>
                     {badge && <span className="et-badge">{badge.text}</span>}
                 </span>
@@ -37,7 +38,7 @@ export default function EventTicket({ event, index, today }) {
             </span>
 
             <span className="et-go" aria-hidden="true"><ArrowUpRight /></span>
-            <span className="visually-hidden">{event.date}</span>
+            <span className="visually-hidden">{event.date}{event.startTime && ` v ${event.startTime}`}</span>
         </Link>
     )
 }
