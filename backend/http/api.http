@@ -45,7 +45,6 @@ Authorization: Bearer {{token}}
     "date": "01.01.2027",
     "location": "Náměstí Republiky",
     "tags": ["Kultura"],
-    "imgClass": "event-image--prazdroj",
     "url": "https://example.com",
     "description": ["První odstavec popisu."]
 }
@@ -60,7 +59,6 @@ Authorization: Bearer {{token}}
     "date": "02.01.2027",
     "location": "Náměstí Republiky",
     "tags": ["Kultura", "TOP akce"],
-    "imgClass": "event-image--prazdroj",
     "url": "https://example.com",
     "description": ["Upravený popis."]
 }

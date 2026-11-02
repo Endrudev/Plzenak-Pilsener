@@ -155,10 +155,10 @@ router.post('/', authMiddleware, async(req, res) => {
             return
         }
         const insertResult = await query(`
-            INSERT INTO events (name, location, tags, img_class, url, description, map_src, starts_on, start_time)
-            VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            INSERT INTO events (name, location, tags, url, description, map_src, starts_on, start_time)
+            VALUES($1, $2, $3, $4, $5, $6, $7, $8)
             RETURNING *;
-            `, [result.name, result.location, result.tags, result.img_class, result.url, result.description, result.map_src, startsOn, startTime.value]
+            `, [result.name, result.location, result.tags, result.url, result.description, result.map_src, startsOn, startTime.value]
         )
             pingEvent(insertResult.rows[0])
             res.status(201).json(mapEvent(insertResult.rows[0]))
@@ -191,12 +191,12 @@ router.put('/:id', authMiddleware, async(req, res) => {
         // startTime: null nebo '' = admin čas vědomě odebral.
         const sendsTime = Object.hasOwn(req.body, 'startTime')
         const updateResult = await query(`
-            UPDATE events SET name = $1, location = $2, tags = $3, url = $4, description = $5, img_class = $6, map_src = $7,
-                starts_on = $8, updated_at = now(),
-                start_time = CASE WHEN $10 THEN $11::time ELSE start_time END
-            WHERE id = $9
+            UPDATE events SET name = $1, location = $2, tags = $3, url = $4, description = $5, map_src = $6,
+                starts_on = $7, updated_at = now(),
+                start_time = CASE WHEN $9 THEN $10::time ELSE start_time END
+            WHERE id = $8
             RETURNING *;
-            `, [result.name, result.location, result.tags, result.url, result.description, result.img_class, result.map_src, startsOn, req.params.id, sendsTime, startTime.value]
+            `, [result.name, result.location, result.tags, result.url, result.description, result.map_src, startsOn, req.params.id, sendsTime, startTime.value]
         )
         if(updateResult.rows.length === 0){
             res.status(404).json({error: 'Neplatné id akce. Zkuste to znovu.'})

@@ -31,7 +31,6 @@ const API = {
     tags: ['Hudba'],
     url: 'https://example.cz',
     description: ['Odstavec.'],
-    imgClass: 'event-image--prazdroj',
     mapSrc: 'https://osm.example/map',
     createdAt: '2026-08-01T10:00:00.000Z',
     imageUrl: 'https://r2.example/events/7/a.jpg',
@@ -79,11 +78,19 @@ describe('mapEvent', () => {
     })
 })
 
+describe('img_class', () => {
+    // Sloupec zůstává v databázi do další migrace (expand/contract), ale nic ho
+    // nečte: akce bez fotky má barvu podle kategorie (frontend lib/events/eventVisual.js).
+    it('API ho nevrací a do databáze se neposílá', () => {
+        assert.equal('imgClass' in mapEvent(ROW), false)
+        assert.equal('img_class' in mapEventReverse({ ...API, imgClass: 'x' }), false)
+    })
+})
+
 describe('mapEventReverse', () => {
     it('převede camelCase pole z těla požadavku na sloupce databáze', () => {
         const result = mapEventReverse(API)
         assert.equal(result.starts_on, '2026-08-29')
-        assert.equal(result.img_class, 'event-image--prazdroj')
         assert.equal(result.map_src, 'https://osm.example/map')
         assert.equal(result.created_at, '2026-08-01T10:00:00.000Z')
         assert.equal(result.image_url, 'https://r2.example/events/7/a.jpg')
@@ -105,7 +112,7 @@ describe('mapEventReverse', () => {
     it('tvar, který putuje do INSERT/UPDATE, drží názvy sloupců, na které se SQL odkazuje', () => {
         // Hlídá překlep v názvu klíče: SQL v routes/events.js čte právě tyhle.
         const keys = Object.keys(mapEventReverse(API))
-        for (const k of ['name', 'location', 'tags', 'img_class', 'url', 'description', 'map_src']) {
+        for (const k of ['name', 'location', 'tags', 'url', 'description', 'map_src']) {
             assert.ok(keys.includes(k), `chybí klíč ${k}`)
         }
     })

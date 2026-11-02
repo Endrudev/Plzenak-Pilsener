@@ -24,10 +24,6 @@ const MAX_BATCH = 100
 const MAX_APPROVE_BATCH = 50
 const STATUSES = ['pending', 'approved', 'rejected']
 
-// Barevný přechod, který se ukáže, když akce nemá obrázek. Stejná hodnota, jakou
-// posílá formulář Nová akce.
-const DEFAULT_IMG_CLASS = 'event-image--prazdroj'
-
 function isHttpsUrl(value, maxLength) {
     if (typeof value !== 'string' || value.length > maxLength) return false
     try {
@@ -252,10 +248,10 @@ async function approveCandidate(id) {
     let event
     try {
         const inserted = await query(`
-            INSERT INTO events (name, location, tags, img_class, url, description, map_src, starts_on, start_time)
-            VALUES ($1, $2, $3, $4, $5, $6, NULL, $7, $8)
+            INSERT INTO events (name, location, tags, url, description, map_src, starts_on, start_time)
+            VALUES ($1, $2, $3, $4, $5, NULL, $6, $7)
             RETURNING *;
-        `, [c.name, c.location, c.tags, DEFAULT_IMG_CLASS, c.source_url, c.description, toIsoDate(c.date), c.start_time])
+        `, [c.name, c.location, c.tags, c.source_url, c.description, toIsoDate(c.date), c.start_time])
         event = inserted.rows[0]
     } catch (err) {
         console.error(err.message)

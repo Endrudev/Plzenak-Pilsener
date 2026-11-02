@@ -144,7 +144,6 @@ export default function EventForm({ mode, initial, viewHref, onSubmit, onDelete 
                     startTime:   startTime || null,
                     location:    locationName.trim(),
                     tags:        joinTags({ category, extra: initial.extraTags, top }),
-                    imgClass:    'event-image--prazdroj',
                     url:         url.trim() || null,
                     description: description.split('\n').map(line => line.trim()).filter(Boolean),
                     mapSrc:      mapSrc || null,
