@@ -6,11 +6,6 @@ dotenv.config({path: path.join(__dirname, '../../.env')})
 const {query} = require('./pool')
 const {toIsoDate} = require('../lib/eventDate')
 
-// Hodnoty sloupce img_class. Frontend je dnes nevykresluje (akce bez obrázku
-// dostane vzhled podle kategorie, lib/events/eventVisual.js), sloupec je ale
-// pořád povinná součást řádku, tak se plní stejně jako dřív.
-const IMG_CLASSES = ['event-image--majales', 'event-image--sklo', 'event-image--prazdroj']
-
 // Stejný způsob sestavení OSM embed URL jako ve formuláři akce (components/admin/EventForm)
 // (bbox = W,S,E,N kolem bodu, marker = lat,lon) — souřadnice jsou přibližné
 // polohy skutečných plzeňských míst, jen pro vizuální testování mapy na detailu.
@@ -162,12 +157,11 @@ const events = [
 
 async function seedEvents() {
     let inserted = 0
-    for (const [i, e] of events.entries()) {
-        const imgClass = IMG_CLASSES[i % IMG_CLASSES.length]
+    for (const e of events) {
         await query(`
-            INSERT INTO events (name, location, tags, img_class, url, description, map_src, starts_on)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
-            `, [e.name, e.location, e.tags, imgClass, e.url, e.description, e.mapSrc, toIsoDate(e.date)]
+            INSERT INTO events (name, location, tags, url, description, map_src, starts_on)
+            VALUES ($1, $2, $3, $4, $5, $6, $7);
+            `, [e.name, e.location, e.tags, e.url, e.description, e.mapSrc, toIsoDate(e.date)]
         )
         inserted++
     }
