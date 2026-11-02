@@ -24,7 +24,7 @@ export default function Hudba() {
         <CategoryPage
             fixed={FIXED}
             hero={{
-                background: '#140602',
+                background: 'var(--hero-sky-concert)',
                 video: { mp4: concertHeroMp4, mobileMp4: concertHeroMobileMp4, poster: concertHeroPoster, position: narrow ? '85% 50%' : '50% 50%' },
                 scene: <LazyConcertScene focus={narrow ? 'right' : 'center'} shade label="Koncert z papíru" />,
                 breadcrumbLabel: 'Hudba',

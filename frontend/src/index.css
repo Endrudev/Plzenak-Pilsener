@@ -50,6 +50,17 @@
   --color-skyline-back: #4A2312;   /* zadní řada budov nad pásem Hledání: plná, bez oken, světlejší než přední */
   --color-footer:      #140702;   /* jen patička — nejtmavší tón appky */
   --color-events-hero: #401909;   /* pod scénou hero /akce, než se scéna načte */
+
+  /* Hero stránek kategorií (CategoryHero, od 2026-11-02). Na širokém monitoru
+     scéna nevyplní celou šířku (jinak se kvůli poměru 16:9 ořízne shora), drží
+     se vpravo a levý okraj vybledne do pozadí pásu. Pozadí je proto svislý
+     přechod oblohy změřený z levého okraje posteru videa, aby šev nebyl vidět. */
+  --cat-hero-art-max:  1600px;
+  --cat-hero-art-fade: 512px;   /* nejširší vyblednutí levého okraje scény (32 % z 1600) */
+  --hero-sky-city:    linear-gradient(180deg, #160606 0%, #1d0a03 30%, #2f1106 50%, #4f210c 62%, #6c3018 78%, #7a3a1c 100%);
+  --hero-sky-concert: linear-gradient(180deg, #1c0429 0%, #1d062e 22%, #280e3e 32%, #34114f 52%, #411466 72%, #4c1a75 100%);
+  --hero-sky-program: #e2e8d7;   /* = --color-scene-program, denní scéna je jednobarevná */
+  --hero-sky-dusk:    #140602;   /* 404: nehybný snímek města, pás pod ním */
   /* Dlaždice kategorií na homepage: jedna jantarová plocha, 2026-10-05 */
   --tile-a:            #F7B040;
   --tile-b:            #EE8E1E;

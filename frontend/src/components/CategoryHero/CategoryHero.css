@@ -4,8 +4,9 @@
 
    Pás zajíždí pod plovoucí lištu (záporný okraj o --header-h, který měří
    Header.jsx), stejně jako obloha na Akcích. Výška 708 px (460 px na telefonu)
-   zůstává z původního návrhu: scéna je kreslená na 16:9 a vyplní šířku okna,
-   takže se ořízne shora, viz vault 02 Frontend/Hero scény.
+   zůstává z původního návrhu. Scéna je kreslená na 16:9, takže čím širší okno,
+   tím vyšší scéna a tím víc se ořízne shora; proto ji na širokém monitoru drží
+   .cat-hero-art na pevné šířce (viz níž a vault 02 Frontend/Hero scény).
    Spodek pásu je rovný, zaoblené rohy dělá světlé pozadí stránky (.lp-sheet v
    landing.css), které do pásu zajíždí. */
 .cat-hero {
@@ -18,6 +19,32 @@
 .cat-hero-scene {
     position: absolute;
     inset: 0;
+}
+
+/* Vrstva se scénou. Do šířky --cat-hero-art-max vyplní celý pás. Na širším okně
+   zůstane na té šířce, přitiskne se doprava (vlevo je text) a levý okraj vybledne
+   maskou do pozadí pásu (--hero-sky-*). Bez toho by na 2560 px zůstala vidět
+   jen asi polovina výšky města a text by ležel přes nejrušnější část scény.
+   Maska jen zprůhlední pixely, scéna se pod ní dál kreslí a animuje normálně.
+
+   Vyblednutí roste plynule s tím, o kolik je okno širší než scéna (1,5 px na
+   každý pixel navíc, nejvýš --cat-hero-art-fade). Pevná šířka by se zapnula
+   skokem: na 1599 px nic, na 1601 px rovnou půl metru přechodu.
+   Hranice v @media musí být stejná jako --cat-hero-art-max (proměnné v @media
+   nejdou); na ní je vyblednutí nulové, takže přechod přes ni není vidět. */
+.cat-hero-art {
+    position: absolute;
+    inset: 0;
+}
+
+@media (min-width: 1600px) {
+    .cat-hero-art {
+        left: auto;
+        width: min(100%, var(--cat-hero-art-max));
+        --cat-hero-fade-now: clamp(0px, calc((100vw - var(--cat-hero-art-max)) * 1.5), var(--cat-hero-art-fade));
+        -webkit-mask-image: linear-gradient(90deg, transparent 0, black var(--cat-hero-fade-now));
+        mask-image: linear-gradient(90deg, transparent 0, black var(--cat-hero-fade-now));
+    }
 }
 
 /* Scéna je o --cat-hero-shift vyšší než pás a spodek ořízne pás (viz EventsHero:

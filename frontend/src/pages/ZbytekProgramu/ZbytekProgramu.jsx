@@ -17,7 +17,7 @@ export default function ZbytekProgramu() {
         <CategoryPage
             fixed={FIXED}
             hero={{
-                background: '#e2e8d7',
+                background: 'var(--hero-sky-program)',
                 theme: 'light',
                 scene: <LazyProgramScene label="Trh, posezení a park z papíru" />,
                 breadcrumbLabel: 'Zbytek programu',
