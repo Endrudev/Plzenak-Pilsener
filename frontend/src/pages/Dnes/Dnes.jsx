@@ -25,7 +25,7 @@ export default function Dnes() {
             showKdy={false}
             intro={intro}
             hero={{
-                background: '#401909',
+                background: 'var(--hero-sky-city)',
                 sceneShift: true,
                 video: { mp4: cityHeroMp4, mobileMp4: cityHeroMobileMp4, poster: cityHeroPoster, position: '50% 100%' },
                 scene: <LazyCityScene shade label="Noční Plzeň z papíru" />,

@@ -73,7 +73,7 @@ export default function NotFound() {
         <div className="lp nf">
             <CategoryHero
                 compact
-                background="#140602"
+                background="var(--hero-sky-dusk)"
                 video={{ mp4: cityHeroMp4, poster: cityHeroPoster, position: '50% 0%' }}
                 crumbs={[{ to: '/', label: 'Plzeňák' }]}
                 breadcrumbLabel="Chyba 404"

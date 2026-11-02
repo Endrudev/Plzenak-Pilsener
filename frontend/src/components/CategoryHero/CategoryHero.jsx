@@ -25,6 +25,9 @@ import './CategoryHero.css'
 // `compact` pás nedrží pevnou výšku, ale přizpůsobí se obsahu, a `children` se vloží pod nadpis.
 //
 // Spodek pásu je rovný, zaoblené rohy dělá světlé pozadí stránky (.lp-sheet).
+//
+// `background` je pozadí celého pásu (token --hero-sky-*). Na širokém monitoru scéna
+// nevyplní celou šířku a v levé části je vidět právě tohle pozadí, viz CategoryHero.css.
 export default function CategoryHero({
     background,
     theme = 'dark',
@@ -62,7 +65,9 @@ export default function CategoryHero({
 
     return (
         <header className={cls} style={{ background }}>
-            <div className="cat-hero-scene">{sceneNode}</div>
+            <div className="cat-hero-scene">
+                <div className="cat-hero-art">{sceneNode}</div>
+            </div>
 
             <div className="lp-wrap cat-hero-in">
                 <nav className="cat-hero-crumbs enter" style={{ '--i': 0 }} aria-label="Drobečková navigace">
