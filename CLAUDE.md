@@ -48,6 +48,9 @@ Open the page that owns the area you're touching. The full index is the vault `R
 | Frontend structure, state, conventions | `02 Frontend/Architektura.md` |
 | CSS, tokens, components | `02 Frontend/Styling a komponenty.md` |
 | Search, filters, sorting on `/akce` | `02 Frontend/Filtrování a hledání.md` |
+| A specific page (home, `/akce`, event detail, category pages) | `02 Frontend/Stránky/` (`Landing page`, `Akce`, `Detail akce`, `Stránky kategorií`) |
+| Animated hero scenes, hero videos | `02 Frontend/Hero scény.md` |
+| Visitor analytics (Umami) | `04 DevOps/Analytika (Umami).md` |
 | Cookie consent | `02 Frontend/Souhlas a cookies.md` |
 | Personal data, GDPR | `01 Projekt/Osobní údaje a GDPR.md` |
 | Tests | `04 DevOps/Testy.md` |
@@ -55,7 +58,8 @@ Open the page that owns the area you're touching. The full index is the vault `R
 | Backups, logs, ops | `04 DevOps/Provoz a data.md` |
 | Secrets, Doppler, Trello (**read before any `doppler` command**) | `06 Nástroje/Doppler a Trello.md` |
 | **Why is X the way it is** | `01 Projekt/Rozhodnutí.md` → `05 Poznámky/Deník.md` |
-| What's planned / deferred | `01 Projekt/Launch checklist.md`, `01 Projekt/Po launchi.md` |
+| What's open: to do, decide, verify | `01 Projekt/Po launchi.md` — the only plan (one line per task; `Launch checklist.md` is a closed record since 2026-11-02) |
+| What and why of a larger planned feature | `07 Návrhy/` (second image, import, SEO, ideas) |
 
 `05 Poznámky/Studijní zápisky/` holds dated code walkthroughs. They **deliberately go stale — never cite them as fact.**
 
@@ -73,7 +77,7 @@ Check whether the change requires a documentation update, and if so **make it in
 - a known gap got fixed → tick it off in the plan **and** update the topic page
 - behaviour described in this file changed → **this file**
 
-Then bump `aktualizováno` in the header of every page you touched.
+Then bump `aktualizováno` in the header of every page you touched. After moving or renaming a page or a heading, run the link check from the vault root: `python -I "06 Nástroje/kontrola-odkazu.py" .` (Obsidian does not flag broken heading links).
 
 > The vault is a **separate git repository**, so documentation cannot be updated in the same pull request as the code. Nothing enforces it — no CI, no reviewer. It holds only because of this instruction. (Docs CI was considered and deliberately rejected on 2026-08-28 — see the journal.)
 
